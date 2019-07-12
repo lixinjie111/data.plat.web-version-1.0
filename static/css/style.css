@@ -267,11 +267,10 @@ table thead {
 }
 
 /* 自定义 滚动条样式 */
-::-webkit-scrollbar{
+/*::-webkit-scrollbar{
     height: 16px;
     background-color: rgb(225, 231, 231);
-    /* background-color: rgb(39, 39, 39);     */
-}
+}*/
 .yk-search-box{
     clear: both;
     background: #fff;

@@ -10,7 +10,7 @@
             <li v-for="(item,index) in menuList" :key="index" :class="item.css"  :title="item.name">                
                 <div class="yk-tree-item" :class="tree.paddingCss" @click="menuClick(item);">                    
                     <span class="oi yk-ico" :class="item.iconClass" :title="item.name" aria-hidden="true"></span>                        
-                    <div v-if="tree.isShow" class="yk-block yk-160">
+                    <div v-if="tree.isShow" class="yk-tree-title">
                          <!-- @click="showSub(item,true);" -->
                         <span>  
                             {{ item.name }}
@@ -138,21 +138,15 @@ export default {
     
 }
 </script>
-<style scoped>
-    
+<style lang="scss" scoped>
+@import "@/assets/scss/theme.scss";
     .yk-tree{        
-        /* font-family: 'MicrosoftYaHei'; */
         font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;        
-        color: #999;        
+        color: #B4CAEE;        
     }
     .yk-tree-normal{        
-        font-size: 16px;   
-        margin-bottom: 10px; 
+        font-size: 14px;
         
-        /* transition: width 0.2s;
-        -moz-transition: width 0.2s;
-        -o-transition: width 0.2s;
-        -webkit-transition: width 0.2s; */
     }
     .yk-tree-min{
         width: 50px;
@@ -165,17 +159,13 @@ export default {
     }
     .yk-tree-ico{        
         font-size: 12px;
-        margin-right: 5px;
     }
     .yk-tree-ico-min{
         font-size: 22px;
     }
     .yk-tree-header{
         height: 30px;
-        border-bottom: 1px solid #56585a;        
-        /* border-bottom: 1px solid #F1F4F7;         */
-        /* padding-right: 10px; */
-        /* color: #30A5FF; */
+        border-bottom: 1px solid #001938;
     }
 
     .yk-txt-right{
@@ -188,9 +178,8 @@ export default {
     .yk-tree-body{
         width: 100%;
         height: 100%;
-        border-bottom: 1px solid #56585a;
-        /* border-bottom: 1px solid #F1F4F7; */
-        background: #373D41;
+        border-bottom: 1px solid #001938;
+        background: #032757;
         position: relative;
         overflow: hidden;
     }
@@ -202,22 +191,30 @@ export default {
     .yk-tree-body ul > li{
         background: #35404F;
     }
+
+    .yk-tree-title {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 37px;
+        top: 0;
+    }
     .yk-tree-item{
-        font-size: 16px;
-        height: 50px;
-        line-height: 50px;
+        font-size: 15px;
+        height: 48px;
+        line-height: 48px;
         cursor: pointer;
-        position: relative;
     }
     .yk-tree-pad{
-        padding: 0px 0px 0px 62px;
+        position: relative;
+        padding: 0px 0px 0px 20px;
     }
     .yk-tree-pad-min{
         padding: 15px 15px;
         
     }
     .yk-tree-sub-item{
-        padding-left: 62px;
+        padding-left: 40px;
     }
     .yk-tree-ssub-item{
         font-size: 13px;
@@ -225,31 +222,21 @@ export default {
     }
     
     .yk-tree-li{        
-        /* color: #30A5FF; */
-        /* color: #fff; */
-        border-bottom: 1px solid #0b1119;
-        /* border-bottom: 1px solid #F1F4F7; */
-    }
-    .yk-tree-li:last-child{
-        border-bottom: 0px;
-    }
-    .yk-tree-li:hover{
-        /* background: #2B2F32; */
-        /* background: #E9ECF2; */
-        /* color: #fff; */
+       
+        border-bottom: 1px solid #101113;
+        
+        background: #21272F;
+        color: #7C7C7D;
+        font-family: 'MicrosoftYaHei';
     }
     .yk-tree-li-selected{
-        color: #f59307!important;
-        border-right:4px solid #f59307 !important;
-        /* background: #00c1de!important; */
-        /* color: #ffffff!important;
-        background: rgb(31, 30, 30)!important; */
-        /* background: rgb(15, 15, 15); */
-        /* background: #30A5FF; */
+        color: #F49308!important;
+        border-right: 3px solid #F49308;
+        
     }
 
     .yk-tree-sub{
-        background: #f9f9f9;
+        background: #101113;
     }
     .yk-tree-sub ul{
         list-style: none;
@@ -258,22 +245,16 @@ export default {
     }
     .yk-tree-sub ul li{
         background: #101113;
-        /* background: #2B2F32; */
-        /* color: #fff; */
-        border-bottom: 1px solid #56585a;
-        /* border-bottom: 1px solid rgb(215, 240, 247); */
+        border-bottom: 1px solid #000000;
     }
     .yk-tree-sub ul li:hover{
         color: #fff;
-        /* background: #272727; */
     }
     .yk-tree-sub ul li:last-child{
         border-bottom: 0px;
     }
 
     .yk-tree-ssub{
-        /* background: #f9f9f9; */
-        /* color: #fff; */
         background: #2B2F32;
     }
     .yk-tree-ssub ul{
@@ -284,50 +265,46 @@ export default {
     
     .yk-tree-ssub ul li:hover{
         color: #fff;
-        /* background: rgb(31, 30, 30); */
-    }
-
-    .yk-160{
-        width: 160px;
     }
 
     .yk-tree-btn{
-        width: 17px;
         float: right;
         margin-right: 10px;
-        margin-top: 14px;
+        margin-top: 20px;
         cursor: pointer;
     }
+    
     .yk-ico{
-        width:20px;
-        height:22px;
+        width: 12px;
+        height:16px;
         position:absolute;
         top:50%;
-        left:33px;
-        margin-top:-11px;
+        left:20px;
+        margin-top: -8px;
         background-repeat: no-repeat;
+        background-size: cover;
         background-position: center center;
     }
     .icon-home{
-        background:url(../../assets/icon/home.png);
+        background-image:url(../../assets/icon/home.png);
     }
     .icon-device{
-        background:url(../../assets/icon/cl.png);
+        background-image:url(../../assets/icon/cl.png);
     }
     .icon-video{
-        background:url(../../assets/icon/cz.png);
+        background-image:url(../../assets/icon/cz.png);
     }
     .icon-roadside{
-        background:url(../../assets/icon/roadside.png);
+        background-image:url(../../assets/icon/roadside.png);
     }
     .icon-v2x{
-        background:url(../../assets/icon/vx.png);
+        background-image:url(../../assets/icon/vx.png);
     }
     .icon-platform{
-        background:url(../../assets/icon/platform.png);
+        background-image:url(../../assets/icon/platform.png);
     }
     .icon-system{
-        background:url(../../assets/icon/sys.png);
+        background-image:url(../../assets/icon/sys.png);
     }
     
 </style>

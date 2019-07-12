@@ -1,23 +1,26 @@
 <template>
     <div class="yk-main-box">
-        <header-bar></header-bar>
-        <div class="yk-left" :class="dyCss.tree">
-            <left-bar @YkEvtTreeShow="treeShow"></left-bar>
-        </div>
+        <header-bar3></header-bar3>
 
-        <div class="yk-body">            
-            <div class="c-scroll-wrap">
-                <div class="c-scroll-inner">
-                    <transition name="fade" mode="out-in">
-                        <router-view></router-view>
-                    </transition>
-                </div>
-            </div>           
+        <div class="main-container">
+            <div class="yk-left" :class="dyCss.tree">
+                <left-bar @YkEvtTreeShow="treeShow"></left-bar>
+            </div>
+
+            <div class="yk-body">            
+                <div class="c-scroll-wrap">
+                    <div class="c-scroll-inner">
+                        <transition name="fade" mode="out-in">
+                            <router-view></router-view>
+                        </transition>
+                    </div>
+                </div>           
+            </div>
         </div>
     </div>
 </template>
 <script>
-import HeaderBar from '@/components/layout/Header3.vue'
+import HeaderBar3 from '@/components/layout/Header3.vue'
 import LeftBar from '@/components/layout/LeftBar.vue'
 
 import ResponseCss from '@/assets/css/response.css'
@@ -26,7 +29,7 @@ import ResponseCss from '@/assets/css/response.css'
 export default {
     name: 'Main',
     components: {
-        HeaderBar,
+        HeaderBar3,
         LeftBar
     },
     data(){
@@ -56,29 +59,36 @@ export default {
 <style scoped>
 .yk-main-box{
     /* max-width: 1280px; */
+    min-width: 860px;
     margin: 0 auto;
     position: relative;
     width: 100%;
     height: 100%;
+    background: #F7F9FA;
+}
+.main-container {
+    width: 100%;
+    position: absolute;
+    top: 50px;
+    bottom: 0;
+    overflow: hidden;
 }
 .yk-body{
-    top: 55px;
-    left: 240px;
+    position: absolute;
+    top: 0;
+    left: 180px;
     right: 0px;
     bottom: 0px;
-    position: absolute;
 }
 
 .yk-left{
   display: inline-block; 
-  top:60px;
+  top:0px;
   left:0px;
   bottom:0px;
   position:absolute;
-  width: 240px;
-  background: #101113;
-  overflow-y: hidden;
-  overflow-x: hidden;
+  width: 180px;
+  background-color: #1a1d20;
 }
 
 .yk-animate-width{

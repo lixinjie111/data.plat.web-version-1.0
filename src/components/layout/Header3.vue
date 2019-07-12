@@ -1,14 +1,14 @@
 <template>
     <div id="header">
         <div class="logo">
-            <img src="static/images/logo.png" class="logo-img"/>
-            <!-- <em class="name c-vertical-middle">管理后台</em> -->
+            <img src="static/images/logo.png" class="logo-img c-vertical-middle"/>
+            <em class="name c-vertical-middle">运营管理后台</em>
         </div>
         <div class="userinfo">
             <el-dropdown trigger="hover">
                 <span class="el-dropdown-link userinfo-inner">
-                    <img src="static/icon/user.png" class="user-img"/>
-                    <em class="name c-vertical-top">admin2</em>
+                    <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
+                    <em class="name c-vertical-middle">admin2</em>
                 </span>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item divided @click.native="logoutClick">登出</el-dropdown-item>
@@ -47,31 +47,33 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/scss/theme.scss";
 #header {
-    background: #000;
-    color: #999;
+    background: #1a1d20;
     position: relative;
-    padding: 12px 28px 12px 25px;
-    height: 36px;
+    padding: 11px 20px;
+    height: 28px;
     @include layoutMode(between);
     .userinfo {
         .userinfo-inner {
             cursor: pointer;
-            @include layoutMode(both);
-            .user-img {
-                width: 36px;
-                height: 36px;
+            color: #999;
+            .icon {
+                font-size: 28px;
+                line-height: 28px;
                 margin-right: 10px;
             }
         }
     }
     .logo {
+        overflow: hidden;
         .logo-img {
-            height: 27px;
+            height: 25px;
             margin-right: 10px;
-            margin-top: 5px;
         }
         .name {
-            font-size: 22px;
+            font-size: 20px;
+            line-height: 28px;
+            color: #fff;
+            opacity: 0;
         }
     }
 }

@@ -1,6 +1,8 @@
 <template>
-    <div class="yk-tree-box">
-        <tree-com></tree-com>
+    <div class="c-scroll-wrap menu-wrapper">
+        <div class="c-scroll-inner">
+            <tree-com ></tree-com>
+        </div>
     </div>
 </template>
 <script>
@@ -42,23 +44,18 @@ export default {
     },
 }
 </script>
-<style scoped>
-    .yk-tree-box{
-        top: 20px;
-        left: 0px;
-        right: 0px;
-        bottom: 0px;
-        position: absolute;
-        width: 240px;
-        overflow-y: auto;
-        background:#21272f;
+<style lang="scss" scoped>
+@import "@/assets/scss/theme.scss";
+.menu-wrapper {
+    position: absolute;
+    left: 0;
+    top: 20px;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    .c-scroll-wrap::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, .5);
     }
-
-       /* 自定义 滚动条样式 */
-/* ::-webkit-scrollbar{
-    width: 3px;
-    height: 16px;
-    background-color: rgb(15, 15, 15);    
-} */
+}
 </style>
 
