@@ -1,0 +1,51 @@
+/* 限制屏幕宽度最小为960px */
+@media screen and (max-width: 964px){
+    .yk-menu-ul-xm{
+        width: 510px;
+        font-size: 14px;
+    }
+    .yk-menu-ul-xm li{
+        padding:0px 3px;        
+    }
+
+    .yk-user-info-xm{
+        width: 160px;
+    }
+ 
+}
+@media (max-width: 1011px)  and (min-width: 965px) {
+    .yk-menu-ul-sm{        
+        font-size: 14px;
+    }
+    .yk-menu-ul-sm li{
+        padding:0px 2px;        
+    }  
+
+    .yk-user-info-sm{
+        width: 200px;        
+    }
+   
+}
+@media screen and (min-width: 1012px){
+    .yk-menu-ul-md{
+        font-size: 15px;
+    }
+    .yk-menu-ul-md li{
+        padding:0px 3px;        
+    }
+    .yk-user-info-lg{
+        width: 210px;    
+        font-size: 12px;
+    }
+}
+@media screen and (min-width: 1077px){
+    .yk-menu-ul-lg{
+
+    }
+    .yk-menu-ul-lg li{
+       
+        padding:0px 5px;
+        
+    }
+    
+}

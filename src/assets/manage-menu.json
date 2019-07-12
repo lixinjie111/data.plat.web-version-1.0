@@ -1,0 +1,53 @@
+[
+    {
+        "id": 0, "name": "首页", "path": "/home", "isCheck": true,"css": "yk-tree-li-selected", "ico" : "home","iconClass":"icon-home"
+    },
+    {
+        "id": 1, "name": "车辆数据", "path": "/device", "isCheck": false,"css": "yk-tree-li", "ico" : "tag","iconClass":"icon-device",
+        "children": [       
+            { "id": 11, "name": "轨迹数据", "path": "/pathData", "isCheck": false,"css": "yk-tree-li"},            
+            { "id": 12, "name": "CAN数据", "path": "/canData", "isCheck": false,"css": "yk-tree-li", "ico" : "bookmark" },           
+            { "id": 13, "name": "动态参数", "path": "/dynamicParam", "isCheck": false,"css": "yk-tree-li", "ico" : "bookmark" }                
+        ]
+    },
+    {
+        "id": 2, "name": "车载视频", "path": "/vehicleVideo", "isCheck": false,"css": "yk-tree-li", "ico" : "video","iconClass":"icon-video",
+        "children": [
+            { "id": 21, "name": "实时监控", "path": "/realMonitor", "isCheck": false,"css": "yk-tree-li"},           
+            { "id": 22, "name": "视频管理", "path": "/videoManage", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 23, "name": "视频下载", "path": "/videoDownload", "isCheck": false,"css": "yk-tree-li"}
+        ]
+    },
+    {
+        "id": 3, "name": "路侧数据", "path": "/roadSide", "isCheck": false,"css": "yk-tree-li", "ico" : "pulse","iconClass":"icon-roadside",
+        "children": [
+            { "id": 31, "name": "实时监控", "path": "/perceptualData", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 32, "name": "视频管理", "path": "/roadVideoManage", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 33, "name": "视频下载", "path": "/roadVideoLoad", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 35, "name": "感知数据", "path": "/percepData", "isCheck": false,"css": "yk-tree-li"}
+        ]
+    },
+    {
+        "id": 6, "name": "v2x数据管理", "path": "/v2xmanage", "isCheck": false,"css": "yk-tree-li", "ico" : "pulse","iconClass":"icon-v2x",
+        "children": [
+            { "id": 62, "name": "bsm数据", "path": "/bsm", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 63, "name": "event数据", "path": "/event", "isCheck": false,"css": "yk-tree-li"}
+            ,
+            { "id": 64, "name": "rsm数据", "path": "/rsm", "isCheck": false,"css": "yk-tree-li"}
+            ,
+            { "id": 65, "name": "rsi数据", "path": "/rsi", "isCheck": false,"css": "yk-tree-li"}
+        ]
+    },
+    {
+        "id": 4, "name": "平台数据", "path": "/platform", "isCheck": false,"css": "yk-tree-li", "ico" : "monitor","iconClass":"icon-platform",
+        "children": [
+            { "id": 41, "name": "天气数据", "path": "/weatherData", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 42, "name": "交通公告", "path": "/trafficNotice", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 43, "name": "高速公路", "path": "/highway", "isCheck": false,"css": "yk-tree-li"}
+            
+        ]
+    },
+    {
+        "id": 5, "name": "系统设置", "path": "/system", "isCheck": false,"css": "yk-tree-li", "ico" : "cog","iconClass":"icon-system"
+    }    
+]

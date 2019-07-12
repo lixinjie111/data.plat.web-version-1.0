@@ -1,0 +1,98 @@
+[
+    {
+        "id": 1, "name": "系统管理", "path": "/systemManage", "isCheck": true, "css": "yk-tree-li", "ico" : "cog",
+        "children": [
+            {"id":11, "name": "用户管理", "path": "/userManage", "isCheck": false, "css": "yk-tree-li-selected"},
+            {"id":12, "name": "角色管理", "path": "/roleManage", "isCheck": false, "css": "yk-tree-li"},
+            {"id":13, "name": "菜单管理", "path": "/menuManage", "isCheck": false, "css": "yk-tree-li"}
+        ]
+    },
+    {
+        "id": 2, "name": "基础数据", "path": "/baseData", "isCheck": false,"css": "yk-tree-li", "ico" : "spreadsheet",
+        "children": [
+            { "id": 21, "name": "车载终端数据全集管理", "path": "/carTermData", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 22, "name": "车载数据组配置", "path": "/carDataCfg", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 23, "name": "ecall配置", "path": "/ecall", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 24, "name": "字典管理", "path": "/dictManage", "isCheck": false,"css": "yk-tree-li"}
+        ]
+    },
+    {
+        "id": 3, "name": "车辆管理", "path": "/carManage", "isCheck": false,"css": "yk-tree-li", "ico" : "tag",
+        "children": [
+            { "id": 31, "name": "基本信息", "path": "/baseMsg", "isCheck": false,"css": "yk-tree-li"},
+            { 
+                "id": 32, "name": "车辆数据", "path": "/carData", "isCheck": false,"css": "yk-tree-li",
+                "children": [
+                    { "id": 321, "name": "实时数据", "path": "/realCarData", "isCheck": false,"css": "yk-tree-li" },
+                    { "id": 322, "name": "历史数据", "path": "/historyCarData", "isCheck": false,"css": "yk-tree-li" }
+                ]
+            },
+            { "id": 33, "name": "品牌车型", "path": "/brandCategory", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 34, "name": "云端路径规划", "path": "/pathPlaning", "isCheck": false,"css": "yk-tree-li"}
+        ]
+    },
+    {
+        "id": 4, "name": "设备管理", "path": "/deviceManage", "isCheck": false,"css": "yk-tree-li", "ico" : "print",
+        "children": [
+            { "id": 41, "name": "SIM卡管理", "path": "/simCardManage", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 42, "name": "设备信息", "path": "/deviceMessage", "isCheck": false,"css": "yk-tree-li"},
+            { 
+                "id": 43, "name": "证书管理", "path": "/certificateManage", "isCheck": false,"css": "yk-tree-li",
+                "children": [
+                    { "id": 431, "name": "注册证书管理", "path": "/certificateRegister", "isCheck": false,"css": "yk-tree-li"},
+                    { "id": 432, "name": "吊销证书管理", "path": "/certificateRevoke", "isCheck": false,"css": "yk-tree-li"}
+                ]
+            },
+            { "id": 44, "name": "红绿灯管理", "path": "/trafficSignal", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 45, "name": "设备型号管理", "path": "/deviceModel", "isCheck": false,"css": "yk-tree-li"}
+        ]
+    },
+    {
+        "id": 5, "name": "v2x管理", "path": "/v2xManage", "isCheck": false,"css": "yk-tree-li", "ico" : "map",
+        "children": [
+            { "id": 51, "name": "实时监控", "path": "/v2xRealMonitor", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 52, "name": "历史数据", "path": "/v2xHistory", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 53, "name": "bsm数据", "path": "/bsmData", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 54, "name": "event数据", "path": "/eventData", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 55, "name": "rsm数据", "path": "/rsmData", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 56, "name": "rsi数据", "path": "/rsiData", "isCheck": false,"css": "yk-tree-li"}
+        ]
+    },
+    {
+        "id": 6, "name": "部署管理", "path": "/deployManage", "isCheck": false,"css": "yk-tree-li", "ico" : "aperture",
+        "children": [
+            { "id": 61, "name": "MEC管理", "path": "/mecManage", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 62, "name": "RSU管理", "path": "/rsuManage", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 63, "name": "区域云管理", "path": "/regionalCloud", "isCheck": false,"css": "yk-tree-li"}
+        ]
+    },
+    {
+        "id": 7, "name": "平台管理", "path": "/platformManage", "isCheck": false,"css": "yk-tree-li", "ico" : "layers",
+        "children": [
+            { 
+                "id": 71, "name": "平台接入", "path": "/platformAccess", "isCheck": false,"css": "yk-tree-li",
+                "children": [
+                    { "id": 711, "name": "接口管理", "path": "/accessInterface", "isCheck": false,"css": "yk-tree-li"},
+                    { "id": 712, "name": "调用方管理", "path": "/accessCaller", "isCheck": false,"css": "yk-tree-li"}
+                ]
+            },
+            { 
+                "id": 72, "name": "平台调用", "path": "/platformCall", "isCheck": false,"css": "yk-tree-li",
+                "children": [
+                    { "id": 721, "name": "调用接口管理", "path": "/callInterface", "isCheck": false,"css": "yk-tree-li"},
+                    { "id": 722, "name": "调用接口路由管理", "path": "/callInterfaceRouter", "isCheck": false,"css": "yk-tree-li"}
+                ]
+            }
+        ]
+    },
+    {
+        "id": 8, "name": "订阅管理", "path": "/subscribeManage", "isCheck": false,"css": "yk-tree-li", "ico" : "bell",
+        "children": [
+            { "id": 81, "name": "动态地图订阅", "path": "/dynamicMapSub", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 82, "name": "静态地图订阅", "path": "/staticMapSub", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 83, "name": "实时事件订阅", "path": "/realEventSub", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 84, "name": "非实时事件订阅", "path": "/notRealEventSub", "isCheck": false,"css": "yk-tree-li"},
+            { "id": 85, "name": "车辆数据订阅", "path": "/vehicalDataSub", "isCheck": false,"css": "yk-tree-li"}
+        ]
+    }
+]

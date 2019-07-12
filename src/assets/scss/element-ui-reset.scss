@@ -1,0 +1,116 @@
+@charset "UTF-8";
+//-----------------------------------------------------
+// element-ui
+//-----------------------------------------------------
+
+// 表单
+.el-form {
+	.el-select {
+		display: block;
+	}
+	.el-input__inner {
+		box-sizing: border-box;
+		width: 260px;
+	}
+	.el-date-editor.el-input, .el-date-editor.el-input__inner {
+		width: 260px;
+	}
+	&.el-form--inline {
+		.el-input__inner {
+			box-sizing: border-box;
+			width: 200px;
+		}
+		.el-date-editor.el-input, .el-date-editor.el-input__inner {
+			width: 200px;
+		}
+		// .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
+		// 	width: 350px;
+		// }
+	}
+}
+.el-dialog {
+	.el-form {
+		.el-input__inner {
+			box-sizing: border-box;
+			width: 100%;
+		}
+		.el-date-editor.el-input, .el-date-editor.el-input__inner {
+			width: 100%;
+		}
+		&.el-form--inline {
+			.el-input__inner {
+				box-sizing: border-box;
+				width: 100%;
+			}
+			.el-date-editor.el-input, .el-date-editor.el-input__inner {
+				width: 100%;
+			}
+			// .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
+			// 	width: 350px;
+			// }
+		}
+	}
+}
+// 按钮
+.el-button {
+	&.is-circle {
+		padding: 0;
+	}
+	[class*=" el-icon-"], 
+	[class^=el-icon-] {
+		font-size: 18px;
+		vertical-align: middle;
+	}
+	span {
+		vertical-align: middle;
+	}
+	&.el-button--mini, 
+	&.el-button--small {
+		padding-top: 0;
+		padding-bottom: 0;
+		line-height: 18px;
+	}
+	&.el-button--mini {
+		height: 28px;
+		&.is-circle {
+			width: 28px;
+		}
+	}
+	&.el-button--small {
+		height: 32px;
+		&.is-circle {
+			width: 32px;
+		}
+	}
+}
+// 表格
+.el-table {
+	td, th {
+		text-align: center;
+	}
+	thead {
+		color: #000;
+		font-weight: normal;
+		td, th {
+			border-right: none;
+			background-color: #e6e6e6;
+		}
+	}
+}
+.el-table__empty-text {
+	position: relative;
+	line-height: 20px;
+	padding: 80px 0 10px;
+	&:before {
+		content: "";
+		position: absolute;
+		left: 50%;
+		top: 0;
+		margin-left: -38px;
+		width: 76px;
+		height: 70px;
+		background-image: url(../images/table-empty.png);
+		background-size: 100% 100%;
+		background-position: center 10px;
+	}
+}
