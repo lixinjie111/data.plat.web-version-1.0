@@ -1,7 +1,7 @@
 <template>
     <!-- 车载视频管理 -->
     <div>        
-        <div class="yk-bread-crumb">{{ current.menu }}</div>
+        <h3 class="c-title">{{ current.menu }}</h3>
         <router-view></router-view> 
     </div>
 
