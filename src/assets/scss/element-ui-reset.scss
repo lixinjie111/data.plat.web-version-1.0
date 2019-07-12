@@ -2,7 +2,18 @@
 //-----------------------------------------------------
 // element-ui
 //-----------------------------------------------------
-
+// 面包屑
+.el-breadcrumb {
+	.el-breadcrumb__inner,
+	.el-breadcrumb__separator,
+	.el-breadcrumb__item:last-child .el-breadcrumb__inner, 
+	.el-breadcrumb__item:last-child .el-breadcrumb__inner a, 
+	.el-breadcrumb__item:last-child .el-breadcrumb__inner a:hover, 
+	.el-breadcrumb__item:last-child .el-breadcrumb__inner:hover {
+		font-weight: bold;
+		color: #333;
+	}
+}
 // 表单
 .el-form {
 	.el-select {
