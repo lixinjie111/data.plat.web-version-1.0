@@ -1,80 +1,107 @@
 <template>
     <!-- 基本信息 -->
-    <div class="yk-container">
-        <div class="yk-container c-mt-10">
-            <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
-                <el-form-item label="RSUId" prop='rsuId'>
-                    <el-input v-model="searchKey.rsuId"></el-input>
-                </el-form-item>
-                <el-form-item label="创建时间: ">
-                    <el-date-picker
-                        v-model.trim="searchKey.startTime"
-                        type="datetime"
-                        placeholder="开始时间"
-                        :editable="false"
-                        :clearable="false"
-                        format='yyyy-MM-dd HH:mm:ss'>
-                    </el-date-picker>
-                    -
-                    <el-date-picker
-                        v-model.trim="searchKey.endTime"
-                        type="datetime"
-                        placeholder="结束时间"
-                        :editable="false"
-                        :clearable="false"
-                        format='yyyy-MM-dd HH:mm:ss'>
-                    </el-date-picker>
-                </el-form-item>               
-                <el-form-item>
-                    <el-button type="primary" :loading="loading" @click="searchClick('searchForm')">查询</el-button>
-                    <el-button type="primary" @click="resetClick()">重置</el-button>
-                </el-form-item>
-            </el-form>
-            <el-table class='c-mt-10' :data="dataList" v-loading='loading' max-height='500' stripe>
-                <el-table-column align="center" type="index" label="No" :index='indexMethod'></el-table-column>
-                <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
-                <el-table-column align="center" prop="targetRsuIds" label="RSUId"></el-table-column>
-                <el-table-column align="center" label="时间">
-                    <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
-                </el-table-column>
-                <el-table-column align="center" label="经度">
-                    <template slot-scope="scope">{{scope.row.longitude.toFixed(8)}}</template>
-                </el-table-column>
-                <el-table-column align="center" label="纬度">
-                    <template slot-scope="scope">{{scope.row.latitude.toFixed(8)}}</template>
-                </el-table-column>
-                <el-table-column align="center" prop="elevation" label="高程"></el-table-column>
-                <el-table-column align="center" prop='content' label="消息内容"></el-table-column>
-                <el-table-column align="center" prop='pathPtNum' label="坐标点个数"></el-table-column>
-                <el-table-column align="center" label="坐标点串" width='140' :show-overflow-tooltip="true">
-                    <template slot-scope="scope" class="sl-table-text">{{scope.row.alertPath.length > 0 ? scope.row.alertPath : ''}}</template>
-                </el-table-column>
-                <el-table-column align="center" prop='alertRadius' label="警告半径"></el-table-column>
-            </el-table>
-            <div class="pages">
-                <el-pagination
-                    background
-                    @current-change="handleCurrentChange" 
-                    :current-page="paging.index"
-                    :total="paging.total" 
-                    @size-change="handleSizeChange"
-                    :page-sizes="[10,20,50,100,200,500]" 
-                    :page-size="paging.size"
-                    layout="total, sizes, prev, pager, next">
-                </el-pagination>
-            </div>
+    <div class="c-wrapper-20" v-cloak>
+        <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
+            <el-form-item label="RSUId" prop='rsuId'>
+                <el-input v-model="searchKey.rsuId"></el-input>
+            </el-form-item>
+            <el-form-item label="开始时间" prop='startTime'>
+                <el-date-picker
+                    v-model.trim="searchKey.startTime"
+                    type="datetime"
+                    placeholder="开始时间"
+                    :picker-options="startTimeOption">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="结束时间" prop='endTime'>
+                <el-date-picker
+                    v-model.trim="searchKey.endTime"
+                    type="datetime"
+                    placeholder="结束时间"
+                    :picker-options="endTimeOption">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="warning" icon="el-icon-search" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
+                <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
+            </el-form-item>               
+        </el-form>
+        <el-table class='c-mt-10' :data="dataList" v-loading='loading' max-height='500' stripe>
+            <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
+            <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
+            <el-table-column align="center" prop="targetRsuIds" label="RSUId"></el-table-column>
+            <el-table-column align="center" label="时间">
+                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
+            </el-table-column>
+            <el-table-column align="center" label="经度">
+                <template slot-scope="scope">{{scope.row.longitude.toFixed(8)}}</template>
+            </el-table-column>
+            <el-table-column align="center" label="纬度">
+                <template slot-scope="scope">{{scope.row.latitude.toFixed(8)}}</template>
+            </el-table-column>
+            <el-table-column align="center" prop="elevation" label="高程"></el-table-column>
+            <el-table-column align="center" prop='content' label="消息内容"></el-table-column>
+            <el-table-column align="center" prop='pathPtNum' label="坐标点个数"></el-table-column>
+            <el-table-column align="center" label="坐标点串" width='140' :show-overflow-tooltip="true">
+                <template slot-scope="scope" class="sl-table-text">{{scope.row.alertPath.length > 0 ? scope.row.alertPath : ''}}</template>
+            </el-table-column>
+            <el-table-column align="center" prop='alertRadius' label="警告半径"></el-table-column>
+        </el-table>
+        <div class="c-page clearfix">
+            <el-pagination
+                background
+                @current-change="changePageCurrent" 
+                :current-page="pageOption.page" 
+                :total="pageOption.total"
+                @size-change="changePageSize"
+                :page-sizes="[10,20,50,100,200,500]" 
+                :page-size="pageOption.size"
+                layout="total, sizes, prev, pager, next">
+            </el-pagination>
         </div>
     </div>
 </template>
 <script>
-import Paging from '@/common/view/Paging.vue'
 export default {
     name: 'RsiCom',
     components: {
-        Paging,
     },
     data(){
-        let _this = this;
+        let _this = this,
+            _checkStartTime = (rule, value ,callback) => {
+                let _startTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null,//标准时间转为时间戳
+                    _endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.endTime)) : null;//标准时间转为时间戳
+                if(_startTime){
+                    if(_endTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            },
+            _checkEndTime = (rule, value ,callback) => {
+                let _startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.startTime)) : null,//标准时间转为时间戳
+                    _endTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null;//标准时间转为时间戳
+                if(_endTime){
+                    if(_startTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            };
         return {
             startTime:'',
             endTime:'',
@@ -85,8 +112,8 @@ export default {
                 endTime: '',
                 rsuId: '',
             },
-            paging: {
-                index: 1,
+            pageOption: {
+                page: 1,
                 size: 10,
                 total: 0,
             },
@@ -100,29 +127,36 @@ export default {
                     { required: true, message: 'rsuIdID不能为空!', trigger: 'blur' },
                 ],
                 startTime:[
-                    { required: true, message: '开始时间不能为空!',trigger: 'blur' },
+                    { validator: _checkStartTime, trigger: 'blur' }
                 ],
                 endTime:[
-                    { required: true, message: '结束时间不能为空!',trigger: 'blur' },
-                ],
-
+                    { validator: _checkEndTime, trigger: 'blur' }
+                ]
             },
-            pickerOptionsStart: {
-                editable: false,
-                clearable: false,
-                disabledDate(time) {
-                    let endTimeTimestamp = new Date(_this.searchKey.endTime).getTime() || new Date().getTime();
-                    return time.getTime() > endTimeTimestamp || time.getTime() > new Date().getTime();
+            startTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _endDateVal = _this.searchKey.endTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.endTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_endDateVal) {
+                        return _time > _endDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
                 }
             },
-            pickerOptionsEnd: {
-                editable: false,
-                clearable: false,
-                disabledDate(time) {
-                    let startTimeTimestamp = new Date(_this.searchKey.startTime).getTime() || new Date().getTime();
-                    return time.getTime() < new Date(_this.searchKey.startTime).getTime() || time.getTime() > new Date().getTime();
+            endTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _startDateVal = _this.searchKey.startTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.startTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_startDateVal) {
+                        return  _time < _startDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
                 }
-            },
+            },  
         }
     },
     methods: {
@@ -130,10 +164,15 @@ export default {
             this.initPaging();
             this.initSearch();
         },
+        initPageOption() {
+            this.dataList = [];
+            this.pageOption.total = 0;
+            this.pageOption.page = 1;
+        },
         initPaging(){
-            this.paging.index = 1;
-            this.paging.total = 0;
-            this.paging.size = 10;
+            this.pageOption.page = 1;
+            this.pageOption.total = 0;
+            this.pageOption.size = 10;
         },
         initSearch(){
             this.searchKey = {
@@ -145,11 +184,10 @@ export default {
         initData(){
             this.dataList = [];
             this.loading = true;
-            // admin/v2x/findRsiPage
             this.$api.post('dataPlatApp/v2x/findRsiPage',{  
                 page: {
-                    "pageSize": this.paging.size,
-                    "pageIndex": this.paging.index-1
+                    "pageSize": this.pageOption.size,
+                    "pageIndex": this.pageOption.page-1
                 },
                 rsuId : this.searchKey.rsuId,
                 startTime:this.$dateUtil.dateToMs(this.searchKey.startTime),
@@ -157,7 +195,7 @@ export default {
             },response => {
                 if(response.data.code == '200'){
                     this.dataList = response.data.data.list;
-                    this.paging.total = response.data.data.totalCount;
+                    this.pageOption.total = response.data.data.totalCount;
                     this.$message.success(response.data.message);
                     this.loading = false;
                 }else{
@@ -180,7 +218,7 @@ export default {
             }
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                   this.initData();
+                    this.initData();
                 } else {
                     return false;
                 }
@@ -188,16 +226,18 @@ export default {
         },
         resetClick(){
             this.init();
+            this.$refs.searchForm.resetFields();
         },
         getIsNan(val){
             return typeof(val) == 'number' && window.isNaN(val);
         },
-        handleSizeChange(value) {//每页显示条数变更
-            this.paging.size = value;
+        changePageSize(value) {//每页显示条数变更
+            this.initPageOption();
+            this.pageOption.size = value;
             this.initData();
         },
-        handleCurrentChange(value) {//页码变更
-            this.paging.index = value;
+        changePageCurrent(value) {//页码变更
+            this.pageOption.page = value;
             this.initData();
         },
         formatTime(value){
@@ -215,7 +255,7 @@ export default {
             return value < 10 ? '0' + value : value;
         },
         indexMethod(index){
-            return index + this.paging.size * (this.paging.index-1) + 1;
+            return index + this.pageOption.size * (this.pageOption.page-1) + 1;
         }
     },
     mounted(){

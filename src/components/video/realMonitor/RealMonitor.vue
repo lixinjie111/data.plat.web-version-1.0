@@ -1,7 +1,7 @@
 <template>
     <!-- 基本信息 -->
-    <div class="yk-container c-mt-30">
-        <el-form ref='form' size="small" :inline="true">
+    <div class="c-wrapper-20" v-cloak>
+        <el-form ref='searchForm' size="small" :inline="true">
             <el-form-item label="车牌号: ">
                 <el-select
                     style="width: 150px;"

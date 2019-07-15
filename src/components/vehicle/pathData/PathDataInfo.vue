@@ -5,10 +5,9 @@
       <div class="yk-title" style="display: inline-block;">
         轨迹详情
       </div>
-      <!-- <div class="yk-btn-box yk-right yk-b-10" style="float: right">
-        <span class="yk-btn" @click="exportTrailDataAlert();">导出轨迹数据</span>
-      </div> -->
-      <el-button class='c-right' size="mini" type="primary" @click="exportTrailDataAlert">导出轨迹数据</el-button>
+      <div class="c-button-wrapper c-text-right">
+          <el-button size="mini" plain icon="el-icon-top-right" @click="exportTrailDataAlert">导出轨迹数据</el-button>
+      </div>
       <div>
         <div class="yk-block yk-gap20">
           <label>车牌号:</label>

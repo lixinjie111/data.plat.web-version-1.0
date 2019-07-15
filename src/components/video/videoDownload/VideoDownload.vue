@@ -1,8 +1,8 @@
 <template>
     <!-- 基本信息 -->
-    <div class="yk-container">
+    <div class="c-wrapper-20" v-cloak>
         <div v-show="!panel.show && !panel.cfgShow">
-            <el-form ref="searchForm" :inline="true" class="demo-form-inline" size="small">
+            <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
                 <el-form-item label="文件名: ">
                     <el-input v-model.trim="searchKey.fileName"></el-input>
                 </el-form-item>
@@ -35,56 +35,41 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="开始时间: ">
+                <el-form-item label="开始时间" prop='startTime'>
                     <el-date-picker
-                        v-model.trim="searchKey.startBeginTime"
-                        type="datetime"
-                        placeholder="开始时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="startBeginTimeOption">
-                    </el-date-picker>
-                    -
-                    <el-date-picker
-                        v-model.trim="searchKey.startEndTime"
-                        type="datetime"
-                        placeholder="结束时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="startEndTimeOption">
+                        v-model.trim="searchKey.startTime"
+                        type="datetimerange"
+                        :picker-options="timeOption"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="结束时间: ">
+                <el-form-item label="结束时间" prop='endTime'>
                     <el-date-picker
-                        v-model.trim="searchKey.stopBeginTime"
-                        type="datetime"
-                        placeholder="开始时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="stopBeginTimeOption">
-                    </el-date-picker>
-                    -
-                    <el-date-picker
-                        v-model.trim="searchKey.stopEndTime"
-                        type="datetime"
-                        placeholder="结束时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="stopEndTimeOption">
+                        v-model.trim="searchKey.endTime"
+                        type="datetimerange"
+                        :picker-options="timeOption"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="searchClick" :loading="searchLoading">查询</el-button>
-                    <el-button type="primary" @click="resetClick">重置</el-button>
+                    <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick('searchKey')">查询</el-button>
+                    <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>
             </el-form>
-            <div class="c-text-right">
-                <el-button size="small" type="primary" @click="addTask">新建任务</el-button>
+            <div class="c-button-wrapper c-text-right">
+                <el-button size="mini" plain icon="el-icon-plus" @click="addTask">新建任务</el-button>
             </div>
-            <el-table stripe class="c-mt-10"
-                :data="dataList"
-                v-loading="loading">
-                <el-table-column align="center" min-width="5%" label="序号" type="index" :index="indexMethod"></el-table-column>
+            
+            <el-table 
+            :data="dataList" 
+            v-loading='loading' 
+            stripe 
+            border 
+            max-height="620" 
+            class='c-mb-70'>
+                <el-table-column fixed align="center" min-width="5%" label="序号" type="index" :index="indexMethod"></el-table-column>
                 <el-table-column align="center" min-width="20%" label="文件名称" prop="fileName"></el-table-column>
                 <el-table-column align="center" min-width="8%" label="车辆编号" prop="vehicleId"></el-table-column>
                 <el-table-column align="center" min-width="8%" label="车牌号" prop="plateNo"></el-table-column>
@@ -105,19 +90,19 @@
                 <!-- <el-table-column align="center" label="失败原因" prop="note"></el-table-column> -->
                 <el-table-column align="center" min-width="10%" label="操作">
                     <template slot-scope="scope">
-                        <el-button size="mini" v-if="scope.row.taskStatus == 3 || scope.row.taskStatus == 0" type="primary" @click="reloadClick(scope.row)">再次下载</el-button>
+                        <el-button size="small" icon="el-icon-download" circle type="warning" plain :loading="scope.row.downLoading" @click="reloadClick(scope.row)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pages">
+            <div class="c-page clearfix">
                 <el-pagination
                     background
-                    @current-change="handleCurrentChange" 
-                    :current-page="paging.index"
-                    :total="paging.total" 
-                    @size-change="handleSizeChange"
+                    @current-change="changePageCurrent" 
+                    :current-page="pageOption.page" 
+                    :total="pageOption.total"
+                    @size-change="changePageSize"
                     :page-sizes="[10,20,50,100,200,500]" 
-                    :page-size="paging.size"
+                    :page-size="pageOption.size"
                     layout="total, sizes, prev, pager, next">
                 </el-pagination>
             </div>
@@ -137,17 +122,13 @@
     </div>
 </template>
 <script>
-import VueDatepickerLocal from 'vue-datepicker-local'
-import Paging from '@/common/view/Paging.vue'
+
 import Addload from './AddLoad.vue'
 
 export default {
     name: 'VideoDownload',
     components: {
-        VueDatepickerLocal,
-        Paging,
         Addload,
-        // ReloadImport
     },
     data(){
         let _this = this;
@@ -178,8 +159,8 @@ export default {
                 isUpadte: true,
                 isDelete: true,
             },
-            paging: {
-                index: 1,
+            pageOption: {
+                page: 1,
                 size: 10,
                 total: 0,
             },
@@ -207,112 +188,11 @@ export default {
                 {name:'下载完成',val:'2'},
                 {name:'下载失败',val:'3'},
             ],
-
-            startBeginTimeOption: {
+            timeOption: {
                 disabledDate: time => {
                     let _time = time.getTime(),
-                        _newTime = new Date().getTime(),
-                        _startEndTime = _this.$dateUtil.dateToMs(_this.searchKey.startEndTime),
-                        _stopBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.stopBeginTime),
-                        _stopEndTime = _this.$dateUtil.dateToMs(_this.searchKey.stopEndTime);
-                    if (_startEndTime) {
-                        return _time > _startEndTime;
-                    }else {
-                        if(_stopBeginTime) {
-                            return _time > _stopBeginTime;
-                        }else {
-                            if(_stopEndTime) {
-                                return _time > _stopEndTime;
-                            }else {
-                                return _time > _newTime;
-                            }
-                        }
-                    }
-                }
-            },
-            startEndTimeOption: {
-                disabledDate: time => {
-                    let _time = time.getTime(),
-                        _newTime = new Date().getTime(),
-                        _startBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.startBeginTime),
-                        _stopBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.stopBeginTime),
-                        _stopEndTime = _this.$dateUtil.dateToMs(_this.searchKey.stopEndTime);
-                    if (_startBeginTime) {
-                        if(_stopBeginTime) {
-                            return _time > _stopBeginTime || _time < _startBeginTime;
-                        }else {
-                            if(_stopEndTime) {
-                                return _time > _stopEndTime || _time < _startBeginTime;
-                            }else {
-                                return  _time < _startBeginTime || _time > _newTime;
-                            }
-                        }
-                    }else {
-                        if(_stopBeginTime) {
-                            return _time > _stopBeginTime;
-                        }else {
-                            if(_stopEndTime) {
-                                return _time > _stopEndTime;
-                            }else {
-                                return _time > _newTime;
-                            }
-                        }
-                    }
-                }
-            },
-            stopBeginTimeOption: {
-                disabledDate: time => {
-                    let _time = time.getTime(),
-                        _newTime = new Date().getTime(),
-                        _startBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.startBeginTime),
-                        _startEndTime = _this.$dateUtil.dateToMs(_this.searchKey.startEndTime),
-                        _stopEndTime = _this.$dateUtil.dateToMs(_this.searchKey.stopEndTime);
-                    if(_stopEndTime) {
-                        if (_startEndTime) {
-                            return  _time < _startEndTime || _time > _stopEndTime;
-                        }else {
-                            if(_startBeginTime) {
-                                return _time < _startBeginTime || _time > _stopEndTime;
-                            }else {
-                                return  _time > _stopEndTime;
-                            }
-                        }
-                    }else {
-                         if (_startEndTime) {
-                            return _time < _startEndTime || _time > _newTime;
-                        }else {
-                            if(_startBeginTime) {
-                                return _time < _startBeginTime || _time > _newTime;
-                            }else {
-                                return _time > _newTime;
-                            }
-                        }
-                    }
-
-                    
-                }
-            },
-            stopEndTimeOption: {
-                disabledDate: time => {
-                    let _time = time.getTime(),
-                        _newTime = new Date().getTime(),
-                        _startBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.startBeginTime),
-                        _startEndTime = _this.$dateUtil.dateToMs(_this.searchKey.startEndTime),
-                        _stopBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.stopBeginTime);
-                    if (_stopBeginTime) {
-                        return  _time < _stopBeginTime || _time > _newTime;
-                    }else {
-                        if(_startEndTime) {
-                            return _time < _startEndTime || _time > _newTime;
-                        }else {
-                            if(_startBeginTime) {
-                                return  _time < _startBeginTime || _time > _newTime;
-                            }else {
-                                return _time > _newTime;
-                            }
-                            
-                        }
-                    }
+                        _newTime = new Date().getTime();
+                    return _time > _newTime;
                 }
             }
         }
@@ -330,17 +210,22 @@ export default {
                 "endTime": 0,
             };
         },
+        initPageOption() {
+            this.dataList = [];
+            this.pageOption.total = 0;
+            this.pageOption.page = 1;
+        },
         init(){
             this.manageShow = true;
             this.playbackShow = false;
             this.initPaging();
             this.initSearch();
-            this.initData();
+            // this.initData();
         },
         initPaging(){
-            this.paging.index = 1;
-            this.paging.total = 0;
-            this.paging.size = 10;
+            this.pageOption.page = 1;
+            this.pageOption.total = 0;
+            this.pageOption.size = 10;
         },
         initSearch(){
             this.searchKey = {
@@ -361,20 +246,16 @@ export default {
             this.loading = true;
             let params = Object.assign(this.searchKey, {
                 protocal: JSON.parse(localStorage.getItem('protocal')) || '',
-                startBeginTime:this.$dateUtil.dateToMs(this.searchKey.startBeginTime) || '',
-                startEndTime:this.$dateUtil.dateToMs(this.searchKey.startEndTime) || '',
-                stopBeginTime:this.$dateUtil.dateToMs(this.searchKey.stopBeginTime) || '',
-                stopEndTime:this.$dateUtil.dateToMs(this.searchKey.stopEndTime) || ''
             });
-            this.$api.post('dataPlatApp/cam/queryTaskList',{
-                "pageSize": this.paging.size,
-                "pageIndex": this.paging.index,
+            this.$api.post('cam/queryTaskList',{
+                "pageSize": this.pageOption.size,
+                "pageIndex": this.pageOption.page - 1,
                 "param":params
             },response => {
                 if(response.status >= 200 && response.status < 300){
-                    if(response.data.list && response.data.list.length > 0) {
-                        this.dataList = response.data.list || [];
-                        this.paging.total = response.data.totalCount || 0;
+                    if(response.data.data.list && response.data.data.list.length > 0) {
+                        this.dataList = response.data.data.list || [];
+                        this.pageOption.total = response.data.data.totalCount || 0;
                     }
                 }else{
                     this.$message.error("获取列表失败！");
@@ -388,29 +269,32 @@ export default {
             });
         },
         indexMethod(index) {
-            return (this.paging.index-1) * this.paging.size + index + 1;
+            return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         },
         searchClick(){
             this.searchLoading = true;
-            this.initPaging();
-            this.initData();
+            this.$refs.searchForm.validate((valid) => {
+            if (valid) {
+                    let _params = {
+                        startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]),
+                        startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]),
+                        stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]),
+                        stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1])
+                    }
+                    // this.initPaging();
+                    this.initData(_params);
+                } else {
+                    return false;
+                }
+            });
         },
         resetClick(){
             this.init();
+            this.$refs.searchForm.resetFields();
         },
         cfgPanelFn(data){
             this.panel.show = false;
             this.panel.cfgShow = false;
-        },
-        pagingFn(value){
-            this.paging.index = value;
-            this.paging.total = 0;
-            this.initData();
-        },
-        pagingSizeFn(value){
-            this.paging.size = value;
-            this.paging.total = 0;
-            this.initData();
         },
         addTask(item){
             this.panel.title = '新建下载任务';
@@ -427,7 +311,7 @@ export default {
         },
         sureFunc(){
             this.dialogOption.loading = true;
-            this.$api.post('dataPlatApp/cam/redoVideoTask',this.dialogOption.data,response => {
+            this.$api.post('cam/redoVideoTask',this.dialogOption.data,response => {
                 if(response.data.code == '200'){
                     this.$message.success('再次下载视频任务成功!');
                 }else{
@@ -447,12 +331,13 @@ export default {
         handleClose(done) {
             this.initDialogData();
         },
-        handleSizeChange(value) {//每页显示条数变更
-            this.paging.size = value;
+        changePageSize(value) {//每页显示条数变更
+            this.initPageOption();
+            this.pageOption.size = value;
             this.initData();
         },
-        handleCurrentChange(value) {//页码变更
-            this.paging.index = value;
+        changePageCurrent(value) {//页码变更
+            this.pageOption.page = value;
             this.initData();
         }
     },

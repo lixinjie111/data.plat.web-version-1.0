@@ -1,63 +1,34 @@
 <template>
     <div>
         <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
-        <!-- <div class="yk-btn-box yk-right yk-b-10">
-            <span class="yk-btn-back" @click="backClick();">返回</span>
-        </div> -->
         <div v-show="isShow && !isAddData" class="c-mt-30">
             <el-form :inline="true" :model="searchKey" ref="searchForm" :rules="rules" size='small' class="demo-form-inline">
-                <el-form-item label="车辆编号:" prop='vehicleId'>
+                <el-form-item label="车辆编号" prop='vehicleId'>
                     <el-input v-model.trim="searchKey.vehicleId"></el-input>
                 </el-form-item>
-                <el-form-item label="数据采集时间: ">
+                <el-form-item label="开始时间" prop='startTime'>
                     <el-date-picker
                         v-model.trim="searchKey.startTime"
                         type="datetime"
                         placeholder="开始时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="pickerOptionsStart"
-                        format='yyyy-MM-dd HH:mm:ss'>
+                        :picker-options="startTimeOption">
                     </el-date-picker>
-                    -
+                </el-form-item>
+                <el-form-item label="结束时间" prop='endTime'>
                     <el-date-picker
                         v-model.trim="searchKey.endTime"
                         type="datetime"
                         placeholder="结束时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="pickerOptionsEnd"
-                        format='yyyy-MM-dd HH:mm:ss'>
+                        :picker-options="endTimeOption">
                     </el-date-picker>
                 </el-form-item>
-
             </el-form>
-                <!-- <div class="yk-search-box">
-                     <div class="yk-search-block">
-                        <label class="yk-w-90">vehicleId：</label>
-                        <input class="yk-input " v-model.trim="condition.vehicleId" v-on:keyup="validateSearch">
-                         <label title="vehicleId不能为空" class="yk-form-tip">*</label>
-                         <span class="yk-tip" id="vehicleIdTip" v-show='isTipsShow'>vehicleId不能为空 ！</span>
-                    </div>
-                   
-                    <div class="yk-search-block">
-                    <label class="yk-w-90">数据采集时间: </label>
-                    <date-picker class=" data-control-css yk-input" lang="zh" type="datetime" format="YYYY-MM-DD HH:mm:ss"
-                         placeholder="选择开始时间" :editable="false" :not-after="condition.endTime"
-                         v-model="condition.startTime"></date-picker>
-                    <span> - </span>
-                    <date-picker class="data-control-css yk-input" lang="zh" type="datetime" format="YYYY-MM-DD HH:mm:ss"
-                         placeholder="选择结束时间" :editable="false" :not-before="condition.startTime"
-                         v-model="condition.endTime"></date-picker>
-                    <label title="开始结束时间都不能为空" class="yk-form-tip">*</label>
-                    <span class="yk-tip" v-show='isTimeTipShow' id="timeTip">开始结束时间都不能为空 ！</span>
-                </div>       
-            </div>-->
-            <div class="c-text-right">
-                <el-button type="primary" @click="addDataSet();" size='small'>获取数据集</el-button>
+            <div class="c-button-wrapper c-text-right">
+                <el-button size="mini" plain icon="el-icon-receiving" @click="addDataSet();">获取数据集</el-button>
             </div>
+
             <el-table class='c-mt-10' :data="dataList" v-loading='loading' stripe>
-                <el-table-column align="center" prop="sid" label="SID"></el-table-column>
+                <el-table-column fixed align="center" prop="sid" label="SID"></el-table-column>
                 <el-table-column align="center" prop="name" label="英文名称"></el-table-column>
                 <el-table-column align="center" prop="longidentifier" label="中文名称"></el-table-column>
                 <el-table-column align="center" prop="datType" label="类型"></el-table-column>
@@ -69,71 +40,64 @@
                 </el-table-column>
             </el-table>
 
-            <!-- <div class="yk-gap">
-                <div class="yk-btn-box yk-left">
-                    <span class="title">获取数据集</span>
-                    <img class="yk-img-btn" src="static/icon/add.png" title="获取数据集" alt="获取数据集" @click="addDataSet();">
-                </div>
-                <div class="yk-table-box" id="localDataTable" style="max-height:360px;">
-                    <table class="yk-table">
-                        <thead>
-                        <tr>
-                            <th style="width:6%;">SID</th>
-                            <th>英文名称</th>
-                            <th>中文名称</th>
-                            <th>类型</th>
-                            <th>描述</th>
-                            <th style="width:7%;">操作</th>
-                        </tr>
-                        </thead>
-                        <tbody :style='{"height":(paging.total<=10 ? "auto" : "405px")}'>
-                         <tr class="yk-table-body" v-for="(item,index) in pageData" :key="index" :class="item.css">
-                            <td style="width:6%;">{{item.sid}}</td>                        
-                            <td>{{item.name}}</td>
-                            <td>{{item.longidentifier}}</td>
-                            <td>{{item.datType}}</td>
-                            <td>{{item.description}}</td>
-                            <td style="width:6%;"><span title="删除" alt="删除" class="yk-btn" @click='deleteClick(item)'>删除</span></td>                     
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="pages">
-                    <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="paging.index + 1" :page-sizes="[10,20,50,100,200,500]" :page-size="paging.size" layout="total, sizes, prev, pager, next" :total="paging.total"></el-pagination>
-                </div>
-            </div> -->
-            <!-- <el-form-item>
-                <el-button type="primary" @click="okClick">确定</el-button>
-                <el-button type="primary" @click="cancelClick">取消</el-button>
-            </el-form-item> -->
             <div class="c-text-center c-mt-30">
                 <el-button type="primary" @click="okClick">确定</el-button>
                 <el-button type="primary" @click="cancelClick">取消</el-button>
             </div>
-            <!-- <div class="yk-btn-box yk-center yk-b-30">
-                <span class="yk-btn yk-r-30" @click="okClick();">确定</span>
-                <span class="yk-btn" @click="cancelClick();">取消</span>
-            </div> -->
+            
         </div>
         <add-data-panel @loadData="loadData" @init="init" v-show="isAddData" ref="addDataPanel" class="c-mt-30"></add-data-panel>
     </div>
     
 </template>
 <script>
-import Paging from '@/common/view/Paging.vue'
 import AddDataPanel from './AddDataPanel.vue'
 import DatePicker from 'vue2-datepicker'
 import TList from '@/common/utils/list.js'
 export default {
     props: ['title','type','data'],
     components: {
-        Paging, AddDataPanel,DatePicker,TList
+        AddDataPanel,DatePicker,TList
     },
     data(){
-        let _this = this;
+        let _this = this,
+            _checkStartTime = (rule, value ,callback) => {
+                let _startTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null,//标准时间转为时间戳
+                    _endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.endTime)) : null;//标准时间转为时间戳
+                if(_startTime){
+                    if(_endTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            },
+            _checkEndTime = (rule, value ,callback) => {
+                let _startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.startTime)) : null,//标准时间转为时间戳
+                    _endTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null;//标准时间转为时间戳
+                if(_endTime){
+                    if(_startTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            };
         return {
-            paging: {
-                index: 0,
+            pageOption: {
+                page: 1,
                 size: 10,
                 total: 0
             },
@@ -154,26 +118,37 @@ export default {
             isTipsShow:false,
             isTimeTipShow:false,
             rules:{
-                vehicleId:[
-                    { required: true, message: 'VehicleID不能为空!', trigger: 'blur' },
+                startTime:[
+                    { validator: _checkStartTime, trigger: 'blur' }
                 ],
+                endTime:[
+                    { validator: _checkEndTime, trigger: 'blur' }
+                ]
             },
-            pickerOptionsStart: {
-                editable: false,
-                clearable: false,
-                disabledDate(time) {
-                    let endTimeTimestamp = new Date(_this.searchKey.endTime).getTime() || new Date().getTime();
-                    return time.getTime() > endTimeTimestamp || time.getTime() > new Date().getTime();
+            startTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _endDateVal = _this.searchKey.endTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.endTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_endDateVal) {
+                        return _time > _endDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
                 }
             },
-            pickerOptionsEnd: {
-                editable: false,
-                clearable: false,
-                disabledDate(time) {
-                    let startTimeTimestamp = new Date(_this.searchKey.startTime).getTime() || new Date().getTime();
-                    return time.getTime() < new Date(_this.searchKey.startTime).getTime() || time.getTime() > new Date().getTime();
+            endTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _startDateVal = _this.searchKey.startTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.startTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_startDateVal) {
+                        return  _time < _startDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
                 }
-            },
+            }    
         }
     },
     methods: {
@@ -186,12 +161,12 @@ export default {
         loadData(list,pageSize){
             if(list != undefined){
                 if(pageSize != undefined){
-                    this.paging.size=pageSize;
+                    this.pageOption.size=pageSize;
                 }else{
-                    this.paging.size = 10;
+                    this.pageOption.size = 10;
                 }
-                this.paging.index = 0;
-                this.paging.total = list.length;
+                this.pageOption.page = 0;
+                this.pageOption.total = list.length;
                 TList.pushNoRepeat(this.dataList,list);
                 this.dataList.sort(function(a,b){
                     return parseInt(a.sid) - parseInt(b.sid);
@@ -203,16 +178,16 @@ export default {
         },
         showPageData(){
             this.pageData = this.dataList;
-            this.paging.total = this.pageData.length;
-            let start = this.paging.index * this.paging.size;
-            let end = start + this.paging.size-1;
+            this.pageOption.total = this.pageData.length;
+            let start = this.pageOption.index * this.pageOption.size;
+            let end = start + this.pageOption.size-1;
             this.pageData = this.pageData.slice(start,end);    
         },
         deleteClick(item){
             this.dataList.splice(this.dataList.indexOf(item),1);
-            this.paging.size = 10;
-            this.paging.index = 0;
-            this.paging.total = this.dataList.length;
+            this.pageOption.size = 10;
+            this.pageOption.page = 0;
+            this.pageOption.total = this.dataList.length;
             this.showPageData();
         },
         backClick(){
@@ -244,7 +219,6 @@ export default {
         },
         okClick(){
             let _this =this;
-            // if(!_this.validateSearch('isOk')) return;
             if(this.dataList.length == 0) {
                 this.$store.dispatch('showPrompt','请增加数据集 ！');
                 return;
@@ -252,10 +226,6 @@ export default {
             let startTime = _this.$dateUtil.dateToMs(_this.searchKey.startTime);
             let endTime = _this.$dateUtil.dateToMs(_this.searchKey.endTime);
 
-            // if(startTime >= endTime){
-            //     this.$store.dispatch('showPrompt','数据采集开始时间不能大于等于结束时间 ！');
-            //     return 
-            // }
             if(endTime - startTime > 3600 * 1000){
                 this.$store.dispatch('showPrompt','数据采集开始时间和结束时间间隔不能大于1小时 ！');
                 return;
@@ -276,11 +246,9 @@ export default {
                 }, response => {
                     if(response.data.code == 200){
                         this.$message.sucess("事件条件下发成功!");
-                        // this.$store.dispatch('showPrompt','事件条件下发成功 ！');
                         this.$emit("localDataPanelBack");
                     }else{
                         this.$message.error("事件条件下发失败!");
-                        // this.$store.dispatch('showPrompt','事件条件下发失败 ！');
                     }
                     
                 });
@@ -288,40 +256,6 @@ export default {
         cancelClick(){
            this.backClick();
         },
-        //  validateSearch(o){
-        //     var validatePass=true;
-        //     var _this =this;
-        //     let vehicleIdTip = document.getElementById("vehicleIdTip");
-        //     let timeTip = document.getElementById("timeTip");
-        //         if(_this.condition.vehicleId != ""){
-        //             _this.isTipsShow = false;
-        //         }else{
-        //             if(o == "isOk"){
-        //                 _this.isTipsShow = true;
-        //             }
-        //             validatePass=false;
-        //         }
-
-        //         if((_this.condition.startTime == null || _this.condition.startTime == "")
-        //         || (_this.condition.endTime == null || _this.condition.endTime == "")){
-        //              if(o == "isOk"){
-        //                  this.isTimeTipShow = true;
-        //              }
-        //             validatePass=false;
-        //         }else{
-        //             this.isTimeTipShow = false;
-        //         }
-
-        //    return validatePass;
-        // },
-        // handleSizeChange(value) {//每页显示条数变更
-        //     this.paging.size = value;
-        //     this.loadData(this.dataList,value);
-        // },
-        // handleCurrentChange(value) {//页码变更
-        //     this.paging.index = value-1;
-        //     this.loadData();
-        // }
     },
     mounted(){
         this.init();

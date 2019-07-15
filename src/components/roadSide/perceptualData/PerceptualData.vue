@@ -1,5 +1,5 @@
 <template>
-<div class="yk-container cation" style='min-width:1000px;'>
+<div class="c-wrapper-20" v-cloak>
     <div class="yk-search-box">
         <div class="yk-search-block yk-block-label">
             <label class="yk-w-90">摄像头编号:</label>

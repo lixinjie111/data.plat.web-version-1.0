@@ -1,6 +1,6 @@
 <template>
     <!-- 基本信息 -->
-    <div class="yk-container">
+    <div class="c-wrapper-20" v-cloak>
         <el-form ref="searchForm" :inline="true" :model="searchKey" :rules="rules" class="demo-form-inline" size="small">
             <el-form-item label="路侧基本点:">
                 <el-input v-model.trim="searchKey.rsPtId" clearable @change="changeEvent($event, 'rsPtId')" @blur='getRequestData("rsPtId")' @keyup.13='getRequestData("rsPtId")'></el-input>
@@ -38,7 +38,24 @@
                 </el-select>
                 <el-input v-model.trim="searchKey.deviceId" clearable @change="changeEvent($event, 'deviceId')" @blur='getRequestData("deviceId")' @keyup.13='getRequestData("deviceId")' v-else></el-input>
             </el-form-item>
-            <el-form-item label="开始时间:" prop='startTime'>
+            <el-form-item label="开始时间" prop='startTime'>
+                <el-date-picker
+                    v-model.trim="searchKey.startTime"
+                    type="datetime"
+                    placeholder="开始时间"
+                    :picker-options="startTimeOption">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="结束时间" prop='endTime'>
+                <el-date-picker
+                    v-model.trim="searchKey.endTime"
+                    type="datetime"
+                    placeholder="结束时间"
+                    :picker-options="endTimeOption">
+                </el-date-picker>
+            </el-form-item>
+
+            <!-- <el-form-item label="开始时间:" prop='startTime'>
                 <el-date-picker
                     v-model.trim="searchKey.startTime"
                     type="date"
@@ -53,16 +70,16 @@
                     placeholder="结束时间"
                     :picker-options="endTimeOption">
                 </el-date-picker>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item>
-                <el-button type="primary" @click="searchClick" :loading="loading">查询</el-button>
+                <el-button type="warning" icon="el-icon-search" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
             </el-form-item>
         </el-form>
         <el-table 
             :data="showDataList"
             v-loading="loading" 
             stripe>
-            <el-table-column align="center" min-width="5%" label="编号" type="index" :index="indexMethod"></el-table-column>
+            <el-table-column fixed align="center" min-width="5%" label="编号" type="index" :index="indexMethod"></el-table-column>
             <el-table-column align="center" min-width="20%" label="摄像头序列号" prop="serialNum"></el-table-column>
             <el-table-column align="center" min-width="35%" label="文件名称" prop="fileName"></el-table-column>
             <el-table-column align="center" min-width="15%" label="开始时间">
@@ -101,7 +118,41 @@ export default {
         VueDatepickerLocal
     },
     data(){
-        let _this = this;
+        let _this = this,
+            _checkStartTime = (rule, value ,callback) => {
+                let _startTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null,//标准时间转为时间戳
+                    _endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.endTime)) : null;//标准时间转为时间戳
+                if(_startTime){
+                    if(_endTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            },
+            _checkEndTime = (rule, value ,callback) => {
+                let _startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.startTime)) : null,//标准时间转为时间戳
+                    _endTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null;//标准时间转为时间戳
+                if(_endTime){
+                    if(_startTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            };
         // 110108_001
         // 3402000000132000001101
         // 3402000000132000000301
@@ -116,6 +167,7 @@ export default {
             serialNumList:[],
             deviceIdList:[],
             inputFlag: true,
+            requestData: {},
             searchKey: {
                 rsPtId:'',
                 cameraId:'',
@@ -130,34 +182,72 @@ export default {
                     { required: true, message: '摄像头序列号不能为空!', trigger: 'blur' },
                 ],
                 startTime:[
-                    { required: true, message: '开始时间不能为空', trigger: 'change' }
+                    { required: true, message: '开始时间不能为空', trigger: 'change' },
+                    { validator: _checkStartTime, trigger: 'blur' }
                 ],
                 endTime:[
-                    { required: true, message: '结束时间不能为空', trigger: 'change' }
-                ],
-
+                    { required: true, message: '结束时间不能为空', trigger: 'change' },
+                    { validator: _checkEndTime, trigger: 'blur' }
+                ]
             },
-            requestData: {},
             startTimeOption: {
                 disabledDate: time => {
-                    let endDateVal = _this.searchKey.endTime;
-                    if (endDateVal) {
-                        return time.getTime() > new Date(endDateVal).getTime() || time.getTime() > new Date().getTime();
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _endDateVal = _this.searchKey.endTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.endTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_endDateVal) {
+                        return _time > _endDateVal || _time > _newTime;
                     }else {
-                        return time.getTime() > new Date().getTime();
+                        return _time > _newTime;
                     }
                 }
             },
             endTimeOption: {
                 disabledDate: time => {
-                    let startDateVal = _this.searchKey.startTime;
-                    if (startDateVal) {
-                        return  time.getTime() < new Date(startDateVal).getTime() || time.getTime() > new Date().getTime();
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _startDateVal = _this.searchKey.startTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.startTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_startDateVal) {
+                        return  _time < _startDateVal || _time > _newTime;
                     }else {
-                        return time.getTime() > new Date().getTime();
+                        return _time > _newTime;
                     }
                 }
-            },
+            }, 
+
+            // rules:{
+            //     serialNum:[
+            //         { required: true, message: '摄像头序列号不能为空!', trigger: 'blur' },
+            //     ],
+            //     startTime:[
+            //         { required: true, message: '开始时间不能为空', trigger: 'change' }
+            //     ],
+            //     endTime:[
+            //         { required: true, message: '结束时间不能为空', trigger: 'change' }
+            //     ],
+
+            // },
+            
+            // startTimeOption: {
+            //     disabledDate: time => {
+            //         let endDateVal = _this.searchKey.endTime;
+            //         if (endDateVal) {
+            //             return time.getTime() > new Date(endDateVal).getTime() || time.getTime() > new Date().getTime();
+            //         }else {
+            //             return time.getTime() > new Date().getTime();
+            //         }
+            //     }
+            // },
+            // endTimeOption: {
+            //     disabledDate: time => {
+            //         let startDateVal = _this.searchKey.startTime;
+            //         if (startDateVal) {
+            //             return  time.getTime() < new Date(startDateVal).getTime() || time.getTime() > new Date().getTime();
+            //         }else {
+            //             return time.getTime() > new Date().getTime();
+            //         }
+            //     }
+            // },
             panel: {
                 title: '提示',
                 type: '',
@@ -284,8 +374,8 @@ export default {
                     response.data.forEach((item) => {
                         item.loading = false;
                     });
-                    this.dataList = response.data;
-                    this.paging.total = response.data.length;
+                    this.dataList = response.data.data;
+                    this.paging.total = response.data.data.length;
                     if(this.paging.total > this.paging.size) {
                         this.initShowData();
                     }else {

@@ -1,29 +1,57 @@
 <template>
     <!-- 基本信息 -->
-    <div class="yk-container">
-        <div class="yk-container">
-            <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
-                <el-form-item label="车辆编号:" prop='vehicleId'>
-                    <el-input v-model.trim="searchKey.vehicleId"></el-input>
-                </el-form-item>
-                <el-form-item label="英文名称:">
-                    <el-input v-model.trim="searchKey.enName"></el-input>
-                </el-form-item>
-                <el-form-item label="时间:">
-                    <el-col :span="11">
-                        <el-date-picker type="datetime" placeholder="开始时间" v-model.trim="searchKey.startTime" style="width: 100%;"></el-date-picker>
-                    </el-col>
-                    <el-col class="line" :span="1" style='width:2%;text-align:center;'>-</el-col>
-                    <el-col :span="11">
-                        <el-date-picker type="datetime" placeholder="结束时间" v-model.trim="searchKey.endTime" style="width: 100%;"></el-date-picker>
-                    </el-col>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
-                    <el-button type="primary" @click="resetClick()">重置</el-button>
+    <div class="c-wrapper-20" v-cloak>
+        <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
+            <el-form-item label="车辆编号" prop='vehicleId'>
+                <el-input v-model.trim="searchKey.vehicleId"></el-input>
+            </el-form-item>
+            <el-form-item label="英文名称">
+                <el-input v-model.trim="searchKey.enName"></el-input>
+            </el-form-item>
+            <el-form-item label="开始时间" prop='startTime'>
+                <el-date-picker
+                    v-model.trim="searchKey.startTime"
+                    type="datetime"
+                    placeholder="开始时间"
+                    :picker-options="startTimeOption">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="结束时间" prop='endTime'>
+                <el-date-picker
+                    v-model.trim="searchKey.endTime"
+                    type="datetime"
+                    placeholder="结束时间"
+                    :picker-options="endTimeOption">
+                </el-date-picker>
+            </el-form-item>
+
+            <!-- <el-form-item label="时间" prop='startTime'>
+                <el-date-picker
+                    v-model.trim="searchKey.startTime"
+                    type="datetime"
+                    placeholder="开始时间"
+                    :editable="false"
+                    :clearable="false"
+                    :picker-options="startTimeOption"
+                    format='yyyy-MM-dd HH:mm:ss'>
+                </el-date-picker>
+                -
+                <el-date-picker
+                    v-model.trim="searchKey.endTime"
+                    type="datetime"
+                    placeholder="结束时间"
+                    :editable="false"
+                    :clearable="false"
+                    :picker-options="endTimeOption"
+                    format='yyyy-MM-dd HH:mm:ss'>
+                </el-date-picker>
+            </el-form-item> -->
+            <el-form-item>
+                    <el-button type="warning" icon="el-icon-search" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
+                    <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>
             </el-form>
-            <el-table class='c-mt-10' :data="dataList" v-loading='loading' stripe>
+            <el-table border max-height="620" class='c-mb-70' :data="dataList" v-loading='loading' stripe>
                 <el-table-column align="center" prop="vehicleId" label="车辆编号"></el-table-column>
                 <el-table-column align="center" prop="dataId" label="数据ID"></el-table-column>
                 <el-table-column align="center" prop="enName" label="英文名称"></el-table-column>
@@ -31,34 +59,9 @@
                 <el-table-column align="center" prop="dataValue" label="数据值"></el-table-column>
                 <el-table-column align="center" prop="time" label="时间"></el-table-column>
             </el-table>
-            <!-- <div>
-                <div class="yk-table-box">
-                    <table class="yk-table">
-                        <thead>
-                        <tr>
-                            <th style="width:16%;">vehicleId</th>
-                            <th style="width:16%;">数据ID</th>
-                            <th style="width:16%;">英文名称</th>
-                            <th style="width:16%;">中文名称</th>
-                            <th style="width:16%;">数据值</th>
-                            <th style="width:20%;">时间</th>
-                        </tr>
-                        </thead>
-                        <tbody :style='{"height":(paging.total<=10 ? "auto" : "405px")}'>
-                        <tr class="yk-table-body" v-for="(item,index) in dataList" :key="index" :class="item.css">
-                            <td style="width:16%;">{{item.vehicleId}}</td>
-                            <td style="width:16%;">{{item.dataId}}</td>
-                            <td style="width:16%;">{{item.enName}}</td>
-                            <td style="width:16%;">{{item.chName}}</td>
-                            <td style="width:16%;">{{item.dataValue}}</td>
-                            <td style="width:19%;">{{item.time}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div> -->
-            <paging-pre-next ref="pagingPreNext" class="yk-paging" :page-index="paging.index" :next-count="paging.nextCount" @pagingEvent="pagingFn" @PageSizeEvent="pagingSizeFn"></paging-pre-next>
-        </div>
+            <div class="c-page clearfix">
+                <paging-pre-next ref="pagingPreNext" class="yk-paging" :page-index="pageOption.page" :next-count="pageOption.nextCount" @pagingEvent="pagingFn" @PageSizeEvent="pagingSizeFn"></paging-pre-next>
+            </div>
     </div>
 </template>
 <script>
@@ -72,6 +75,41 @@ export default {
         PagingPreNext,DatePicker,TList
     },
     data(){
+        let _this = this,
+        _checkStartTime = (rule, value ,callback) => {
+                let _startTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null,//标准时间转为时间戳
+                    _endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.endTime)) : null;//标准时间转为时间戳
+                if(_startTime){
+                    if(_endTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            },
+            _checkEndTime = (rule, value ,callback) => {
+                let _startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.startTime)) : null,//标准时间转为时间戳
+                    _endTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null;//标准时间转为时间戳
+                if(_endTime){
+                    if(_startTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            };
         return {
             isTimeTip:false,
             isVehicleShow:false,
@@ -83,8 +121,8 @@ export default {
                 endTime: '',
                 nextStartRowMap:new Map(),//下一页用到的rowkey数组
             },
-            paging: {
-                index: 1,
+            pageOption: {
+                page: 1,
                 size: 10,
                 total:0,
                 nextCount: 0,
@@ -94,17 +132,38 @@ export default {
             current: {
                 top: 0
             },
-            rules: {
-                vehicleId:[
-                    { required: true, message: 'vehicleId不能为空!', trigger: 'blur' },
+            rules:{
+                startTime:[
+                    { validator: _checkStartTime, trigger: 'blur' }
                 ],
-                startTime: [
-                    { type:'date',required: true, message: '开始时间不能为空!', trigger: 'change' },
-                ],
-                endTime: [
-                    { type:'date',required: true, message: '结束时间不能为空!', trigger: 'change' },
-                ],
-            }
+                endTime:[
+                    { validator: _checkEndTime, trigger: 'blur' }
+                ]
+            },
+            startTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _endDateVal = _this.searchKey.endTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.endTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_endDateVal) {
+                        return _time > _endDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
+                }
+            },
+            endTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _startDateVal = _this.searchKey.startTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.startTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_startDateVal) {
+                        return  _time < _startDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
+                }
+            }    
         }
     },
     methods: {
@@ -113,10 +172,10 @@ export default {
             this.initSearch();
         },
         initPaging(){
-            this.paging.index = 1;
-            this.paging.size = 10;
-            this.paging.nextCount = 0;
-            this.paging.nextPageClick =true;
+            this.pageOption.page = 1;
+            this.pageOption.size = 10;
+            this.pageOption.nextCount = 0;
+            this.pageOption.nextPageClick =true;
         },
         initSearch(){
             this.searchKey = {
@@ -128,10 +187,10 @@ export default {
             };
         },
         initData(currentNextStartRow){//currentNextStartRow=null求第一页
-            this.getRealTimeList(this.paging.size,this.paging.index,currentNextStartRow,this.getDataList);
+            this.getRealTimeList(this.pageOption.size,this.pageOption.page,currentNextStartRow,this.getDataList);
         },
         getNextCount(list){
-          list != null ?this.paging.nextCount = list.length : this.paging.nextCount = 0;
+          list != null ?this.pageOption.nextCount = list.length : this.pageOption.nextCount = 0;
         },
         getDataList(list){
             let _this =this;
@@ -146,12 +205,12 @@ export default {
                     return item.enName != "ROWKEY";
                 });
             }
-            if(_this.paging.nextPageClick) {//点击下一页查询
-                _this.searchKey.nextStartRowMap.set(_this.paging.index,rowKey);
+            if(_this.pageOption.nextPageClick) {//点击下一页查询
+                _this.searchKey.nextStartRowMap.set(_this.pageOption.page,rowKey);
                 //设置下一页的记录数
-                _this.paging.nextCount = 0;
-                if(rowKey != "" && this.paging.nextPageClick){
-                     _this.getRealTimeList(_this.paging.size,_this.paging.index + 1,rowKey,_this.getNextCount);
+                _this.pageOption.nextCount = 0;
+                if(rowKey != "" && this.pageOption.nextPageClick){
+                     _this.getRealTimeList(_this.pageOption.size,_this.pageOption.page + 1,rowKey,_this.getNextCount);
                 }
             }
         },
@@ -170,7 +229,7 @@ export default {
             },response => {
                 if(response.status == 200){
                     if(response.data.list && response.data.list.length > 0){
-                        this.paging.total = response.data.list.length;
+                        this.pageOption.total = response.data.list.length;
                         callback(response.data.list);
                     }
                     this.loading = false;
@@ -198,13 +257,14 @@ export default {
             this.dataList=[];
             this.isVehicleShow = false;
             this.isTimeTip = false;
+            this.$refs.searchForm.resetFields();
         },
         pagingFn(value){
-            var currentIndex = this.paging.index;
-            this.paging.index = value;
+            var currentIndex = this.pageOption.page;
+            this.pageOption.page = value;
 
             if(currentIndex < value){ //点击下一页
-                this.paging.nextPageClick=true;
+                this.pageOption.nextPageClick=true;
                 if(value <= 1){//第一页
                     this.initData();
                 }else{
@@ -212,20 +272,20 @@ export default {
                 }
             }
             else if(currentIndex > value){ //点击上一页
-                this.paging.nextPageClick=false;
+                this.pageOption.nextPageClick=false;
                 if(value <= 1){
                     this.initData();
                 }else{
                     this.initData(this.searchKey.nextStartRowMap.get(currentIndex-2));
                 }
-                this.paging.nextCount= 100;//点击上一页肯定下一页可用
+                this.pageOption.nextCount= 100;//点击上一页肯定下一页可用
             }
         },
         pagingSizeFn(value){
-            this.paging.index =1;
-            this.paging.size = value;
-            this.paging.total = 0;
-            this.paging.nextPageClick =true;//初始化
+            this.pageOption.page =1;
+            this.pageOption.size = value;
+            this.pageOption.total = 0;
+            this.pageOption.nextPageClick =true;//初始化
             this.searchKey.nextStartRow =[];
             this.initData();
         },

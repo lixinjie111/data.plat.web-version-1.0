@@ -1,38 +1,34 @@
 <template>
     <!-- 基本信息 -->
-    <div class="yk-container">
+    <div class="c-wrapper-20" v-cloak>
         <div v-show="!panel.show && !panel.cfgShow" class="yk-container c-mt-10">
             <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
                 <el-form-item label="车辆编号:" prop='vehicleId'>
                     <el-input v-model="searchKey.vehicleId"></el-input>
                 </el-form-item>
-                <el-form-item label="创建时间: ">
+                <el-form-item label="开始时间" prop='startTime'>
                     <el-date-picker
                         v-model.trim="searchKey.startTime"
                         type="datetime"
                         placeholder="开始时间"
-                        :editable="false"
-                        :clearable="false"
-                        format='yyyy-MM-dd HH:mm:ss'>
+                        :picker-options="startTimeOption">
                     </el-date-picker>
-                    -
+                </el-form-item>
+                <el-form-item label="结束时间" prop='endTime'>
                     <el-date-picker
                         v-model.trim="searchKey.endTime"
                         type="datetime"
                         placeholder="结束时间"
-                        :editable="false"
-                        :clearable="false"
-                        format='yyyy-MM-dd HH:mm:ss'>
+                        :picker-options="endTimeOption">
                     </el-date-picker>
                 </el-form-item>
-
                 <el-form-item>
-                    <el-button type="primary" @click="searchClick('searchKey')" :loading='loading'>查询</el-button>
-                    <el-button type="primary" @click="resetClick">重置</el-button>
+                    <el-button type="warning" icon="el-icon-search" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
+                    <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="dataList" v-loading='loading' max-height='500' class='c-mt-10' stripe>
-                <el-table-column align="center" type="index" label="No" :index='indexMethod'></el-table-column>
+                <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
                 <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
                 <el-table-column align="center" prop="vehicleId" label="车辆编号"></el-table-column>
                 <el-table-column align="center" prop="plateNo" label="车牌号码"></el-table-column>
@@ -70,11 +66,11 @@
                 <el-pagination
                     background
                     @current-change="handleCurrentChange" 
-                    :current-page="paging.index"
-                    :total="paging.total" 
+                    :current-page="pageOption.page"
+                    :total="pageOption.total" 
                     @size-change="handleSizeChange"
                     :page-sizes="[10,20,50,100,200,500]" 
-                    :page-size="paging.size"
+                    :page-size="pageOption.size"
                     layout="total, sizes, prev, pager, next">
                 </el-pagination>
             </div>
@@ -92,7 +88,41 @@ export default {
         BsmDetail
     },
     data(){
-        let _this = this;
+        let _this = this,
+            _checkStartTime = (rule, value ,callback) => {
+                let _startTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null,//标准时间转为时间戳
+                    _endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.endTime)) : null;//标准时间转为时间戳
+                if(_startTime){
+                    if(_endTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            },
+            _checkEndTime = (rule, value ,callback) => {
+                let _startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.startTime)) : null,//标准时间转为时间戳
+                    _endTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null;//标准时间转为时间戳
+                if(_endTime){
+                    if(_startTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            };
         return {
             loading:false,
             startTime:'',
@@ -102,8 +132,8 @@ export default {
                startTime: '',
                endTime: ''
             },
-            paging: {
-                index: 1,
+            pageOption: {
+                page: 1,
                 size: 10,
                 total: 0,
             },
@@ -121,41 +151,38 @@ export default {
                 accessPlatform: null,
             },
             rules:{
-                vehicleId:[
-                    { required: true, message: 'VehicleID不能为空!', trigger: 'blur' },
-                    { validator: function(rule, value, callback){
-                         var VehicleIdRegex =  /[A-Z][\d]{2}[A-Z| \d]-[\d]{2}-[\d]{3}/;
-                         if (!VehicleIdRegex.test(value)) {
-                                callback(new Error('车辆编码格式不正确！'))
-                            } else {
-                                callback();
-                        }
-                    }, trigger: 'blur' }
-                ],
                 startTime:[
-                    { type: 'date', required: true, message: '开始时间不能为空', trigger: 'change' }
+                    { validator: _checkStartTime, trigger: 'blur' }
                 ],
                 endTime:[
-                    { type: 'date', required: true, message: '结束时间不能为空', trigger: 'change' }
-                ],
+                    { validator: _checkEndTime, trigger: 'blur' }
+                ]
+            },
+            startTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _endDateVal = _this.searchKey.endTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.endTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_endDateVal) {
+                        return _time > _endDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
+                }
+            },
+            endTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _startDateVal = _this.searchKey.startTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.startTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_startDateVal) {
+                        return  _time < _startDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
+                }
 
             },
-            // pickerOptionsStart: {
-            //     disabledDate:time => {
-            //         let _time = time,
-            //             _newTime = new Date().getTime(),
-            //             _startTime = _this.$dateUtil.dateToMs(_this.searchKey.startTime);
-            //             return _time < _startTime || _time > _newTime;
-            //     }
-            // },
-            // pickerOptionsEnd: {
-            //     disabledDate:time => {
-            //         let _time = time,
-            //             _newTime = new Date().getTime(),
-            //             _endTime = _this.$dateUtil.dateToMs(_this.searchKey.endTime);
-            //             return _time < _endTime || _time > _newTime;
-            //     }
-            // },
         }
     },
     methods: {
@@ -172,9 +199,9 @@ export default {
             this.$refs.bsmDetail.init(item);
         },
         initPaging(){
-            this.paging.index = 1;
-            this.paging.total = 0;
-            this.paging.size = 10;
+            this.pageOption.page = 1;
+            this.pageOption.total = 0;
+            this.pageOption.size = 10;
         },
         initSearch(){
             this.searchKey = {
@@ -191,8 +218,8 @@ export default {
                     startTime:this.$dateUtil.dateToMs(this.searchKey.startTime),
                     endTime:this.$dateUtil.dateToMs(this.searchKey.endTime),
                     page: {
-                        "pageSize": this.paging.size,
-                        "pageIndex": this.paging.index-1
+                        "pageSize": this.pageOption.size,
+                        "pageIndex": this.pageOption.page-1
                     },       
             },response => {
                 if(response.status == 200){
@@ -201,7 +228,7 @@ export default {
                             item.loading = false;
                         });
                         this.dataList = response.data.list;
-                        this.paging.total = response.data.totalCount;
+                        this.pageOption.total = response.data.totalCount;
                         this.$message.sucess("获取列表成功！");
                     }else{
                         this.$message.error("未查询到任何信息!");
@@ -238,12 +265,12 @@ export default {
             return typeof(val) == 'number' && window.isNaN(val);
         },
         handleSizeChange(value) {//每页显示条数变更
-            this.paging.index = 1;
-            this.paging.size = value;
+            this.pageOption.page = 1;
+            this.pageOption.size = value;
             this.initData();
         },
         handleCurrentChange(value) {//页码变更
-            this.paging.index = value;
+            this.pageOption.index = value;
             this.initData();
         },
         backFn(){
@@ -251,7 +278,7 @@ export default {
             this.panel.cfgShow = false;
         },
         indexMethod(index){
-            return (this.paging.index-1) * this.paging.size + index + 1;
+            return (this.pageOption.index-1) * this.pageOption.size + index + 1;
         }
     },
     mounted(){

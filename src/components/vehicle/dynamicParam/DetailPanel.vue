@@ -1,36 +1,21 @@
 <template>
-    <div>
-        <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
-        <!-- <div class="yk-btn-box yk-right yk-b-10">
-            <span class="yk-btn-back" @click="backClick();">返回</span>
-        </div> -->
-        <div class="yk-cfg-box yk-scroll-y" id="idPanelBox" :style="'height:' + current.height + 'px'">
-            <div class="yk-panel-box yk-gap10">
+<div>
+    <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
+    <div class="yk-cfg-box yk-scroll-y" id="idPanelBox" :style="'height:' + current.height + 'px'">
+        <div class="yk-panel-box yk-gap10">
                 <div class="yk-btn-box yk-left yk-b-border">
                         <span class="title">数据查看</span>
                 </div>
                 <div>
-                <el-form :inline="true" :model="searchKey" size='small' class="demo-form-inline">
-                    <el-form-item label="数据ID:" prop='dataId'>
-                        <el-input v-model.trim="searchKey.dataId"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
-                        <el-button type="primary" @click="resetClick()">重置</el-button>
-                    </el-form-item>
-                </el-form>
-                <!-- 
-                   <div class="yk-search-box">                
-                        <div class="yk-search-block">
-                            <label class="yk-w-68">数据ID: </label>
-                            <input class="yk-input" v-model.trim="searchKey.dataId">
-                        </div>                
-                    
-                        <div class="yk-search-block">
-                            <span class="yk-btn yk-btn-gap" @click="searchClick();">查询</span>
-                            <span class="yk-btn" @click="resetClick();">重置</span>
-                        </div>   
-                        <div>-->
+                    <el-form :inline="true" :model="searchKey" size='small' class="demo-form-inline">
+                        <el-form-item label="数据ID:" prop='dataId'>
+                            <el-input v-model.trim="searchKey.dataId"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
+                            <el-button type="primary" @click="resetClick()">重置</el-button>
+                        </el-form-item>
+                    </el-form>
                     <el-table :data="dataList" class='c-mt-10' stripe>
                         <el-table-column align="center" prop="timestamp" label="时间戳"></el-table-column>
                         <el-table-column align="center" prop="dataId" label="数据ID"></el-table-column>
@@ -49,49 +34,25 @@
                         <el-table-column align="center" prop="status" label="采集状态"></el-table-column>
                         <el-table-column align="center" prop="vehicleId" label="操作"></el-table-column>                
                     </el-table>
-                            <!-- <div class="yk-table-box" style="margin-top:10px;">        
-                                <table class="yk-table">
-                                    <thead>
-                                    <tr>                        
-                                        <th scope="col">时间戳</th>                       
-                                        <th scope="col">数据ID</th>
-                                        <th scope="col">英文名称</th>
-                                        <th scope="col">中文名称</th>
-                                        <th scope="col">数据值</th>
-                                        <th scope="col">时间</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody :style='{"height":(paging.total<=10 ? "auto" : "405px")}'>
-                                    <tr class="yk-table-body" v-for="(item,index) in dataList" :key="index" :class="item.css">
-                                        <td>{{item.timestamp}}</td>                        
-                                        <td>{{item.dataId}}</td>
-                                        <td>{{item.enName}}</td>
-                                        <td>{{item.chName}}</td>
-                                        <td>{{item.dataValue}}</td>
-                                        <td>{{$dateUtil.formatTime(item.timestamp,'yy-mm-dd hh:mm:ss:ms')}}</td>                      
-                                    </tr>
-                                    </tbody>
-                                </table> 
-                            </div>                -->
-                        </div>
-                    <div class="pages">
-                        <el-pagination
-                            background
-                            @current-change="handleCurrentChange" 
-                            :current-page="paging.index"
-                            :total="paging.total" 
-                            @size-change="handleSizeChange"
-                            :page-sizes="[10,20,50,100,200,500]" 
-                            :page-size="paging.size"
-                            layout="total, sizes, prev, pager, next">
-                        </el-pagination>
-                    </div>
-                        
-                        </div>
-                    </div>
-                    
                 </div>
-            </template>
+                <div class="pages">
+                    <el-pagination
+                        background
+                        @current-change="handleCurrentChange" 
+                        :current-page="pageOption.page"
+                        :total="pageOption.total" 
+                        @size-change="handleSizeChange"
+                        :page-sizes="[10,20,50,100,200,500]" 
+                        :page-size="pageOption.size"
+                        layout="total, sizes, prev, pager, next">
+                    </el-pagination>
+                </div>
+                
+        </div>
+    </div>
+                
+</div>
+</template>
 <script>
 import Paging from '@/common/view/Paging.vue'
 
@@ -102,8 +63,8 @@ export default {
     },
     data(){
         return {
-            paging: {
-                index: 1,
+            pageOption: {
+                page: 1,
                 size: 10,
                 total: 0,
                 hideSize: true,
@@ -134,8 +95,8 @@ export default {
             _this.dataList = [];
             _this.loading = true;
             _this.$api.post('dataPlatApp/dynamic/event/data/list',{     
-                "pageSize": this.paging.size,
-                "pageIndex": this.paging.index,           
+                "pageSize": this.pageOption.size,
+                "pageIndex": this.pageOption.index,           
                 "param":{
                     queryId: this.searchKey.queryId,
                     sId: this.searchKey.dataId,
@@ -143,7 +104,7 @@ export default {
             },response => {
                 if(response.status == 200){
                     _this.dataList = response.data.list;
-                    _this.paging.total = response.data.totalCount;
+                    _this.pageOption.total = response.data.totalCount;
                 }else{
                     _this.$store.dispatch('showPrompt','获取数据列表失败 ！');
                 }
@@ -154,7 +115,7 @@ export default {
             });
         },
         searchClick(){
-            this.paging.index = 0;
+            this.pageOption.index = 0;
             this.initData();
         },
         backClick(){
@@ -164,25 +125,16 @@ export default {
             this.searchKey.dataId ="";
             this.init();
         },
-        // initPanelHeight(){
-        //     let boxHeight = document.body.clientHeight;
-        //     this.current.top = document.getElementById('idTable').offsetTop;
-        //     this.current.height = boxHeight - this.current.top;
-        // },
         handleSizeChange(value) {//每页显示条数变更
-            this.paging.size = value;
+            this.pageOption.size = value;
             this.initData();
         },
         handleCurrentChange(value) {//页码变更
-            this.paging.index = value;
+            this.pageOption.page = value;
             this.initData();
         }
     },
     mounted(){
-        // this.initPanelHeight();
-        // window.onresize = () => {
-        //     this.initPanelHeight();
-        // }
     }
 }
 </script>

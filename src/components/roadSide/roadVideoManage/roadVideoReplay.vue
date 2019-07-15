@@ -1,6 +1,6 @@
 <template>
     <!-- 基本信息 -->
-    <div class="yk-container">
+    <div class="c-wrapper-20" v-cloak>
         <el-page-header @back="backClick"></el-page-header>
         <div class="yk-search-box c-mt-30">
             <div class="yk-search-block yk-block-label">

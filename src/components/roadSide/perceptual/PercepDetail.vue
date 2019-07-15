@@ -61,7 +61,7 @@
             }">
             <!-- 关于分页 -->
             <!-- <el-table-column align="center" min-width="5%" label="编号" type="index" :index="indexMethod"></el-table-column> -->
-            <el-table-column align="center" min-width="5%" label="编号" type="index"></el-table-column>
+            <el-table-column fixed align="center" min-width="5%" label="编号" type="index"></el-table-column>
             <el-table-column align="center" min-width="15%" label="时间">
                 <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp, 'yy-mm-dd hh:mm:ss:ms')}}</template>
             </el-table-column>

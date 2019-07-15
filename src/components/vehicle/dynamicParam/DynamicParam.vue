@@ -1,87 +1,45 @@
 <template>
     <!-- 基本信息 -->
-    <div class="yk-container">
+    <div class="c-wrapper-20" v-cloak>
         <div v-show="!panel.detailShow && !panel.localDataShow">
             <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
-                <el-form-item label="车辆编号:" prop='vehicleId'>
+                <el-form-item label="车辆编号" prop='vehicleId'>
                     <el-input v-model.trim="searchKey.vehicleId"></el-input>
                 </el-form-item>
-                <el-form-item label="事件名称:">
+                <el-form-item label="事件名称">
                     <el-input v-model.trim="searchKey.eventName"></el-input>
                 </el-form-item>
-                <el-form-item label="事件编号:">
+                <el-form-item label="事件编号">
                     <el-input v-model.trim="searchKey.eventNo"></el-input>
                 </el-form-item>
-                <el-form-item label="事件触发时间: ">
+                <el-form-item label="开始时间" prop='startTime'>
                     <el-date-picker
                         v-model.trim="searchKey.startTime"
                         type="datetime"
                         placeholder="开始时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="pickerOptionsStart"
-                        format='yyyy-MM-dd HH:mm:ss'>
+                        :picker-options="startTimeOption">
                     </el-date-picker>
-                    -
+                </el-form-item>
+                <el-form-item label="结束时间" prop='endTime'>
                     <el-date-picker
                         v-model.trim="searchKey.endTime"
                         type="datetime"
                         placeholder="结束时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="pickerOptionsEnd"
-                        format='yyyy-MM-dd HH:mm:ss'>
+                        :picker-options="endTimeOption">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" :loading="loading" @click="searchClick('searchKey')">查询</el-button>
-                    <el-button type="primary" @click="resetClick()">重置</el-button>
+                    <el-button type="warning" icon="el-icon-search" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
+                    <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>
             </el-form>
 
-            <!-- <div class="yk-search-box">
-
-                <div class="yk-search-block">
-                    <label class="yk-w-90">车辆Id:</label>
-                    <input class="yk-input" v-on:keyup="validateSearch"  v-model.trim="searchKey.vehicleId">
-                    <span class="yk-tip" v-show='isVehicleShow' id="vehicleIdTip">vehicleId不能为空 ！</span>
-                </div>
-
-                <div class="yk-search-block">
-                    <label class="yk-w-90">事件名称:</label>
-                    <input class="yk-input" v-model.trim="searchKey.eventName">
-                </div>
-
-                <div class="yk-search-block">
-                    <label class="yk-w-90">事件编号:</label>
-                    <input class="yk-input  " v-model.trim="searchKey.eventNo">
-                </div>
-                <div class="yk-search-block">
-                    <label class="yk-w-90">事件触发时间:</label>
-                    <date-picker class=" data-control-css yk-input" lang="zh" type="datetime" format="YYYY-MM-DD HH:mm:ss"
-                         placeholder="选择开始时间" :editable="false" :not-after="searchKey.endTime"
-                         v-model="searchKey.startTime"></date-picker>
-                    
-                     <span class="yk-tip" id="timeTip" v-show='isTimeShow'>开始时间不能为空 ！</span>
-                   
-                    <date-picker class="data-control-css yk-input" lang="zh" type="datetime" format="YYYY-MM-DD HH:mm:ss"
-                         placeholder="选择结束时间" :editable="false" :not-before="searchKey.startTime"
-                         v-model="searchKey.endTime"></date-picker>
-                    
-                     <span class="yk-tip" id="timeTip" v-show='isTimeShow'>结束时间不能为空 ！</span>
-                </div>
-
-                <div class="yk-search-block">
-                    <span class="yk-btn yk-btn-gap" @click="searchClick();">查询</span>
-                    <span class="yk-btn" @click="resetClick();">重置</span>
-                </div>
-                &nbsp;&nbsp;&nbsp;&nbsp; <span class="yk-block yk-btn" title="获取本地数据" alt="获取本地数据" @click="localClick();">获取本地数据</span>
-            </div> -->
-            <div class="c-text-right">
-                <el-button type="primary" @click="localClick();" size='small'>获取本地数据</el-button>
+            <div class="c-button-wrapper c-text-right">
+                <el-button size="mini" plain icon="el-icon-edit" @click="localClick();">获取本地数据</el-button>
             </div>
-            <el-table :data="dataList" v-loading='loading' class='c-mt-10' stripe>
-                <el-table-column align="center" prop="eventName" label="事件名称"></el-table-column>
+            
+            <el-table :data="dataList" v-loading='loading' stripe border max-height="620" class='c-mb-70'>
+                <el-table-column fixed align="center" prop="eventName" label="事件名称"></el-table-column>
                 <el-table-column align="center" prop="eventNo" label="事件编号"></el-table-column>
                 <el-table-column align="center" prop="vehicleId" label="车辆编号"></el-table-column>
                 <el-table-column align="center" label="事件触发时间">
@@ -96,48 +54,16 @@
                 <el-table-column align="center" prop="status" label="采集状态"></el-table-column>
                 <el-table-column align="center" prop="vehicleId" label="操作"></el-table-column>                
             </el-table>
-            <!-- <div class="yk-table-box" id="idTable">
-                <table class="yk-table">
-                    <thead>
-                        <tr>
-                            <th style="width:7%;">事件名称</th>
-                            <th>事件编号</th>
-                            <th style="width:10%;">车辆Id</th>
-                            <th>事件触发时间</th>
-                            <th>数据采集开始时间</th>
-                            <th>数据采集结束时间</th>
-                            <th style="width:8%;">采集状态</th>
-                            <th style="width:6%;">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody :style='{"height":(paging.total<=10 ? "auto" : "405px")}'>
-                    <tr class="yk-table-body" v-for="(item,index) in dataList" :key="index" :class="item.css">
-                        <td style="width:7%;">{{item.eventName}}</td>
-                        <td>{{item.eventNo}}</td>
-                        <td style="width:10%;">{{item.vehicleId}}</td>
-                        <td>{{$dateUtil.formatTime(item.eventTime,'yy-mm-dd hh:mm:ss:ms')}}</td>
-                        <td>{{$dateUtil.formatTime(item.beginTime,'yy-mm-dd hh:mm:ss:ms')}}</td>
-                        <td>{{$dateUtil.formatTime(item.endTime,'yy-mm-dd hh:mm:ss:ms')}}</td>
-                        <td style="width:8%;">{{item.status}}</td>
-                        <td style="width:5%;">
-                            <template slot-scope="scope">
-                                <el-button class="el-button--small" type="primary" :loading="scope.row.loading" @click="detail(scope.row.queryId)">操作</el-button>
-                            </template>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div> -->
             
-            <div class="pages">
+            <div class="c-page clearfix">
                 <el-pagination
                     background
-                    @current-change="handleCurrentChange" 
-                    :current-page="paging.index"
-                    :total="paging.total" 
-                    @size-change="handleSizeChange"
+                    @current-change="changePageCurrent" 
+                    :current-page="pageOption.page" 
+                    :total="pageOption.total"
+                    @size-change="changePageSize"
                     :page-sizes="[10,20,50,100,200,500]" 
-                    :page-size="paging.size"
+                    :page-size="pageOption.size"
                     layout="total, sizes, prev, pager, next">
                 </el-pagination>
             </div>
@@ -151,7 +77,6 @@
 </template>
 <script>
 import TList from '@/common/utils/list.js'
-import Paging from '@/common/view/Paging.vue'
 import DatePicker from 'vue2-datepicker'
 import LocalDataPanel from '@/components/vehicle/dynamicParam/LocalDataPanel.vue'
 import DetailPanel from './DetailPanel.vue'
@@ -159,10 +84,44 @@ import DetailPanel from './DetailPanel.vue'
 export default {
     name: 'BaseMessage',
     components: {
-        Paging, LocalDataPanel,DatePicker,DetailPanel
+        LocalDataPanel,DatePicker,DetailPanel
     },
     data(){
-        let _this = this;
+        let _this = this,
+            _checkStartTime = (rule, value ,callback) => {
+                let _startTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null,//标准时间转为时间戳
+                    _endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.endTime)) : null;//标准时间转为时间戳
+                if(_startTime){
+                    if(_endTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            },
+            _checkEndTime = (rule, value ,callback) => {
+                let _startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.startTime)) : null,//标准时间转为时间戳
+                    _endTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null;//标准时间转为时间戳
+                if(_endTime){
+                    if(_startTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            };
         return {
             isTimeShow:false,
             isVehicleShow:false,
@@ -174,8 +133,8 @@ export default {
                 startTime: '',
                 endTime: ''
             },
-            paging: {
-                index: 0,
+            pageOption: {
+                page: 1,
                 size: 10,
                 total: 0,
             },
@@ -194,32 +153,37 @@ export default {
                 accessPlatform: null,
             },
             rules:{
-                vehicleId:[
-                    { required: true, message: 'vehicleId不能为空!', trigger: 'blur' }
-                ],
                 startTime:[
-                    { required: true, message: '开始时间不能为空!',trigger: 'blur' },
+                    { validator: _checkStartTime, trigger: 'blur' }
                 ],
                 endTime:[
-                    { required: true, message: '结束时间不能为空!',trigger: 'blur' },
-                ],
+                    { validator: _checkEndTime, trigger: 'blur' }
+                ]
             },
-            pickerOptionsStart: {
-                editable: false,
-                clearable: false,
-                disabledDate(time) {
-                    let endTimeTimestamp = new Date(_this.searchKey.endTime).getTime() || new Date().getTime();
-                    return time.getTime() > endTimeTimestamp || time.getTime() > new Date().getTime();
+            startTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _endDateVal = _this.searchKey.endTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.endTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_endDateVal) {
+                        return _time > _endDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
                 }
             },
-            pickerOptionsEnd: {
-                editable: false,
-                clearable: false,
-                disabledDate(time) {
-                    let startTimeTimestamp = new Date(_this.searchKey.startTime).getTime() || new Date().getTime();
-                    return time.getTime() < new Date(_this.searchKey.startTime).getTime() || time.getTime() > new Date().getTime();
+            endTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _startDateVal = _this.searchKey.startTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.startTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_startDateVal) {
+                        return  _time < _startDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
                 }
-            },
+            }  
         }
     },
     methods: {
@@ -243,6 +207,11 @@ export default {
                 "accessPlatform": 0,
             };
         },
+        initPageOption() {
+            this.dataList = [];
+            this.pageOption.total = 0;
+            this.pageOption.page = 1;
+        },
         init(){
             this.isTimeShow = false;
             this.isVehicleShow = false;
@@ -253,9 +222,9 @@ export default {
             this.dataList = [];
         },
         initPaging(){
-            this.paging.index = 1;
-            this.paging.total = 0;
-            this.paging.size = 10;
+            this.pageOption.page = 1;
+            this.pageOption.total = 0;
+            this.pageOption.size = 10;
         },
         initSearch(){
             this.searchKey = {
@@ -271,8 +240,8 @@ export default {
             _this.dataList = [];
             _this.loading = true;
             _this.$api.post('dataPlatApp/dynamic/event/list',{
-                "pageSize": this.paging.size,
-                "pageIndex": this.paging.index,
+                "pageSize": this.pageOption.size,
+                "pageIndex": this.pageOption.page - 1,
                 "param":{
                     vehicleId: this.searchKey.vehicleId,
                     eventName: this.searchKey.eventName,
@@ -284,7 +253,7 @@ export default {
                 if(response.status >= 200){
                     if(response.data.list && response.data.list.length > 0){
                         _this.dataList = response.data.list;
-                        _this.paging.total = response.data.totalCount;
+                        _this.pageOption.total = response.data.totalCount;
                     }
                 }else{
                     _this.$message.error("获取列表失败！");
@@ -315,8 +284,6 @@ export default {
             this.panel.localDataShow = false;
         },
         searchClick(){
-            this.paging.index =0;
-            this.paging.total = 0;
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                    this.initData();
@@ -327,45 +294,21 @@ export default {
         },
         resetClick(){
             this.init();
+            this.$refs.searchForm.resetFields();
         },
         cfgPanelFn(data){
             this.panel.show = false;
             this.panel.cfgShow = false;
         },
-        // validateSearch(o){
-        //     var validatePass=true;
-        //     var _this =this;
-        //     let vehicleIdTip = document.getElementById("vehicleIdTip");
-        //         let timeTip = document.getElementById("timeTip");
-        //         if(_this.searchKey.vehicleId != ""){
-        //             _this.isVehicleShow = false;
-        //         }else{
-        //             if(o == "isSearch"){
-        //                 _this.isVehicleShow = true;
-        //             }
-        //             validatePass=false;
-        //         }
-
-        //         if((_this.searchKey.startTime == null || _this.searchKey.startTime == "")
-        //         || (_this.searchKey.endTime == null || _this.searchKey.endTime == "")){
-        //              if(o == "isSearch"){
-        //                  _this.isTimeShow = true;
-        //              }
-        //             validatePass=false;
-        //         }else{
-        //             _this.isTimeShow = false;
-        //         }
-
-        //    return validatePass;
-        // },
-        handleSizeChange(value) {//每页显示条数变更
-            this.paging.size = value;
+        changePageSize(value) {//每页显示条数变更
+            this.initPageOption();
+            this.pageOption.size = value;
             this.initData();
         },
-        handleCurrentChange(value) {//页码变更
-            this.paging.index = value;
+        changePageCurrent(value) {//页码变更
+            this.pageOption.page = value;
             this.initData();
-        }
+        },
     },
     mounted(){
         let _this=this;

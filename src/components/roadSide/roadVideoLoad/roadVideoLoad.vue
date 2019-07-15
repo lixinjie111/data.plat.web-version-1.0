@@ -1,244 +1,126 @@
 <template>
 <!-- 基本信息 -->
-<div>
-    <div class="yk-container">
+<div class="c-wrapper-20" v-cloak>
+    <div v-show="!panel.show && !panel.cfgShow">
+        <el-form ref="searchForm" :inline="true" :model="searchKey" class="demo-form-inline" size="small">
+            <el-form-item label="文件名: ">
+                <el-input v-model.trim="searchKey.fileName"></el-input>
+            </el-form-item>
+            <el-form-item label="摄像头编号: ">
+                <el-input v-model.trim="searchKey.camCode"></el-input>
+            </el-form-item>
+            <el-form-item label="道路名称: ">
+                <el-input v-model.trim="searchKey.roadName"></el-input>
+            </el-form-item>
+            <el-form-item label="路侧点名称: ">
+                <el-input v-model.trim="searchKey.roadPointName"></el-input>
+            </el-form-item>
+            <el-form-item label="视频来源: ">
+                <el-select v-model="searchKey.source">
+                    <el-option
+                        v-for="item in sourceList"
+                        :key="item.val"
+                        :label="item.name"
+                        :value="item.val"
+                    ></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="下载状态: ">
+                <el-select v-model="searchKey.taskStatus">
+                    <el-option
+                        v-for="item in statusList"
+                        :key="item.val"
+                        :label="item.name"
+                        :value="item.val"
+                    ></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="开始时间" prop='startTime'>
+                <el-date-picker
+                    v-model.trim="searchKey.startTime"
+                    type="datetimerange"
+                    :picker-options="timeOption"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="结束时间" prop='endTime'>
+                <el-date-picker
+                    v-model.trim="searchKey.endTime"
+                    type="datetimerange"
+                    :picker-options="timeOption"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
+                </el-date-picker>
+            </el-form-item>
 
-        <div v-show="!panel.show && !panel.cfgShow" class="yk-container">
-            <el-form ref="searchForm" :inline="true" :model="searchKey" class="demo-form-inline" size="small">
-                <el-form-item label="文件名: ">
-                    <el-input v-model.trim="searchKey.fileName"></el-input>
-                </el-form-item>
-                <el-form-item label="摄像头编号: ">
-                    <el-input v-model.trim="searchKey.camCode"></el-input>
-                </el-form-item>
-                <el-form-item label="道路名称: ">
-                    <el-input v-model.trim="searchKey.roadName"></el-input>
-                </el-form-item>
-                <el-form-item label="路侧点名称: ">
-                    <el-input v-model.trim="searchKey.roadPointName"></el-input>
-                </el-form-item>
-                <el-form-item label="视频来源: ">
-                    <el-select v-model="searchKey.source">
-                        <el-option
-                            v-for="item in sourceList"
-                            :key="item.val"
-                            :label="item.name"
-                            :value="item.val"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="下载状态: ">
-                    <el-select v-model="searchKey.taskStatus">
-                        <el-option
-                            v-for="item in statusList"
-                            :key="item.val"
-                            :label="item.name"
-                            :value="item.val"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="开始时间: ">
-                    <el-date-picker
-                        v-model.trim="searchKey.startBeginTime"
-                        type="datetime"
-                        placeholder="开始时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="startBeginTimeOption">
-                    </el-date-picker>
-                    -
-                    <el-date-picker
-                        v-model.trim="searchKey.startEndTime"
-                        type="datetime"
-                        placeholder="开始时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="startEndTimeOption">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="结束时间: ">
-                    <el-date-picker
-                        v-model.trim="searchKey.stopBeginTime"
-                        type="datetime"
-                        placeholder="结束时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="stopBeginTimeOption">
-                    </el-date-picker>
-                    -
-                    <el-date-picker
-                        v-model.trim="searchKey.stopEndTime"
-                        type="datetime"
-                        placeholder="结束时间"
-                        :editable="false"
-                        :clearable="false"
-                        :picker-options="stopEndTimeOption">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="searchClick" :loading="searchLoading">查询</el-button>
-                    <el-button type="primary" @click="resetClick">重置</el-button>
-                </el-form-item>
-            </el-form>
-            <!-- <div class="yk-search-box">
+            <el-form-item>
+                <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick('searchKey')">查询</el-button>
+                <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
+            </el-form-item>
+        </el-form>
+        <div class="c-button-wrapper c-text-right">
+            <el-button size="mini" plain icon="el-icon-plus" @click="addTask">新建任务</el-button>
+        </div>
 
-                <div class="yk-search-block">
-                    <label class="yk-w-100">文件名: </label>
-                    <input class="yk-input  " v-model.trim="searchKey.fileName">
-                </div>
+        <el-table 
+        :data="dataList" 
+        v-loading='loading' 
+        stripe 
+        border 
+        max-height="620" 
+        class='c-mb-70'>
+            <el-table-column fixed align="center" type="index" min-width="5%" label="序号" :index='indexMethod'></el-table-column>
+            <el-table-column align="center" prop="fileName" min-width="12%" label="文件名称"></el-table-column>
+            <el-table-column align="center" prop="camCode" min-width="8%" label="摄像头编号"></el-table-column>
+            <el-table-column align="center" prop="roadName" min-width="8%" label="道路名称"></el-table-column>
+            <el-table-column align="center" prop="roadPointName" min-width="9%" label="路侧点名称"></el-table-column>
+            <el-table-column align="center" label="创建时间" min-width="10%">
+                <template slot-scope="scope">{{scope.row.createDate}}</template>
+            </el-table-column>
+            <el-table-column align="center" label="开始时间" min-width="10%">
+                <template slot-scope="scope">{{scope.row.startTime}}</template>
+            </el-table-column>
+            <el-table-column align="center" label="结束时间" min-width="10%">
+                <template slot-scope="scope">{{scope.row.endTime}}</template>
+            </el-table-column>
+            <el-table-column align="center" prop="plateNo" min-width="8%" label="下载状态">
+                <template slot-scope="scope">
+                    <span v-if='scope.row.taskStatus == "0"'>未下载</span>
+                    <span v-if='scope.row.taskStatus == "1"'>下载中</span>
+                    <span v-if='scope.row.taskStatus == "2"'>下载完成</span>
+                    <span v-if='scope.row.taskStatus == "3"'>下载失败</span>
+                </template>
+            </el-table-column>
+            <el-table-column align="center" prop="note" label="失败原因" min-width="12%"></el-table-column>
 
-                <div class="yk-search-block">
-                    <label class="yk-w-100">摄像头编号: </label>
-                    <input class="yk-input" v-model.trim="searchKey.camCode">
-                </div>
-
-                <div class="yk-search-block">
-                    <label class="yk-w-100">道路名称: </label>
-                    <input class="yk-input  " v-model.trim="searchKey.roadName">
-                </div>
-
-                <div class="yk-search-block">
-                    <label class="yk-w-100">路侧点名称: </label>
-                    <input class="yk-input" v-model.trim="searchKey.roadPointName">
-                </div>
-
-                <div class="yk-search-block">
-                    <label class="yk-w-100">视频来源: </label>
-                    <select class="yk-select" v-model="searchKey.source">
-                        <option v-for="(item,index) in sourceList" :key="index" :value="item">{{item.name}}</option>
-                    </select>
-                </div>
-
-                <div class="yk-search-block">
-                    <label class="yk-w-100">下载状态: </label>
-                    <select class="yk-select" v-model="searchKey.taskStatus">
-                        <option v-for="(item,index) in statusList" :key="index" :value="item">{{item.name}}</option>
-                    </select>
-                </div>
-                <div class="yk-search-block">
-                    <label class="yk-w-100" style="width:102px;">开始时间:</label>
-                    <vue-datepicker-local v-model="searchKey.startBeginTime" format="YYYY-MM-DD HH:mm:ss" clearable style="width:193px;"></vue-datepicker-local>
-                    -
-                    <vue-datepicker-local v-model="searchKey.startEndTime" format="YYYY-MM-DD HH:mm:ss" clearable style="width:193px;"></vue-datepicker-local>
-                </div>
-                <br />
-                <div class="yk-search-block">
-                    <label class="yk-w-100">结束时间:</label>
-                    <vue-datepicker-local v-model="searchKey.stopBeginTime" format="YYYY-MM-DD HH:mm:ss" clearable style="width:193px;"></vue-datepicker-local>
-                    -
-                    <vue-datepicker-local v-model="searchKey.stopEndTime" format="YYYY-MM-DD HH:mm:ss" clearable style="width:193px;"></vue-datepicker-local>
-                </div>
-
-                <div class="yk-search-block">
-                    <span class="yk-btn" @click="searchClick();">查询</span>
-                    <span class="yk-btn" @click="resetClick();">重置</span>
-                </div>
-            </div> -->
-            <div class="c-text-right">
-                <el-button type="primary" size='small' @click="addTask">新建任务</el-button>
-            </div>
-            <!-- <div class="yk-btn-box yk-right yk-b-10">
-                <span class="yk-btn" @click="addTask">新建任务</span>
-            </div> -->
-            <el-table :data="dataList" v-loading='loading' stripe class='c-mt-10'>
-                <el-table-column align="center" type="index" min-width="5%" label="序号" :index='indexMethod'></el-table-column>
-                <el-table-column align="center" prop="fileName" min-width="12%" label="文件名称"></el-table-column>
-                <el-table-column align="center" prop="camCode" min-width="8%" label="摄像头编号"></el-table-column>
-                <el-table-column align="center" prop="roadName" min-width="8%" label="道路名称"></el-table-column>
-                <el-table-column align="center" prop="roadPointName" min-width="9%" label="路侧点名称"></el-table-column>
-                <el-table-column align="center" label="创建时间" min-width="10%">
-                    <template slot-scope="scope">{{scope.row.createDate}}</template>
-                </el-table-column>
-                <el-table-column align="center" label="开始时间" min-width="10%">
-                    <template slot-scope="scope">{{scope.row.startTime}}</template>
-                </el-table-column>
-                <el-table-column align="center" label="结束时间" min-width="10%">
-                    <template slot-scope="scope">{{scope.row.endTime}}</template>
-                </el-table-column>
-                <el-table-column align="center" prop="plateNo" min-width="8%" label="下载状态">
-                    <template slot-scope="scope">
-                        <span v-if='scope.row.taskStatus == "0"'>未下载</span>
-                        <span v-if='scope.row.taskStatus == "1"'>下载中</span>
-                        <span v-if='scope.row.taskStatus == "2"'>下载完成</span>
-                        <span v-if='scope.row.taskStatus == "3"'>下载失败</span>
-                    </template>
-                </el-table-column>
-                <el-table-column align="center" prop="note" label="失败原因" min-width="12%"></el-table-column>
-
-                <el-table-column align="center" label="视频来源" min-width="7%">
-                    <template slot-scope="scope">{{scope.row == '1' ? '直播' : '手动获取'}}</template>
-                </el-table-column>
-                <el-table-column align="center" label="操作" min-width="10%">
-                    <template slot-scope="scope">
-                        <el-button size="mini" type="primary" v-if='scope.row.taskStatus == "0" || scope.row.taskStatus == "3"' :loading="scope.row.loading" @click="reloadClick(scope.row)">再次下载</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-
-            <!-- <div class="yk-table-box">
-                <table class="yk-table">
-                    <thead>
-                    <tr>
-                        <th style="width:4%">序号</th>
-                        <th style="width:16%;">文件名称</th>
-                        <th style="width:14.7%;">摄像头编号</th>
-                        <th>道路名称</th>
-                        <th>路侧点名称</th>
-                        <th>创建时间</th>
-                        <th>开始时间</th>
-                        <th>结束时间</th>
-                        <th style="width:8%;">下载状态</th>
-                        <th style="width:8%;">失败原因</th>
-                        <th style="width:8%;">视频来源</th>
-                        <th style="width:6%;">操作</th>
-                    </tr>
-                    </thead>
-                    <tbody :style='{"height":(paging.total<=10 ? "auto" : "405px")}'>
-                        <tr class="yk-table-body" v-for='(item,index) in dataList' :key="index">
-                            <td style="width:4%">{{ index + paging.size * (paging.index-1) + 1}}</td>
-                         
-                            <td style="width:16%;">{{item.fileName}}</td>
-                        
-                            <td style="width:15%;">{{item.camCode}}</td>
-                        
-                            <td>{{item.roadName}}</td>
-                           
-                            <td>{{item.roadPointName}}</td>
-                            
-                            <td>{{item.createDate}}</td>
-                     
-                            <td>{{item.startTime}}</td>
-                   
-                            <td>{{item.endTime}}</td>
-                           
-                            <td style="width:8%;" v-show='item.taskStatus == "0"'>未下载</td>
-                            <td style="width:8%;" v-show='item.taskStatus == "1"'>下载中</td>
-                            <td style="width:8%;" v-show='item.taskStatus == "2"'>下载完成</td>
-                            <td style="width:8%;" v-show='item.taskStatus == "3"'>下载失败</td>
-                            <td>{{item.note}}</td>
-   
-                            <td style="width:8%;">{{item.source == '1' ? '直播' : '手动获取'}}</td>
-
-                            <td style="width:5%;">
-                                <img class="yk-img-btn-min" v-show='item.taskStatus == "3"' src="static/icon/download3.png" title="再次下载" alt="再次下载" @click="reloadClick(item)">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div> -->
-            
-            <div class="pages">
-                <el-pagination
-                    background
-                    @current-change="handleCurrentChange" 
-                    :current-page="paging.index"
-                    :total="paging.total" 
-                    @size-change="handleSizeChange"
-                    :page-sizes="[10,20,50,100,200,500]" 
-                    :page-size="paging.size"
-                    layout="total, sizes, prev, pager, next">
-                </el-pagination>
-            </div>
+            <el-table-column align="center" label="视频来源" min-width="7%">
+                <template slot-scope="scope">{{scope.row == '1' ? '直播' : '手动获取'}}</template>
+            </el-table-column>
+            <el-table-column align="center" label="操作" min-width="10%">
+                <template slot-scope="scope">
+                    <el-button size="small" 
+                    icon="el-icon-download" 
+                    circle type="warning" 
+                    plain 
+                    v-if='scope.row.taskStatus == "0" || scope.row.taskStatus == "3"'
+                    :loading="scope.row.downLoading" 
+                    @click="reloadClick(scope.row)"></el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        
+        <div class="c-page clearfix">
+            <el-pagination
+                background
+                @current-change="changePageCurrent" 
+                :current-page="pageOption.page" 
+                :total="pageOption.total"
+                @size-change="changePageSize"
+                :page-sizes="[10,20,50,100,200,500]" 
+                :page-size="pageOption.size"
+                layout="total, sizes, prev, pager, next">
+            </el-pagination>
         </div>
     </div>
     <el-dialog
@@ -257,13 +139,11 @@
 </template>
 <script>
 import VueDatepickerLocal from 'vue-datepicker-local'
-import Paging from '@/common/view/Paging.vue'
 import Addload from './roadAddLoad.vue'
 
 export default {
     name: 'VideoDownload',
     components: {
-        Paging,
         Addload,
         VueDatepickerLocal
     },
@@ -299,8 +179,8 @@ export default {
                 stopBeginTime:'',
                 stopEndTime:''
             },
-            paging: {
-                index: 1,
+            pageOption: {
+                page: 1,
                 size: 10,
                 total: 0,
             },
@@ -327,127 +207,31 @@ export default {
                 {name:'下载完成',val:'2'},
                 {name:'下载失败',val:'3'},
             ],
-            startBeginTimeOption: {
+            timeOption: {
                 disabledDate: time => {
                     let _time = time.getTime(),
-                        _newTime = new Date().getTime(),
-                        _startEndTime = _this.$dateUtil.dateToMs(_this.searchKey.startEndTime),
-                        _stopBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.stopBeginTime),
-                        _stopEndTime = _this.$dateUtil.dateToMs(_this.searchKey.stopEndTime);
-                    if (_startEndTime) {
-                        return _time > _startEndTime;
-                    }else {
-                        if(_stopBeginTime) {
-                            return _time > _stopBeginTime;
-                        }else {
-                            if(_stopEndTime) {
-                                return _time > _stopEndTime;
-                            }else {
-                                return _time > _newTime;
-                            }
-                        }
-                    }
-                }
-            },
-            startEndTimeOption: {
-                disabledDate: time => {
-                    let _time = time.getTime(),
-                        _newTime = new Date().getTime(),
-                        _startBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.startBeginTime),
-                        _stopBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.stopBeginTime),
-                        _stopEndTime = _this.$dateUtil.dateToMs(_this.searchKey.stopEndTime);
-                    if (_startBeginTime) {
-                        if(_stopBeginTime) {
-                            return _time > _stopBeginTime || _time < _startBeginTime;
-                        }else {
-                            if(_stopEndTime) {
-                                return _time > _stopEndTime || _time < _startBeginTime;
-                            }else {
-                                return  _time < _startBeginTime || _time > _newTime;
-                            }
-                        }
-                    }else {
-                        if(_stopBeginTime) {
-                            return _time > _stopBeginTime;
-                        }else {
-                            if(_stopEndTime) {
-                                return _time > _stopEndTime;
-                            }else {
-                                return _time > _newTime;
-                            }
-                        }
-                    }
-                }
-            },
-            stopBeginTimeOption: {
-                disabledDate: time => {
-                    let _time = time.getTime(),
-                        _newTime = new Date().getTime(),
-                        _startBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.startBeginTime),
-                        _startEndTime = _this.$dateUtil.dateToMs(_this.searchKey.startEndTime),
-                        _stopEndTime = _this.$dateUtil.dateToMs(_this.searchKey.stopEndTime);
-                    if(_stopEndTime) {
-                        if (_startEndTime) {
-                            return  _time < _startEndTime || _time > _stopEndTime;
-                        }else {
-                            if(_startBeginTime) {
-                                return _time < _startBeginTime || _time > _stopEndTime;
-                            }else {
-                                return  _time > _stopEndTime;
-                            }
-                        }
-                    }else {
-                         if (_startEndTime) {
-                            return _time < _startEndTime || _time > _newTime;
-                        }else {
-                            if(_startBeginTime) {
-                                return _time < _startBeginTime || _time > _newTime;
-                            }else {
-                                return _time > _newTime;
-                            }
-                        }
-                    }
-
-                    
-                }
-            },
-            stopEndTimeOption: {
-                disabledDate: time => {
-                    let _time = time.getTime(),
-                        _newTime = new Date().getTime(),
-                        _startBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.startBeginTime),
-                        _startEndTime = _this.$dateUtil.dateToMs(_this.searchKey.startEndTime),
-                        _stopBeginTime = _this.$dateUtil.dateToMs(_this.searchKey.stopBeginTime);
-                    if (_stopBeginTime) {
-                        return  _time < _stopBeginTime || _time > _newTime;
-                    }else {
-                        if(_startEndTime) {
-                            return _time < _startEndTime || _time > _newTime;
-                        }else {
-                            if(_startBeginTime) {
-                                return  _time < _startBeginTime || _time > _newTime;
-                            }else {
-                                return _time > _newTime;
-                            }
-                            
-                        }
-                    }
+                        _newTime = new Date().getTime();
+                    return _time > _newTime;
                 }
             }
         }
     },
     methods: {
+        initPageOption() {
+            this.dataList = [];
+            this.pageOption.total = 0;
+            this.pageOption.page = 1;
+        },
         init(){
             this.manageShow = true;
             this.playbackShow = false;
             this.initPaging();
             this.initSearch();
-            this.initData();
         },
         initPaging(){
-            this.paging.index = 1;
-            this.paging.total = 0;
-            this.paging.size = 10;
+            this.pageOption.index = 1;
+            this.pageOption.total = 0;
+            this.pageOption.size = 10;
         },
         initSearch(){
             this.searchKey = {
@@ -466,28 +250,25 @@ export default {
         initData(){
             this.dataList = [];
             this.loading = true;
-            let protocal = JSON.parse(localStorage.getItem('protocal'));
+            let params = Object.assign(this.searchKey, {
+                camCode: this.searchKey.camCode,
+                fileName: this.searchKey.fileName,
+                roadName: this.searchKey.roadName,
+                source: this.searchKey.source,
+                taskStatus: this.searchKey.taskStatus,
+                roadPointName: this.searchKey.roadPointName,
+                protocal: JSON.parse(localStorage.getItem('protocal')) || '',
+            });
+            
             this.$api.post('dataPlatApp/road/queryRoadTaskList',{
-                "pageSize": this.paging.size,
-                "pageIndex": this.paging.index,
-                 param:{
-                    camCode: this.searchKey.camCode,
-                    fileName: this.searchKey.fileName,
-                    roadName: this.searchKey.roadName,
-                    source: this.searchKey.source,
-                    taskStatus: this.searchKey.taskStatus,
-                    roadPointName: this.searchKey.roadPointName,
-                    protocal:protocal,
-                    startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startBeginTime),
-                    startEndTime: this.$dateUtil.dateToMs(this.searchKey.startEndTime),
-                    stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.stopBeginTime),
-                    stopEndTime: this.$dateUtil.dateToMs(this.searchKey.stopEndTime),
-                },
+                "pageSize": this.pageOption.size,
+                "pageIndex": this.pageOption.page - 1,
+                 'param':params
             },response => {
                 if(response.status >= 200 && response.status < 300){
-                    if(response.data.list && response.data.list.length > 0){
-                        this.dataList = response.data.list;
-                        this.paging.total = response.data.totalCount;
+                    if(response.data.data.list && response.data.data.list.length > 0){
+                        this.dataList = response.data.data.list;
+                        this.pageOption.total = response.data.data.totalCount;
                     }
                     this.searchLoading = false;
                     this.loading = false;
@@ -499,11 +280,25 @@ export default {
             });
         },
         searchClick(){
-            this.initPaging();
-            this.initData();
+            this.$refs.searchForm.validate((valid) => {
+                if (valid) {
+                    console.log(this.searchKey.startTime[0]);
+                    let _params = {
+                        startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]),
+                        startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]),
+                        stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]),
+                        stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1])
+                    }
+                    this.initPaging();
+                    this.initData(_params);
+                } else {
+                    return false;
+                }
+            });
         },
         resetClick(){
             this.init();
+            this.$refs.searchForm.resetFields();
         },
         addTask(item){
             this.panel.title = '新建下载任务';
@@ -540,16 +335,17 @@ export default {
             window.location.reload();
             this.initData();
         },
-        handleSizeChange(value) {//每页显示条数变更
-            this.paging.size = value;
+        changePageSize(value) {//每页显示条数变更
+            this.initPageOption();
+            this.pageOption.size = value;
             this.initData();
         },
-        handleCurrentChange(value) {//页码变更
-            this.paging.index = value;
+        changePageCurrent(value) {//页码变更
+            this.pageOption.page = value;
             this.initData();
         },
         indexMethod(index){
-            return index + this.paging.size * (this.paging.index-1) + 1;
+            return index + this.pageOption.size * (this.pageOption.page-1) + 1;
         },
         sureFunc(){
             this.dialogOption.loading = true;

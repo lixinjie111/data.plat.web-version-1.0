@@ -1,88 +1,77 @@
 <template>
   <!-- 基本信息 -->
-  <div class="yk-container">
-    <div v-show="!panel.show">
+  <div class="c-wrapper-20" v-cloak>
+      <div v-if="!panel.show">
+          <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
+              <el-form-item label="车辆编号" prop='vehicleId'>
+                  <el-input v-model.trim="searchKey.vehicleId"></el-input>
+              </el-form-item>
+              <el-form-item label="车牌号">
+                  <el-input v-model.trim="searchKey.plateNo"></el-input>
+              </el-form-item>
+              <el-form-item label="创建时间">
+                <el-date-picker
+                    v-model.trim="searchKey.Time"
+                    type="datetimerange"
+                    :picker-options="timeOption"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
+                </el-date-picker>
+            </el-form-item>
+              
+              <el-form-item>
+                  <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick('searchKey')">查询</el-button>
+                  <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
+              </el-form-item>
+          </el-form>
 
-      <el-form :inline="true" :model="searchKey" ref="searchForm" size='small' class="demo-form-inline">
-          <el-form-item label="车辆编号:" prop='vehicleId'>
-              <el-input v-model.trim="searchKey.vehicleId"></el-input>
-          </el-form-item>
-          <el-form-item label="车牌号:">
-              <el-input v-model.trim="searchKey.plateNo"></el-input>
-          </el-form-item>
-          <el-form-item label="创建时间: ">
-              <el-date-picker
-                  v-model.trim="searchKey.startTime"
-                  type="datetime"
-                  placeholder="开始时间"
-                  :editable="false"
-                  :clearable="false"
-                  :picker-options="pickerOptionsStart"
-                  format='yyyy-MM-dd HH:mm:ss'>
-              </el-date-picker>
-              -
-              <el-date-picker
-                  v-model.trim="searchKey.endTime"
-                  type="datetime"
-                  placeholder="结束时间"
-                  :editable="false"
-                  :clearable="false"
-                  :picker-options="pickerOptionsEnd"
-                  format='yyyy-MM-dd HH:mm:ss'>
-              </el-date-picker>
-          </el-form-item>
-          <el-form-item>
-              <el-button type="primary" :loading='searchLoading' @click="searchClick('searchKey')">查询</el-button>
-              <el-button type="primary" @click="resetClick">重置</el-button>
-          </el-form-item>
-      </el-form>
-
-      <el-table :data="dataList" v-loading='loading' stripe class='c-mt-10'>
-          <el-table-column align="center" min-width="5%" type="index" label="序号" :index='indexMethod'></el-table-column>
-          <el-table-column align="center" min-width="16%" prop="routeId" label="行程ID"></el-table-column>
-          <el-table-column align="center" min-width="12%" label="行程开始时间">
-              <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.startTime)}}</template>
-          </el-table-column>
-          <el-table-column align="center" min-width="12%" label="行程结束时间">
-              <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.endTime)}}</template>
-          </el-table-column>
-          <el-table-column align="center" min-width="11%" prop="vehicleId" label="车辆编号"></el-table-column>
-          <el-table-column align="center" min-width="10%" prop="plateNo" label="车牌号"></el-table-column>
-          <el-table-column align="center" min-width="7%" prop="mileage" label="行驶距离(km)"></el-table-column>
-          <el-table-column align="center" min-width="9%" prop="durationTime" label="行驶时长(h)"></el-table-column>
-          <el-table-column align="center" min-width="9%" label="平均速度(km/h)">
-            <template slot-scope="scope">{{scope.row.avgSpeed}}</template>
-          </el-table-column>
-          <el-table-column align="center" min-width="9%" label="操作">
-              <template slot-scope="scope">
-                  <el-button size="mini" type="primary" :loading="scope.row.loading" @click="viewTrackData(scope.row)">查看轨迹</el-button>
-              </template>
-          </el-table-column>
-      </el-table>
-
-      <div class="pages">
-          <el-pagination
-                background
-                @current-change="handleCurrentChange" 
-                :current-page="paging.index"
-                :total="paging.total" 
-                @size-change="handleSizeChange"
-                :page-sizes="[10,20,50,100,200,500]" 
-                :page-size="paging.size"
-                layout="total, sizes, prev, pager, next">
-            </el-pagination>
+          <el-table 
+            :data="dataList" 
+            v-loading='loading' 
+            stripe 
+            border 
+            max-height="620" 
+            class='c-mb-70'>
+              <el-table-column fixed align="center" min-width="5%" type="index" label="序号" :index='indexMethod'></el-table-column>
+              <el-table-column align="center" min-width="16%" prop="routeId" label="行程ID"></el-table-column>
+              <el-table-column align="center" min-width="12%" label="行程开始时间">
+                  <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.startTime)}}</template>
+              </el-table-column>
+              <el-table-column align="center" min-width="12%" label="行程结束时间">
+                  <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.endTime)}}</template>
+              </el-table-column>
+              <el-table-column align="center" min-width="11%" prop="vehicleId" label="车辆编号"></el-table-column>
+              <el-table-column align="center" min-width="10%" prop="plateNo" label="车牌号"></el-table-column>
+              <el-table-column align="center" min-width="7%" prop="mileage" label="行驶距离(km)"></el-table-column>
+              <el-table-column align="center" min-width="9%" prop="durationTime" label="行驶时长(h)"></el-table-column>
+              <el-table-column align="center" min-width="9%" label="平均速度(km/h)">
+                <template slot-scope="scope">{{scope.row.avgSpeed}}</template>
+              </el-table-column>
+              <el-table-column align="center" min-width="9%" label="操作">
+                  <template slot-scope="scope">
+                    <el-button size="small" icon="el-icon-view" circle type="warning" plain :loading="scope.row.viewLoading" @click="viewTrackData(scope.row)"></el-button>
+                  </template>
+              </el-table-column>
+          </el-table>
+          <div class="c-page clearfix">
+              <el-pagination
+                  background
+                  @current-change="changePageCurrent" 
+                  :current-page="pageOption.page" 
+                  :total="pageOption.total"
+                  @size-change="changePageSize"
+                  :page-sizes="[10,20,50,100,200,500]" 
+                  :page-size="pageOption.size"
+                  layout="total, sizes, prev, pager, next">
+              </el-pagination>
+          </div>
       </div>
-    </div>
-
-    <!-- <alert-panel ref="refBaseMsgAlert" :title="panel.title" :msg="panel.msg"
-                 @AlertEvent="exportPathData"></alert-panel> -->
-    <path-data-info ref="refPathDataPanel" v-if="panel.show" :data="panel.data"
+      
+      <path-data-info ref="refPathDataPanel" v-if="panel.show" :data="panel.data"
                     @PathDataInfoBack="pathDataInfoFn"></path-data-info>
   </div>
 </template>
 <script>
-  import Paging from '@/common/view/Paging.vue'
-  import DatePicker from 'vue2-datepicker'
   import AlertPanel from '@/common/view/Alert.vue'
   import TList from '@/common/utils/list.js'
   import PathDataInfo from '@/components/vehicle/pathData/PathDataInfo.vue'
@@ -90,7 +79,7 @@
   export default {
     name: 'VideoManage',
     components: {
-      Paging, DatePicker, AlertPanel, PathDataInfo
+      AlertPanel, PathDataInfo
     },
     data() {
       let _this = this;
@@ -101,20 +90,20 @@
         searchKey: {
           vehicleId: '',
           plateNo: '',
-          startTime: '',
-          endTime: ''
+          Time:'',
+          startTime:'',
+          endTime:''
         },
         selector: {
           isAll: false,
           item: null,     // 选择项
           list: [],   // 选择的列表
         },
-        paging: {
-          index: 1,
-          size: 10,
-          total: 0,
+        pageOption: {
+            size: 10,
+            total: 0,
+            page: 1     //从1开始
         },
-        currentPage:1,
         panel: {
           title: '提示',
           type: '',
@@ -122,33 +111,29 @@
           data: this.initPathDataPage(),
           show: false,
         },
-        rules:{
-            vehicleId:[
-                { required: true, message: 'VehicleID不能为空!', trigger: 'blur' },
-            ],
-            plateNo:[
-                { required: true, message: '车牌号不能为空!', trigger: 'blur' },
-            ]
-        },
-        pickerOptionsStart: {
-            editable: false,
-            clearable: false,
-            disabledDate(time) {
-                let endTimeTimestamp = new Date(_this.searchKey.endTime).getTime() || new Date().getTime();
-                return time.getTime() > endTimeTimestamp || time.getTime() > new Date().getTime();
+        // rules:{
+        //   startTime:[
+        //       { trigger: 'blur' }
+        //   ],
+        //   endTime:[
+        //       { trigger: 'blur' }
+        //   ]
+        // },
+        timeOption: {
+            disabledDate: time => {
+                let _time = time.getTime(),
+                    _newTime = new Date().getTime();
+                return _time > _newTime;
             }
-        },
-        pickerOptionsEnd: {
-            editable: false,
-            clearable: false,
-            disabledDate(time) {
-                let startTimeTimestamp = new Date(_this.searchKey.startTime).getTime() || new Date().getTime();
-                return time.getTime() < new Date(_this.searchKey.startTime).getTime() || time.getTime() > new Date().getTime();
-            }
-        },
+        },   
       }
     },
     methods: {
+      initPageOption() {
+          this.dataList = [];
+          this.pageOption.total = 0;
+          this.pageOption.page = 1;
+      },
       pathDataInfoFn() {
         this.panel.show = false;
       },
@@ -193,11 +178,6 @@
             name: "车辆ID",
             sort:4
           },
-          // {
-          //   key: "vin",
-          //   name: "车辆VIN",
-          //   sort:5
-          // },
           {
             key: "plateNo",
             name: "车牌号",
@@ -280,42 +260,33 @@
         this.initData();
       },
       initSearchKey() {
-        // this.searchKey.vin = '';
         this.searchKey.vehicleId = '';
         this.searchKey.plateNo = "";
-        this.searchKey.startTime = '';
-        this.searchKey.endTime = '';
+        this.searchKey.Time = '';
       },
       initPaging() {
-        this.paging.index =1;
-        this.paging.size = 10;
-        this.paging.total = 0;
+        this.pageOption.page = 1;
+        this.pageOption.size = 10;
+        this.pageOption.total = 0;
       },
       initData() {
         this.loading = true;
-        // const vin = this.searchKey.vin ? this.searchKey.vin : '';
-        const vehicleId = this.searchKey.vehicleId ? this.searchKey.vehicleId : '';
-        const plateNo = this.searchKey.plateNo ? this.searchKey.plateNo : '';
-        let startTime = this.searchKey.startTime ? (new Date(this.searchKey.startTime)).getTime() : '';
-        let endTime = this.searchKey.endTime ? (new Date(this.searchKey.endTime)).getTime() : '';
-        let params = {
-          pageSize: this.paging.size,
-          pageIndex: this.paging.index-1,
-          param: {
-            // vin: vin,
-            vehicleId: vehicleId,
-            plateNo: plateNo,
-            startTime: startTime,
-            endTime: endTime,
-          }
-        };
+        console.log(this.searchKey);
+        let params = Object.assign(this.searchKey, {
+            vehicleId: this.searchKey.vehicleId ? this.searchKey.vehicleId : '',
+            plateNo: this.searchKey.plateNo ? this.searchKey.plateNo : '',
+        });
         this.$api.post(
-          'dataPlatApp/vehicle/path/list', params,
+          'dataPlatApp/vehicle/path/list', {
+              "pageSize": this.pageOption.size,
+              "pageIndex": this.pageOption.page - 1,
+              "param":params
+          },
           response => {
             if (response.status == 200) {
-              if(response.data.list && response.data.list.length > 0){
+              if(response.data.data.list && response.data.data.list.length > 0){
                   //转换开始时间、结束时间、行驶时长
-                  let data_convert=response.data.list;
+                  let data_convert=response.data.data.list;
                   for (let i=0;i<data_convert.length;i++){
                     //保存原始时间
                     data_convert[i].originStartTime=data_convert[i].startTime;
@@ -373,7 +344,7 @@
                     }
                   }
                   this.dataList = data_convert;
-                  this.paging.total = response.data.totalCount;
+                  this.pageOption.total = response.data.data.totalCount;
               }
             } else {
               this.$message.error("获取列表失败！");
@@ -390,8 +361,15 @@
       searchClick() {
         this.$refs.searchForm.validate((valid) => {
             if (valid) {
+              console.log(this.searchKey.Time[0]);
+              console.log(this.$dateUtil.dateToMs(this.searchKey.Time[0]));
+              let _params = {
+                startTime:this.searchKey.Time[0] ? this.$dateUtil.dateToMs(this.searchKey.Time[0]) : '',
+                endTime:this.searchKey.Time[1] ? this.$dateUtil.dateToMs(this.searchKey.Time[1]) : ''
+              }
+              console.log(_params);
                 this.initPaging();
-                this.initData();
+                this.initData(_params);
             } else {
                 return false;
             }
@@ -400,26 +378,17 @@
       resetClick() {
         this.init();
       },
-      pagingFn(value) {
-        this.paging.index = value;
-        this.paging.total = 0;
-        this.initData();
+      changePageSize(value) {//每页显示条数变更
+          this.initPageOption();
+          this.pageOption.size = value;
+          this.initData();
       },
-      pagingSizeFn(value) {
-        this.paging.size = value;
-        this.paging.total = 0;
-        this.initData();
-      },
-      handleSizeChange(value) {//每页显示条数变更
-        this.paging.size = value;
-        this.initData();
-      },
-      handleCurrentChange(value) {//页码变更
-        this.paging.index = value;
-        this.initData();
+      changePageCurrent(value) {//页码变更
+          this.pageOption.page = value;
+          this.initData();
       },
       indexMethod(index){
-          return index + this.paging.size * (this.paging.index-1) + 1;
+          return index + this.pageOption.size * (this.pageOption.page-1) + 1;
       }
     },
     mounted() {

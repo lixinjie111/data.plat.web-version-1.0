@@ -49,7 +49,7 @@
                                 </tbody>
                             </table>                
                         </div>
-                        <paging class="yk-paging" :current-page="paging.index" :total-count="paging.total" @pagingEvent="pagingFn" @PageSizeEvent="pagingSizeFn"></paging>              
+                        <paging class="yk-paging" :current-page="pageOption.page" :total-count="pageOption.total" @pagingEvent="pagingFn" @PageSizeEvent="pagingSizeFn"></paging>              
                                 </div>
                             </div>
                         </div>
@@ -67,8 +67,8 @@
                 },
                 data(){
         return {
-            paging: {
-                index: 0,
+            pageOption: {
+                page: 0,
                 size: 10,
                 total: 0,
                 hideSize: true,

@@ -15,6 +15,11 @@ Vue.prototype.$echarts = echarts
 Vue.prototype.$api = Api;
 Vue.prototype.$dateUtil = TDate;
 
+//element-ui
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+Vue.use(ElementUI);
+
 //全局静态文件引入
 import '@/assets/scss/reset.scss';
 import '@/assets/scss/public.scss';
@@ -30,10 +35,6 @@ import 'videojs-flash'
 Vue.use(VideoPlayer);
 
 
-//element-ui
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-Vue.use(ElementUI);
 
 /* eslint-disable no-new */
 // Vue.filter('toFixed',function (value,num) {
