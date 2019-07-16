@@ -5,7 +5,7 @@ import axios from 'axios'
 import store from '@/store/index.js'
 
 let http = axios.create({
-  baseURL: cfg.url,
+  baseURL: config.url,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
@@ -108,7 +108,7 @@ function requestOverTime(){
 }
 
 function downloadFile(url,params){
-  axios.post(cfg.url + url, params, {
+  axios.post(config.url + url, params, {
     responseType: 'blob'
   }).then(res => {
     // console.log('res ----downloadFile-------- ' + res + ' ----------- : ' + JSON.stringify(res))

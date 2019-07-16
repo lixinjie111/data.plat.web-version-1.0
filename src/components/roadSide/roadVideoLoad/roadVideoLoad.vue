@@ -1,7 +1,7 @@
 <template>
 <!-- 基本信息 -->
 <div class="c-wrapper-20" v-cloak>
-    <div v-show="!panel.show && !panel.cfgShow">
+    <div v-show="!panel.show">
         <el-form ref="searchForm" :inline="true" :model="searchKey" class="demo-form-inline" size="small">
             <el-form-item label="文件名: ">
                 <el-input v-model.trim="searchKey.fileName"></el-input>
@@ -117,35 +117,22 @@
                 :current-page="pageOption.page" 
                 :total="pageOption.total"
                 @size-change="changePageSize"
-                :page-sizes="[10,20,50,100,200,500]" 
+                :page-sizes="[10,20,50,100,200]" 
                 :page-size="pageOption.size"
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
         </div>
     </div>
-    <el-dialog
-        title="重新下载"
-        :visible="dialogOption.show"
-        width="30%"
-        :before-close="handleClose">
-        <span>是否重新下载？</span>
-        <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogOption.show = false">取 消</el-button>
-        <el-button :loading="dialogOption.loading" type="primary" @click="sureFunc">确 定</el-button>
-        </span>
-    </el-dialog>
-    <addload v-show="panel.cfgShow && !panel.show" :title="panel.title" :type="panel.type" :data="panel.data" @addTask="addTaskFn"></addload>
+    <addload v-if="dialogOption.show"  @backDownPage="backFn"></addload>
 </div>
 </template>
 <script>
-import VueDatepickerLocal from 'vue-datepicker-local'
 import Addload from './roadAddLoad.vue'
-
+import {queryRoadTaskList,redoVideoTask} from '@/api/roadSide'
 export default {
     name: 'VideoDownload',
     components: {
-        Addload,
-        VueDatepickerLocal
+        Addload
     },
     data(){
         let _this = this;
@@ -174,10 +161,8 @@ export default {
                 roadPointName: '',
                 source: '',
                 taskStatus: '',
-                startBeginTime:'',
-                startEndTime:'',
-                stopBeginTime:'',
-                stopEndTime:''
+                startTime:'',
+                endTime:''
             },
             pageOption: {
                 page: 1,
@@ -190,8 +175,7 @@ export default {
                 type: '',
                 msg: '',
                 data: '',
-                show: false,
-                cfgShow: false,
+                show: false
             },
             current: {
                 top: 0,
@@ -227,9 +211,10 @@ export default {
             this.playbackShow = false;
             this.initPaging();
             this.initSearch();
+            this.initData();
         },
         initPaging(){
-            this.pageOption.index = 1;
+            this.pageOption.page = 1;
             this.pageOption.total = 0;
             this.pageOption.size = 10;
         },
@@ -251,46 +236,31 @@ export default {
             this.dataList = [];
             this.loading = true;
             let params = Object.assign(this.searchKey, {
-                camCode: this.searchKey.camCode,
-                fileName: this.searchKey.fileName,
-                roadName: this.searchKey.roadName,
-                source: this.searchKey.source,
-                taskStatus: this.searchKey.taskStatus,
-                roadPointName: this.searchKey.roadPointName,
+                startBeginTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
+                startEndTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
+                stopBeginTime: this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
+                stopEndTime: this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : '',
                 protocal: JSON.parse(localStorage.getItem('protocal')) || '',
             });
-            
-            this.$api.post('dataPlatApp/road/queryRoadTaskList',{
+            queryRoadTaskList({
                 "pageSize": this.pageOption.size,
                 "pageIndex": this.pageOption.page - 1,
-                 'param':params
-            },response => {
-                if(response.status >= 200 && response.status < 300){
-                    if(response.data.data.list && response.data.data.list.length > 0){
-                        this.dataList = response.data.data.list;
-                        this.pageOption.total = response.data.data.totalCount;
-                    }
-                    this.searchLoading = false;
-                    this.loading = false;
+                'param':params
+            }).then(res => {
+                if(res.status == '200'){
+                    this.dataList = res.data.list;
+                    this.pageOption.total = res.totalCount;
                 }
-            }, error => {
-                this.$message.error("获取列表error！");
-                this.loading = false;
                 this.searchLoading = false;
-            });
+                this.loading = false;
+            })
         },
         searchClick(){
+            this.searchLoading = true;
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                    console.log(this.searchKey.startTime[0]);
-                    let _params = {
-                        startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]),
-                        startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]),
-                        stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]),
-                        stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1])
-                    }
                     this.initPaging();
-                    this.initData(_params);
+                    this.initData();
                 } else {
                     return false;
                 }
@@ -301,38 +271,29 @@ export default {
             this.$refs.searchForm.resetFields();
         },
         addTask(item){
-            this.panel.title = '新建下载任务';
-            this.panel.type = 'reload';
-            this.panel.data = item;
-            this.panel.show = false;
-            this.panel.cfgShow = true;
+            this.panel.show = true;
+            this.dialogOption.show = true;
         },
         reloadClick(item){
-            this.dialogOption.show = true;
-            this.dialogOption.data = {
-                fileId: item.fileName
-            };
-        },
-        reloadFn(val){
-            this.$api.post('dataPlatApp/cam/redoVideoTask',{
-                fileId:val
-            },response => {
-                if(response.data.code == '200'){
-                    const tip = {
-                        isShow: true,
-                        type: 'success',
-                        msg: '重置视频任务成功!'
-                    };
-                    this.$store.dispatch('showPrompt',tip.msg);
-                }else{
-                    this.$store.dispatch('showPrompt','重置视频任务失败!');
-                }
-            });
+            this.$confirm('是否再次下载视频 ?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                redoVideoTask({
+                    fileId:item.fileName
+                }).then(res => {
+                    if(res.status == '200'){
+                        this.$message.success(res.message);
+                    }else{
+                        this.$message.error(res.message);
+                    }
+                })
+            })
         },
         addTaskFn(){
-            this.panel.show = false;
-            this.panel.cfgShow = false;
-            window.location.reload();
+            this.panel.show = true;
+            this.dialogOption.show = true;
             this.initData();
         },
         changePageSize(value) {//每页显示条数变更
@@ -349,7 +310,7 @@ export default {
         },
         sureFunc(){
             this.dialogOption.loading = true;
-            this.$api.post('dataPlatApp/cam/redoVideoTask',this.dialogOption.data,response => {
+            this.$api.post('cam/redoVideoTask',this.dialogOption.data,response => {
                 if(response.data.code == '200'){
                     this.$message.success('再次下载视频任务成功!');
                 }else{
@@ -369,6 +330,11 @@ export default {
         handleClose(done) {
             this.initDialogData();
         },
+        backFn(){
+            this.panel.show = false;
+            this.dialogOption.show = false;
+            this.init();
+        }
     },
     mounted(){
         this.init();

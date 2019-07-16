@@ -1,17 +1,17 @@
 <template>
-<div style='min-width:100%;height:100%;background:rgba(0,0,0,.3);position:absolute;top:0;left:50%;margin-left:-500px;'>
-    <div class="yk-container cation" style='width:800px;height:420px;background:#fff;overflow:hidden;overflow-y:scroll;z-index:2000;'>
+<div style='width:100%;height:100%;background:rgba(0,0,0,.3);position:absolute;top:0;left:50%;margin-left:-50%;'>
+    <div class="yk-container cation" style='width:800px;height:600px;background:#fff;overflow:hidden;overflow-y:scroll;position:relative;top:20px;left:50%;margin-left:-500px;z-index:2000;'>
         <div class="yk-search-box" style="border-bottom:1px solid #ccc;">                
             <div class="yk-search-block yk-block-label">
                 <label class="colGrap">路侧点: </label>
                 <span>{{roadPointName}}</span>
             </div>          
         </div>
-        <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
+        <el-page-header @back="backClick"></el-page-header>
         <!-- <div class="yk-btn-box yk-right yk-b-10">
             <span class="yk-btn-back" @click="backClick();">返回</span>
         </div> -->
-        <div class='roadMapInfo'>
+        <div class='roadMapInfo c-mt-10'>
             <tusvn-map ref="perceMap2" targetId="mec11" overlayContainerId="mec12" :isMasker='false' :isCircle='false'></tusvn-map>
         </div>
         <div class="yk-search-box">                
@@ -116,7 +116,7 @@ export default {
             this.$emit('roadInfoBack');
         },
         getRoadPointInfo(roadPointId){
-            this.$api.post('dataPlatApp/road/queryRoadPointInfo',{
+            this.$api.post('road/queryRoadPointInfo',{
                 "roadPointId":roadPointId
             },response => {
                 if(response.status >= 200 && response.status < 300){

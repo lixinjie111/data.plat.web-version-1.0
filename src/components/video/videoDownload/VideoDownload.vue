@@ -1,7 +1,7 @@
 <template>
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
-        <div v-show="!panel.show && !panel.cfgShow">
+        <div v-show="!panel.show">
             <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
                 <el-form-item label="文件名: ">
                     <el-input v-model.trim="searchKey.fileName"></el-input>
@@ -90,7 +90,7 @@
                 <!-- <el-table-column align="center" label="失败原因" prop="note"></el-table-column> -->
                 <el-table-column align="center" min-width="10%" label="操作">
                     <template slot-scope="scope">
-                        <el-button size="small" icon="el-icon-download" circle type="warning" plain :loading="scope.row.downLoading" @click="reloadClick(scope.row)"></el-button>
+                        <el-button size="small" icon="el-icon-download" circle type="warning" v-if="scope.row.taskStatus == 0 || scope.row.taskStatus == 3" plain :loading="scope.row.downLoading" @click="reloadClick(scope.row)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -101,24 +101,13 @@
                     :current-page="pageOption.page" 
                     :total="pageOption.total"
                     @size-change="changePageSize"
-                    :page-sizes="[10,20,50,100,200,500]" 
+                    :page-sizes="[10,20,50,100,200]" 
                     :page-size="pageOption.size"
                     layout="total, sizes, prev, pager, next">
                 </el-pagination>
             </div>
         </div>
-        <el-dialog
-          title="重新下载"
-          :visible="dialogOption.show"
-          width="30%"
-          :before-close="handleClose">
-          <span>是否重新下载？</span>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogOption.show = false">取 消</el-button>
-            <el-button :loading="dialogOption.loading" type="primary" @click="sureFunc">确 定</el-button>
-          </span>
-        </el-dialog>
-        <addload ref='addload' v-show="panel.cfgShow && !panel.show" :title="panel.title" :type="panel.type" :data="panel.data"></addload>
+        <addload ref='addload' v-if="dialogOption.show" @backDownPage='backFn'></addload>
     </div>
 </template>
 <script>
@@ -149,10 +138,8 @@ export default {
                 vehicleId: '',
                 source: '',
                 taskStatus: '',
-                startBeginTime:'',
-                startEndTime:'',
-                stopBeginTime:'',
-                stopEndTime:''
+                startTime:'',
+                endTime:''
             },
             selector: [],
             auth: {
@@ -171,7 +158,6 @@ export default {
                 msg: '',
                 data: 'this.initCarVo()',
                 show: false,
-                cfgShow: false,
             },
             current: {
                 top: 0,
@@ -220,7 +206,7 @@ export default {
             this.playbackShow = false;
             this.initPaging();
             this.initSearch();
-            // this.initData();
+            this.initData();
         },
         initPaging(){
             this.pageOption.page = 1;
@@ -235,22 +221,24 @@ export default {
                 vehicleId: '',
                 source: '',
                 taskStatus: '',
-                startBeginTime:'',
-                startEndTime:'',
-                stopBeginTime:'',
-                stopEndTime:''
+                startTime:'',
+                endTime:''
             };
         },
         initData(){
             this.dataList = [];
             this.loading = true;
-            let params = Object.assign(this.searchKey, {
-                protocal: JSON.parse(localStorage.getItem('protocal')) || '',
-            });
+            let protocal = JSON.parse(localStorage.getItem('protocal')) || '';
             this.$api.post('cam/queryTaskList',{
                 "pageSize": this.pageOption.size,
                 "pageIndex": this.pageOption.page - 1,
-                "param":params
+                'param':{
+                    protocal:protocal,
+                    startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]) || '',
+                    startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]) || '',
+                    stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]) || '',
+                    stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1]) || ''
+                },
             },response => {
                 if(response.status >= 200 && response.status < 300){
                     if(response.data.data.list && response.data.data.list.length > 0) {
@@ -275,14 +263,7 @@ export default {
             this.searchLoading = true;
             this.$refs.searchForm.validate((valid) => {
             if (valid) {
-                    let _params = {
-                        startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]),
-                        startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]),
-                        stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]),
-                        stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1])
-                    }
-                    // this.initPaging();
-                    this.initData(_params);
+                    this.initData();
                 } else {
                     return false;
                 }
@@ -297,30 +278,30 @@ export default {
             this.panel.cfgShow = false;
         },
         addTask(item){
-            this.panel.title = '新建下载任务';
-            this.panel.type = 'reload';
-            this.panel.data = item;
-            this.panel.show = false;
-            this.panel.cfgShow = true;
+            this.panel.show = true;
+            this.dialogOption.show = true;
         },
         reloadClick(item){
-            this.dialogOption.show = true;
-            this.dialogOption.data = {
-                fileId: item.fileName
-            };
-        },
-        sureFunc(){
-            this.dialogOption.loading = true;
-            this.$api.post('cam/redoVideoTask',this.dialogOption.data,response => {
-                if(response.data.code == '200'){
-                    this.$message.success('再次下载视频任务成功!');
-                }else{
-                    this.$message.error("再次下载视频任务失败！");
-                }
-                this.initDialogData();
-            },error => {
-                this.$message.error("再次下载视频任务error！");
-                this.initDialogData();
+            this.$confirm('是否下载该文件?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$api.post('cam/redoVideoTask',{
+                    fileId: item.fileName
+                },response => {
+                    if(response.data.code == '200'){
+                        this.$message.success('再次下载视频任务成功!');
+                    }else{
+                        this.$message.error("再次下载视频任务失败！");
+                    }
+                    this.initDialogData();
+                },error => {
+                    this.$message.error("再次下载视频任务error！");
+                    this.initDialogData();
+                });
+            }).catch(() => {
+                this.$message.info('已取消删除');          
             });
         },
         initDialogData() {
@@ -339,6 +320,10 @@ export default {
         changePageCurrent(value) {//页码变更
             this.pageOption.page = value;
             this.initData();
+        },
+        backFn(){
+            this.panel.show = false;
+            this.dialogOption.show = false;
         }
     },
     mounted(){

@@ -186,7 +186,7 @@ import { setTimeout } from 'timers';
           }
         };
         this.$api.post(
-          'dataPlatApp/vehicle/path/detail/list', params,
+          'vehicle/path/detail/list', params,
           response => {
             if (response.data.list.length > 0) {
               //重新赋值目前查询的总行数
@@ -347,7 +347,7 @@ import { setTimeout } from 'timers';
           endTime:this.$dateUtil.dateToMs(this.data.endTime)
         }
 
-        let url = 'dataPlatApp/vehicle/path/detail/export';
+        let url = 'vehicle/path/detail/export';
 
         this.$api.download(url, params,
           response => {
@@ -389,7 +389,7 @@ import { setTimeout } from 'timers';
         };
 
         this.$api.post(
-          'dataPlatApp/vehicle/path/detail/list', params,
+          'vehicle/path/detail/list', params,
           response => {
             if (response.data &&response.data.list&& response.data.list.length > 0) {
               this.drawPath(response.data.list);

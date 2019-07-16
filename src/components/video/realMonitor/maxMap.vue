@@ -87,7 +87,7 @@
       },
       getGps(vehicleId, time, deviceType) {
         let _this = this;
-        _this.$api.post('dataPlatApp/vehicle/gpsInfo', {
+        _this.$api.post('vehicle/gpsInfo', {
           'vehicleId': vehicleId, 'type': deviceType, 'time': time,
         }, response => {
           if (response.data.code == '200') {

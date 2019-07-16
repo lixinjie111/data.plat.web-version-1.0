@@ -6,8 +6,8 @@
                 <el-input v-model.trim="searchKey.name"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" :loading="searchLoading" @click="searchClick">查询</el-button>
-                <el-button type="primary" @click="resetClick()">重置</el-button>
+                <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick('searchKey')">查询</el-button>
+                <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
 
@@ -23,7 +23,7 @@
                 :current-page="pageOption.page" 
                 :total="pageOption.total"
                 @size-change="changePageSize"
-                :page-sizes="[10,20,50,100,200,500]" 
+                :page-sizes="[10,20,50,100,200]" 
                 :page-size="pageOption.size"
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
@@ -63,7 +63,7 @@ export default {
             this.pageOption.page = 1;
          },
          init(){
-            this.operPlatUrl = window.cfg.operPlatUrl;
+            this.operPlatUrl = window.config.operPlatUrl;
             this.initPaging();
             this.initSearch();
             this.initData();

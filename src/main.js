@@ -43,10 +43,15 @@ Vue.use(VideoPlayer);
 // });
 
 /* eslint-disable no-new */
-new Vue({
+const vm = new Vue({
   el: '#app',
   router,
   store,
   components: { App },
   template: '<App/>'
 })
+
+
+// axios 过滤器
+import axiosFilter from './api/axiosConfig.js';
+axiosFilter(vm);

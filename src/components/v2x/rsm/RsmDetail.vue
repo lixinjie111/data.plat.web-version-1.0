@@ -3,7 +3,7 @@
             <div class="yk-container">
             <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
             <el-table class='c-mt-10' :data="dataList" max-height='500' stripe>
-                <el-table-column align="center" label="参与者类型" prop="pctType"></el-table-column>
+                <el-table-column fixed salign="center" label="参与者类型" prop="pctType"></el-table-column>
                 <el-table-column align="center" prop="sourceType" label="检测类型"></el-table-column>
                 <el-table-column align="center" prop="plateNo" label="车牌号"></el-table-column>
                 <el-table-column align="center" prop="vehicleClass" label="车辆类型"></el-table-column>

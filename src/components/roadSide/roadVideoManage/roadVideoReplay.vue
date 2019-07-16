@@ -117,7 +117,7 @@
                 this.isSlideOut = false;
             },
             mapInfo(fileName){
-                this.$api.post('dataPlatApp/road/getRoadVideoDetailByParam',{  
+                this.$api.post('road/getRoadVideoDetailByParam',{  
                     "fileId": fileName          
                 },response => {
                     if(response.status >= 200 && response.status < 300){
@@ -128,7 +128,7 @@
                 });
             },
             mapDetail(deviceId){
-                this.$api.post('dataPlatApp/road/queryRoadCameraDetailsByDeviceId',{  
+                this.$api.post('road/queryRoadCameraDetailsByDeviceId',{  
                     "deviceId": deviceId          
                 },response => {
                     if(response.status >= 200 && response.status < 300){

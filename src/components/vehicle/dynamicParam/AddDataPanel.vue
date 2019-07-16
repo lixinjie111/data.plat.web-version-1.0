@@ -9,8 +9,8 @@
             </el-tab-pane>
         </el-tabs>
         <div class="c-text-center c-mt-30">
-            <el-button type="primary" @click="confirmClick">确定</el-button>
-            <el-button type="primary" @click="cancelClick">取消</el-button>
+            <el-button size="small" type="warning" @click="confirmClick">确定</el-button>
+            <el-button size="small" type="warning" @click="cancelClick">取消</el-button>
         </div>
     </div>
 </template>
@@ -44,7 +44,7 @@ export default {
     methods: {
         init(){
             this.isShow=true;
-            this.operPlatUrl = window.cfg.operPlatUrl;
+            this.operPlatUrl = window.config.operPlatUrl;
             this.$refs.fullList.initData();
             this.$refs.groupList.initData();
         },

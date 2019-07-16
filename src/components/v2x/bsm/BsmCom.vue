@@ -23,7 +23,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="warning" icon="el-icon-search" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
+                    <el-button type="warning" icon="el-icon-search" :loading='searchLoad' @click="searchClick('searchKey')">查询</el-button>
                     <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -58,18 +58,18 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button class="el-button--small" type="primary" :loading="scope.row.loading" @click="detail(scope.row)">明细</el-button>
+                        <el-button size="mini" type="warning" plain @click="detail(scope.row)">明细</el-button>
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pages">
+            <div class="c-page clearfix">
                 <el-pagination
                     background
-                    @current-change="handleCurrentChange" 
-                    :current-page="pageOption.page"
-                    :total="pageOption.total" 
-                    @size-change="handleSizeChange"
-                    :page-sizes="[10,20,50,100,200,500]" 
+                    @current-change="changePageCurrent" 
+                    :current-page="pageOption.page" 
+                    :total="pageOption.total"
+                    @size-change="changePageSize"
+                    :page-sizes="[10,20,50,100,200]" 
                     :page-size="pageOption.size"
                     layout="total, sizes, prev, pager, next">
                 </el-pagination>
@@ -125,6 +125,7 @@ export default {
             };
         return {
             loading:false,
+            searchLoad:false,
             startTime:'',
             endTime:'',
             searchKey: {
@@ -187,8 +188,14 @@ export default {
     },
     methods: {
         init(){
+            this.initData();
             this.initPaging();
             this.initSearch();
+        },
+        initPageOption() {
+            this.dataList = [];
+            this.pageOption.total = 0;
+            this.pageOption.page = 1;
         },
         detail(item){
             this.panel.title = '明细';
@@ -213,10 +220,10 @@ export default {
         initData(){
             this.dataList = [];
             this.loading = true;
-            this.$api.post('dataPlatApp/v2x/findBSMList',{                   
+            this.$api.post('v2x/findBSMList',{                   
                     vehicleId : this.searchKey.vehicleId,
-                    startTime:this.$dateUtil.dateToMs(this.searchKey.startTime),
-                    endTime:this.$dateUtil.dateToMs(this.searchKey.endTime),
+                    startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
+                    endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '',
                     page: {
                         "pageSize": this.pageOption.size,
                         "pageIndex": this.pageOption.page-1
@@ -235,12 +242,15 @@ export default {
                     }
                 }
                 this.loading = false;
+                this.searchLoad = false;
             }, error => {
                 this.$message.error("获取列表error!");
                 this.loading = false;
+                this.searchLoad = false;
             });
         },
         searchClick(){
+            this.searchLoad = true;
             let startTime = new Date(this.searchKey.startTime).getTime();
             let endTime = new Date(this.searchKey.endTime).getTime();
             if(this.getIsNan(startTime) == false && this.getIsNan(endTime) == false){
@@ -251,7 +261,7 @@ export default {
             }
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                   this.initData();
+                    this.initData();
                 } else {
                     return false;
                 }
@@ -264,13 +274,13 @@ export default {
         getIsNan(val){
             return typeof(val) == 'number' && window.isNaN(val);
         },
-        handleSizeChange(value) {//每页显示条数变更
-            this.pageOption.page = 1;
+        changePageSize(value) {//每页显示条数变更
+            this.initPageOption();
             this.pageOption.size = value;
             this.initData();
         },
-        handleCurrentChange(value) {//页码变更
-            this.pageOption.index = value;
+        changePageCurrent(value) {//页码变更
+            this.pageOption.page = value;
             this.initData();
         },
         backFn(){

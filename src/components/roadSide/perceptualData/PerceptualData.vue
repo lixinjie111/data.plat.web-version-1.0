@@ -73,9 +73,11 @@
 </div>
 </template>
 <script>
+
 import TusvnMap from "../../../common/view/TusvnMap/TusvnMap.vue";
 import RoadSideInfo from "../roadSideInfo/roadSideInfo.vue";
 import { setInterval, clearInterval, setTimeout } from 'timers';
+import {queryRoadRegionTree,queryRoadCamList,startStreamRoad,getRoadSideCameraStaticsAndListByDist,stopStream} from '@/api/roadSide'
 export default {
     name:'PerceptualData',
     components:{
@@ -135,10 +137,10 @@ export default {
     },
     methods:{
         init(){
-            this.roadRegion();
+            this.queryRoadRegionTree();
             this.provinceSelected = this.provinceData[0];
             this.municiSelected = this.municipalData[0];
-            this.operPlatUrl = window.cfg.operPlatUrl;
+            this.operPlatUrl = window.config.operPlatUrl;
             let _this =this;
             //1分钟刷一次实时状态
             setInterval(()=>{
@@ -147,22 +149,19 @@ export default {
                     }
             },5000);
         },
-        roadRegion(){
-            this.$api.post('dataPlatApp/road/queryRoadRegionTree',{
-            },response => {
-                if(response.status >= 200 && response.status < 300){
-                    if(response.data.code == 200){
-                        this.initDataList = response.data.data;
-                        let len = this.initDataList.length;
-                        for(let i=0;i<len;i++){//遍历省市数据
-                            let provinceObj = {};
-                            provinceObj.name = this.initDataList[i].name;
-                            provinceObj.code = this.initDataList[i].code;
-                            this.provinceData.push(provinceObj);
-                        }
+        queryRoadRegionTree(){
+            queryRoadRegionTree().then(res => {
+                if(res.status == '200' || res.code == '200') {
+                    this.initDataList = res.data;
+                    let len = this.initDataList.length;
+                    for(let i=0;i<len;i++){//遍历省市数据
+                        let provinceObj = {};
+                        provinceObj.name = this.initDataList[i].name;
+                        provinceObj.code = this.initDataList[i].code;
+                        this.provinceData.push(provinceObj);
                     }
                 }
-            });
+            })
         },
         findMunicipal(item){
             let len = this.initDataList.length;
@@ -272,30 +271,28 @@ export default {
             }
             if(node.level == 2) {
                 let data = [];
-                this.$api.post('dataPlatApp/road/queryRoadCamList',{
+                queryRoadCamList({
                     roadCode:node.data.code
-                },response => {
-                    if(response.status >= 200 && response.status < 300){
-                        if(response.data.code == 200){
-                            var roadCode = this.newData[0].children;
-                            var protocal = JSON.stringify(response.data.data[0].protocol);
-                            localStorage.setItem('protocal',protocal);
-                            var camDetail = response.data.data;
-                             for(var i=0;i<camDetail.length;i++){
-                                var obj = {};
-                                obj.label = camDetail[i].deviceId;
-                                obj.serialNum = camDetail[i].serialNum;
-                                obj.rsPtName = camDetail[i].rsPtName;
-                                obj.rsPtId = camDetail[i].rsPtId;
-                                obj.ptLon = camDetail[i].ptLon;
-                                obj.ptLat = camDetail[i].ptLat;
-                                obj.cameraRunStatus = camDetail[i].cameraRunStatus;
-                                obj.icon = "sl-play-icon";
-                                obj.leaf = true;
-                                data.push(obj);
-                            }
-                            resolve(data);
+                }).then(res => {
+                    if(res.status == '200' || res.code == '200') {
+                        var roadCode = this.newData[0].children;
+                        var protocal = JSON.stringify(res.data[0].protocol);
+                        localStorage.setItem('protocal',protocal);
+                        var camDetail = res.data;
+                        for(var i=0;i<camDetail.length;i++){
+                            var obj = {};
+                            obj.label = camDetail[i].deviceId;
+                            obj.serialNum = camDetail[i].serialNum;
+                            obj.rsPtName = camDetail[i].rsPtName;
+                            obj.rsPtId = camDetail[i].rsPtId;
+                            obj.ptLon = camDetail[i].ptLon;
+                            obj.ptLat = camDetail[i].ptLat;
+                            obj.cameraRunStatus = camDetail[i].cameraRunStatus;
+                            obj.icon = "sl-play-icon";
+                            obj.leaf = true;
+                            data.push(obj);
                         }
+                        resolve(data);
                     }
                 })
             }
@@ -307,35 +304,27 @@ export default {
             let camList = this.camInfo;
             let camLen = camList.length;
             let protocal = JSON.parse(localStorage.getItem('protocal'));
-            this.$api.post('dataPlatApp/road/startStreamRoad',{
+            startStreamRoad({
                 camId:camerData.serialNum,protocal:protocal
-            },response => {
-                this.camId = camerData.serialNum;
-                this.camCode = camerData.label;
-                this.roadNewName = this.roadName;
-                this.roadPointName = camerData.rsPtName;
-                this.roadPointId = camerData.rsPtId;
-                this.lon = (camerData.ptLon).toFixed(8);
-                this.lat = (camerData.ptLat).toFixed(8);
-                if(response.status >= 200 && response.status < 300){
-                    if(response.data.code == 200){
-                        // let nodeSel = document.querySelectorAll('.el-tree-node .el-tree-node__content .el-tree-node__expand-icon');
-                        // Array.from(nodeSel)[i].className += ' pause';
-                        this.isMaskShow = false;
-                        let videoUrl = response.data.data.rtmp;
-                        
-                        this.embedFlash(videoUrl);
-
-                        camerData.icon = "sl-pause-icon";
-                    }else if(response.data.code == 510){
-                        this.$message.error('视频直播失败!');
-                    }
+            }).then(res =>{
+                if(res.status == '200') {
+                    this.camId = camerData.serialNum;
+                    this.camCode = camerData.label;
+                    this.roadNewName = this.roadName;
+                    this.roadPointName = camerData.rsPtName;
+                    this.roadPointId = camerData.rsPtId;
+                    this.lon = (camerData.ptLon).toFixed(8);
+                    this.lat = (camerData.ptLat).toFixed(8);
+                    this.isMaskShow = false;
+                    let videoUrl = res.data.rtmp;
+                    this.embedFlash(videoUrl);
+                    camerData.icon = "sl-pause-icon";
+                }else if(res.status == '510'){
+                    this.$message.error(res.message);
                 }
             });
-            
         },
         endPlay(){
-
             this.isMaskShow = true;
             this.camId = '--';
             this.camCode = '--';
@@ -347,13 +336,12 @@ export default {
             for(let i=0;i<nodeSelArray.length;i++){
                 nodeSelArray[i].classList.remove('pause');
             }
-            // this.embedFlash();
-
             let protocal = JSON.parse(localStorage.getItem('protocal'));
-            this.$api.post('dataPlatApp/road/stopStream',{
+            stopStream({
                 "camId":this.camCode,"protocal":protocal
-            },response => {});
+            }).then(res => {
 
+            })
         },
         showMap(){
             this.isSlideOut = true;
@@ -400,22 +388,22 @@ export default {
             document.getElementById("cmsplayer").innerHTML = embedCode;
         },
         computCamNum(areaCode){
-            var _this= this;
             //查询总数。在线数，实时监控数
             if(areaCode == 0){
-            this.camTotal=0;
-            this.onlineNum=0;
-            this.monitNum=0;
+                this.camTotal=0;
+                this.onlineNum=0;
+                this.monitNum=0;
             }else {
-            this.$api.post(this.operPlatUrl + '/v2x/remote/device/getRoadSideCameraStaticsAndListByDist?citycode='+ areaCode,{},
-                response => {
-                if(response.status == 200){
-                    _this.camDetail = response.data.body.list;
-                    _this.camTotal = response.data.body.count;
-                    _this.monitNum = response.data.body.monitorCount;
-                    _this.onlineNum = response.data.body.onlineCount;
-                }
-            });
+                getRoadSideCameraStaticsAndListByDist({
+                    citycode: areaCode
+                }).then(res =>{
+                    if(res.status == '200'){
+                        this.camDetail = res.data.body.list;
+                        this.camTotal = res.data.body.count;
+                        this.monitNum = res.data.body.monitorCount;
+                        this.onlineNum = res.data.body.onlineCount;
+                    }
+                });
          }
        }
     },

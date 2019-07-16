@@ -4,7 +4,6 @@
         <el-form ref='searchForm' size="small" :inline="true">
             <el-form-item label="车牌号: ">
                 <el-select
-                    style="width: 150px;"
                     v-model="formParams.plateNo"
                     filterable
                     remote
@@ -24,7 +23,6 @@
             
             <el-form-item label="车辆编号: " prop='vehicleId'>
                 <el-select
-                    style="width: 150px;"
                     v-model="formParams.vehicleId"
                     filterable
                     remote
@@ -55,8 +53,8 @@
                 <template v-if='status=="3"'>未注册</template>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" v-if="isStart" @click='endVideo'>结束监控</el-button>
-                <el-button type="primary" v-else :disabled="isDisabled ? true : false" @click='realMonit'>开始监控</el-button>
+                <el-button type="warning" size="small" v-if="isStart" @click='endVideo'>结束监控</el-button>
+                <el-button type="warning" size="small" v-else :disabled="isDisabled ? true : false" @click='realMonit'>开始监控</el-button>
             </el-form-item>
         </el-form>
         <!-- <video id='myvideo' width=960 height=540 class="video-js vjs-default-skin" controls> --> 
@@ -233,7 +231,7 @@ export default {
             this.isStart = false;
             this.playerOptions.sources[0].src = '';
 
-            this.$api.post('dataPlatApp/vehicle/queryDeviceType',{//获取设备id
+            this.$api.post('vehicle/queryDeviceType',{//获取设备id
             'vehicleId':this.vehicleId
             },response => {
                 if(response.data.code == '200'){
@@ -259,7 +257,7 @@ export default {
                     },1000);
                     this.getTotalTime(this.monitStartTime);
                 }else{
-                    this.$api.post('dataPlatApp/cam/startStream',{
+                    this.$api.post('cam/startStream',{
                             'camId':this.serialNum,'vehicleId':this.vehicleId,
                             'protocal':this.protocal
                         },response => {
@@ -304,7 +302,7 @@ export default {
             },5000)
         },
         videoActive(){//调用报活接口
-            this.$api.post('dataPlatApp/cam/sendStreamHeart',{
+            this.$api.post('cam/sendStreamHeart',{
                     'camId':this.serialNum,'vehicleId':this.vehicleId,
                     'protocal':this.protocal
                 },response => {}); 
@@ -345,7 +343,7 @@ export default {
             clearTimeout(this.plateNoTimer);
             this.plateNoTimer = setTimeout(() => {
                 this.plateNoList = [];
-                this.$api.post('dataPlatApp/cam/queryCamList',this.searchKey,response => {
+                this.$api.post('cam/queryCamList',this.searchKey,response => {
                     if(response.data.data && response.data.data.length > 0){
                         this.plateNoList = response.data.data;
                     }else {
@@ -401,7 +399,7 @@ export default {
                 clearTimeout(this.plateNoTimer);
                 this.plateNoTimer = setTimeout(() => {
                     this.plateNoList = [];
-                    this.$api.post('dataPlatApp/cam/queryCamList',this.searchKey,response => {
+                    this.$api.post('cam/queryCamList',this.searchKey,response => {
                         if(response.data.data && response.data.data.length > 0){
                             this.plateNoList = response.data.data;
                         }else {
@@ -470,7 +468,7 @@ export default {
             clearTimeout(this.vehicleIdTimer);
             this.vehicleIdTimer = setTimeout(() => {
                 this.vehicleIdList = [];
-                this.$api.post('dataPlatApp/cam/queryCamList',this.searchKey,response => {
+                this.$api.post('cam/queryCamList',this.searchKey,response => {
                     if(response.data.data && response.data.data.length > 0){
                         this.vehicleIdList = response.data.data;
                     }else {

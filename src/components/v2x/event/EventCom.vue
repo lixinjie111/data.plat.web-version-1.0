@@ -22,7 +22,7 @@
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
-                <el-button type="warning" icon="el-icon-search" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
+                <el-button type="warning" icon="el-icon-search" :loading='searchLoad' @click="searchClick('searchKey')">查询</el-button>
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
@@ -64,7 +64,7 @@
                 :current-page="pageOption.page" 
                 :total="pageOption.total"
                 @size-change="changePageSize"
-                :page-sizes="[10,20,50,100,200,500]" 
+                :page-sizes="[10,20,50,100,200]" 
                 :page-size="pageOption.size"
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
@@ -116,6 +116,7 @@ export default {
             startTime:'',
             endTime:'',
             loading:false,
+            searchLoad:false,
             searchKey: {
                 hvid: '',
                 startTime: '',
@@ -170,6 +171,7 @@ export default {
     },
     methods: {
         init(){
+            this.initData();
             this.initPaging();
             this.initSearch();
         },
@@ -192,35 +194,39 @@ export default {
         },
         initData(){
             this.dataList = [];
-            this.loading = true,
+            this.loading = true;
             // data_plat_webapp_war_exploded/v2x/findEventList
-            this.$api.post('dataPlatApp/v2x/findEventList',{                 
+            this.$api.post('v2x/findEventList',{                 
                 page: {
                     "pageSize": this.pageOption.size,
                     "pageIndex": this.pageOption.page-1
                 },
                 hvid : this.searchKey.hvid,
-                startTime:this.$dateUtil.dateToMs(this.searchKey.startTime),
-                endTime:this.$dateUtil.dateToMs(this.searchKey.endTime),
+                startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
+                endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '',
             },response => {
-                if(response.data.code == '200'){
+                if(response.status == 200){
                     this.dataList = response.data.data.list;
-                    this.paging.total = response.data.data.totalCount;
+                    this.pageOption.total = response.data.data.totalCount;
                     this.$message.success(response.data.message);
                     this.loading = false;
+                    this.searchLoad = false;
                 }else{
                     this.loading = false;
+                    this.searchLoad = false;
                     this.$message.error(response.data.message);
                 }
             },error => {
                 this.loading = false;
+                this.searchLoad = false;
                 this.$message.error("获取列表error！");
             });
         },
         searchClick(){
+            this.searchLoad = true;
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                   this.initData();
+                    this.initData();
                 } else {
                     return false;
                 }

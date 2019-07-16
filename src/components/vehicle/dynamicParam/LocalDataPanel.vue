@@ -41,8 +41,8 @@
             </el-table>
 
             <div class="c-text-center c-mt-30">
-                <el-button type="primary" @click="okClick">确定</el-button>
-                <el-button type="primary" @click="cancelClick">取消</el-button>
+                <el-button type="warning" size="small" @click="okClick">确定</el-button>
+                <el-button type="warning" size="small" @click="cancelClick">取消</el-button>
             </div>
             
         </div>
@@ -236,7 +236,7 @@ export default {
                     sIds.push(item.sid);
             });
             
-            this.$api.post("dataPlatApp/dynamic/vehicle/condition/submit", {
+            this.$api.post("dynamic/vehicle/condition/submit", {
                     vehicleId: _this.searchKey.vehicleId,
                     startTime:_this.$dateUtil.dateToMs(_this.searchKey.startTime),
                     endTime:_this.$dateUtil.dateToMs(_this.searchKey.endTime),

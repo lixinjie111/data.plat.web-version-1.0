@@ -23,7 +23,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="warning" icon="el-icon-search" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
+                    <el-button type="warning" icon="el-icon-search" :loading='searchLoad' @click="searchClick('searchKey')">查询</el-button>
                     <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>          
             </el-form>
@@ -44,7 +44,7 @@
                 <el-table-column align="center" prop='num' label="参与者个数"></el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button class="el-button--small" type="primary" :loading="scope.row.loading" @click="detail(scope.row)">查看详情</el-button>
+                        <el-button size="mini" type="warning" plain @click="detail(scope.row)">查看详情</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -55,7 +55,7 @@
                     :current-page="pageOption.page" 
                     :total="pageOption.total"
                     @size-change="changePageSize"
-                    :page-sizes="[10,20,50,100,200,500]" 
+                    :page-sizes="[10,20,50,100,200]" 
                     :page-size="pageOption.size"
                     layout="total, sizes, prev, pager, next">
                 </el-pagination>
@@ -113,6 +113,7 @@ export default {
             infoIsShow:true,
             rsmdIsShow:false,
             loading:false,
+            searchLoad:false,
             searchKey: {
                 rsuId: '',
                 startTime: '',
@@ -175,7 +176,8 @@ export default {
     },
     methods: {
         init(){
-            this.initPaging();
+            this.initData();
+            // this.initPaging();
             this.initSearch();
         },
         initPageOption() {
@@ -207,30 +209,34 @@ export default {
             this.dataList = [];
             this.loading = true;
             // admin/v2x/findRsmPage
-            this.$api.post('dataPlatApp/v2x/findRsmPage',{  
+            this.$api.post('v2x/findRsmPage',{  
                 page: {
                         "pageSize": this.pageOption.size,
                         "pageIndex": this.pageOption.page-1
                 },
                 rsuId: this.searchKey.rsuId,
-                startTime:this.$dateUtil.dateToMs(this.searchKey.startTime),
-                endTime:this.$dateUtil.dateToMs(this.searchKey.endTime),       
+                startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
+                endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '',       
             },response => {
                 if(response.data.code == '200'){
                     this.dataList = response.data.data.list;
                     this.pageOption.total = response.data.data.totalCount;
                     this.$message.success(response.data.message);
                     this.loading = false;
+                    this.searchLoad = false;
                 }else{
                     this.$message.error(response.data.message);
                     this.loading = false;
+                    this.searchLoad = false;
                 }
             },error => {
                 this.$message.error("获取列表error！");
                 this.loading = false;
+                this.searchLoad = false;
             });
         },
         searchClick(){
+            this.searchLoad = true;
             let startTime = new Date(this.searchKey.startTime).getTime();
             let endTime = new Date(this.searchKey.endTime).getTime();
             if(this.getIsNan(startTime) == false && this.getIsNan(endTime) == false){

@@ -44,7 +44,7 @@
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
-                <el-button type="warning" icon="el-icon-search" @click="searchClick" :loading="searchloading">查询</el-button>
+                <el-button type="warning" icon="el-icon-search" @click="searchClick" :loading="searchLoading">查询</el-button>
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
@@ -72,11 +72,9 @@
             </el-table-column>
             <el-table-column align="center" min-width="20%" prop="endTime" label="操作">
                 <template slot-scope="scope">
-                    <el-button class="el-button--small" type="primary" :loading="scope.row.loading" @click="replay(scope.row)">回放</el-button>
-                    <el-button class="el-button--small export" type="primary" :loading="scope.row.loading" @click="exportClick(scope.row)">
-                        导出
-                    </el-button>
-                    <el-button class="el-button--small" type="primary" :loading="scope.row.delLoading" @click="delClick(scope.row)">删除</el-button>
+                    <el-button size="mini" type="warning" plain @click="replay(scope.row)">回放</el-button>
+                    <el-button size="mini" type="warning" plain @click="exportClick(scope.row)">导出</el-button>
+                    <el-button size="mini" type="warning" plain @click="delClick(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -88,7 +86,7 @@
                 :current-page="pageOption.page" 
                 :total="pageOption.total"
                 @size-change="changePageSize"
-                :page-sizes="[10,20,50,100,200,500]" 
+                :page-sizes="[10,20,50,100,200]" 
                 :page-size="pageOption.size"
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
@@ -100,7 +98,7 @@
 <script>
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
-
+import {queryRoadVideoList,downLoadZipFile,removeVideo} from '@/api/roadSide'
 export default {
     name: 'VideoDownload',
     components: {
@@ -127,10 +125,8 @@ export default {
                 roadName: '',
                 roadPointName: '',
                 source: '',
-                startBeginTime:'',
-                startEndTime:'',
-                stopBeginTime:'',
-                stopEndTime:''
+                startTime:'',
+                endTime:''
             },
             selector: [],
             auth: {
@@ -208,57 +204,40 @@ export default {
                 roadName: '',
                 roadPointName: '',
                 source: '',
-                startBeginTime:'',
-                startEndTime:'',
-                stopBeginTime:'',
-                stopEndTime:''
+                startTime:'',
+                endTime:''
             };
         },
         initData(){
             this.dataList = [];
             this.loading = false;
-            let params = Object.assign(this.searchKey, {
-                camCode: this.searchKey.camCode,
-                fileName: this.searchKey.fileName,
-                roadName: this.searchKey.roadName,
-                source: this.searchKey.source,
-                taskStatus: this.searchKey.taskStatus,
-                roadPointName: this.searchKey.roadPointName,
-                protocal: JSON.parse(localStorage.getItem('protocal')) || '',
-            });
-            this.$api.post('road/queryRoadVideoList',{
+            let protocal = JSON.parse(localStorage.getItem('protocal')) || '';
+            queryRoadVideoList({
                 "pageSize": this.pageOption.size,
                 "pageIndex": this.pageOption.page - 1,
-                "param":params
-                //  param:{
-                //     camCode: this.searchKey.camCode,
-                //     fileName: this.searchKey.fileName,
-                //     roadName: this.searchKey.roadName,
-                //     source: this.searchKey.source,
-                //     taskStatus: this.searchKey.taskStatus,
-                //     roadPointName: this.searchKey.roadPointName,
-                //     protocal:protocal,
-                //     startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]) || '',
-                // startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]) || '',
-                // stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]) || '',
-                // stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1]) || ''
-                // },
-            },response => {
-                if(response.status >= 200 && response.status < 300){
-                    if(response.data.data.list && response.data.data.list.length > 0){
-                        this.dataList = response.data.data.list;
-                        this.dataList.forEach(item => {
-                            item.delLoading = false;
-                        })
-                        this.pageOption.total = response.data.data.totalCount;
-                    }
+                'param':{
+                    camCode: this.searchKey.camCode,
+                    fileName: this.searchKey.fileName,
+                    roadName: this.searchKey.roadName,
+                    source: this.searchKey.source,
+                    taskStatus: this.searchKey.taskStatus,
+                    roadPointName: this.searchKey.roadPointName,
+                    protocal:protocal,
+                    startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]) || '',
+                    startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]) || '',
+                    stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]) || '',
+                    stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1]) || ''
+                },
+            }).then(res => {
+                if(res.status == '200'){
+                    this.dataList = res.data.list;
+                    this.dataList.forEach(item => {
+                        item.delLoading = false;
+                    })
+                    this.pageOption.total = res.data.totalCount;
+                    this.searchLoading = false;
+                    this.loading = false;
                 }
-                this.searchLoading = false;
-                this.loading = false;
-            },error => {
-                this.$message.error("获取列表error！");
-                this.loading = false;
-                this.searchLoading = false;
             });
         },
         handleSelectionChange(val) {
@@ -271,14 +250,8 @@ export default {
             this.searchLoading = true;
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                    let _params = {
-                        startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]),
-                        startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]),
-                        stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]),
-                        stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1])
-                    }
                     this.initPaging();
-                    this.initData(_params);
+                    this.initData();
                 } else {
                     return false;
                 }
@@ -294,17 +267,17 @@ export default {
         },
         downClick(item){
             if(this.selector.length > 0) {
-                this.$api.download('dataPlatApp/cam/downLoadZipFile',{'fileIds':this.selector},
-                    response => {
-                        if (response.status >= 200 && response.status < 300) {
-                            this.$message.success("下载视频成功 ！");
-                        } else {
-                            this.$message.error("下载视频失败 ！");
-                        }
-                    }, error => {
-                        this.$message.error("下载error！");
+                downLoadZipFile({
+                    'fileIds':this.selector
+                }).then(res => {
+                    if(res.status == '200'){
+                        this.$message.success(res.data.message);
+                    }else{
+                        this.$message.error(res.data.message);
                     }
-                );
+                })
+            }else{
+                this.$message.error('请选择要下载的文件!');
             }
         },
         s_to_hs(s){
@@ -324,29 +297,26 @@ export default {
             return h+':'+s;
         },
         delClick(item){
-            let config = window.confirm('确定要删除此条数据吗?');
-            if(config == true){
+            this.$confirm('确定要删除此条数据吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
                 let fileId = [];
-                item.delLoading = true;
                 fileId.push(item.fileName);
-                this.$api.post('dataPlatApp/cam/removeVideo',{  
-                        "fields": fileId          
-                },response => {
-                    if(response.status >= 200 && response.status < 300){
-                        let {code,message} = response.data;
-                        if(code == 200){
-                            this.$message.sucess('删除'+ message);
-                            this.initData();
-                        }else{
-                            this.$message.error('删除'+ message);
-                        }
-                        item.delLoading = false;
+                item.delLoading = true;
+                removeVideo({  
+                    "fields": fileId          
+                }).then(res => {
+                    if(res.status == '200'){
+                        this.$message.success(res.data.message);
+                        this.initData();
+                    }else{
+                        this.$message.error(res.data.message);
                     }
-                }, error => {
-                    this.$message.error("删除error！");
                     item.delLoading = false;
-                });
-            }
+                })
+            })
         },
         replay(item){
             let videoInfo = JSON.stringify(item);
@@ -354,19 +324,27 @@ export default {
             this.$router.push({name:'RoadVideoReplay',params:{data:item}});
         },
         changePageSize(value) {//每页显示条数变更
-          this.initPageOption();
-          this.pageOption.size = value;
-          this.initData();
-      },
-      changePageCurrent(value) {//页码变更
-          this.pageOption.page = value;
-          this.initData();
-      },
+            this.initPageOption();
+            this.pageOption.size = value;
+            this.initData();
+        },
+        changePageCurrent(value) {//页码变更
+            this.pageOption.page = value;
+            this.initData();
+        },
         indexMethod(index){
             return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         },
         exportClick(item) {
-            window.location.href="http://172.17.1.13:9091/dataPlatApp/road/download/"+item.fileName;
+            this.$confirm('是否导出文件?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                window.location.href="http://172.17.1.13:9091/dataPlatApp/road/download/"+item.fileName;
+            }).catch(() => {
+                this.$message.info('已取消导出');          
+            });
         }
     },
     mounted(){

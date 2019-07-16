@@ -217,7 +217,7 @@ export default {
     },
     methods: {
         findRoadMonitorCamera() {
-            this.$api.post('dataPlatApp/perception/findRoadMonitorCamera', {
+            this.$api.post('perception/findRoadMonitorCamera', {
                 "serialNum": this.$route.params.serialNum
             }, response => {
                 if(response.status == 200){
@@ -247,7 +247,7 @@ export default {
             this.$refs.percepDetailTable.setCurrentRow(this.dataList[_index]);
         },
         getVideoUrl() {
-            this.$api.post('dataPlatApp/perception/getVideoUrl',this.$route.params,response => {
+            this.$api.post('perception/getVideoUrl',this.$route.params,response => {
                 // console.log(response);
                 if(response.status >= 200 && response.status < 300){
                     if(response.data.code == 0) {
@@ -269,7 +269,7 @@ export default {
             this.dataList = [];
             this.tusvnOption.show = false;
             this.tusvnOption.loading = true;
-            this.$api.post('dataPlatApp/perception/findPerceptionRecords',this.perceptionData,response => {
+            this.$api.post('perception/findPerceptionRecords',this.perceptionData,response => {
                 if(response.status >= 200 && response.status < 300){
                     if(response.data.length > 0) {
 

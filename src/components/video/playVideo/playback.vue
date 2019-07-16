@@ -1,7 +1,7 @@
 <template>
     <!-- 基本信息 -->
-    <div class="yk-container c-mt-30">
-        <el-page-header @back="backClick"></el-page-header>
+    <div class="c-wrapper-20" v-cloak>
+        <p class="c-title c-border-bottom">历史回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
         <el-form ref="form" size="small" :inline="true">
             <el-form-item label="车牌号：">
                 {{plateNo ? plateNo : '--'}}
@@ -91,7 +91,7 @@ export default {
             this.serialNum = historyInfo.camId;
             this.position = historyInfo.camDirection;
             this.camStatus = historyInfo.camStatus;
-            this.$api.post('dataPlatApp/vehicle/queryDeviceType',{//获取设备id
+            this.$api.post('vehicle/queryDeviceType',{//获取设备id
                 'vehicleId':this.vehicleId
                 },response => {
                     if(response.data.code == '200'){
@@ -104,7 +104,7 @@ export default {
             this.getGps(this.vehicleId,this.historyStartTimes,this.historyEndTimes,this.deviceType);
         },
         getGps(vehicleId,startTime,endTime,deviceType){
-          this.$api.post('dataPlatApp/vehicle/historyGpsInfo',{
+          this.$api.post('vehicle/historyGpsInfo',{
             'vehicleId':vehicleId,'type':deviceType,'beginTime':startTime,'endTime':endTime
             },response => {
                 if(response.data.code == 200){

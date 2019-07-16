@@ -55,7 +55,7 @@ export default {
                     headers:{'Content-Type':'multipart/form-data'}  
                 }; //添加请求头
 
-                let url = window.cfg.url;
+                let url = window.config.url;
                 if(this.type == 'term-data-import'){    // 车载终端
                     url = url + 'admin/sys/vehicleTerminal/importVehicleProperty';
                 }else if(this.type == 'car-manage'){        // 车辆管理
@@ -83,7 +83,7 @@ export default {
 
                         if(response.data.status == '700'){
                             const fileName = response.data.message;
-                            const fUrl = window.cfg.url + '/temp/' + fileName;
+                            const fUrl = window.config.url + '/temp/' + fileName;
                             window.open(fUrl);
                         }
 
@@ -102,15 +102,15 @@ export default {
                
             },
             downTemplate(){
-                let url = window.cfg.url;
+                let url = window.config.url;
                 if(this.type == 'term-data-import'){
-                    url = url + window.cfg.carTerminalTemplate;
+                    url = url + window.config.carTerminalTemplate;
                 }else if(this.type == 'car-manage'){
-                    url =  url + window.cfg.carManageTemplate;
+                    url =  url + window.config.carManageTemplate;
                 }else if(this.type == 'device-manage-import'){
-                    url = url + window.cfg.deviceManageTemplate;
+                    url = url + window.config.deviceManageTemplate;
                 }else if(this.type == 'sim-manage'){
-                    url = url + window.cfg.simManageTemplate;
+                    url = url + window.config.simManageTemplate;
                 }
                 window.open(url);
             }

@@ -1,107 +1,132 @@
 <template>
-    <div>
-        <div class="yk-btn-box yk-right yk-b-10">
-            <span class="yk-btn-back" @click="backClick();">返回</span>
-        </div>
-        <div class="yk-btn-box yk-left" style="border-bottom:1px dashed #d5e1e2;">
-            <span class="title">新建下载任务</span>
-        </div>
-        <div class="yk-panel-box">
-            <div class="yk-crud-box">
-                <div class="yk-form-block yk-center">
-                    <div class="yk-add-box">
-                        <div class="yk-block yk-270">
-                            <div class='yk-label-100' style="margin-left:-16px;">
-                                <label class="yk-w-100">行政区域:</label>
-                            </div>
-                            <div class="yk-input-300">
-                                <select class="yk-select" v-model="provinceSelected" @change="findMunicipal">
-                                    <option v-for='(item,index) in provinceData' :key='index' :value='item'>{{item.name}}</option>
-                                </select>
-                                <select class="yk-select mt10" v-model='municiSelected' @change='findArea'>
-                                    <option v-for='(item,index) in municipalData' :key='index' :value="item">{{item.name}}</option>
-                                </select>
-                                <select class="yk-select mt10" v-model="areaSelected" @change='changeRoad'>
-                                    <option v-for="(item,index) in areaList" :key="index" :value="item">{{item.name}}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="yk-block yk-270" v-show='isPlate' style="width: 304px;line-height:26px;">
-                            <div class='yk-label-100'>
-                                <label class="yk-w-100">道路名称:</label>
-                            </div>
-                            <div class="yk-input-300">
-                                <select class="yk-select" v-model="roadSelected" @change="getRoadPoint">
-                                    <option v-for="(item,index) in roadList" :key="index" :value="item">{{item.name}}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="yk-block yk-270" style="width: 304px;line-height:26px;">
-                            <div class=' yk-label-100'>
-                                <label class="yk-w-100">摄像头编号:</label>
-                            </div>
-                            <div class="yk-input-300">
-                              <select class="yk-select" v-model="camSelected">
-                                <option v-for="(item,index) in roadCamList" :key="index" :value="item">{{item.deviceId}}</option>
-                              </select>
-                            </div>
-                        </div>
-                        <div class="yk-block yk-270" style="width: 310px;">
-                            <label class="yk-w-100 timeBox">开始时间:</label>
-                            <date-picker class=" data-control-css yk-input" lang="zh" type="datetime" format="YYYY-MM-DD HH:mm:ss"
-                         placeholder="选择开始时间" :editable="false" :not-after="endTime"
-                         v-model="startTime" style="width:165px;"></date-picker>
-                            <label title="开始时间不能为空" class="yk-form-tip">*</label>
-                            <span class="yk-tip" id="startTimeTip" v-show='isStartTipsShow'>开始时间不能为空 ！</span>
-                         <div style="height:10px;"></div>
-                         <label class="yk-w-100 timeBox">结束时间:</label>
-                            <date-picker class="data-control-css yk-input" lang="zh" type="datetime" format="YYYY-MM-DD HH:mm:ss"
-                         placeholder="选择结束时间" :editable="false" :not-before="startTime"
-                         v-model="endTime" style="width:165px;"></date-picker>
-                            <label title="结束时间不能为空" class="yk-form-tip">*</label>
-                            <span class="yk-tip" id="endTimeTip" v-show='isEndTipsShow'>结束时间不能为空 ！</span>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="yk-btn-box yk-center yk-t-30">
-                    <span class="yk-btn" style="margin-right:10px;" @click='ok'>确定</span>
-                    <span class="yk-btn" @click="backClick();">取消</span>
+    <div class="wrapper" v-cloak>
+        <div class="c-wrapper-20 c-detail-box">
+            <p class="c-title c-border-bottom">新建任务<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
+            <div class="c-add-box">
+                <el-form ref="addForm" :inline="true" :model="formParams" :rules="rules" size="small" label-position="right" label-width="120px">
+                    <el-form-item label="行政区域">
+                        <el-select
+                            v-model.trim="provinceSelected"
+                            @change="findMunicipal">
+                            <el-option
+                                v-for="item in provinceData"
+                                :key="item.name"
+                                :label="item.name"
+                                :value="item.name">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="市辖区">
+                        <el-select
+                            v-model.trim="municiSelected"
+                            @change='findArea'>
+                            <el-option
+                                v-for="item in municipalData"
+                                :key="item.name"
+                                :label="item.name"
+                                :value="item.name">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="区">
+                        <el-select
+                            v-model.trim="areaSelected"
+                            @change='changeRoad'>
+                            <el-option
+                                v-for="item in areaList"
+                                :key="item.name"
+                                :label="item.name"
+                                :value="item.name">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="道路名称">
+                        <select class="yk-select" v-model="roadSelected" @change="getRoadPoint">
+                            <option v-for="(item,index) in roadList" :key="index" :value="item">{{item.name}}</option>
+                        </select>
+                    </el-form-item>
+                    <el-form-item label="摄像头编号">
+                        <select class="yk-select" v-model="camSelected" @change="getRoadPoint">
+                            <option v-for="(item,index) in roadCamList" :key="index" :value="item">{{item.serialNum}}</option>
+                        </select>
+                    </el-form-item>
+                    <el-form-item label="开始时间" prop='startTime'>
+                        <el-date-picker
+                            v-model.trim="formParams.startTime"
+                            type="datetime"
+                            placeholder="开始时间"
+                            :picker-options="startTimeOption">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="结束时间" prop='endTime'>
+                        <el-date-picker
+                            v-model.trim="formParams.endTime"
+                            type="datetime"
+                            placeholder="结束时间"
+                            :picker-options="endTimeOption">
+                        </el-date-picker>
+                    </el-form-item>
+                </el-form>
+                <div class="c-text-center">
+                    <el-button type="warning" size="small" @click="submitFunc" :loading="submitloading">确定</el-button>
+                    <el-button type="warning" size="small" plain @click="backClick">取消</el-button>
                 </div>
             </div>
-
         </div>
-
     </div>
-
 </template>
+
 <script>
-import DatePicker from 'vue2-datepicker'
-import Paging from '@/common/view/Paging.vue'
-import { debug } from 'util';
+import {queryRoadRegionTree,queryRoadCamList,roadDownloadTask} from '@/api/roadSide';
 export default {
-    // props: ['title','type','data'],
-    components: {
-        Paging,
-        DatePicker
-    },
-    data(){
+    name: 'MenuOneAdd',
+    data () {
+        let _this = this,
+            _checkStartTime = (rule, value ,callback) => {
+                let _startTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null,//标准时间转为时间戳
+                    _endTime = this.formParams.endTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.formParams.endTime)) : null;//标准时间转为时间戳
+                if(_startTime){
+                    if(_endTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            },
+            _checkEndTime = (rule, value ,callback) => {
+                let _startTime = this.formParams.startTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.formParams.startTime)) : null,//标准时间转为时间戳
+                    _endTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null;//标准时间转为时间戳
+                if(_endTime){
+                    if(_startTime) {
+                        if(_startTime > _endTime){
+                            callback(new Error('开始时间必须小于结束时间'));
+                        }else {
+                            callback();
+                        }
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            };
         return {
             camId:'',
-            startTime:'',
-            endTime:'',
             provinceSelected:'',
             municiSelected:'',
             areaSelected:'',
             roadSelected:'',
             camSelected:'',
-            searchPlateNo:'',
             vehicleSearch:'',
             codeSearchVal:'',
             isPlateSearch:false,
-            isPlateNo:false,
             isPlate:true,
-            isVehicle:false,
             isSearchVehicle:false,
             isSearchCode:false,
             isStartTipsShow:false,
@@ -111,20 +136,51 @@ export default {
             plateNoList:[],
             roadCamList:[{name:'请选择',code:'0'}],
             roadList:[{name:'请选择',code:'0'}],
-            searchKey:{
+            provinceData:[{name:'请选择',code:'0'}],//省市
+            municipalData:[{name:'请选择',code:'0'}],//辖区
+            areaList:[{name:'请选择',code:'0'}],
+            submitloading: false,
+            formParams: {
                 vehicleId:'',
                 factoryName:'',
                 model:'',
                 plateNo:'',
-                serialNum:''
+                serialNum:'',
+                startTime: '',
+                endTime: ''
             },
-            typeList:[
-                {name:'车牌号',val:'0'},
-                {name:'VehicleID',val:'1'},
-            ],
-            provinceData:[{name:'请选择',code:'0'}],//省市
-            municipalData:[{name:'请选择',code:'0'}],//辖区
-            areaList:[{name:'请选择',code:'0'}]
+            rules:{
+                startTime:[
+                    { validator: _checkStartTime, trigger: 'blur' }
+                ],
+                endTime:[
+                    { validator: _checkEndTime, trigger: 'blur' }
+                ]
+            },
+            startTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _endDateVal = _this.formParams.endTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.formParams.endTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_endDateVal) {
+                        return _time > _endDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
+                }
+            },
+            endTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _startDateVal = _this.formParams.startTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.formParams.startTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_startDateVal) {
+                        return  _time < _startDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
+                }
+            }, 
         }
     },
     computed: {
@@ -159,39 +215,35 @@ export default {
     },
     methods: {
         init(){
-            this.roadRegion();
+            this.queryRoadRegionTree();
             this.isStartTipsShow = false;
             this.isEndTipsShow = false;
             this.provinceSelected = this.provinceData[0];
             this.municiSelected = this.municipalData[0];
             this.areaSelected = this.areaList[0];
         },
-        roadRegion(){
-            this.$api.post('dataPlatApp/road/queryRoadRegionTree',{
-            },response => {
-                if(response.status >= 200 && response.status < 300){
-                    if(response.data.code == 200){
-                        this.initDataList = response.data.data;
-                        let len = this.initDataList.length;
-                        this.provinceData = [];
-                        for(let i=0;i<len;i++){//遍历省市数据
-                            let provinceObj = {};
-                            provinceObj.name = this.initDataList[i].name;
-                            provinceObj.code = this.initDataList[i].code;
-                            this.provinceData.push(provinceObj);
-                        }
-                        this.provinceData.unshift({name:'请选择',code:'0'})
+        queryRoadRegionTree(){
+            queryRoadRegionTree().then( res => {
+                if(res.status == '200'){
+                    this.initDataList = res.data;
+                    let len = this.initDataList.length;
+                    this.provinceData = [];
+                    for(let i=0;i<len;i++){//遍历省市数据
+                        let provinceObj = {};
+                        provinceObj.name = this.initDataList[i].name;
+                        provinceObj.code = this.initDataList[i].code;
+                        this.provinceData.push(provinceObj);
                     }
+                    this.provinceData.unshift({name:'请选择',code:'0'})
                 }
-            });
+            })
         },
         findMunicipal(item){
             let len = this.initDataList.length;
-            let provinceCode = this.provinceSelected.code;
             this.data = [];//切换下拉选择时,区路数据初始化
             this.municipalData = [];
             for(let j=0;j<len;j++){//查找辖区数据
-                if(provinceCode == this.initDataList[j].code){
+                if(item == this.initDataList[j].name){
                     let municipalObj = {};
                     municipalObj.name = this.initDataList[j].dataList[0].name;
                     municipalObj.code = this.initDataList[j].dataList[0].code;
@@ -202,40 +254,34 @@ export default {
                 }
             }
         },
-        findArea(){//遍历区数据
+        findArea(item){//遍历区数据
             let len = this.initDataList.length;
             let areaCode = this.municiSelected.code;
             for(let i=0;i<len;i++){
-                if(areaCode == this.initDataList[i].dataList[0].code){
+                if(item == this.initDataList[i].dataList[0].name){
                     this.areaList = this.initDataList[i].dataList[0].dataList;
                 }
             }
         },
-        changeRoad(){
+        changeRoad(item){
             let len = this.initDataList.length;
             let roadCode = this.areaSelected.code;
             for(let i=0;i<len;i++){
-                if(roadCode == this.initDataList[i].dataList[0].dataList[0].code){
+                if(item == this.initDataList[i].dataList[0].dataList[0].name){
                     this.roadList = this.initDataList[i].dataList[0].dataList[0].dataList;
                 }
             }
         },
         getRoadPoint(){
-            this.$api.post('dataPlatApp/road/queryRoadCamList',{
+            queryRoadCamList({
                 "roadCode":this.roadSelected.code
-            },response => {
-                if(response.status >= 200 && response.status < 300){
-                    if(response.data.code == 200){
-                        if(response.data.data != [] || response.data.data != null){
-                          this.roadCamList = response.data.data;
-                        }
-                    }
+            }).then( res => {
+                if(res.status == '200'){
+                    this.roadCamList = res.data;
+                }else{
+                    this.$message.error(res.message);
                 }
-            });
-        },
-        backClick(){
-            this.codeSearchVal = '';
-            this.$emit('addTask');
+            })
         },
         searchPlateShow(){
             this.isPlateSearch = true;
@@ -271,14 +317,14 @@ export default {
                 this.isSearchCode = false;
             },1000)
         },
-        ok(){
+        submitFunc() {
             let roadName = this.roadSelected.name;
             let protocal = this.camSelected.protocol;
             let pointName = this.camSelected.rsPtName;
             let camCode = this.camSelected.deviceId;
             let camId = this.camSelected.serialNum;
-            let startTime = this.$dateUtil.dateToMs(this.startTime);
-            let endTime = this.$dateUtil.dateToMs(this.endTime);
+            let startTime = this.formParams.startTime ? this.$dateUtil.dateToMs(this.formParams.startTime) : '';
+            let endTime = this.formParams.endTime ? this.$dateUtil.dateToMs(this.formParams.endTime) : '';
             if(this.startTime == ''){
                 this.isStartTipsShow = true;
                 return;
@@ -291,140 +337,32 @@ export default {
             }else{
                 this.isEndTipsShow = false;
             }
-            this.$api.post('dataPlatApp/road/roadDownloadTask',{
-              'protocal':protocal,
-              'camId':camId,
-              'camCode':camCode,
-              'roadName':roadName,
-              'roadPointName':pointName,
-              'startTime':startTime,
-              'endTime':endTime
-            },response => {
-               if(response.data.code == '200'){
-                 var fileId = response.data.data;
-                 this.$message({
-                    message: '添加成功',
-                    type: 'sucess'
-                  });
-                 this.$emit('addTask');
-               }
-               else if(response.data.code == '510'){
-                 this.$message({
-                    message: response.data.message,
-                    type: 'error'
-                  });
-                  return;
-               }
-            });
-        }
+            roadDownloadTask({
+                'protocal':protocal,
+                'camId':camId,
+                'camCode':camCode,
+                'roadName':roadName,
+                'roadPointName':pointName,
+                'startTime':startTime,
+                'endTime':endTime
+            }).then(res => {
+                if(res.status == '200'){
+                    this.$emit('backDownPage');
+                }else{
+                    this.$message.error(res.message);
+                }
+            })
+        },
+    	backClick() {
+    		this.$emit('backDownPage');
+    	}
     },
     mounted(){
         this.init();
-        this.isSearch = false;
     }
 }
 </script>
-<style scoped>
-.yk-b-10{
-    margin-bottom: 10px;
-}
-.yk-t-30{
-    margin-top:30px;
-}
-.yk-b-30{
-    margin-bottom: 30px;
-}
-.yk-r-30{
-    margin-right: 30px;
-}
-.yk-20{
-    height: 20px;
-}
-.yk-24{
-    height: 24px;
-    width: 171px;
-}
-.yk-list{
-    margin-top:5px;
-    padding: 5px 10px;
-    height: 120px;
-    overflow-y: auto;
-}
-.yk-270{
-    width: 320px;
-    float: left;
-}
-.yk-input-300{
-    width: 200px;
-    display: inline-block;
-    vertical-align: top;
-    text-align: left;
-    position: relative;
-}
-.yk-input-300 ul{
-    width:194px;
-    background:#a9daff;
-    position:absolute;
-    top:26px;
-    left:-1px;
-    z-index:1000;
-    padding:5px 4px 2px;
-    box-sizing: border-box;
-    border:1px solid #d3dce6;
-    box-shadow: 2px 2px 4px rgba(109, 221, 255, 0.479);
-}
-.yk-input-300 ul li{
-    cursor: pointer;
-    font-size:12px;
-    line-height: 24px;
-    border-bottom: 1px solid #fff;
-}
-.yk-input-300 ul li:last-child{
-    border-bottom: none;
-}
-.yk-label-100{
-    display: inline-block;
-    width: 100px;
-    text-align: right;
 
-}
-.yk-gap{
-    margin: 10px 0px 10px 0px;
-    background: #ccd;
-}
-
-.yk-panel-box{
-    position: relative;
-    overflow-y: auto;
-}
-.yk-add-box{
-    width:304px;
-}
-.yk-add-box label.yk-w-40{
-    width:60px;
-    text-align: right;
-    line-height:27px;
-}
-.yk-add-box select,.yk-add-box input{
-    border:1px solid #d3dce6;
-    width:192px !important;
-    height:22px;
-    line-height: 22px;
-}
-.yk-add-box select{
-    height:26px;
-    line-height: 26px;
-}
-.yk-add-box .yk-block,.mt10{
-    margin-top:10px;
-}
-.el-date-picker__time-header .el-date-picker__editor-wrap input.el-input__inner{
-    width:142px !important;
-}
-.timeBox{
-    display:inline-block;
-    float:left;
-    text-align:right;
-}
+<style lang="scss" scoped>
+@import '@/assets/scss/theme.scss';
 </style>
-

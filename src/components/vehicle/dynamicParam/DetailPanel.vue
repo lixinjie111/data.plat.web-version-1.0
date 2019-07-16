@@ -42,7 +42,7 @@
                         :current-page="pageOption.page"
                         :total="pageOption.total" 
                         @size-change="handleSizeChange"
-                        :page-sizes="[10,20,50,100,200,500]" 
+                        :page-sizes="[10,20,50,100,200]" 
                         :page-size="pageOption.size"
                         layout="total, sizes, prev, pager, next">
                     </el-pagination>
@@ -94,7 +94,7 @@ export default {
             let _this = this;
             _this.dataList = [];
             _this.loading = true;
-            _this.$api.post('dataPlatApp/dynamic/event/data/list',{     
+            _this.$api.post('dynamic/event/data/list',{     
                 "pageSize": this.pageOption.size,
                 "pageIndex": this.pageOption.index,           
                 "param":{

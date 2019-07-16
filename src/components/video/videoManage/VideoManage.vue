@@ -1,20 +1,20 @@
 <template>
     <!-- 基本信息 -->
-    <div class="c-wrapper-20" v-cloak v-if="!panel.show && !panel.cfgShow">
-        <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
-            <el-form-item label="文件名 ">
+    <div class="c-wrapper-20" v-cloak v-show="!panel.show && !panel.cfgShow">
+        <el-form ref="searchForm" :inline="true" class="demo-form-inline" size="small">
+            <el-form-item label="文件名: ">
                 <el-input v-model.trim="searchKey.fileName"></el-input>
             </el-form-item>
-            <el-form-item label="车辆编号">
+            <el-form-item label="车辆编号: ">
                 <el-input v-model.trim="searchKey.VehicleId"></el-input>
             </el-form-item>
-            <el-form-item label="车牌号">
+            <el-form-item label="车牌号: ">
                 <el-input v-model.trim="searchKey.plateNo"></el-input>
             </el-form-item>
-            <el-form-item label="摄像头序列号">
+            <el-form-item label="摄像头序列号: ">
                 <el-input v-model.trim="searchKey.camId"></el-input>
             </el-form-item>
-            <el-form-item label="视频来源">
+            <el-form-item label="视频来源: ">
                 <el-select v-model="searchKey.source">
                     <el-option
                         v-for="item in sourceList"
@@ -50,36 +50,30 @@
         <div class="c-button-wrapper c-text-right">
             <el-button size="mini" plain icon="el-icon-download" @click="downClick">批量下载</el-button>
         </div>
-        
-        <el-table 
-            :data="dataList" 
-            v-loading='loading' 
-            stripe 
-            border 
-            max-height="620" 
-            class='c-mb-70'
-            @selection-change="handleSelectionChange"
-            >
-            <el-table-column fixed align="center" min-width="1%" type="selection"  @selection-change="handleSelectionChange"></el-table-column>
-            <el-table-column align="center" label="序号" type="index" :index="indexMethod"></el-table-column>
+        <el-table stripe class="c-mt-10"
+            :data="dataList"
+            v-loading="loading"
+            @selection-change="handleSelectionChange">
+            <el-table-column align="center" min-width="1%" type="selection"></el-table-column>
+            <el-table-column align="center" min-width="2%" label="序号" type="index" :index="indexMethod"></el-table-column>
             <el-table-column align="center" min-width="12%" label="文件名称" prop="fileName"></el-table-column>
             <el-table-column align="center" min-width="8%" label="车辆编号" prop="vehicleId"></el-table-column>
             <el-table-column align="center" min-width="7%" label="车牌号" prop="plateNo"></el-table-column>
-            <el-table-column align="center" min-width="8%" label="摄像头序列号" prop="camId"></el-table-column>
+            <el-table-column align="center" min-width="12%" label="摄像头序列号" prop="camId"></el-table-column>
             <el-table-column align="center" min-width="10%" label="开始时间" prop="startTime"></el-table-column>
             <el-table-column align="center" min-width="10%" label="结束时间" prop="endTime"></el-table-column>
-            <el-table-column align="center" min-width="10%" label="视频时长(Min)">
+            <el-table-column align="center" min-width="6%" label="视频时长(Min)">
                 <template slot-scope="scope">{{s_to_hs(scope.row.duration)}}</template>
             </el-table-column>
-            <el-table-column align="center" min-width="10%" label="视频大小(MB)" prop="fileSizeUnit"></el-table-column>
-            <el-table-column align="center" min-width="6%" label="视频来源">
+            <el-table-column align="center" min-width="6%" label="视频大小(MB)" prop="fileSizeUnit"></el-table-column>
+            <el-table-column align="center" min-width="8%" label="视频来源">
                 <template slot-scope="scope">{{scope.row.source==1 ? '直播' : '手动获取'}}</template>
             </el-table-column>
             <el-table-column align="center" min-width="18%" label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="primary" @click="replay(scope.row)">回放</el-button>
-                    <el-button size="mini" type="primary" @click="exportClick(scope.row)">导出</el-button>
-                    <el-button size="mini" type="primary" :loading="scope.row.delLoading" @click="delClick(scope.row)">删除</el-button>
+                    <el-button size="mini" type="warning" plain @click="replay(scope.row)">回放</el-button>
+                    <el-button size="mini" type="warning" plain @click="exportClick(scope.row)">导出</el-button>
+                    <el-button size="mini" type="warning" plain @click="delClick(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -90,7 +84,7 @@
                 :current-page="pageOption.page" 
                 :total="pageOption.total"
                 @size-change="changePageSize"
-                :page-sizes="[10,20,50,100,200,500]" 
+                :page-sizes="[10,20,50,100,200]" 
                 :page-size="pageOption.size"
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
@@ -99,9 +93,12 @@
 </template>
 <script>
 import TList from '@/common/utils/list.js'
+import VueDatepickerLocal from 'vue-datepicker-local'
+import Paging from '@/common/view/Paging.vue'
 export default {
     name: 'VideoManage',
     components: {
+        Paging,VueDatepickerLocal
     },
     data(){
         let _this = this;
@@ -118,8 +115,8 @@ export default {
                 plateNo: '',
                 camId: '',
                 source:'',
-                startTime:'',
-                endTime:''
+                startTime: '',
+                endTime: '',
             },
             selector: [],
             auth: {
@@ -144,15 +141,6 @@ export default {
                 top: 0,
                 accessPlatform: null,
             },
-            rules:{
-                startTime:[
-                    { trigger: 'blur' }
-                ],
-                endTime:[ 
-                    { trigger: 'blur' }
-                ]
-
-            },
             timeOption: {
                 disabledDate: time => {
                     let _time = time.getTime(),
@@ -163,15 +151,15 @@ export default {
         }
     },
     methods: {
-        initPageOption() {
-            this.dataList = [];
-            this.pageOption.total = 0;
-            this.pageOption.page = 1;
-        },
         init(){
             this.initPaging();
             this.initSearch();
             this.initData();
+        },
+        initPageOption() {
+            this.dataList = [];
+            this.pageOption.total = 0;
+            this.pageOption.page = 1;
         },
         replay(item){
             let manaInfo = JSON.stringify(item);
@@ -179,16 +167,15 @@ export default {
             this.$router.push({name:'PlayBack'});
         },
         exportClick(item) {
-            this.$confirm('是否导出该文件?', '提示', {
+            this.$confirm('是否导出文件?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                window.location.href="http://172.17.1.13:9099/dataPlatApp/cam/download/"+item.fileName;
+                window.location.href="http://172.17.1.13:9091/dataPlatApp/cam/download/"+item.fileName;
             }).catch(() => {
-                this.$message.info('已取消导出操作!');          
+                this.$message.info('已取消导出');          
             });
-            
         },
         initPaging(){
             this.pageOption.page = 1;
@@ -202,10 +189,8 @@ export default {
                 plateNo: '',
                 camId: '',
                 source:'',
-                startBeginTime:'',
-                startEndTime:'',
-                stopBeginTime:'',
-                stopEndTime:''
+                startTime:'',
+                endTime:''
             };
         },
         initData(){
@@ -213,13 +198,17 @@ export default {
             this.loading = true;
             let params = Object.assign(this.searchKey, {
                 protocal: JSON.parse(localStorage.getItem('protocal')) || '',
+                startBeginTime:this.$dateUtil.dateToMs(this.searchKey.startTime[0]) || '',
+                startEndTime:this.$dateUtil.dateToMs(this.searchKey.startTime[1]) || '',
+                stopBeginTime:this.$dateUtil.dateToMs(this.searchKey.endTime[0]) || '',
+                stopEndTime:this.$dateUtil.dateToMs(this.searchKey.endTime[1]) || ''
             });
-            this.$api.post('dataPlatApp/cam/queryVideoList',{
+            this.$api.post('cam/queryVideoList',{
                 "pageSize": this.pageOption.size,
-                "pageIndex": this.pageOption.page - 1,
+                "pageIndex": this.pageOption.page,
                 "param": params,
             },response => {
-                if(response.status >= 200 && response.status < 300){
+                if(response.data.code == 200){
                     if(response.data.data.list && response.data.data.list.length > 0) {
                         response.data.data.list.forEach(item => {
                             item.delLoading = false;
@@ -242,7 +231,6 @@ export default {
             return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         },
         handleSelectionChange(val) {
-            console.log(val)
             this.selector = [];
             val.forEach(item => {
                 this.selector.push(item.fileName);
@@ -250,25 +238,11 @@ export default {
         },
         searchClick(){
             this.searchLoading = true;
-            this.$refs.searchForm.validate((valid) => {
-                if (valid) {
-                    let _params = {
-                        startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]),
-                        startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]),
-                        stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]),
-                        stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1])
-                    }
-                    this.initPaging();
-                    this.initData(_params);
-                } else {
-                    return false;
-                }
-            });
-            // this.initPaging();
+            this.initPaging();
+            this.initData();
         },
         resetClick(){
             this.init();
-            this.$refs.searchForm.resetFields();
         },
         vehiclePanelFn(e){
             this.panel.show = false;
@@ -279,7 +253,6 @@ export default {
             this.panel.cfgShow = false;
         },
         downClick(item){
-            console.log(this.selector.length)
             if(this.selector.length > 0) {
                 this.$api.download('cam/downLoadZipFile',{'fileIds':this.selector},
                     response => {
@@ -293,8 +266,7 @@ export default {
                     }
                 );
             }else{
-                this.$message.error('请选择需要导出的文件!');
-                return false;
+                this.$message.error('请选择要下载的文件!');
             }
         },
         s_to_hs(s){
@@ -314,7 +286,7 @@ export default {
             return h+':'+s;
         },
         delClick(item){
-            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            this.$confirm('确定要删除此条数据吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -322,7 +294,7 @@ export default {
                 let fileId = [];
                 fileId.push(item.fileName);
                 item.delLoading = true;
-                this.$api.post('dataPlatApp/cam/removeVideo',{  
+                this.$api.post('cam/removeVideo',{  
                         "fields": fileId          
                 },response => {
                     if(response.status >= 200 && response.status < 300){
@@ -335,10 +307,13 @@ export default {
                         }
                         item.delLoading = false;
                     }
-                })
-            }).catch(() => {
-                this.$message.info('已取消删除操作');          
-            });
+                }, error => {
+                    this.$message.error("删除error！");
+                    item.delLoading = false;
+                });
+                }).catch(() => {
+                    this.$message.info('已取消删除');          
+                });
         },
         replayFn(data){
             this.panel.show = false;
@@ -352,7 +327,7 @@ export default {
         changePageCurrent(value) {//页码变更
             this.pageOption.page = value;
             this.initData();
-        },
+        }
     },
     mounted(){
         this.init();

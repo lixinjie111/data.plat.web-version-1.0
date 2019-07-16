@@ -95,15 +95,15 @@
             </el-table-column>
         </el-table>
             
-        <div class="pages">
+        <div class="c-page clearfix">
             <el-pagination
                 background
-                @current-change="handleCurrentChange" 
-                :current-page="paging.index" 
-                :total="paging.total"
-                @size-change="handleSizeChange"
-                :page-sizes="[10,20,50,100,200,500]" 
-                :page-size="paging.size"
+                @current-change="changePageCurrent" 
+                :current-page="pageOption.page" 
+                :total="pageOption.total"
+                @size-change="changePageSize"
+                :page-sizes="[10,20,50,100,200]" 
+                :page-size="pageOption.size"
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
         </div>
@@ -157,10 +157,10 @@ export default {
         // 3402000000132000001101
         // 3402000000132000000301
         return {
-            paging: {
+            pageOption: {
                 size: 10,
                 total: 0,
-                index: 1
+                page: 1
             },
             loading: false,
             cameraIdList:[],
@@ -214,40 +214,6 @@ export default {
                     }
                 }
             }, 
-
-            // rules:{
-            //     serialNum:[
-            //         { required: true, message: '摄像头序列号不能为空!', trigger: 'blur' },
-            //     ],
-            //     startTime:[
-            //         { required: true, message: '开始时间不能为空', trigger: 'change' }
-            //     ],
-            //     endTime:[
-            //         { required: true, message: '结束时间不能为空', trigger: 'change' }
-            //     ],
-
-            // },
-            
-            // startTimeOption: {
-            //     disabledDate: time => {
-            //         let endDateVal = _this.searchKey.endTime;
-            //         if (endDateVal) {
-            //             return time.getTime() > new Date(endDateVal).getTime() || time.getTime() > new Date().getTime();
-            //         }else {
-            //             return time.getTime() > new Date().getTime();
-            //         }
-            //     }
-            // },
-            // endTimeOption: {
-            //     disabledDate: time => {
-            //         let startDateVal = _this.searchKey.startTime;
-            //         if (startDateVal) {
-            //             return  time.getTime() < new Date(startDateVal).getTime() || time.getTime() > new Date().getTime();
-            //         }else {
-            //             return time.getTime() > new Date().getTime();
-            //         }
-            //     }
-            // },
             panel: {
                 title: '提示',
                 type: '',
@@ -269,6 +235,11 @@ export default {
         // console.log(new Date(_timeEnd));
     },
     methods: {
+        initPageOption() {
+            this.dataList = [];
+            this.pageOption.total = 0;
+            this.pageOption.page = 1;
+        },
         changeEvent($event, type) {
             if($event == '') {
                 this.searchKey.rsPtId = '';
@@ -334,7 +305,7 @@ export default {
   
         },
         getCameraIds(type){//获取摄像头Id列表
-            this.$api.post('dataPlatApp/perception/findRoadMonitorCamera', this.requestData, response => {
+            this.$api.post('perception/findRoadMonitorCamera', this.requestData, response => {
                 if(response.status == 200){
                     let info = response.data;
                     if(info.length > 0) {
@@ -369,14 +340,14 @@ export default {
         initData(params){
             this.initPaging();
             this.loading = true;
-            this.$api.post('dataPlatApp/perception/findVideoRecords',params,response => {
+            this.$api.post('perception/findVideoRecords',params,response => {
                 if(response.status >= 200 && response.status < 300){
                     response.data.forEach((item) => {
                         item.loading = false;
                     });
                     this.dataList = response.data.data;
-                    this.paging.total = response.data.data.length;
-                    if(this.paging.total > this.paging.size) {
+                    this.pageOption.total = response.data.data.length;
+                    if(this.pageOption.total > this.paging.size) {
                         this.initShowData();
                     }else {
                         this.showDataList = this.dataList;
@@ -393,25 +364,25 @@ export default {
         initPaging() {
             this.dataList = [];
             this.showDataList = [];
-            this.paging.total = 0;
-            this.paging.index = 1;
+            this.pageOption.total = 0;
+            this.pageOption.page = 1;
         },
-        handleSizeChange(value) {//每页显示条数变更
-            this.initPaging();
-            this.paging.size = value;
-            this.initShowData();
+        changePageSize(value) {//每页显示条数变更
+            this.initPageOption();
+            this.pageOption.size = value;
+            this.initData();
         },
-        handleCurrentChange(value) {//页码变更
-            this.paging.index = value;
-            this.initShowData();
+        changePageCurrent(value) {//页码变更
+            this.pageOption.page = value;
+            this.initData();
         },
         initShowData() {
-            let _index = this.paging.index-1;
+            let _index = this.pageOption.page-1;
             let _handleList = Object.assign([], this.dataList);
-            this.showDataList = _handleList.splice(_index*this.paging.size, this.paging.size);
+            this.showDataList = _handleList.splice(_index*this.pageOption.size, this.pageOption.size);
         },
         indexMethod(index) {
-            return (this.paging.index-1) * this.paging.size + index + 1;
+            return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         },
         searchClick(){
             this.$refs.searchForm.validate((valid) => {
