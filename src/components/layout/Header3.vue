@@ -1,8 +1,8 @@
 <template>
     <div id="header">
         <div class="logo">
-            <img src="static/images/logo.png" class="logo-img c-vertical-middle"/>
-            <em class="name c-vertical-middle">运营管理后台</em>
+            <img src="../../assets/images/logo.png" class="logo-img c-vertical-middle"/>
+            <em class="name c-vertical-middle">数据管理平台</em>
         </div>
         <div class="userinfo">
             <el-dropdown trigger="hover">
@@ -70,10 +70,10 @@ export default {
             margin-right: 10px;
         }
         .name {
-            font-size: 20px;
+            font-size: 24px;
             line-height: 28px;
             color: #fff;
-            opacity: 0;
+            letter-spacing: 3px;
         }
     }
 }

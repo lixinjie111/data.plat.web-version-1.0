@@ -8,6 +8,10 @@ import store from './store/index'
 import echarts from 'echarts'
 import Api from './api/index.js';
 import TDate from './common/utils/date.js'
+//element-ui
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+Vue.use(ElementUI);
 
 import TFormValidate from './common/utils/formValidate'
 Vue.config.productionTip = false
