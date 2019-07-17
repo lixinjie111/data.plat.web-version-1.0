@@ -139,9 +139,6 @@ export default {
                 accessPlatform: null,
             },
             rules:{
-                rsuId:[
-                    { required: true, message: 'rsuIdID不能为空!', trigger: 'blur' },
-                ],
                 startTime:[
                     { validator: _checkStartTime, trigger: 'blur' }
                 ],

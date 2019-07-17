@@ -2,7 +2,7 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <p class="c-title c-border-bottom">历史回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
-        <el-form ref="form" size="small" :inline="true">
+        <el-form ref="form" size="small" :inline="true" class='c-mt-20'>
             <el-form-item label="车牌号：">
                 {{plateNo ? plateNo : '--'}}
             </el-form-item>
@@ -186,7 +186,7 @@ export default {
         },
         
         backClick(){
-            this.$router.push({path:'/videoManage'});
+            this.$emit('backVideoManage');
         },
         changeMaxFn(){
             this.changeRed = true;

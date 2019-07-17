@@ -1,6 +1,7 @@
 <template>
     <!-- 基本信息 -->
-    <div class="c-wrapper-20" v-cloak v-show="!panel.show && !panel.cfgShow">
+<div>
+    <div class="c-wrapper-20" v-cloak v-show="!panel.show">
         <el-form ref="searchForm" :inline="true" class="demo-form-inline" size="small">
             <el-form-item label="文件名: ">
                 <el-input v-model.trim="searchKey.fileName"></el-input>
@@ -50,7 +51,7 @@
         <div class="c-button-wrapper c-text-right">
             <el-button size="mini" plain icon="el-icon-download" @click="downLoadZipFile">批量下载</el-button>
         </div>
-        <el-table stripe max-height="620" class="c-mt-10"
+        <el-table stripe max-height="620"
             :data="dataList"
             v-loading="loading"
             @selection-change="handleSelectionChange">
@@ -90,20 +91,24 @@
             </el-pagination>
         </div>
     </div>
+    <play-back v-if='isPlaybackShow' @backVideoManage='backFn'></play-back>
+</div>
 </template>
 <script>
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
-import Paging from '@/common/view/Paging.vue'
+import PlayBack from '@/components/video/playVideo/playback.vue'
 import {queryVideoList,downLoadZipFile,removeVideo} from '@/api/video'
 export default {
     name: 'VideoManage',
     components: {
-        Paging,VueDatepickerLocal
+        VueDatepickerLocal,
+        PlayBack
     },
     data(){
         let _this = this;
         return {
+            isPlaybackShow:false,
             searchLoading:false,
             loading:false,
             sourceList:[
@@ -135,8 +140,7 @@ export default {
                 type: '',
                 msg: '',
                 data: '',
-                show: false,
-                cfgShow: false,
+                show: false
             },
             current: {
                 top: 0,
@@ -165,7 +169,9 @@ export default {
         replay(item){
             let manaInfo = JSON.stringify(item);
             localStorage.setItem('playHistoryInfo',manaInfo);
-            this.$router.push({name:'PlayBack'});
+            this.panel.show = true;
+            this.isPlaybackShow = true;
+            // this.$router.push({name:'PlayBack'});
         },
         exportClick(item) {
             this.$confirm('是否导出文件?', '提示', {
@@ -317,6 +323,10 @@ export default {
         changePageCurrent(value) {//页码变更
             this.pageOption.page = value;
             this.initData();
+        },
+        backFn(){
+            this.isPlaybackShow = false;
+            this.panel.show = false;
         }
     },
     mounted(){

@@ -134,9 +134,6 @@ export default {
                 accessPlatform: null,
             },
             rules:{
-                hvid:[
-                    { required: true, message: '自车ID不能为空!', trigger: 'blur' },
-                ],
                 startTime:[
                     { validator: _checkStartTime, trigger: 'blur' }
                 ],

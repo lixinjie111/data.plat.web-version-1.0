@@ -95,6 +95,7 @@ import TList from '@/common/utils/list.js'
 import TMDate from '@/common/utils/date.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap2.vue";
+import {findRoadMonitorCameraInfo,getVideoUrlInfo} from '@/api/roadSide';
 export default {
     name: 'PercepDetail',
     components: {
@@ -217,14 +218,13 @@ export default {
     },
     methods: {
         findRoadMonitorCamera() {
-            this.$api.post('perception/findRoadMonitorCamera', {
-                "serialNum": this.$route.params.serialNum
-            }, response => {
-                if(response.status == 200){
-                    this.cameraParam = JSON.parse(response.data[0].cameraParam);
-                    // console.log(this.cameraParam);
+            findRoadMonitorCameraInfo({
+                'serialNum':this.$route.params.serialNum
+            }).then(res => {
+                if(res.status == '200'){
+                    this.cameraParam = JSON.parse(res.data[0].cameraParam);
                 }
-            }, error => {});
+            })
         },
         setCurrentRow() {
             let _curTimestamp = Number(this.$dateUtil.dateToMs(this.curTime))+Number(this.currentMillisecond);
@@ -247,21 +247,12 @@ export default {
             this.$refs.percepDetailTable.setCurrentRow(this.dataList[_index]);
         },
         getVideoUrl() {
-            this.$api.post('perception/getVideoUrl',this.$route.params,response => {
-                // console.log(response);
-                if(response.status >= 200 && response.status < 300){
-                    if(response.data.code == 0) {
-                        let _videoUrl = response.data.url;
-
-                        this.playerOptions.sources[0].src = _videoUrl;
-                    }else {
-                        // this.$store.dispatch('showPrompt',response.data.msg);
-                        this.$message.error(response.data.msg);
-                    }
-                }else{
-                    this.$message.error('获取视频失败！');
+            getVideoUrlInfo(this.$route.params).then(res => {
+                if(res.status == '200'){
+                    let _videoUrl = res.data.url;
+                    this.playerOptions.sources[0].src = _videoUrl;
                 }
-            });
+            })
         },
         findPerceptionRecords() {
             // console.log("加载数据---------------");
@@ -269,23 +260,13 @@ export default {
             this.dataList = [];
             this.tusvnOption.show = false;
             this.tusvnOption.loading = true;
-            this.$api.post('perception/findPerceptionRecords',this.perceptionData,response => {
-                if(response.status >= 200 && response.status < 300){
-                    if(response.data.length > 0) {
-
-                        response.data.forEach((item) => {
-                            item.loading = false;
-                        });
-                        this.dataList = response.data;
-                    }else {
-                        this.tusvnOption.loading = false;
-                    }
-
-                }else{
-                    this.$message.error('获取视频列表失败！');
+            findPerceptionRecordsInfo(this.perceptionData).then(res => {
+                if(res.status == '200'){
+                    res.data.forEach((item) => {
+                        item.loading = false;
+                    });
+                    this.dataList = res.data;
                 }
-                this.loading = false;
-            },error => {
                 this.loading = false;
             });
         },

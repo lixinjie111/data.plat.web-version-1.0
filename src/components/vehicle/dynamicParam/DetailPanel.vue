@@ -24,20 +24,12 @@
                         <el-table-column align="center" prop="enName" label="数据值"></el-table-column>
                         <el-table-column align="center" label="时间">
                             <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp)}}</template>
-                        </el-table-column>
-                        <el-table-column align="center" label="数据采集开始时间">
-                            <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.beginTime)}}</template>
-                        </el-table-column>
-                        <el-table-column align="center" label="数据采集结束时间">
-                            <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.endTime)}}</template>
-                        </el-table-column>
-                        <el-table-column align="center" prop="status" label="采集状态"></el-table-column>
-                        <el-table-column align="center" prop="vehicleId" label="操作"></el-table-column>                
+                        </el-table-column>         
                     </el-table>
                 </div>
                 
         </div>
-        <div class="pages">
+        <!-- <div class="pages">
             <el-pagination
                 background
                 @current-change="handleCurrentChange" 
@@ -48,7 +40,7 @@
                 :page-size="pageOption.size"
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
-        </div>
+        </div> -->
     </div>
                 
 </div>

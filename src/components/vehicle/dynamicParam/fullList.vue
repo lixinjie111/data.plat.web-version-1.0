@@ -1,6 +1,6 @@
 <template>
-<div id='lists' class="c-wrapper-20" v-cloak>
-        <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
+<div id='lists' v-cloak>
+        <el-form :inline="true" :model="searchKey" ref="searchForm" size='small' class="demo-form-inline">
             <el-form-item label="SID:" prop='sid'>
                 <el-input v-model.trim="searchKey.sid"></el-input>
             </el-form-item>
@@ -69,11 +69,6 @@ export default {
                 total: 0,
             },
             operPlatUrl:'',
-            rules:{
-                sid:[
-                    { required: true, message: 'Sid不能为空!', trigger: 'blur' }
-                ],
-            },
         }
     },
     methods: {

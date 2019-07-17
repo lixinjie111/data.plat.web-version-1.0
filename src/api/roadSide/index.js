@@ -66,3 +66,19 @@ export const roadDownloadTask = params => { return axios.post(`${HTTPURL}road/ro
  * 数据列表
  */
 export const findVideoRecords = params => { return axios.post(`${HTTPURL}perception/findVideoRecords`, params).then(res => res.data); };
+
+/**
+ * 摄像头列表
+ */
+export const findRoadMonitorCameraInfo = params => { return axios.post(`${HTTPURL}perception/findRoadMonitorCamera`, params).then(res => res.data); };
+
+/**
+ * 获取视频地址
+ */
+export const getVideoUrlInfo = params => { return axios.post(`${HTTPURL}perception/getVideoUrl`, params).then(res => res.data); };
+
+/**
+ * 获取视频地址
+ */
+export const findPerceptionRecordsInfo = params => { return axios.post(`${HTTPURL}perception/findPerceptionRecords`, params).then(res => res.data); };
+

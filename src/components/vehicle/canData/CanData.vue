@@ -68,9 +68,6 @@ export default {
                 top: 0
             },
             rules: {
-                vehicleId:[
-                    { required: true, message: 'vehicleId不能为空!', trigger: 'blur' },
-                ],
                 startTime: [
                     { type:'date',required: true, message: '开始时间不能为空!', trigger: 'change' },
                 ],

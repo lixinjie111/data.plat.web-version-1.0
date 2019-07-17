@@ -1,45 +1,52 @@
 <template>
-    <div>
-        <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
-        <div v-show="isShow && !isAddData" class="c-mt-30">
-            <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
-                <el-form-item label="车辆编号" prop='vehicleId'>
-                    <el-input v-model.trim="searchKey.vehicleId"></el-input>
-                </el-form-item>
-                <el-form-item label="数据采集时间" prop='time'>
-                  <el-date-picker
-                      v-model.trim="searchKey.time"
-                      type="datetimerange"
-                      :picker-options="timeOption"
-                      start-placeholder="开始日期"
-                      end-placeholder="结束日期">
-                  </el-date-picker>
-              </el-form-item>
-            </el-form>
-            <div class="c-button-wrapper c-text-right">
-                <el-button size="mini" plain icon="el-icon-receiving" @click="addDataSet();">获取数据集</el-button>
-            </div>
+    <div class="c-view-dialog">
+        <div class="c-scroll-wrap">
+            <div class="c-scroll-inner">
+                <h3 class="c-title">
+                    {{title}}
+                    <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
+                </h3>
+                <div v-show="isShow && !isAddData" class="c-wrapper-20">
+                    <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
+                        <el-form-item label="车辆编号" prop='vehicleId'>
+                            <el-input v-model.trim="searchKey.vehicleId"></el-input>
+                        </el-form-item>
+                        <el-form-item label="数据采集时间" prop='time'>
+                        <el-date-picker
+                            v-model.trim="searchKey.time"
+                            type="datetimerange"
+                            :picker-options="timeOption"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-form-item>
+                    </el-form>
+                    <div class="c-button-wrapper c-text-right">
+                        <el-button size="mini" plain icon="el-icon-receiving" @click="addDataSet();">获取数据集</el-button>
+                    </div>
 
-            <el-table class='c-mt-10' max-height="620" :data="dataList" v-loading='loading' stripe>
-                <el-table-column fixed align="center" prop="sid" label="SID"></el-table-column>
-                <el-table-column align="center" prop="name" label="英文名称"></el-table-column>
-                <el-table-column align="center" prop="longidentifier" label="中文名称"></el-table-column>
-                <el-table-column align="center" prop="datType" label="类型"></el-table-column>
-                <el-table-column align="center" prop="description" label="描述"></el-table-column>
-                <el-table-column align="center" label="操作">
-                    <template slot-scope="scope">
-                        <el-button size='mini' type="primary" :loading="scope.row.loading" @click='deleteClick(scope.row)'>删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
+                    <el-table max-height="620" :data="dataList" v-loading='loading' stripe>
+                        <el-table-column fixed align="center" prop="sid" label="SID"></el-table-column>
+                        <el-table-column align="center" prop="name" label="英文名称"></el-table-column>
+                        <el-table-column align="center" prop="longidentifier" label="中文名称"></el-table-column>
+                        <el-table-column align="center" prop="datType" label="类型"></el-table-column>
+                        <el-table-column align="center" prop="description" label="描述"></el-table-column>
+                        <el-table-column align="center" label="操作">
+                            <template slot-scope="scope">
+                                <el-button size='mini' type="primary" :loading="scope.row.loading" @click='deleteClick(scope.row)'>删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
 
-            <div class="c-text-center c-mt-30">
-                <el-button type="warning" size="small" @click="okClick">确定</el-button>
-                <el-button type="warning" size="small" @click="cancelClick">取消</el-button>
+                    <div class="c-text-center c-mt-30">
+                        <el-button type="warning" size="small" @click="okClick">确定</el-button>
+                        <el-button type="warning" size="small" @click="cancelClick">取消</el-button>
+                    </div>
+                    
+                </div>
+                <add-data-panel title="获取数据集" @loadData="loadData" @init="init" v-show="isAddData" ref="addDataPanel"></add-data-panel>
             </div>
-            
         </div>
-        <add-data-panel @loadData="loadData" @init="init" v-show="isAddData" ref="addDataPanel" class="c-mt-30"></add-data-panel>
     </div>
     
 </template>
@@ -163,7 +170,6 @@ export default {
             if(!this.isAddData){
                 this.dataList = [];
                 this.pageData =[];
-                this.handleCurrentChange(0);
                 this.isShow=false;
                 this.$emit("localDataPanelBack");
             }

@@ -45,10 +45,14 @@
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.endTime)}}</template>
                 </el-table-column>
                 <el-table-column align="center" prop="status" label="采集状态"></el-table-column>
-                <el-table-column align="center" prop="vehicleId" label="操作"></el-table-column>                
+                <el-table-column align="center" prop="vehicleId" label="操作">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="warning" plain @click="lookClick(scope.row)">查看</el-button>
+                    </template>
+                </el-table-column>                
             </el-table>
         </div>
-        <div class="c-page clearfix">
+        <!-- <div class="c-page clearfix">
             <el-pagination
                 background
                 @current-change="changePageCurrent" 
@@ -59,9 +63,9 @@
                 :page-size="pageOption.size"
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
-        </div>
+        </div> -->
         <div>
-            <local-data-panel ref="localDataPanel" @localDataPanelBack="init" v-show="!panel.detailShow && panel.localDataShow" :title="panel.title" :type="panel.type" :data="panel.data"></local-data-panel>
+            <local-data-panel title="获取本地数据" ref="localDataPanel" @localDataPanelBack="init" v-show="!panel.detailShow && panel.localDataShow" :title="panel.title" :type="panel.type" :data="panel.data"></local-data-panel>
             <detail-panel ref="detailPanel" @detailPanelBack="panelBack" v-show="panel.detailShow && !panel.localDataShow" :title="panel.title" :type="panel.type" :data="panel.data"></detail-panel>
         </div>
 
@@ -149,7 +153,7 @@ export default {
             this.isTimeShow = false;
             this.isVehicleShow = false;
             this.panel.detailShow = false;
-            this.panel.localDataShow=false;
+            this.panel.localDataShow = false;
             this.initPaging();
             this.initSearch();
             this.dynamicParamList();

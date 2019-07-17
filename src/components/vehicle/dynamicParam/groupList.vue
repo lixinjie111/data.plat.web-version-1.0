@@ -1,5 +1,5 @@
 <template>
-<div id='groups' class="c-wrapper-20" v-cloak>
+<div id='groups' v-cloak>
     <el-form :inline="true" :model="searchKey" size='small' class="demo-form-inline">
         <el-form-item label="组名称:" prop='name'>
             <el-input v-model.trim="searchKey.name"></el-input>
@@ -89,7 +89,7 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
-                    this.pageOption.total = rese.data.totalCount;
+                    this.pageOption.total = res.data.totalCount;
                     let inputs = document.querySelectorAll(".yk-table tbody input");
                     inputs.forEach(function(item){
                         item.checked = false;

@@ -1,7 +1,7 @@
 <template>
 <!-- 基本信息 -->
 <div class="c-wrapper-20" v-cloak>
-    <div v-show="!panel.show && !panel.cfgShow">
+    <div v-show="!panel.show">
         <el-form ref="searchForm" :inline="true" :model="searchKey" :rules="rules" size="small">
             <el-form-item label="文件名: ">
                 <el-input v-model.trim="searchKey.fileName"></el-input>
@@ -54,7 +54,7 @@
         </div>
 
         <el-table ref="multipleTable" :data="dataList" v-loading="loading"
-            @selection-change="handleSelectionChange" class="c-mt-10">
+            @selection-change="handleSelectionChange">
             <el-table-column fixed align="center" min-width="2%" type="selection"></el-table-column>
             <el-table-column align="center" min-width="3%" label="No" type="index" :index='indexMethod'></el-table-column>
             <el-table-column align="center" min-width="15%" prop="fileName" label="文件名称"></el-table-column>
@@ -93,20 +93,24 @@
         </div>
 
     </div>
+    <road-video-replay v-if='isReplayShow' @backRoadManage='backFn'></road-video-replay>
 </div>
 </template>
 <script>
 import TList from '@/common/utils/list.js'
-import VueDatepickerLocal from 'vue-datepicker-local'
+import VueDatepickerLocal from 'vue-datepicker-local';
+import RoadVideoReplay from './roadVideoReplay.vue';
 import {queryRoadVideoList,downLoadZipFile,removeVideo} from '@/api/roadSide'
 export default {
     name: 'VideoDownload',
     components: {
-        VueDatepickerLocal
+        VueDatepickerLocal,
+        RoadVideoReplay
     },
     data(){
         let _this = this;
         return {
+            isReplayShow:false,
             manageShow:true,
             playbackShow:false,
             startTime:'',
@@ -144,8 +148,7 @@ export default {
                 type: '',
                 msg: '',
                 data: '',
-                show: false,
-                cfgShow: false,
+                show: false
             },
             current: {
                 top: 0,
@@ -324,7 +327,8 @@ export default {
         replay(item){
             let videoInfo = JSON.stringify(item);
             localStorage.setItem('videoInfo',videoInfo);
-            this.$router.push({name:'RoadVideoReplay',params:{data:item}});
+            this.isReplayShow = true;
+            this.panel.show = true;
         },
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();
@@ -348,6 +352,10 @@ export default {
             }).catch(() => {
                 this.$message.info('已取消导出');          
             });
+        },
+        backFn(){
+           this.isReplayShow = false;
+           this.panel.show = false; 
         }
     },
     mounted(){

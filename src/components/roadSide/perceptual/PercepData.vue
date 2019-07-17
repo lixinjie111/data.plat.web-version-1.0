@@ -72,7 +72,7 @@
                 </el-date-picker>
             </el-form-item> -->
             <el-form-item>
-                <el-button type="warning" icon="el-icon-search" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
+                <el-button type="warning" icon="el-icon-search" :loading='searchLoad' @click="searchClick('searchKey')">查询</el-button>
             </el-form-item>
         </el-form>
         <el-table 
@@ -110,7 +110,7 @@
     </div>
 </template>
 <script>
-import {findVideoRecords} from '@/api/roadSide';
+import {findVideoRecords,findRoadMonitorCameraInfo} from '@/api/roadSide';
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 export default {
@@ -163,6 +163,7 @@ export default {
                 total: 0,
                 page: 1
             },
+            searchLoad:false,
             loading: false,
             cameraIdList:[],
             serialNumList:[],
@@ -306,9 +307,9 @@ export default {
   
         },
         getCameraIds(type){//获取摄像头Id列表
-            this.$api.post('perception/findRoadMonitorCamera', this.requestData, response => {
-                if(response.status == 200){
-                    let info = response.data;
+            findRoadMonitorCameraInfo(this.requestData).then(res => {
+                if(res.status == '200'){
+                    let info = res.data;
                     if(info.length > 0) {
                         this.searchKey.rsPtId = info[0].rsPtId;
                         if(type == 'rsPtId') {
@@ -330,13 +331,44 @@ export default {
                             if(this.searchKey.serialNum != info[0].serialNum) this.searchKey.serialNum = info[0].serialNum;
                             if(this.searchKey.deviceId != info[0].deviceId) this.searchKey.deviceId = info[0].deviceId;
                         }
-                    }else {
-                        this.$message.error("没要找到对应信息！");
                     }
                 }else{
-                    this.$message.error("获取列表error！");
+                    this.$message.error(res.message);
                 }
-            });
+            }).catch(err => {
+                this.$message.error(res.message);
+            })
+            // this.$api.post('perception/findRoadMonitorCamera', this.requestData, response => {
+            //     if(response.status == 200){
+            //         let info = response.data;
+            //         if(info.length > 0) {
+            //             this.searchKey.rsPtId = info[0].rsPtId;
+            //             if(type == 'rsPtId') {
+            //                 this.initSearch();
+            //                 info.forEach(element => {
+            //                     this.cameraIdList.push({
+            //                         value: element.cameraId
+            //                     });
+            //                     this.serialNumList.push({
+            //                         value: element.serialNum
+            //                     });
+            //                     this.deviceIdList.push({
+            //                         value: element.deviceId
+            //                     });
+            //                 });
+            //             }else {
+            //                 if(this.searchKey.rsPtId != info[0].rsPtId) this.searchKey.rsPtId = info[0].rsPtId;
+            //                 if(this.searchKey.cameraId != info[0].cameraId) this.searchKey.cameraId = info[0].cameraId;
+            //                 if(this.searchKey.serialNum != info[0].serialNum) this.searchKey.serialNum = info[0].serialNum;
+            //                 if(this.searchKey.deviceId != info[0].deviceId) this.searchKey.deviceId = info[0].deviceId;
+            //             }
+            //         }else {
+            //             this.$message.error("没要找到对应信息！");
+            //         }
+            //     }else{
+            //         this.$message.error("获取列表error！");
+            //     }
+            // });
         },
         initData(){
             this.initPaging();
@@ -357,29 +389,15 @@ export default {
                     }else {
                         this.showDataList = this.dataList;
                     }
+                }else{
+                    this.$message.error(res.message);
                 }
+                this.searchLoad = false;
+                this.loading = false;
+            }).catch(err => {
+                this.loading = false;
+                this.searchLoad = false;
             })
-            
-            // this.$api.post('perception/findVideoRecords',params,response => {
-            //     if(response.status >= 200 && response.status < 300){
-            //         response.data.forEach((item) => {
-            //             item.loading = false;
-            //         });
-            //         this.dataList = response.data.data;
-            //         this.pageOption.total = response.data.data.length;
-            //         if(this.pageOption.total > this.paging.size) {
-            //             this.initShowData();
-            //         }else {
-            //             this.showDataList = this.dataList;
-            //         }
-            //     }else{
-            //         this.$message.error("获取列表error！");
-            //     }
-            //     this.loading = false;
-            // }, error => {
-            //     this.$message.error("获取列表error！");
-            //     this.loading = false;
-            // });
         },
         initPaging() {
             this.dataList = [];
@@ -405,6 +423,7 @@ export default {
             return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         },
         searchClick(){
+            this.searchLoad = true;
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.initPaging();
