@@ -110,6 +110,7 @@
     </div>
 </template>
 <script>
+import {findVideoRecords} from '@/api/roadSide';
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 export default {
@@ -337,29 +338,48 @@ export default {
                 }
             });
         },
-        initData(params){
+        initData(){
             this.initPaging();
             this.loading = true;
-            this.$api.post('perception/findVideoRecords',params,response => {
-                if(response.status >= 200 && response.status < 300){
-                    response.data.forEach((item) => {
+            findVideoRecords({
+                'serialNum':  this.searchKey.serialNum,
+                'startTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
+                'endTime':  this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
+            }).then(res => {
+                if(res.status == '200'){
+                    res.data.forEach((item) => {
                         item.loading = false;
                     });
-                    this.dataList = response.data.data;
-                    this.pageOption.total = response.data.data.length;
+                    this.dataList = res.data;
+                    this.pageOption.total = res.data.length;
                     if(this.pageOption.total > this.paging.size) {
                         this.initShowData();
                     }else {
                         this.showDataList = this.dataList;
                     }
-                }else{
-                    this.$message.error("获取列表error！");
                 }
-                this.loading = false;
-            }, error => {
-                this.$message.error("获取列表error！");
-                this.loading = false;
-            });
+            })
+            
+            // this.$api.post('perception/findVideoRecords',params,response => {
+            //     if(response.status >= 200 && response.status < 300){
+            //         response.data.forEach((item) => {
+            //             item.loading = false;
+            //         });
+            //         this.dataList = response.data.data;
+            //         this.pageOption.total = response.data.data.length;
+            //         if(this.pageOption.total > this.paging.size) {
+            //             this.initShowData();
+            //         }else {
+            //             this.showDataList = this.dataList;
+            //         }
+            //     }else{
+            //         this.$message.error("获取列表error！");
+            //     }
+            //     this.loading = false;
+            // }, error => {
+            //     this.$message.error("获取列表error！");
+            //     this.loading = false;
+            // });
         },
         initPaging() {
             this.dataList = [];
@@ -387,13 +407,8 @@ export default {
         searchClick(){
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                    let _params = {
-                        serialNum:  this.searchKey.serialNum,
-                        startTime:  this.$dateUtil.dateToMs(this.searchKey.startTime),
-                        endTime:  this.$dateUtil.dateToMs(this.searchKey.endTime)
-                    }
                     this.initPaging();
-                    this.initData(_params);
+                    this.initData();
                 } else {
                     return false;
                 }

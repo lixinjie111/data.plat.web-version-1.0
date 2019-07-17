@@ -25,61 +25,6 @@
                 <el-table-column align="center" prop='width' label="目标宽"></el-table-column>
                 <el-table-column align="center" prop='height' label="目标高"></el-table-column>
             </el-table>
-
-            <!-- <div class="yk-table-box">
-                <table class="yk-table">
-                    <thead>
-                    <tr>                        
-                        <th style="width:6%;">参与者类型</th>
-                        <th>检测类型</th>
-                        <th style="width:6%;">车牌号</th>
-                        <th>车辆类型</th>                   
-                        <th style="width:11%;">时间</th>
-                        <th style="width:8%;">经度</th>
-                        <th style="width:5%;">纬度</th>
-                        <th style="width:6%;">高程</th>
-                        <th>档位</th>
-                        <th>速度</th>
-                        <th>方向</th>
-                        <th>方向盘转角</th>                   
-                        <th>纵向加速度</th>
-                        <th>横向加速度</th>
-                        <th>垂直加速度</th>
-                        <th>横摆加速度</th>
-                        <th>目标长</th>
-                        <th>目标宽</th>
-                        <th>目标高</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr class="yk-table-body" v-for='(item,index) in dataList' :key="index">
-                       <td style="width:6%;">{{ item.rsuId }}</td>
-                       <td style="width:6%;">{{item.sourceType}}</td>
-                       <td style="width:7%;">{{item.plateNo}}</td>
-                       <td>{{item.vehicleClass}}</td>                    
-                       <td style="width:10%;">{{formatTime(item.time)}}</td>
-                       <td style="width:8%;">{{item.longitude}}</td>
-                       <td style="width: 6%;">{{item.latitude}}</td>
-                       <td>{{item.elevation}}</td>
-                        <td style="width: 6%;">
-                            {{item.transmission}}                       
-                        </td>
-                       <td>{{ item.speed }}</td>
-                       <td style="width: 4%;">{{item.heading}}</td>
-                       <td style="width: 5%;">{{item.angle}}</td>
-                       <td style="width: 4%;">{{item.lonAccel}}</td>                    
-                       <td>{{item.latAccel}}</td>
-                       <td>{{item.vertAccel}}</td>
-                       <td>{{item.yawRate}}</td>
-                        <td>
-                            {{item.length}}                          
-                        </td>
-                        <td>{{item.width}}</td>
-                       <td>{{item.height}}</td>
-                    </tr>
-                    </tbody>
-                </table>                
-            </div>     -->
         </div>
       </div>
 </template>
@@ -102,9 +47,8 @@
         },
         methods: {
           init:function(data){
-            let _this=this;
-            _this.dataInfo = data;
-            _this.dataList = data.phases;
+            this.dataInfo = data;
+            this.dataList = data.phases;
           },
           backClick(){
               this.$emit('goBack');

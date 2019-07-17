@@ -71,6 +71,7 @@
   </div>
 </template>
 <script>
+  import {queryPathList,exportExcel} from '@/api/vehicle';
   import AlertPanel from '@/common/view/Alert.vue'
   import TList from '@/common/utils/list.js'
   import PathDataInfo from '@/components/vehicle/pathData/PathDataInfo.vue'
@@ -210,24 +211,17 @@
         if(formDataList.length>0){
           fileName=formDataList[0].plateNo;
         }
-        let params = {
-          fileName: fileName,
-          titles: tittle,
-          datas: datas
-        };
-
-        let url = 'common/exportExcel';
-
-        this.$api.download( url, params,
-          response => {
-            if (response.status >= 200 && response.status < 300) {
-
-              this.$store.dispatch("showPrompt", "下载成功 ！");
-            } else {
-              this.$store.dispatch("showPrompt", "下载失败 ！");
+        exportExcel({
+          'fileName': fileName,
+          'titles': tittle,
+          'datas': datas
+        }).then(res => {
+            if(res.status == '200'){
+              this.$message.success(res.message);
+            }else{
+              this.$message.error(res.message);
             }
-          }
-        );
+        })
       },
       initPathDataPage() {
         return {
@@ -245,7 +239,7 @@
       init() {
         this.initSearchKey();
         this.initPaging();
-        this.initData();
+        this.queryPathList();
       },
       initSearchKey() {
         this.searchKey.vehicleId = '';
@@ -257,100 +251,92 @@
         this.pageOption.size = 10;
         this.pageOption.total = 0;
       },
-      initData() {
+      queryPathList() {
         this.loading = true;
-        let params = Object.assign(this.searchKey, {
-            startTime:this.searchKey.time[0] ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
-            endTime:this.searchKey.time[1] ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
-        });
-        this.$api.post(
-          'vehicle/path/list', {
-              "pageSize": this.pageOption.size,
-              "pageIndex": this.pageOption.page - 1,
-              "param":params
-          },
-          response => {
-            if (response.status == 200) {
-              if(response.data.data.list && response.data.data.list.length > 0){
-                  //转换开始时间、结束时间、行驶时长
-                  let data_convert=response.data.data.list;
-                  for (let i=0;i<data_convert.length;i++){
-                    //保存原始时间
-                    data_convert[i].originStartTime=data_convert[i].startTime;
-                    data_convert[i].originEndTime=data_convert[i].endTime;
-                    data_convert[i].originDurationTime=data_convert[i].durationTime;
-                    data_convert[i].originMileage=data_convert[i].mileage;
-                    data_convert[i].originAvgSpeed=data_convert[i].avgSpeed;
+        queryPathList({
+            page: {
+                "pageSize": this.pageOption.size,
+                "pageIndex": this.pageOption.page-1
+            },
+            'vehicleId':this.searchKey.vehicleId,
+            'plateNo':this.searchKey.plateNo,
+            'startTime':this.searchKey.time[0] ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
+            'endTime':this.searchKey.time[1] ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
+        }).then(res => {
+          if(res.status == '200'){
+              //转换开始时间、结束时间、行驶时长
+              let data_convert=res.data.list;
+              for (let i=0;i<data_convert.length;i++){
+                //保存原始时间
+                data_convert[i].originStartTime=data_convert[i].startTime;
+                data_convert[i].originEndTime=data_convert[i].endTime;
+                data_convert[i].originDurationTime=data_convert[i].durationTime;
+                data_convert[i].originMileage=data_convert[i].mileage;
+                data_convert[i].originAvgSpeed=data_convert[i].avgSpeed;
 
-                    if (data_convert[i].startTime !="") {
-                      let timestamp1= new Date(data_convert[i].startTime);
-                      data_convert[i].startTime=timestamp1.toLocaleDateString().replace(/\//g, "-") + " " + timestamp1.toTimeString().substr(0, 8);
-                    }
-                    if (data_convert[i].endTime !="") {
-                      let timestamp2= new Date(data_convert[i].endTime);
-                      data_convert[i].endTime=timestamp2.toLocaleDateString().replace(/\//g, "-") + " " + timestamp2.toTimeString().substr(0, 8);
-                    }
-                    if (data_convert[i].durationTime !="") {
-                      let st_durationTime=(parseFloat(data_convert[i].durationTime)/1000/60).toString();
+                if (data_convert[i].startTime !="") {
+                  let timestamp1= new Date(data_convert[i].startTime);
+                  data_convert[i].startTime=timestamp1.toLocaleDateString().replace(/\//g, "-") + " " + timestamp1.toTimeString().substr(0, 8);
+                }
+                if (data_convert[i].endTime !="") {
+                  let timestamp2= new Date(data_convert[i].endTime);
+                  data_convert[i].endTime=timestamp2.toLocaleDateString().replace(/\//g, "-") + " " + timestamp2.toTimeString().substr(0, 8);
+                }
+                if (data_convert[i].durationTime !="") {
+                  let st_durationTime=(parseFloat(data_convert[i].durationTime)/1000/60).toString();
 
-                      if (st_durationTime.indexOf('.') !=-1){
-                        let substring=st_durationTime.substring(0,st_durationTime.indexOf('.'));
-                        if (substring=="0"){
-                          data_convert[i].durationTime="1";
-                        } else{
-                          data_convert[i].durationTime=substring;
-                        }
-                      }else{
-                        data_convert[i].durationTime=st_durationTime;
-                      }
+                  if (st_durationTime.indexOf('.') !=-1){
+                    let substring=st_durationTime.substring(0,st_durationTime.indexOf('.'));
+                    if (substring=="0"){
+                      data_convert[i].durationTime="1";
+                    } else{
+                      data_convert[i].durationTime=substring;
                     }
-                    if (data_convert[i].mileage !="") {
-                      let st_mileage=(parseFloat(data_convert[i].mileage)).toString();
-                      if (st_mileage.indexOf('.') !=-1){
-                        if (st_mileage.charAt(st_mileage.indexOf('.')+1)=='0'){
-                          data_convert[i].mileage=st_mileage.substring(0,st_mileage.indexOf('.')+1)+"1";
-                        }else{
-                          data_convert[i].mileage=st_mileage.substring(0,st_mileage.indexOf('.')+2);
-                        }
-                      }else{
-                        data_convert[i].mileage=st_mileage;
-                      }
-                    }
-
-                    if (data_convert[i].avgSpeed !="") {
-                      let st_avgSpeed=(parseFloat(data_convert[i].avgSpeed)).toString();
-                      if (st_avgSpeed.indexOf('.') !=-1){
-                        if (st_avgSpeed.charAt(st_avgSpeed.indexOf('.')+1)=='0'){
-                          data_convert[i].avgSpeed=st_avgSpeed.substring(0,st_avgSpeed.indexOf('.')+1)+"1";
-                        }else{
-                          data_convert[i].avgSpeed=st_avgSpeed.substring(0,st_avgSpeed.indexOf('.')+2);
-                        }
-                      }else{
-                        data_convert[i].avgSpeed=st_avgSpeed;
-                      }
-                    }
+                  }else{
+                    data_convert[i].durationTime=st_durationTime;
                   }
-                  this.dataList = data_convert;
-                  this.pageOption.total = response.data.data.totalCount;
+                }
+                if (data_convert[i].mileage !="") {
+                  let st_mileage=(parseFloat(data_convert[i].mileage)).toString();
+                  if (st_mileage.indexOf('.') !=-1){
+                    if (st_mileage.charAt(st_mileage.indexOf('.')+1)=='0'){
+                      data_convert[i].mileage=st_mileage.substring(0,st_mileage.indexOf('.')+1)+"1";
+                    }else{
+                      data_convert[i].mileage=st_mileage.substring(0,st_mileage.indexOf('.')+2);
+                    }
+                  }else{
+                    data_convert[i].mileage=st_mileage;
+                  }
+                }
+
+                if (data_convert[i].avgSpeed !="") {
+                  let st_avgSpeed=(parseFloat(data_convert[i].avgSpeed)).toString();
+                  if (st_avgSpeed.indexOf('.') !=-1){
+                    if (st_avgSpeed.charAt(st_avgSpeed.indexOf('.')+1)=='0'){
+                      data_convert[i].avgSpeed=st_avgSpeed.substring(0,st_avgSpeed.indexOf('.')+1)+"1";
+                    }else{
+                      data_convert[i].avgSpeed=st_avgSpeed.substring(0,st_avgSpeed.indexOf('.')+2);
+                    }
+                  }else{
+                    data_convert[i].avgSpeed=st_avgSpeed;
+                  }
+                }
               }
-            } else {
-              this.$message.error("获取列表失败！");
-            }
-            this.loading = false;
-            this.searchLoading = false;
-          },error => {
-             this.$message.error("获取列表error！");
-             this.loading = false;
-             this.searchLoading = false;
+              this.dataList = data_convert;
+              this.pageOption.total = res.data.totalCount;
+          }else{
+            this.$message.error(res.message);
           }
-        );
+          this.loading = false;
+          this.searchLoading = false;
+        })
       },
       searchClick() {
         this.searchLoading = true;
         this.$refs.searchForm.validate((valid) => {
             if (valid) {
                 this.initPaging();
-                this.initData();
+                this.queryPathList();
             } else {
                 return false;
             }
@@ -362,11 +348,11 @@
       changePageSize(value) {//每页显示条数变更
           this.initPageOption();
           this.pageOption.size = value;
-          this.initData();
+          this.queryPathList();
       },
       changePageCurrent(value) {//页码变更
           this.pageOption.page = value;
-          this.initData();
+          this.queryPathList();
       },
       indexMethod(index){
           return index + this.pageOption.size * (this.pageOption.page-1) + 1;

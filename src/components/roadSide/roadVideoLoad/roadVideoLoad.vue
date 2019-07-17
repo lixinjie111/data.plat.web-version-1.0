@@ -235,22 +235,26 @@ export default {
         initData(){
             this.dataList = [];
             this.loading = true;
-            let params = Object.assign(this.searchKey, {
-                startBeginTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
-                startEndTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
-                stopBeginTime: this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
-                stopEndTime: this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : '',
-                protocal: JSON.parse(localStorage.getItem('protocal')) || '',
-            });
             queryRoadTaskList({
-                "pageSize": this.pageOption.size,
-                "pageIndex": this.pageOption.page - 1,
-                'param':params
+                page: {
+                    'pageSize': this.pageOption.size,
+                    'pageIndex': this.pageOption.page-1
+                },
+                'startBeginTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
+                'startEndTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
+                'stopBeginTime': this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
+                'stopEndTime': this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : '',
+                'protocal': JSON.parse(localStorage.getItem('protocal')) || '',
             }).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.pageOption.total = res.totalCount;
+                }else{
+                    this.$message.error(res.message);
                 }
+                this.searchLoading = false;
+                this.loading = false;
+            }).catch(err => {
                 this.searchLoading = false;
                 this.loading = false;
             })

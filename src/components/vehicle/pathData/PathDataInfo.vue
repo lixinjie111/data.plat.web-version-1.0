@@ -73,30 +73,20 @@
       </div>
 
     </div>
-    <!-- <el-dialog
-      title="重新下载"
-      :visible="dialogOption.show"
-      width="30%"
-      :before-close="handleClose">
-      <span>确定导出所有轨迹数据 ?</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogOption.show = false">取 消</el-button>
-        <el-button :loading="dialogOption.loading" type="primary" @click="sureFunc">确 定</el-button>
-      </span>
-    </el-dialog> -->
-    <alert-panel ref="refBaseMsgAlert" :title="panel.title" :msg="panel.msg"
-                 @AlertEvent="exportTrailData"></alert-panel>
+    <!-- <alert-panel ref="refBaseMsgAlert" :title="panel.title" :msg="panel.msg"
+                 @AlertEvent="exportTrailData"></alert-panel> -->
   </div>
 </template>
 <script>
   import TusvnMap from "@/common/view/TusvnMap/TusvnMap.vue";
-  import AlertPanel from '@/common/view/Alert.vue'
-import { setTimeout } from 'timers';
-
+  // import AlertPanel from '@/common/view/Alert.vue'
+  import { setTimeout } from 'timers';
+  import {pathDetailList,exportPathExcel} from '@/api/vehicle';
+import { error } from 'util';
   export default {
     props: ['data'],
     components: {
-      TusvnMap,AlertPanel
+      TusvnMap
     },
     data() {
       return {
@@ -175,104 +165,98 @@ import { setTimeout } from 'timers';
         this.$refs.refMap.zoomTo(14);
       },
       addPageData() {
-        let params={
-          pageSize:100,
-          pageIndex:this.requestDataParams.pageIndex,
-          param:{
-            vehicleId: this.data.vehicleId,
-            startTime: this.data.originStartTime,
-            endTime: this.data.originEndTime,
-            nextStartRow:this.requestDataParams.requestRowKey
-          }
-        };
-        this.$api.post(
-          'vehicle/path/detail/list', params,
-          response => {
-            if (response.data.list.length > 0) {
-              //重新赋值目前查询的总行数
-                if (response.data.list.length==100){
-                this.requestDataParams.requestRowKey =response.data.list[response.data.list.length-1].rowkey;
-                this.requestDataParams.pageIndex+=1;
-              }
-              if (response.data.list.length<100){
-                this.requestDataParams.isBottom=true;
-                this.requestDataParams.loadMoreData="所有数据加载完毕！"
-              }
+        pathDetailList({
+          page: {
+              'pageSize': 100,
+              'pageIndex': this.requestDataParams.pageIndex
+          }, 
+          'vehicleId': this.data.vehicleId,
+          'startTime': this.data.originStartTime,
+          'endTime': this.data.originEndTime,
+          'nextStartRow':this.requestDataParams.requestRowKey
+        }).then(res => {
+          if(res.status == '200'){
+            //重新赋值目前查询的总行数
+            if (res.data.list.length==100){
+              this.requestDataParams.requestRowKey = res.data.list[res.data.list.length-1].rowkey;
+              this.requestDataParams.pageIndex+=1;
+            }
+            if (res.data.list.length<100){
+              this.requestDataParams.isBottom=true;
+              this.requestDataParams.loadMoreData="所有数据加载完毕！"
+            }
 
-              if (response.data &&response.data.list && response.data.list.length > 0) {
-                //循环处理数据
-                let data_convert = response.data.list;
-                for (let i = 0; i < data_convert.length; i++) {
-                  if (data_convert[i].gnss_LONG != "") {
-                    let st_gnss_LONG = (parseFloat(data_convert[i].gnss_LONG)).toString();
-                    if (st_gnss_LONG.indexOf('.') != -1) {
-                      data_convert[i].gnss_LONG = st_gnss_LONG.substring(0, st_gnss_LONG.indexOf('.') + 8);
-                    } else {
-                      data_convert[i].gnss_LONG = st_gnss_LONG;
-                    }
-                  }
-
-                  if (data_convert[i].gnss_LAT != "") {
-                    let st_gnss_LAT = (parseFloat(data_convert[i].gnss_LAT)).toString();
-                    if (st_gnss_LAT.indexOf('.') != -1) {
-                      data_convert[i].gnss_LAT = st_gnss_LAT.substring(0, st_gnss_LAT.indexOf('.') + 8);
-                    } else {
-                      data_convert[i].gnss_LAT = st_gnss_LAT;
-                    }
-                  }
-
-                  if (data_convert[i].gnss_HIGHT != "") {
-                    let st_gnss_HIGHT = (parseFloat(data_convert[i].gnss_HIGHT)).toString();
-                    if (st_gnss_HIGHT.indexOf('.') != -1) {
-                      if (st_gnss_HIGHT.charAt(st_gnss_HIGHT.indexOf('.') + 1) == '0') {
-                        data_convert[i].gnss_HIGHT = st_gnss_HIGHT.substring(0, st_gnss_HIGHT.indexOf('.') + 1) + "1";
-                      } else {
-                        data_convert[i].gnss_HIGHT = st_gnss_HIGHT.substring(0, st_gnss_HIGHT.indexOf('.') + 2);
-                      }
-                    } else {
-                      data_convert[i].gnss_HIGHT = st_gnss_HIGHT;
-                    }
-                  }
-
-                  if (data_convert[i].gnss_SPD != "") {
-                    let st_gnss_SPD = (parseFloat(data_convert[i].gnss_SPD)).toString();
-                    if (st_gnss_SPD.indexOf('.') != -1) {
-                      if (st_gnss_SPD.charAt(st_gnss_SPD.indexOf('.') + 1) == '0') {
-                        data_convert[i].gnss_SPD = st_gnss_SPD.substring(0, st_gnss_SPD.indexOf('.') + 1) + "1";
-                      } else {
-                        data_convert[i].gnss_SPD = st_gnss_SPD.substring(0, st_gnss_SPD.indexOf('.') + 2);
-                      }
-                    } else {
-                      data_convert[i].gnss_SPD = st_gnss_SPD;
-                    }
-                  }
-                  if (data_convert[i].gnss_HEAD != "") {
-                    let st_gnss_HEAD = (parseFloat(data_convert[i].gnss_HEAD)).toString();
-                    if (st_gnss_HEAD.indexOf('.') != -1) {
-                      if (st_gnss_HEAD.charAt(st_gnss_HEAD.indexOf('.') + 1) == '0') {
-                        data_convert[i].gnss_HEAD = st_gnss_HEAD.substring(0, st_gnss_HEAD.indexOf('.') + 1) + "1";
-                      } else {
-                        data_convert[i].gnss_HEAD = st_gnss_HEAD.substring(0, st_gnss_HEAD.indexOf('.') + 2);
-                      }
-                    } else {
-                      data_convert[i].gnss_HEAD = st_gnss_HEAD;
-                    }
+            if (res.data &&res.data.list && res.data.list.length > 0) {
+              //循环处理数据
+              let data_convert = res.data.list;
+              for (let i = 0; i < data_convert.length; i++) {
+                if (data_convert[i].gnss_LONG != "") {
+                  let st_gnss_LONG = (parseFloat(data_convert[i].gnss_LONG)).toString();
+                  if (st_gnss_LONG.indexOf('.') != -1) {
+                    data_convert[i].gnss_LONG = st_gnss_LONG.substring(0, st_gnss_LONG.indexOf('.') + 8);
+                  } else {
+                    data_convert[i].gnss_LONG = st_gnss_LONG;
                   }
                 }
-                this.dataList = this.dataList.concat(data_convert);
+
+                if (data_convert[i].gnss_LAT != "") {
+                  let st_gnss_LAT = (parseFloat(data_convert[i].gnss_LAT)).toString();
+                  if (st_gnss_LAT.indexOf('.') != -1) {
+                    data_convert[i].gnss_LAT = st_gnss_LAT.substring(0, st_gnss_LAT.indexOf('.') + 8);
+                  } else {
+                    data_convert[i].gnss_LAT = st_gnss_LAT;
+                  }
+                }
+
+                if (data_convert[i].gnss_HIGHT != "") {
+                  let st_gnss_HIGHT = (parseFloat(data_convert[i].gnss_HIGHT)).toString();
+                  if (st_gnss_HIGHT.indexOf('.') != -1) {
+                    if (st_gnss_HIGHT.charAt(st_gnss_HIGHT.indexOf('.') + 1) == '0') {
+                      data_convert[i].gnss_HIGHT = st_gnss_HIGHT.substring(0, st_gnss_HIGHT.indexOf('.') + 1) + "1";
+                    } else {
+                      data_convert[i].gnss_HIGHT = st_gnss_HIGHT.substring(0, st_gnss_HIGHT.indexOf('.') + 2);
+                    }
+                  } else {
+                    data_convert[i].gnss_HIGHT = st_gnss_HIGHT;
+                  }
+                }
+
+                if (data_convert[i].gnss_SPD != "") {
+                  let st_gnss_SPD = (parseFloat(data_convert[i].gnss_SPD)).toString();
+                  if (st_gnss_SPD.indexOf('.') != -1) {
+                    if (st_gnss_SPD.charAt(st_gnss_SPD.indexOf('.') + 1) == '0') {
+                      data_convert[i].gnss_SPD = st_gnss_SPD.substring(0, st_gnss_SPD.indexOf('.') + 1) + "1";
+                    } else {
+                      data_convert[i].gnss_SPD = st_gnss_SPD.substring(0, st_gnss_SPD.indexOf('.') + 2);
+                    }
+                  } else {
+                    data_convert[i].gnss_SPD = st_gnss_SPD;
+                  }
+                }
+                if (data_convert[i].gnss_HEAD != "") {
+                  let st_gnss_HEAD = (parseFloat(data_convert[i].gnss_HEAD)).toString();
+                  if (st_gnss_HEAD.indexOf('.') != -1) {
+                    if (st_gnss_HEAD.charAt(st_gnss_HEAD.indexOf('.') + 1) == '0') {
+                      data_convert[i].gnss_HEAD = st_gnss_HEAD.substring(0, st_gnss_HEAD.indexOf('.') + 1) + "1";
+                    } else {
+                      data_convert[i].gnss_HEAD = st_gnss_HEAD.substring(0, st_gnss_HEAD.indexOf('.') + 2);
+                    }
+                  } else {
+                    data_convert[i].gnss_HEAD = st_gnss_HEAD;
+                  }
+                }
               }
-            } 
-            else {
-              this.$message.error("获取轨迹详情列表失败  ！");
+              this.dataList = this.dataList.concat(data_convert);
             }
+          }else{
+            this.$message.error(res.message);
           }
-        );
+        }).catch(err => {
+
+        })
       },
       exportTrailDataAlert() {
-        this.panel.title = '提示';
-        this.panel.type = 'exportTrailData';
-        this.panel.msg = '确定导出所有轨迹数据 ?';
-        this.$refs.refBaseMsgAlert.show();
+        this.exportTrailData();
       },
       exportTrailData() {
         if (this.dataList.length == 0) {
@@ -340,25 +324,40 @@ import { setTimeout } from 'timers';
         let hour=d.getHours();
         let minute=d.getMinutes();
         let second=d.getSeconds();
-        let params = {
-          vehicleId:this.data.vehicleId,
-          plateNo: this.data.plateNo,
-          startTime: this.$dateUtil.dateToMs(this.data.startTime),
-          endTime:this.$dateUtil.dateToMs(this.data.endTime)
-        }
+        // let params = {
+        //   vehicleId:this.data.vehicleId,
+        //   plateNo: this.data.plateNo,
+        //   startTime: this.$dateUtil.dateToMs(this.data.startTime),
+        //   endTime:this.$dateUtil.dateToMs(this.data.endTime)
+        // }
 
-        let url = 'vehicle/path/detail/export';
+        this.$confirm('是否导出全部轨迹数据?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+            exportPathExcel({
+              'vehicleId':this.data.vehicleId,
+              'plateNo': this.data.plateNo,
+              'startTime': this.data.startTime ? this.$dateUtil.dateToMs(this.data.startTime) : '',
+              'endTime':this.data.endTime ? this.$dateUtil.dateToMs(this.data.endTime) : ''
+            }).then(res => {
+              console.log(res);
+                this.$message.success(res.message);
+            });
+        })
+        // let url = 'vehicle/path/detail/export';
 
-        this.$api.download(url, params,
-          response => {
-            if (response.status >= 200 && response.status < 300) {
+        // this.$api.download(url, params,
+        //   response => {
+        //     if (response.status >= 200 && response.status < 300) {
 
-              this.$message.error("下载成功 ！");
-            } else {
-              this.$message.error("下载失败 ！");
-            }
-          }
-        );
+        //       this.$message.error("下载成功 ！");
+        //     } else {
+        //       this.$message.error("下载失败 ！");
+        //     }
+        //   }
+        // );
       },
       backClick() {
         this.$emit('PathDataInfoBack')
@@ -379,25 +378,22 @@ import { setTimeout } from 'timers';
         //初始化选择项
         this.selectItem=0;
 
-        let params = {
-          pageSize: 100,
-          param: {
-            vehicleId: item.vehicleId,
-            startTime: item.originStartTime,
-            endTime: item.originEndTime,
+        pathDetailList({
+          page: {
+              'pageSize': 100,
+              'pageIndex': 0
+          }, 
+          'vehicleId': item.vehicleId,
+          'startTime': item.originStartTime,
+          'endTime': item.originEndTime,
+        }).then(res => {
+          if(res.status == '200'){
+            this.drawPath(res.data.list);
+          }else{
+            this.$message.error(res.message);
           }
-        };
+        })
 
-        this.$api.post(
-          'vehicle/path/detail/list', params,
-          response => {
-            if (response.data &&response.data.list&& response.data.list.length > 0) {
-              this.drawPath(response.data.list);
-            }else{
-              this.$message.error("获取轨迹详情列表失败  ！");
-            }
-          }
-        );
         //添加分页数据
         this.addPageData();
       },

@@ -238,6 +238,9 @@ export default {
                     this.searchLoading = false;
                     this.loading = false;
                 }
+            }).catch(err => {
+                this.searchLoading = false;
+                this.loading = false;
             });
         },
         handleSelectionChange(val) {

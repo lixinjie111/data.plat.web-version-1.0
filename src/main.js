@@ -19,10 +19,6 @@ Vue.prototype.$echarts = echarts
 Vue.prototype.$api = Api;
 Vue.prototype.$dateUtil = TDate;
 
-//element-ui
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-Vue.use(ElementUI);
 
 //全局静态文件引入
 import '@/assets/scss/reset.scss';

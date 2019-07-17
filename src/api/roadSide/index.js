@@ -57,3 +57,12 @@ export const redoVideoTask = params => { return axios.post(`${HTTPURL}cam/redoVi
  * 新建下载任务
  */
 export const roadDownloadTask = params => { return axios.post(`${HTTPURL}road/roadDownloadTask`, params).then(res => res.data); };
+
+/**
+ * 感知数据
+ */
+
+/**
+ * 数据列表
+ */
+export const findVideoRecords = params => { return axios.post(`${HTTPURL}perception/findVideoRecords`, params).then(res => res.data); };

@@ -80,6 +80,7 @@
 </template>
 
 <script>
+import {queryPage,findByDeviceList} from '@/api/video';
 export default {
     name: 'AddLoad',
     data () {
@@ -200,33 +201,28 @@ export default {
                 this.plateNoLoading = true;
                 clearTimeout(this.plateNoTimer);
                 this.plateNoTimer = setTimeout(() => {
-                    let _params = {
+                    this.plateNoList = [];
+                    queryPage({
                         "page":{
                             "pageIndex": 0,
-                            "pageSize": 100000
+                            "pageSize": 500
                         },
                         "plateNo": query,
                         "vehicleId": ''
-                    };
-                    this.plateNoList = [];
-                    this.$api.post(this.operPlatUrl + 'vehicle/query/page',_params,response => {
-                        if(response.data.status == 200){
-                            let _result = response.data.data.list.map((item, index) => {
+                    }).then(res => {
+                        if(res.status == '200'){
+                            let _result = res.data.list.map((item, index) => {
                                 let _item = {
                                     plateNo: item.plateNo,
                                     vehicleId: item.vehicleId
                                 };
                                 return _item;
                             });
-                            this.plateNoList = _result;
+                            this.plateNoList.push(_result);
                         }else{
-                            this.$message.error(response.data.message);
+                            this.$message.error(res.message);
                         }
-                        this.plateNoLoading = false;
-                    }, error => {
-                        this.$message.error("获取车牌号error！");
-                        this.plateNoLoading = false;
-                    });
+                    })
                 }, 1000);
             } else {
                 this.plateNoList = [];
@@ -249,18 +245,17 @@ export default {
                 this.vehicleIdLoading = true;
                 clearTimeout(this.vehicleIdTimer);
                 this.vehicleIdTimer = setTimeout(() => {
-                    let _params = {
+                    this.vehicleIdList = [];
+                    queryPage({
                         "page":{
                             "pageIndex": 0,
-                            "pageSize": 100000
+                            "pageSize": 500
                         },
                         "plateNo": '',
                         "vehicleId": query
-                    };
-                    this.vehicleIdList = [];
-                    this.$api.post(this.operPlatUrl + 'vehicle/query/page',_params,response => {
-                        if(response.data.status == 200){
-                            let _result = response.data.data.list.map((item, index) => {
+                    }).then(res => {
+                        if(res.status == '200'){
+                            let _result = res.data.list.map((item, index) => {
                                 let _item = {
                                     plateNo: item.plateNo,
                                     vehicleId: item.vehicleId
@@ -269,17 +264,11 @@ export default {
                             });
                             this.vehicleIdList = _result;
                         }else{
-                            this.$message.error(response.data.message);
-                            this.vehicleIdLoading = false;
+                            this.$message.error(res.message);
                         }
-                        
-                    }, error => {
-                        this.$message.error("获取车辆ID error！");
                         this.vehicleIdLoading = false;
-                    });
-                }, 1000);
-            } else {
-                this.vehicleIdList = [];
+                    })
+                },1000);
             }
         },
         handleSelectVehicleId(item) {
@@ -295,7 +284,6 @@ export default {
             this.getVehicleBindCamInfo();
         },
         handleSelectCamCode(item) {
-            // console.log(item);
             this.formParams.camSerialNum = item.serialNum;
             this.formParams.camDeviceId = item.deviceId;
             this.formParams.camDirection = item.toward;
@@ -303,11 +291,11 @@ export default {
         },
         getVehicleBindCamInfo(){
             this.camCodeList = [];
-            this.$api.post(this.operPlatUrl + 'vehicle/findByDeviceList',{
-                "vehicleId":this.formParams.vehicleId
-            },response => {
-                if(response.data.status == 200){
-                    response.data.data.forEach((item, index) => {
+            findByDeviceList({
+                'vehicleId':this.formParams.vehicleId
+            }).then(res => {
+                if(res.status == '200'){
+                    res.data.forEach((item, index) => {
                         if(item.type == "M"){
                             let _towards = "";
                             switch (item.toward){
@@ -343,32 +331,29 @@ export default {
                             this.camCodeList.push(_item);
                         }
                     });
-                }else {
-                    this.$message.error(response.data.message);
                 }
-            },error => {
-                this.$message.error('获取摄像头列表error！');
-            });
+            })
         },
         submitFunc() {
-            let _formParams = Object.assign(this.formParams, {
-                startTime: this.$dateUtil.dateToMs(this.formParams.startTime) || '',
-                endTime: this.$dateUtil.dateToMs(this.formParams.endTime) || ''
-            });
             this.$refs.addForm.validate((valid) => {
                 if (valid) {
                     this.loading = true;
-                    this.$api.post('cam/historyDownloadTask',_formParams,response => {
-                        if(response.data.code == '200'){
+                    historyDownloadTask({
+                        'plateNo':this.formParams.plateNo,
+                        'vehicleId':this.formParams.vehicleId,
+                        'camSerialNum':this.formParams.camSerialNum,
+                        'camDeviceId':this.formParams.camDeviceId,
+                        'camDirection':this.formParams.camDirection,
+                        'startTime': this.formParams.startTime ? this.$dateUtil.dateToMs(this.formParams.startTime) : '',
+                        'endTime': this.formParams.endTime ? this.$dateUtil.dateToMs(this.formParams.endTime) : ''
+                    }).then(res => {
+                        if(res.status == '200'){
                             this.backClick();
                         }else{
-                            this.$message.error(response.data.message);
+                            this.$message.error(res.message);
                         }
                         this.loading = false;
-                    }, error => {
-                        this.loading = false;
-                        this.$message.error("新建下载任务error！");
-                    });
+                    })
                 } else {
                     return false;
                 }

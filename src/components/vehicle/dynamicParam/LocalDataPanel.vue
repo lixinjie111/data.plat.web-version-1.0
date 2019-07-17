@@ -2,32 +2,25 @@
     <div>
         <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
         <div v-show="isShow && !isAddData" class="c-mt-30">
-            <el-form :inline="true" :model="searchKey" ref="searchForm" :rules="rules" size='small' class="demo-form-inline">
+            <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
                 <el-form-item label="车辆编号" prop='vehicleId'>
                     <el-input v-model.trim="searchKey.vehicleId"></el-input>
                 </el-form-item>
-                <el-form-item label="开始时间" prop='startTime'>
-                    <el-date-picker
-                        v-model.trim="searchKey.startTime"
-                        type="datetime"
-                        placeholder="开始时间"
-                        :picker-options="startTimeOption">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="结束时间" prop='endTime'>
-                    <el-date-picker
-                        v-model.trim="searchKey.endTime"
-                        type="datetime"
-                        placeholder="结束时间"
-                        :picker-options="endTimeOption">
-                    </el-date-picker>
-                </el-form-item>
+                <el-form-item label="数据采集时间" prop='time'>
+                  <el-date-picker
+                      v-model.trim="searchKey.time"
+                      type="datetimerange"
+                      :picker-options="timeOption"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期">
+                  </el-date-picker>
+              </el-form-item>
             </el-form>
             <div class="c-button-wrapper c-text-right">
                 <el-button size="mini" plain icon="el-icon-receiving" @click="addDataSet();">获取数据集</el-button>
             </div>
 
-            <el-table class='c-mt-10' :data="dataList" v-loading='loading' stripe>
+            <el-table class='c-mt-10' max-height="620" :data="dataList" v-loading='loading' stripe>
                 <el-table-column fixed align="center" prop="sid" label="SID"></el-table-column>
                 <el-table-column align="center" prop="name" label="英文名称"></el-table-column>
                 <el-table-column align="center" prop="longidentifier" label="中文名称"></el-table-column>
@@ -51,13 +44,13 @@
     
 </template>
 <script>
+import {submitForm} from '@/api/vehicle';
 import AddDataPanel from './AddDataPanel.vue'
-import DatePicker from 'vue2-datepicker'
 import TList from '@/common/utils/list.js'
 export default {
     props: ['title','type','data'],
     components: {
-        AddDataPanel,DatePicker,TList
+        AddDataPanel,TList
     },
     data(){
         let _this = this,
@@ -104,7 +97,8 @@ export default {
             searchKey:{
                 vehicleId:'',
                 startTime:'',
-                endTime:''
+                endTime:'',
+                time:''
             },
             dataList:[],//子组件返回的所有数据
             pageData:[],//每一页数据
@@ -117,38 +111,13 @@ export default {
             isShow:true,
             isTipsShow:false,
             isTimeTipShow:false,
-            rules:{
-                startTime:[
-                    { validator: _checkStartTime, trigger: 'blur' }
-                ],
-                endTime:[
-                    { validator: _checkEndTime, trigger: 'blur' }
-                ]
-            },
-            startTimeOption: {
+            timeOption: {
                 disabledDate: time => {
                     let _time = time.getTime(),
-                        _newTime = new Date().getTime(), 
-                        _endDateVal = _this.searchKey.endTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.endTime, "yy-mm-dd")+' 00:00:00') : null;
-                    if (_endDateVal) {
-                        return _time > _endDateVal || _time > _newTime;
-                    }else {
-                        return _time > _newTime;
-                    }
+                        _newTime = new Date().getTime();
+                    return _time > _newTime;
                 }
-            },
-            endTimeOption: {
-                disabledDate: time => {
-                    let _time = time.getTime(),
-                        _newTime = new Date().getTime(), 
-                        _startDateVal = _this.searchKey.startTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.startTime, "yy-mm-dd")+' 00:00:00') : null;
-                    if (_startDateVal) {
-                        return  _time < _startDateVal || _time > _newTime;
-                    }else {
-                        return _time > _newTime;
-                    }
-                }
-            }    
+            }  
         }
     },
     methods: {
@@ -196,7 +165,6 @@ export default {
                 this.pageData =[];
                 this.handleCurrentChange(0);
                 this.isShow=false;
-              
                 this.$emit("localDataPanelBack");
             }
             else{
@@ -218,13 +186,12 @@ export default {
             this.current.height = boxHeight - this.current.top - 55 - 100 - 40;
         },
         okClick(){
-            let _this =this;
             if(this.dataList.length == 0) {
                 this.$store.dispatch('showPrompt','请增加数据集 ！');
                 return;
             }
-            let startTime = _this.$dateUtil.dateToMs(_this.searchKey.startTime);
-            let endTime = _this.$dateUtil.dateToMs(_this.searchKey.endTime);
+            let startTime = this.$dateUtil.dateToMs(this.searchKey.startTime);
+            let endTime = this.$dateUtil.dateToMs(this.searchKey.endTime);
 
             if(endTime - startTime > 3600 * 1000){
                 this.$store.dispatch('showPrompt','数据采集开始时间和结束时间间隔不能大于1小时 ！');
@@ -235,23 +202,21 @@ export default {
             this.dataList.forEach(function(item){
                     sIds.push(item.sid);
             });
-            
-            this.$api.post("dynamic/vehicle/condition/submit", {
-                    vehicleId: _this.searchKey.vehicleId,
-                    startTime:_this.$dateUtil.dateToMs(_this.searchKey.startTime),
-                    endTime:_this.$dateUtil.dateToMs(_this.searchKey.endTime),
-                    eventTime:new Date().getTime(),
-                    eventName:'云端查询',
-                    sIds:sIds.join(',')
-                }, response => {
-                    if(response.data.code == 200){
-                        this.$message.sucess("事件条件下发成功!");
-                        this.$emit("localDataPanelBack");
-                    }else{
-                        this.$message.error("事件条件下发失败!");
-                    }
-                    
-                });
+            submitForm({
+                vehicleId: this.searchKey.vehicleId,
+                startTime:this.$dateUtil.dateToMs(this.searchKey.startTime),
+                endTime:this.$dateUtil.dateToMs(this.searchKey.endTime),
+                eventTime:new Date().getTime(),
+                eventName:'云端查询',
+                sIds:sIds.join(',')
+            }).then(res => {
+                if(res.status == '200'){
+                    this.$message.sucess(res.message);
+                    this.$emit("localDataPanelBack");
+                }else{
+                    this.$message.error(res.message);
+                }
+            })
         },
         cancelClick(){
            this.backClick();

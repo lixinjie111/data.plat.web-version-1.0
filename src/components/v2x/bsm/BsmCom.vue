@@ -27,7 +27,7 @@
                     <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="dataList" v-loading='loading' max-height='500' class='c-mt-10' stripe>
+            <el-table :data="dataList" v-loading='loading' max-height="620" class='c-mt-10' stripe>
                 <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
                 <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
                 <el-table-column align="center" prop="vehicleId" label="车辆编号"></el-table-column>
@@ -62,18 +62,18 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="c-page clearfix">
-                <el-pagination
-                    background
-                    @current-change="changePageCurrent" 
-                    :current-page="pageOption.page" 
-                    :total="pageOption.total"
-                    @size-change="changePageSize"
-                    :page-sizes="[10,20,50,100,200]" 
-                    :page-size="pageOption.size"
-                    layout="total, sizes, prev, pager, next">
-                </el-pagination>
-            </div>
+        </div>
+        <div class="c-page clearfix">
+            <el-pagination
+                background
+                @current-change="changePageCurrent" 
+                :current-page="pageOption.page" 
+                :total="pageOption.total"
+                @size-change="changePageSize"
+                :page-sizes="[10,20,50,100,200]" 
+                :page-size="pageOption.size"
+                layout="total, sizes, prev, pager, next">
+            </el-pagination>
         </div>
         <bsm-detail ref='bsmDetail' v-show='panel.cfgShow' :data='panel.data' @backClick='backFn'></bsm-detail>
     </div>
@@ -81,6 +81,7 @@
 <script>
 import Paging from '@/common/view/Paging.vue'
 import BsmDetail from '@/components/v2x/bsm/BsmDetail.vue'
+import {findBSMList} from '@/api/v2x';
 export default {
     name: 'BsmCom',
     components: {
@@ -129,9 +130,9 @@ export default {
             startTime:'',
             endTime:'',
             searchKey: {
-               vehicleId: '',
-               startTime: '',
-               endTime: ''
+                vehicleId: '',
+                startTime: '',
+                endTime: ''
             },
             pageOption: {
                 page: 1,
@@ -188,7 +189,7 @@ export default {
     },
     methods: {
         init(){
-            this.initData();
+            this.findBSMList();
             this.initPaging();
             this.initSearch();
         },
@@ -217,37 +218,31 @@ export default {
                 endTime: ''
             };
         },
-        initData(){
+        findBSMList(){
             this.dataList = [];
             this.loading = true;
-            this.$api.post('v2x/findBSMList',{                   
-                    vehicleId : this.searchKey.vehicleId,
-                    startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
-                    endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '',
-                    page: {
-                        "pageSize": this.pageOption.size,
-                        "pageIndex": this.pageOption.page-1
-                    },       
-            },response => {
-                if(response.status == 200){
-                    if(response.data.list && response.data.list.length > 0){
-                        response.data.list.forEach((item) => {
-                            item.loading = false;
-                        });
-                        this.dataList = response.data.list;
-                        this.pageOption.total = response.data.totalCount;
-                        this.$message.sucess("获取列表成功！");
-                    }else{
-                        this.$message.error("未查询到任何信息!");
-                    }
+            findBSMList({
+                vehicleId : this.searchKey.vehicleId,
+                startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
+                endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '',
+                page: {
+                    "pageSize": this.pageOption.size,
+                    "pageIndex": this.pageOption.page-1
+                }, 
+            }).then(res => {
+                if(res.status == '200'){
+                    res.data.list.forEach((item) => {
+                        item.loading = false;
+                    });
+                    this.dataList = res.data.list;
+                    this.pageOption.total = res.data.totalCount;
+                    this.$message.sucess(res.message);
+                }else{
+                    this.$message.error(res.message);
                 }
+            }).catch(err => {
                 this.loading = false;
-                this.searchLoad = false;
-            }, error => {
-                this.$message.error("获取列表error!");
-                this.loading = false;
-                this.searchLoad = false;
-            });
+            })
         },
         searchClick(){
             this.searchLoad = true;
@@ -261,7 +256,7 @@ export default {
             }
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                    this.initData();
+                    this.findBSMList();
                 } else {
                     return false;
                 }
@@ -277,11 +272,11 @@ export default {
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();
             this.pageOption.size = value;
-            this.initData();
+            this.findBSMList();
         },
         changePageCurrent(value) {//页码变更
             this.pageOption.page = value;
-            this.initData();
+            this.findBSMList();
         },
         backFn(){
             this.panel.show = false;

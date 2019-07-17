@@ -17,54 +17,19 @@
                     end-placeholder="结束日期">
                 </el-date-picker>
             </el-form-item>
-            <!-- <el-form-item label="时间:">
-                <el-col :span="11">
-                    <el-date-picker type="datetime" placeholder="开始时间" v-model.trim="searchKey.startTime" style="width: 100%;"></el-date-picker>
-                </el-col>
-                <el-col class="line" :span="1" style='width:2%;text-align:center;'>-</el-col>
-                <el-col :span="11">
-                    <el-date-picker type="datetime" placeholder="结束时间" v-model.trim="searchKey.endTime" style="width: 100%;"></el-date-picker>
-                </el-col>
-            </el-form-item> -->
             <el-form-item>
                 <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick('searchKey')">查询</el-button>
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick('searchForm')">重置</el-button>
             </el-form-item>
         </el-form>
-        <el-table class='c-mt-10' :data="dataList" v-loading='loading' stripe>
-            <el-table-column align="center" prop="vehicleId" label="车辆编号"></el-table-column>
+        <el-table class='c-mt-10' max-height="620" :data="dataList" v-loading='loading' stripe>
+            <el-table-column align="center" fixed prop="vehicleId" label="车辆编号"></el-table-column>
             <el-table-column align="center" prop="dataId" label="数据ID"></el-table-column>
             <el-table-column align="center" prop="enName" label="英文名称"></el-table-column>
             <el-table-column align="center" prop="chName" label="中文名称"></el-table-column>
             <el-table-column align="center" prop="dataValue" label="数据值"></el-table-column>
             <el-table-column align="center" prop="time" label="时间"></el-table-column>
         </el-table>
-        <!-- <div>
-            <div class="yk-table-box">
-                <table class="yk-table">
-                    <thead>
-                    <tr>
-                        <th style="width:16%;">vehicleId</th>
-                        <th style="width:16%;">数据ID</th>
-                        <th style="width:16%;">英文名称</th>
-                        <th style="width:16%;">中文名称</th>
-                        <th style="width:16%;">数据值</th>
-                        <th style="width:20%;">时间</th>
-                    </tr>
-                    </thead>
-                    <tbody :style='{"height":(paging.total<=10 ? "auto" : "405px")}'>
-                    <tr class="yk-table-body" v-for="(item,index) in dataList" :key="index" :class="item.css">
-                        <td style="width:16%;">{{item.vehicleId}}</td>
-                        <td style="width:16%;">{{item.dataId}}</td>
-                        <td style="width:16%;">{{item.enName}}</td>
-                        <td style="width:16%;">{{item.chName}}</td>
-                        <td style="width:16%;">{{item.dataValue}}</td>
-                        <td style="width:19%;">{{item.time}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div> -->
         <paging-pre-next ref="pagingPreNext" class="yk-paging" :page-index="pageOption.page" :next-count="pageOption.nextCount" @pagingEvent="pagingFn" @PageSizeEvent="pagingSizeFn"></paging-pre-next>
 
     </div>
@@ -73,7 +38,7 @@
 import TList from '@/common/utils/list.js'
 import DatePicker from 'vue2-datepicker'
 import PagingPreNext from '@/common/view/PagingPreNext.vue'
-
+import {queryList} from '@/api/vehicle';
 export default {
     name: 'BaseMessage',
     components: {
@@ -88,8 +53,6 @@ export default {
             searchKey: {
                 vehicleId: '',
                 enName: '',
-                // startTime: '',
-                // endTime: '',
                 time:'',
                 nextStartRowMap:new Map(),//下一页用到的rowkey数组
             },
@@ -177,33 +140,26 @@ export default {
         },
         getRealTimeList(pageSize,pageIndex,currentNextStartRow,callback){
             this.loading = true;
-            this.searchLoading = true;
-            this.$api.post('dynamic/realTime/list',{
-                "pageSize": pageSize,
-                "pageIndex": pageIndex,
-                "param":{
-                   vehicleId:this.searchKey.vehicleId,
-                   enName:this.searchKey.enName,
-                   startTime:this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
-                   endTime:this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '',
-                   nextStartRow:currentNextStartRow == undefined ? null: currentNextStartRow
-                }
-            },response => {
-                if(response.status == 200){
-                    if(response.data.data.list && response.data.data.list.length > 0){
-                        this.pageOption.total = response.data.data.list.length;
-                        callback(response.data.data.list);
-                    }
-                    this.loading = false;
-                    this.searchLoading = false;
+            queryList({
+                page: {
+                    'pageSize': this.pageOption.size,
+                    'pageIndex': this.pageOption.page-1
+                },
+                vehicleId:this.searchKey.vehicleId,
+                enName:this.searchKey.enName,
+                startTime:this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
+                endTime:this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '',
+                nextStartRow:currentNextStartRow == undefined ? null: currentNextStartRow
+            }).then(res => {
+                if(res.status == '200'){
+                    this.pageOption.total = res.data.list.length;
+                    callback(res.data.list); 
                 }else{
-                    this.$message.error("获取列表失败！");
+                    this.$message.error(res.message);
                 }
-            }, error => {
-                this.$message.error("获取列表error！");
                 this.loading = false;
-                this.searchLoading = true;
-            });
+                this.searchLoading = false;
+            })
         },
         searchClick(){
             this.searchLoading = true;
@@ -221,8 +177,6 @@ export default {
             this.dataList=[];
             this.isVehicleShow = false;
             this.isTimeTip = false;
-            this.loading = false;
-            this.searchLoading = false;
         },
         pagingFn(value){
             var currentIndex = this.pageOption.index;

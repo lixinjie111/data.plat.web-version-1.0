@@ -16,8 +16,8 @@
                             <el-button type="primary" @click="resetClick()">重置</el-button>
                         </el-form-item>
                     </el-form>
-                    <el-table :data="dataList" class='c-mt-10' stripe>
-                        <el-table-column align="center" prop="timestamp" label="时间戳"></el-table-column>
+                    <el-table :data="dataList" class='c-mt-10' max-height="620" stripe>
+                        <el-table-column align="center" fixed prop="timestamp" label="时间戳"></el-table-column>
                         <el-table-column align="center" prop="dataId" label="数据ID"></el-table-column>
                         <el-table-column align="center" prop="enName" label="英文名称"></el-table-column>
                         <el-table-column align="center" prop="chName" label="中文名称"></el-table-column>
@@ -35,19 +35,19 @@
                         <el-table-column align="center" prop="vehicleId" label="操作"></el-table-column>                
                     </el-table>
                 </div>
-                <div class="pages">
-                    <el-pagination
-                        background
-                        @current-change="handleCurrentChange" 
-                        :current-page="pageOption.page"
-                        :total="pageOption.total" 
-                        @size-change="handleSizeChange"
-                        :page-sizes="[10,20,50,100,200]" 
-                        :page-size="pageOption.size"
-                        layout="total, sizes, prev, pager, next">
-                    </el-pagination>
-                </div>
                 
+        </div>
+        <div class="pages">
+            <el-pagination
+                background
+                @current-change="handleCurrentChange" 
+                :current-page="pageOption.page"
+                :total="pageOption.total" 
+                @size-change="handleSizeChange"
+                :page-sizes="[10,20,50,100,200]" 
+                :page-size="pageOption.size"
+                layout="total, sizes, prev, pager, next">
+            </el-pagination>
         </div>
     </div>
                 
@@ -55,7 +55,7 @@
 </template>
 <script>
 import Paging from '@/common/view/Paging.vue'
-
+import {getDetatilList} from '@/api/vehicle';
 export default {
     props: ['title','type','data'],
     components: {
@@ -88,35 +88,32 @@ export default {
             if(dataId != undefined) this.searchKey.dataId = dataId;
             this.$refs.page.internalCurrentPage = this.currentPage;
             this.paging.index = 1;
-            this.initData();
+            this.getDetatilList();
         },
-        initData(){
+        getDetatilList(){
             let _this = this;
-            _this.dataList = [];
-            _this.loading = true;
-            _this.$api.post('dynamic/event/data/list',{     
-                "pageSize": this.pageOption.size,
-                "pageIndex": this.pageOption.index,           
-                "param":{
-                    queryId: this.searchKey.queryId,
-                    sId: this.searchKey.dataId,
-                }
-            },response => {
-                if(response.status == 200){
-                    _this.dataList = response.data.list;
-                    _this.pageOption.total = response.data.totalCount;
+            this.dataList = [];
+            this.loading = true;
+            getDetatilList({
+                page: {
+                    'pageSize': this.pageOption.size,
+                    'pageIndex': this.pageOption.page-1
+                },
+                'queryId': this.searchKey.queryId,
+                'sId': this.searchKey.dataId,
+            }).then(res => {
+                if(res.status == '200'){
+                    this.dataList = res.data.list;
+                    this.pageOption.total = res.data.totalCount;
                 }else{
-                    _this.$store.dispatch('showPrompt','获取数据列表失败 ！');
+                    this.$message.error(res.message);
                 }
-                _this.loading = false;
-            },error => {
-                this.$message.error("获取列表error！");
                 this.loading = false;
-            });
+            })
         },
         searchClick(){
             this.pageOption.index = 0;
-            this.initData();
+            this.getDetatilList();
         },
         backClick(){
             this.$emit('detailPanelBack')
@@ -127,11 +124,11 @@ export default {
         },
         handleSizeChange(value) {//每页显示条数变更
             this.pageOption.size = value;
-            this.initData();
+            this.getDetatilList();
         },
         handleCurrentChange(value) {//页码变更
             this.pageOption.page = value;
-            this.initData();
+            this.getDetatilList();
         }
     },
     mounted(){

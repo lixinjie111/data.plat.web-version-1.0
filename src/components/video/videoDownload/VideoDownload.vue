@@ -87,7 +87,6 @@
                         <template v-if="scope.row.taskStatus == 3">下载失败</template>
                     </template>
                 </el-table-column>
-                <!-- <el-table-column align="center" label="失败原因" prop="note"></el-table-column> -->
                 <el-table-column align="center" min-width="10%" label="操作">
                     <template slot-scope="scope">
                         <el-button size="small" icon="el-icon-download" circle type="warning" v-if="scope.row.taskStatus == 0 || scope.row.taskStatus == 3" plain :loading="scope.row.downLoading" @click="reloadClick(scope.row)"></el-button>
@@ -113,7 +112,7 @@
 <script>
 
 import Addload from './AddLoad.vue'
-
+import {queryTaskList,redoVideoTask} from '@/api/video'
 export default {
     name: 'VideoDownload',
     components: {
@@ -229,29 +228,26 @@ export default {
             this.dataList = [];
             this.loading = true;
             let protocal = JSON.parse(localStorage.getItem('protocal')) || '';
-            this.$api.post('cam/queryTaskList',{
-                "pageSize": this.pageOption.size,
-                "pageIndex": this.pageOption.page - 1,
-                'param':{
-                    protocal:protocal,
-                    startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]) || '',
-                    startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]) || '',
-                    stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]) || '',
-                    stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1]) || ''
+            queryTaskList({
+                page: {
+                    'pageSize': this.pageOption.size,
+                    'pageIndex': this.pageOption.page-1
                 },
-            },response => {
-                if(response.status >= 200 && response.status < 300){
-                    if(response.data.data.list && response.data.data.list.length > 0) {
-                        this.dataList = response.data.data.list || [];
-                        this.pageOption.total = response.data.data.totalCount || 0;
-                    }
+                'protocal':protocal,
+                'startBeginTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
+                'startEndTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
+                'stopBeginTime': this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
+                'stopEndTime': this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : ''
+            }).then(res => {
+                if(res.status == '200'){
+                    this.dataList = res.data.list || [];
+                    this.pageOption.total = res.data.totalCount || 0;
                 }else{
-                    this.$message.error("获取列表失败！");
+                    this.$message.error(res.message);
                 }
                 this.loading = false;
                 this.searchLoading = false;
-            }, error => {
-                this.$message.error("获取列表error！");
+            }).catch(err => {
                 this.loading = false;
                 this.searchLoading = false;
             });
@@ -287,22 +283,17 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$api.post('cam/redoVideoTask',{
+                redoVideoTask({
                     fileId: item.fileName
-                },response => {
-                    if(response.data.code == '200'){
-                        this.$message.success('再次下载视频任务成功!');
+                }).then(res => {
+                    if(res.status == '200'){
+                        this.$message.success(res.message);
                     }else{
-                        this.$message.error("再次下载视频任务失败！");
+                        this.$message.error(res.message);
                     }
                     this.initDialogData();
-                },error => {
-                    this.$message.error("再次下载视频任务error！");
-                    this.initDialogData();
-                });
-            }).catch(() => {
-                this.$message.info('已取消删除');          
-            });
+                })
+            })
         },
         initDialogData() {
             this.dialogOption.loading = false;

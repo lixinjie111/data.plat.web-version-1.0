@@ -26,7 +26,7 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>               
         </el-form>
-        <el-table class='c-mt-10' :data="dataList" v-loading='loading' max-height='500' stripe>
+        <el-table class='c-mt-10' :data="dataList" v-loading='loading' max-height="620" stripe>
             <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
             <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
             <el-table-column align="center" prop="targetRsuIds" label="RSUId"></el-table-column>
@@ -62,6 +62,7 @@
     </div>
 </template>
 <script>
+import {findRsiPage} from '@/api/v2x';
 export default {
     name: 'RsiCom',
     components: {
@@ -162,7 +163,7 @@ export default {
     },
     methods: {
         init(){
-            this.initData();
+            this.findRsiPage();
             this.initPaging();
             this.initSearch();
         },
@@ -183,31 +184,28 @@ export default {
                 endTime:  ''
             };
         },
-        initData(){
+        findRsiPage(){
             this.dataList = [];
             this.loading = true;
-            this.$api.post('v2x/findRsiPage',{  
+            findRsiPage({  
                 page: {
-                    "pageSize": this.pageOption.size,
-                    "pageIndex": this.pageOption.page-1
+                    'pageSize': this.pageOption.size,
+                    'pageIndex': this.pageOption.page-1
                 },
-                rsuId : this.searchKey.rsuId,
-                startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
-                endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '',        
-            },response => {
-                if(response.data.code == '200'){
-                    this.dataList = response.data.data.list;
-                    this.pageOption.total = response.data.data.totalCount;
-                    this.$message.success(response.data.message);
-                    this.loading = false;
-                    this.searchLoad = false;
+                'rsuId' : this.searchKey.rsuId,
+                'startTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
+                'endTime':this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '',        
+            }).then(res => {
+                if(res.status == '200'){
+                    this.dataList = res.data.list;
+                    this.pageOption.total = res.data.totalCount;
+                    this.$message.success(res.message);
                 }else{
-                    this.$message.error(response.data.message);
-                    this.loading = false;
-                    this.searchLoad = false;
+                    this.$message.error(res.message);
                 }
-            },error => {
-                this.$message.error("获取列表error！");
+                this.loading = false;
+                this.searchLoad = false;
+            }).catch(err => {
                 this.loading = false;
                 this.searchLoad = false;
             });
@@ -224,7 +222,7 @@ export default {
             }
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                    this.initData();
+                    this.findRsiPage();
                 } else {
                     return false;
                 }
@@ -240,11 +238,11 @@ export default {
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();
             this.pageOption.size = value;
-            this.initData();
+            this.findRsiPage();
         },
         changePageCurrent(value) {//页码变更
             this.pageOption.page = value;
-            this.initData();
+            this.findRsiPage();
         },
         formatTime(value){
             let tDate = value ? new Date(value) : new Date(); 

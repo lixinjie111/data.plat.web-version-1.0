@@ -93,6 +93,7 @@
 <script>
 import MaxMap from './maxMap.vue';
 import DropDownList from '../../../common/view/DropDownList.vue';
+import {queryCamList} from '@/api/video';
 export default {
     name: 'RealMonitor',
     components: {
@@ -123,7 +124,6 @@ export default {
             isDisabled: false,
             isMaskShow:true,
             isMapShow:false,
-
             plateNoTimer: null,
             vehicleIdTimer: null,
             plateNoLoading: false,
@@ -149,7 +149,7 @@ export default {
                 sourceOrder: true,
                 flash: {
                   // swf: '../../../../static/media/video-js.swf'
-                  swf: '/static/media/video-js.swf'
+                    swf: '/static/media/video-js.swf'
                 },
                 muted: true, // 默认情况下将会消除任何音频。
                 loop: false, // 导致视频一结束就重新开始。
@@ -235,7 +235,7 @@ export default {
             'vehicleId':this.vehicleId
             },response => {
                 if(response.data.code == '200'){
-                       this.deviceType =  response.data.data.type;
+                    this.deviceType =  response.data.data.type;
                 }
             }); 
         },
@@ -285,9 +285,9 @@ export default {
                         }
                     }); 
                 }
-           }else{
+            }else{
                 this.$message.error('请选择车牌号!');
-           }
+            }
         },
         onPlayerEnded() {
             // console.log("playerEnded")
@@ -343,17 +343,20 @@ export default {
             clearTimeout(this.plateNoTimer);
             this.plateNoTimer = setTimeout(() => {
                 this.plateNoList = [];
-                this.$api.post('cam/queryCamList',this.searchKey,response => {
-                    if(response.data.data && response.data.data.length > 0){
-                        this.plateNoList = response.data.data;
-                    }else {
-                        this.$message.error("获取车牌号失败！");
+                queryCamList({
+                    vehicleId:this.searchKey.vehicleId,
+                    factoryName:this.searchKey.factoryName,
+                    model:this.searchKey.model,
+                    plateNo:this.searchKey.plateNo,
+                    serialNum:this.searchKey.serialNum
+                }).then(res => {
+                    if(res.status == '200'){
+                        this.plateNoList = res.data;
+                    }else{
+                        this.$message.error(res.message);
                     }
                     this.plateNoLoading = false;
-                }, error => {
-                    this.$message.error("获取车牌号error！");
-                    this.plateNoLoading = false;
-                });
+                })
             }, 1000);  
         },
         changeMaxFn(){
@@ -399,17 +402,20 @@ export default {
                 clearTimeout(this.plateNoTimer);
                 this.plateNoTimer = setTimeout(() => {
                     this.plateNoList = [];
-                    this.$api.post('cam/queryCamList',this.searchKey,response => {
-                        if(response.data.data && response.data.data.length > 0){
-                            this.plateNoList = response.data.data;
-                        }else {
-                            this.$message.error("获取车牌号失败！");
+                    queryCamList({
+                        vehicleId:this.searchKey.vehicleId,
+                        factoryName:this.searchKey.factoryName,
+                        model:this.searchKey.model,
+                        plateNo:this.searchKey.plateNo,
+                        serialNum:this.searchKey.serialNum
+                    }).then(res => {
+                        if(res.status == '200'){
+                            this.plateNoList = res.data;
+                        }else{
+                            this.$message.error(res.message);
                         }
                         this.plateNoLoading = false;
-                    }, error => {
-                        this.$message.error("获取车牌号error！");
-                        this.plateNoLoading = false;
-                    });
+                    })
                 }, 1000);
             } else {
                 this.plateNoList = [];
@@ -468,17 +474,20 @@ export default {
             clearTimeout(this.vehicleIdTimer);
             this.vehicleIdTimer = setTimeout(() => {
                 this.vehicleIdList = [];
-                this.$api.post('cam/queryCamList',this.searchKey,response => {
-                    if(response.data.data && response.data.data.length > 0){
-                        this.vehicleIdList = response.data.data;
-                    }else {
-                        this.$message.error("获取车辆ID 失败！");
+                queryCamList({
+                    vehicleId:this.searchKey.vehicleId,
+                    factoryName:this.searchKey.factoryName,
+                    model:this.searchKey.model,
+                    plateNo:this.searchKey.plateNo,
+                    serialNum:this.searchKey.serialNum
+                }).then(res => {
+                    if(res.status == '200'){
+                        this.vehicleIdList = res.data;
+                    }else{
+                        this.$message.error(res.message);
                     }
                     this.vehicleIdLoading = false;
-                }, error => {
-                    this.$message.error("获取车辆ID error！");
-                    this.vehicleIdLoading = false;
-                });
+                })
             }, 1000);
         },
         getCamareInfo(item){

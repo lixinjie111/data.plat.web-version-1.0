@@ -48,13 +48,13 @@
             </el-form-item>
         </el-form>
         <div class="c-button-wrapper c-text-right">
-            <el-button size="mini" plain icon="el-icon-download" @click="downClick">批量下载</el-button>
+            <el-button size="mini" plain icon="el-icon-download" @click="downLoadZipFile">批量下载</el-button>
         </div>
-        <el-table stripe class="c-mt-10"
+        <el-table stripe max-height="620" class="c-mt-10"
             :data="dataList"
             v-loading="loading"
             @selection-change="handleSelectionChange">
-            <el-table-column align="center" min-width="1%" type="selection"></el-table-column>
+            <el-table-column align="center" fixed min-width="1%" type="selection"></el-table-column>
             <el-table-column align="center" min-width="2%" label="序号" type="index" :index="indexMethod"></el-table-column>
             <el-table-column align="center" min-width="12%" label="文件名称" prop="fileName"></el-table-column>
             <el-table-column align="center" min-width="8%" label="车辆编号" prop="vehicleId"></el-table-column>
@@ -73,7 +73,7 @@
                 <template slot-scope="scope">
                     <el-button size="mini" type="warning" plain @click="replay(scope.row)">回放</el-button>
                     <el-button size="mini" type="warning" plain @click="exportClick(scope.row)">导出</el-button>
-                    <el-button size="mini" type="warning" plain @click="delClick(scope.row)">删除</el-button>
+                    <el-button size="mini" type="warning" plain @click="removeVideo(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -95,6 +95,7 @@
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import Paging from '@/common/view/Paging.vue'
+import {queryVideoList,downLoadZipFile,removeVideo} from '@/api/video'
 export default {
     name: 'VideoManage',
     components: {
@@ -196,36 +197,32 @@ export default {
         initData(){
             this.dataList = [];
             this.loading = true;
-            let params = Object.assign(this.searchKey, {
-                protocal: JSON.parse(localStorage.getItem('protocal')) || '',
-                startBeginTime:this.$dateUtil.dateToMs(this.searchKey.startTime[0]) || '',
-                startEndTime:this.$dateUtil.dateToMs(this.searchKey.startTime[1]) || '',
-                stopBeginTime:this.$dateUtil.dateToMs(this.searchKey.endTime[0]) || '',
-                stopEndTime:this.$dateUtil.dateToMs(this.searchKey.endTime[1]) || ''
-            });
-            this.$api.post('cam/queryVideoList',{
-                "pageSize": this.pageOption.size,
-                "pageIndex": this.pageOption.page,
-                "param": params,
-            },response => {
-                if(response.data.code == 200){
-                    if(response.data.data.list && response.data.data.list.length > 0) {
-                        response.data.data.list.forEach(item => {
-                            item.delLoading = false;
-                        });
-                        this.dataList = response.data.data.list || [];
-                        this.pageOption.total = response.data.data.totalCount || 0;
-                    }
+            queryVideoList({
+                'page': {
+                    'pageSize': this.pageOption.size,
+                    'pageIndex': this.pageOption.page-1
+                },
+                'protocal': JSON.parse(localStorage.getItem('protocal')) || '',
+                'startBeginTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
+                'startEndTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
+                'stopBeginTime':this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
+                'stopEndTime':this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : ''
+            }).then(res => {
+                if(res.status == '200'){
+                    res.data.list.forEach(item => {
+                        item.delLoading = false;
+                    });
+                    this.dataList = res.data.list || [];
+                    this.pageOption.total = res.data.totalCount || 0;
                 }else{
-                    this.$message.error("获取列表失败！");
+                    this.$message.error(res.message); 
                 }
                 this.loading = false;
                 this.searchLoading = false;
-            }, error => {
-                this.$message.error("获取列表error！");
+            }).catch(err => {
                 this.loading = false;
                 this.searchLoading = false;
-            });
+            })
         },
         indexMethod(index) {
             return (this.pageOption.page-1) * this.pageOption.size + index + 1;
@@ -252,19 +249,17 @@ export default {
             this.panel.show = false;
             this.panel.cfgShow = false;
         },
-        downClick(item){
+        downLoadZipFile(item){
             if(this.selector.length > 0) {
-                this.$api.download('cam/downLoadZipFile',{'fileIds':this.selector},
-                    response => {
-                        if (response.status >= 200 && response.status < 300) {
-                            this.$message.success("下载视频成功 ！");
-                        } else {
-                            this.$message.error("下载视频失败 ！");
-                        }
-                    }, error => {
-                        this.$message.error("下载error！");
+                downLoadZipFile({
+                    'fileIds':this.selector
+                }).then(res => {
+                    if(res.status == '200'){
+                        this.$message.success(res.message);
+                    }else{
+                        this.$message.error(res.message);
                     }
-                );
+                })
             }else{
                 this.$message.error('请选择要下载的文件!');
             }
@@ -285,7 +280,7 @@ export default {
             s  =   (s.length==1)?'0'+s:s;
             return h+':'+s;
         },
-        delClick(item){
+        removeVideo(item){
             this.$confirm('确定要删除此条数据吗?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -294,26 +289,21 @@ export default {
                 let fileId = [];
                 fileId.push(item.fileName);
                 item.delLoading = true;
-                this.$api.post('cam/removeVideo',{  
+                removeVideo({  
                         "fields": fileId          
-                },response => {
-                    if(response.status >= 200 && response.status < 300){
-                        let {code,message} = response.data;
-                        if(code == 200){
-                            this.$message.success("删除"+message);
-                            this.initData();
-                        }else{
-                            this.$message.error("删除"+message);
-                        }
-                        item.delLoading = false;
+                }).then(res => {
+                    if(res.status == '200'){
+                        this.$message.success(res.message);
+                        this.initData();
+                    }else{
+                        this.$message.error(res.message);
                     }
-                }, error => {
-                    this.$message.error("删除error！");
                     item.delLoading = false;
+                }).catch(error => {
+                    item.delLoading = false;
+                    this.$message.error(error.message);          
                 });
-                }).catch(() => {
-                    this.$message.info('已取消删除');          
-                });
+            })
         },
         replayFn(data){
             this.panel.show = false;

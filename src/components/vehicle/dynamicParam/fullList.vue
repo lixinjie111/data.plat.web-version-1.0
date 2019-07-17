@@ -1,6 +1,5 @@
 <template>
-<div id='lists'>
-    <div class="yk-panel-box yk-bgcolor-white">
+<div id='lists' class="c-wrapper-20" v-cloak>
         <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
             <el-form-item label="SID:" prop='sid'>
                 <el-input v-model.trim="searchKey.sid"></el-input>
@@ -16,15 +15,16 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
-
-        <el-table :data="dataList" class='c-mt-10' v-loading="loading" @selection-change="handleSelectionChange" stripe>
-            <el-table-column fixed align="center" type="selection"></el-table-column>
-            <el-table-column align="center" prop="sid" label="SID"></el-table-column>
-            <el-table-column align="center" prop="name" label="英文名称"></el-table-column>
-            <el-table-column align="center" prop="longidentifier" label="中文名称"></el-table-column>
-            <el-table-column align="center" prop="datType" label="类型"></el-table-column>
-            <el-table-column align="center" prop="description" label="描述"></el-table-column>
-        </el-table>
+        <div style='height:620px;'>
+            <el-table :data="dataList" class='c-mt-10' max-height="620" v-loading="loading" @selection-change="handleSelectionChange" stripe>
+                <el-table-column fixed align="center" type="selection"></el-table-column>
+                <el-table-column align="center" prop="sid" label="SID"></el-table-column>
+                <el-table-column align="center" prop="name" label="英文名称"></el-table-column>
+                <el-table-column align="center" prop="longidentifier" label="中文名称"></el-table-column>
+                <el-table-column align="center" prop="datType" label="类型"></el-table-column>
+                <el-table-column align="center" prop="description" label="描述"></el-table-column>
+            </el-table>
+        </div>
         <div class="c-page clearfix">
             <el-pagination
                 background
@@ -37,18 +37,16 @@
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
         </div>
-    </div>
-  
 </div>   
 </template>
 <script>
-import Paging from '@/common/view/Paging.vue'
 import TList from '@/common/utils/list.js'
+import {findVehicleProperty} from '@/api/vehicle';
 export default {
     name:'FullList',
     props: ['title','type','data'],
      components: {
-        Paging,TList
+        TList
     },
     data () {
         return {
@@ -103,29 +101,32 @@ export default {
             };
         },
         initData(){
-            let _this=this;
-            _this.loading = true;
-            _this.$api.post(this.operPlatUrl + "vehicleTerminal/remote/findVehicleProperty",{     
-                sid:this.searchKey.sid,
-                name:this.searchKey.enName,
-                longidentifier:this.searchKey.chName,          
-                "page":{
-                    "pageSize": _this.pageOption.size,
-                    "pageIndex": _this.pageOption.page - 1
+            this.loading = true;
+            findVehicleProperty({
+                'sid':this.searchKey.sid,
+                'name':this.searchKey.enName,
+                'longidentifier':this.searchKey.chName,          
+                page:{
+                    'pageSize': this.pageOption.size,
+                    'pageIndex': this.pageOption.page - 1
                 }
-            },response => {
-                _this.dataList = response.data.list;
-                _this.pageOption.total = response.data.totalCount;
-                let inputs = document.querySelectorAll(".yk-table tbody input");
-                inputs.forEach(function(item){
-                    item.checked =false;
-                });
-                _this.searchLoading = false;
-                _this.loading = false;
-            },error => {
-                _this.searchLoading = false;
-                _this.loading = false;
-            });
+            }).then(res => {
+                if(res.status == '200'){
+                    this.dataList = res.data.list;
+                    this.pageOption.total = res.data.totalCount;
+                    let inputs = document.querySelectorAll(".yk-table tbody input");
+                    inputs.forEach(function(item){
+                        item.checked = false;
+                    });
+                }else{
+                    this.$message.error(res.message);
+                }
+                this.searchLoading = false;
+                this.loading = false;
+            }).catch(err => {
+                this.searchLoading = false;
+                this.loading = false;
+            })
         },
         searchClick(){
             this.pageOption.page = 1;

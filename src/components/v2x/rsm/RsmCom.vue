@@ -27,7 +27,7 @@
                     <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>          
             </el-form>
-            <el-table class='c-mt-10' :data="dataList" v-loading='loading' max-height='500' stripe>
+            <el-table class='c-mt-10' :data="dataList" v-loading='loading' max-height="620" stripe>
                 <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
                 <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
                 <el-table-column align="center" prop="rsuId" label="RSUId"></el-table-column>
@@ -65,6 +65,7 @@
     </div>
 </template>
 <script>
+import {findRsmPage} from '@/api/v2x';
 import RsmDetail from '@/components/v2x/rsm/RsmDetail.vue'
 export default {
     name: 'BsmCom',
@@ -176,8 +177,7 @@ export default {
     },
     methods: {
         init(){
-            this.initData();
-            // this.initPaging();
+            this.findRsmPage();
             this.initSearch();
         },
         initPageOption() {
@@ -205,35 +205,31 @@ export default {
                 endTime:  ''
             };
         },
-        initData(){
+        findRsmPage(){
             this.dataList = [];
             this.loading = true;
-            // admin/v2x/findRsmPage
-            this.$api.post('v2x/findRsmPage',{  
+            findRsmPage({
                 page: {
-                        "pageSize": this.pageOption.size,
-                        "pageIndex": this.pageOption.page-1
+                    'pageSize': this.pageOption.size,
+                    'pageIndex': this.pageOption.page-1
                 },
-                rsuId: this.searchKey.rsuId,
-                startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
-                endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '',       
-            },response => {
-                if(response.data.code == '200'){
-                    this.dataList = response.data.data.list;
-                    this.pageOption.total = response.data.data.totalCount;
-                    this.$message.success(response.data.message);
-                    this.loading = false;
-                    this.searchLoad = false;
+                'rsuId': this.searchKey.rsuId,
+                'startTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
+                'endTime':this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''      
+            }).then(res => {
+                if(res.status == '200'){
+                    this.dataList = res.data.list;
+                    this.pageOption.total = res.data.totalCount;
+                    this.$message.success(res.message);
                 }else{
-                    this.$message.error(response.data.message);
-                    this.loading = false;
-                    this.searchLoad = false;
+                    this.$message.error(res.message);
                 }
-            },error => {
-                this.$message.error("获取列表error！");
                 this.loading = false;
                 this.searchLoad = false;
-            });
+            }).catch(err => {
+                this.loading = false;
+                this.searchLoad = false;
+            })
         },
         searchClick(){
             this.searchLoad = true;
@@ -247,7 +243,7 @@ export default {
             }
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                    this.initData();
+                    this.findRsmPage();
                 } else {
                     return false;
                 }
@@ -264,11 +260,11 @@ export default {
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();
             this.pageOption.size = value;
-            this.initData();
+            this.findRsmPage();
         },
         changePageCurrent(value) {//页码变更
             this.pageOption.page = value;
-            this.initData();
+            this.findRsmPage();
         },
         backFn(){
             this.infoIsShow = true;

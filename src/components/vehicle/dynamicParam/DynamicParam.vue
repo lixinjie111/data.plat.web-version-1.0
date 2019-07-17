@@ -47,19 +47,18 @@
                 <el-table-column align="center" prop="status" label="采集状态"></el-table-column>
                 <el-table-column align="center" prop="vehicleId" label="操作"></el-table-column>                
             </el-table>
-            
-            <div class="c-page clearfix">
-                <el-pagination
-                    background
-                    @current-change="changePageCurrent" 
-                    :current-page="pageOption.page" 
-                    :total="pageOption.total"
-                    @size-change="changePageSize"
-                    :page-sizes="[10,20,50,100,200]" 
-                    :page-size="pageOption.size"
-                    layout="total, sizes, prev, pager, next">
-                </el-pagination>
-            </div>
+        </div>
+        <div class="c-page clearfix">
+            <el-pagination
+                background
+                @current-change="changePageCurrent" 
+                :current-page="pageOption.page" 
+                :total="pageOption.total"
+                @size-change="changePageSize"
+                :page-sizes="[10,20,50,100,200]" 
+                :page-size="pageOption.size"
+                layout="total, sizes, prev, pager, next">
+            </el-pagination>
         </div>
         <div>
             <local-data-panel ref="localDataPanel" @localDataPanelBack="init" v-show="!panel.detailShow && panel.localDataShow" :title="panel.title" :type="panel.type" :data="panel.data"></local-data-panel>
@@ -73,7 +72,7 @@ import TList from '@/common/utils/list.js'
 import DatePicker from 'vue2-datepicker'
 import LocalDataPanel from '@/components/vehicle/dynamicParam/LocalDataPanel.vue'
 import DetailPanel from './DetailPanel.vue'
-
+import {dynamicParamList} from '@/api/vehicle';
 export default {
     name: 'BaseMessage',
     components: {
@@ -153,7 +152,7 @@ export default {
             this.panel.localDataShow=false;
             this.initPaging();
             this.initSearch();
-            this.initData();
+            this.dynamicParamList();
             this.dataList = [];
         },
         initPaging(){
@@ -170,34 +169,31 @@ export default {
                 time:''
             };
         },
-        initData(){
-            let _this = this;
-            _this.dataList = [];
-            _this.loading = true;
-            _this.$api.post('dynamic/event/list',{
-                "pageSize": this.pageOption.size,
-                "pageIndex": this.pageOption.page - 1,
-                "param":{
-                    vehicleId: this.searchKey.vehicleId,
-                    eventName: this.searchKey.eventName,
-                    eventNo: this.searchKey.eventNo,
-                    startTime: this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
-                    endTime: this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
-                }
-            },response => {
-                if(response.status >= 200){
-                    if(response.data.list && response.data.list.length > 0){
-                        _this.dataList = response.data.list;
-                        _this.pageOption.total = response.data.totalCount;
-                    }
+        dynamicParamList(){
+            this.dataList = [];
+            this.loading = true;
+            dynamicParamList({
+                page: {
+                    'pageSize': this.pageOption.size,
+                    'pageIndex': this.pageOption.page-1
+                },
+                'vehicleId': this.searchKey.vehicleId,
+                'eventName': this.searchKey.eventName,
+                'eventNo': this.searchKey.eventNo,
+                'startTime': this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
+                'endTime': this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
+            }).then(res => {
+                if(res.status == '200'){
+                    this.dataList = res.data.list;
+                    this.pageOption.total = res.data.totalCount;
                 }else{
-                    _this.$message.error("获取列表失败！");
+                    this.$message.error(res.messages);
                 }
-                _this.loading = false;
-                _this.searchLoading = false;
-            },error => {
-                _this.loading = false;
-                _this.searchLoading = false;
+                this.loading = false;
+                this.searchLoading = false;
+            }).catch(err => {
+                this.loading = false;
+                this.searchLoading = false;
             });
         },
         localClick(){
@@ -223,7 +219,7 @@ export default {
             this.searchLoading = true;
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                    this.initData();
+                    this.dynamicParamList();
                 } else {
                     return false;
                 }
@@ -242,11 +238,11 @@ export default {
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();
             this.pageOption.size = value;
-            this.initData();
+            this.dynamicParamList();
         },
         changePageCurrent(value) {//页码变更
             this.pageOption.page = value;
-            this.initData();
+            this.dynamicParamList();
         },
     },
     mounted(){

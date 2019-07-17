@@ -18,6 +18,7 @@
 import FullList from '@/components/vehicle/dynamicParam/fullList.vue';
 import GroupList from '@/components/vehicle/dynamicParam/groupList.vue';
 import TList from '@/common/utils/list.js'
+import {findPropByGroupId} from '@/api/vehicle';
 export default {
     components:{
         FullList,
@@ -66,16 +67,15 @@ export default {
                 callback([]);
                 return;
             }
-             this.$api.post(this.operPlatUrl + "vehicleTerminal/remote/findPropByGroupId",{     
-                ids:ids
-            }, response => {
-                if(response.status == 200){
-                 callback(response.data);
+            findPropByGroupId({
+                'ids':ids
+            }).then(res => {
+                if(res.status == '200'){
+                    callback(res.data);
                 }else{
-                    this.$store.dispatch('showPrompt','获取数据组数据列表失败 ！');
+                    this.$message.error(res.message);
                 }
-                
-            });
+            })
         },
         getLocalData(listGroupProperty){
             let list = [];
