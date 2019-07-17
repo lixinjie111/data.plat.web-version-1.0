@@ -34,8 +34,16 @@ function axiosFilter(vm) {
 
     // response
     axios.interceptors.response.use(response => {
-        let returnStatus = response.data.status || response.data.code,
-            returnMessage = response.data.message || '操作失败！'
+        let returnStatus, 
+            returnMessage = response.data.message || '操作失败！';;
+        if(response.data.status) {
+            returnStatus = response.data.status;
+        }else {
+            returnStatus = 200;
+        }
+
+        // let returnStatus = response.data.status || response.data.code,
+        //     returnMessage = response.data.message || '操作失败！',
         switch (returnStatus.toString()) {
             case '200': {
                 return Promise.resolve(response);

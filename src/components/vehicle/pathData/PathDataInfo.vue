@@ -342,8 +342,9 @@ import { error } from 'util';
               'startTime': this.data.startTime ? this.$dateUtil.dateToMs(this.data.startTime) : '',
               'endTime':this.data.endTime ? this.$dateUtil.dateToMs(this.data.endTime) : ''
             }).then(res => {
-              console.log(res);
-                this.$message.success(res.message);
+              // console.log(res);
+                // this.$message.success(res.message);
+                this.$message.success('导出成功！');
             });
         })
         // let url = 'vehicle/path/detail/export';
