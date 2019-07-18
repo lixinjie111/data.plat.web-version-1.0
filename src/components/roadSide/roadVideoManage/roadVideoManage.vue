@@ -2,20 +2,20 @@
 <!-- 基本信息 -->
 <div class="c-wrapper-20" v-cloak>
     <div v-show="!panel.show">
-        <el-form ref="searchForm" :inline="true" :model="searchKey" :rules="rules" size="small">
-            <el-form-item label="文件名: ">
+        <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
+            <el-form-item label="文件名" prop='fileName'>
                 <el-input v-model.trim="searchKey.fileName"></el-input>
             </el-form-item>
-            <el-form-item label="摄像头编号: ">
+            <el-form-item label="摄像头编号" prop='camCode'>
                 <el-input v-model.trim="searchKey.camCode"></el-input>
             </el-form-item>
-            <el-form-item label="道路名称: ">
+            <el-form-item label="道路名称" prop='roadName'>
                 <el-input v-model.trim="searchKey.roadName"></el-input>
             </el-form-item>
-            <el-form-item label="路侧点名称: ">
+            <el-form-item label="路侧点名称" prop='roadPointName'>
                 <el-input v-model.trim="searchKey.roadPointName"></el-input>
             </el-form-item>
-            <el-form-item label="视频来源: ">
+            <el-form-item label="视频来源" prop='source'>
                 <el-select v-model="searchKey.source">
                     <el-option
                         v-for="item in sourceList"
@@ -164,15 +164,6 @@ export default {
                 {name:'成功',val:'2'},
                 {name:'失败',val:'3'},
             ],
-            rules:{
-                startTime:[
-                    { trigger: 'blur' }
-                ],
-                endTime:[ 
-                    { trigger: 'blur' }
-                ]
-
-            },
             timeOption: {
                 disabledDate: time => {
                     let _time = time.getTime(),
@@ -192,7 +183,6 @@ export default {
             this.manageShow = true;
             this.playbackShow = false;
             this.initPaging();
-            this.initSearch();
             this.initData();
         },
         initPaging(){
@@ -200,37 +190,26 @@ export default {
             this.pageOption.total = 0;
             this.pageOption.size = 10;
         },
-        initSearch(){
-            this.searchKey = {
-                fileName: '',
-                camCode: '',
-                roadName: '',
-                roadPointName: '',
-                source: '',
-                startTime:'',
-                endTime:''
-            };
-        },
         initData(){
             this.dataList = [];
             this.loading = false;
             let protocal = JSON.parse(localStorage.getItem('protocal')) || '';
             queryRoadVideoList({
-                "pageSize": this.pageOption.size,
-                "pageIndex": this.pageOption.page - 1,
-                'param':{
-                    camCode: this.searchKey.camCode,
-                    fileName: this.searchKey.fileName,
-                    roadName: this.searchKey.roadName,
-                    source: this.searchKey.source,
-                    taskStatus: this.searchKey.taskStatus,
-                    roadPointName: this.searchKey.roadPointName,
-                    protocal:protocal,
-                    startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]) || '',
-                    startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]) || '',
-                    stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]) || '',
-                    stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1]) || ''
+                page: {
+                    'pageSize': this.pageOption.size,
+                    'pageIndex': this.pageOption.page-1
                 },
+                camCode: this.searchKey.camCode,
+                fileName: this.searchKey.fileName,
+                roadName: this.searchKey.roadName,
+                source: this.searchKey.source,
+                taskStatus: this.searchKey.taskStatus,
+                roadPointName: this.searchKey.roadPointName,
+                protocal:protocal,
+                startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]) || '',
+                startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]) || '',
+                stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]) || '',
+                stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1]) || ''
             }).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
@@ -264,7 +243,7 @@ export default {
             });
         },
         resetClick(){
-            this.init();
+            this.initData();
             this.$refs.searchForm.resetFields();
         },
         cfgPanelFn(data){
@@ -272,6 +251,8 @@ export default {
             this.panel.cfgShow = false;
         },
         downClick(item){
+            let fileIds = [];
+            fileIds.push(this.selector);
             if(this.selector.length > 0) {
                 downLoadZipFile({
                     'fileIds':this.selector
@@ -313,8 +294,8 @@ export default {
                     "fields": fileId          
                 }).then(res => {
                     if(res.status == '200'){
-                        this.$message.success(res.data.message);
-                        this.initData();
+                        this.$message.success(res.message);
+                        window.location.reload();
                     }
                     item.delLoading = false;
                 })

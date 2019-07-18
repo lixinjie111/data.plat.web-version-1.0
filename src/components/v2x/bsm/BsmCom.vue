@@ -2,8 +2,8 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <div v-show="!panel.show && !panel.cfgShow" class="yk-container c-mt-10">
-            <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
-                <el-form-item label="车辆编号:" prop='vehicleId'>
+            <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
+                <el-form-item label="车辆编号" prop='vehicleId'>
                     <el-input v-model="searchKey.vehicleId"></el-input>
                 </el-form-item>
                 <el-form-item label="开始时间" prop='startTime'>
@@ -27,7 +27,7 @@
                     <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="dataList" v-loading='loading' max-height="620" class='c-mt-10 c-mb-70' stripe>
+            <el-table :data="dataList" v-loading='loading' max-height="499" class='c-mt-10 c-mb-70' stripe>
                 <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
                 <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
                 <el-table-column align="center" prop="vehicleId" label="车辆编号"></el-table-column>
@@ -191,7 +191,6 @@ export default {
         init(){
             this.findBSMList();
             this.initPaging();
-            this.initSearch();
         },
         initPageOption() {
             this.dataList = [];
@@ -210,13 +209,6 @@ export default {
             this.pageOption.page = 1;
             this.pageOption.total = 0;
             this.pageOption.size = 10;
-        },
-        initSearch(){
-            this.searchKey = {
-                vid: '',
-                startTime: '',
-                endTime: ''
-            };
         },
         findBSMList(){
             this.dataList = [];
@@ -261,7 +253,7 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.init();
+            this.findBSMList();
         },
         getIsNan(val){
             return typeof(val) == 'number' && window.isNaN(val);

@@ -3,19 +3,19 @@
     <div class="c-wrapper-20" v-cloak>
         <div v-show="!panel.show">
             <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
-                <el-form-item label="文件名: ">
+                <el-form-item label="文件名" prop='fileName'>
                     <el-input v-model.trim="searchKey.fileName"></el-input>
                 </el-form-item>
-                <el-form-item label="摄像头编号: ">
+                <el-form-item label="摄像头编号" prop='camCode'>
                     <el-input v-model.trim="searchKey.camCode"></el-input>
                 </el-form-item>
-                <el-form-item label="车牌号: ">
+                <el-form-item label="车牌号" prop='plateNo'>
                     <el-input v-model.trim="searchKey.plateNo"></el-input>
                 </el-form-item>
-                <el-form-item label="车辆编号: ">
+                <el-form-item label="车辆编号" prop='vehicleId'>
                     <el-input v-model.trim="searchKey.vehicleId"></el-input>
                 </el-form-item>
-                <el-form-item label="视频来源: ">
+                <el-form-item label="视频来源" prop='source'>
                     <el-select v-model="searchKey.source">
                         <el-option
                             v-for="item in sourceList"
@@ -25,7 +25,7 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="下载状态: ">
+                <el-form-item label="下载状态" prop="taskStatus">
                     <el-select v-model="searchKey.taskStatus">
                         <el-option
                             v-for="item in statusList"
@@ -67,7 +67,7 @@
             v-loading='loading' 
             stripe 
             border 
-            max-height="620" 
+            max-height="499" 
             class='c-mb-70'>
                 <el-table-column fixed align="center" min-width="5%" label="序号" type="index" :index="indexMethod"></el-table-column>
                 <el-table-column align="center" min-width="20%" label="文件名称" prop="fileName"></el-table-column>
@@ -204,25 +204,12 @@ export default {
             this.manageShow = true;
             this.playbackShow = false;
             this.initPaging();
-            this.initSearch();
             this.initData();
         },
         initPaging(){
             this.pageOption.page = 1;
             this.pageOption.total = 0;
             this.pageOption.size = 10;
-        },
-        initSearch(){
-            this.searchKey = {
-                fileName: '',
-                camCode: '',
-                plateNo: '',
-                vehicleId: '',
-                source: '',
-                taskStatus: '',
-                startTime:'',
-                endTime:''
-            };
         },
         initData(){
             this.dataList = [];
@@ -233,6 +220,11 @@ export default {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 },
+                'fileName':this.searchKey.fileName,
+                'camCode':this.searchKey.camCode,
+                'vehicleId':this.searchKey.vehicleId,
+                'source':this.searchKey.source,
+                'plateNo':this.searchKey.plateNo,
                 'protocal':protocal,
                 'startBeginTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
                 'startEndTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
@@ -264,7 +256,7 @@ export default {
             });
         },
         resetClick(){
-            this.init();
+            this.initData();
             this.$refs.searchForm.resetFields();
         },
         cfgPanelFn(data){

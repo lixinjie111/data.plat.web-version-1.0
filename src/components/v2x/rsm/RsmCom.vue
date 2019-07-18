@@ -2,7 +2,7 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <div v-show='infoIsShow'>
-            <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
+            <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
                 <el-form-item label="RSUId" prop='rsuId'>
                     <el-input v-model="searchKey.rsuId"></el-input>
                 </el-form-item>
@@ -27,7 +27,7 @@
                     <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>          
             </el-form>
-            <el-table class='c-mt-10 c-mb-70' :data="dataList" v-loading='loading' max-height="620" stripe>
+            <el-table class='c-mt-10 c-mb-70' :data="dataList" v-loading='loading' max-height="499" stripe>
                 <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
                 <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
                 <el-table-column align="center" prop="rsuId" label="RSUId"></el-table-column>
@@ -175,7 +175,6 @@ export default {
     methods: {
         init(){
             this.findRsmPage();
-            this.initSearch();
         },
         initPageOption() {
             this.dataList = [];
@@ -194,13 +193,6 @@ export default {
             this.pageOption.page = 1;
             this.pageOption.total = 0;
             this.pageOption.size = 10;
-        },
-        initSearch(){
-            this.searchKey = {
-                rsuId: '',
-                startTime:  '',
-                endTime:  ''
-            };
         },
         findRsmPage(){
             this.dataList = [];
@@ -245,7 +237,7 @@ export default {
         },
         resetClick(){
             this.loading = false;
-            this.init();
+            this.findRsmPage();
             this.$refs.searchForm.resetFields();
         },
         getIsNan(val){

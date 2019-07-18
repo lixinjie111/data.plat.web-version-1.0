@@ -1,7 +1,7 @@
 <template>
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
-        <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
+        <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
             <el-form-item label="自车Id" prop='hvid'>
                 <el-input v-model="searchKey.hvid"></el-input>
             </el-form-item>
@@ -26,7 +26,7 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
-        <el-table class='c-mt-10 c-mb-70' :data="dataList" max-height="620" stripe v-loading='loading'>
+        <el-table class='c-mt-10 c-mb-70' :data="dataList" max-height="499" stripe v-loading='loading'>
             <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
             <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
             <el-table-column align="center" prop="hvid" label="自车Id"></el-table-column>
@@ -171,7 +171,6 @@ export default {
         init(){
             this.findEventList();
             this.initPaging();
-            this.initSearch();
         },
         initPageOption() {
             this.dataList = [];
@@ -182,13 +181,6 @@ export default {
             this.pageOption.page = 1;
             this.pageOption.total = 0;
             this.pageOption.size = 10;
-        },
-        initSearch(){
-            this.searchKey = {
-                hvid: '',
-                startTime: '',
-                endTime: ''
-            };
         },
         findEventList(){
             this.dataList = [];
@@ -224,7 +216,7 @@ export default {
             });
         },
         resetClick(){
-            this.init();
+            this.findEventList();
             this.$refs.searchForm.resetFields();
         },
         changePageSize(value) {//每页显示条数变更

@@ -7,7 +7,7 @@
                         <span class="title">数据查看</span>
                 </div>
                 <div>
-                    <el-form :inline="true" :model="searchKey" size='small' class="demo-form-inline">
+                    <el-form :inline="true" :model="searchKey" size='small'>
                         <el-form-item label="数据ID:" prop='dataId'>
                             <el-input v-model.trim="searchKey.dataId"></el-input>
                         </el-form-item>
@@ -16,7 +16,7 @@
                             <el-button type="primary" @click="resetClick()">重置</el-button>
                         </el-form-item>
                     </el-form>
-                    <el-table :data="dataList" class='c-mt-10' max-height="620" stripe>
+                    <el-table :data="dataList" class='c-mt-10' max-height="499" stripe>
                         <el-table-column align="center" fixed prop="timestamp" label="时间戳"></el-table-column>
                         <el-table-column align="center" prop="dataId" label="数据ID"></el-table-column>
                         <el-table-column align="center" prop="enName" label="英文名称"></el-table-column>

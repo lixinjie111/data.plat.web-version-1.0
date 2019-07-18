@@ -1,7 +1,7 @@
 <template>
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
-        <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small' class="demo-form-inline">
+        <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
             <el-form-item label="车辆编号:" prop='vehicleId'>
                 <el-input v-model.trim="searchKey.vehicleId"></el-input>
             </el-form-item>
@@ -22,7 +22,7 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick('searchForm')">重置</el-button>
             </el-form-item>
         </el-form>
-        <el-table class='c-mt-10' max-height="620" :data="dataList" v-loading='loading' stripe>
+        <el-table class='c-mt-10' max-height="499" :data="dataList" v-loading='loading' stripe>
             <el-table-column align="center" fixed prop="vehicleId" label="车辆编号"></el-table-column>
             <el-table-column align="center" prop="dataId" label="数据ID"></el-table-column>
             <el-table-column align="center" prop="enName" label="英文名称"></el-table-column>
@@ -67,14 +67,6 @@ export default {
             current: {
                 top: 0
             },
-            rules: {
-                startTime: [
-                    { type:'date',required: true, message: '开始时间不能为空!', trigger: 'change' },
-                ],
-                endTime: [
-                    { type:'date',required: true, message: '结束时间不能为空!', trigger: 'change' },
-                ],
-            },
             timeOption: {
                 disabledDate: time => {
                     let _time = time.getTime(),
@@ -99,11 +91,6 @@ export default {
         },
         initSearch(){
             this.searchKey = {
-                vehicleId: '',
-                enName: '',
-                time:'',
-                // startTime: '',
-                // endTime: '',
                 nextStartRowMap:new Map()
             };
         },

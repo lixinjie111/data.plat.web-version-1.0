@@ -50,7 +50,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="摄像头朝向">
+                    <el-form-item label="摄像头朝向" prop='camDirection'>
                         <p class="c-width-200">{{formParams.camDirection}}</p>
                     </el-form-item>
                     <el-form-item label="开始时间" prop='startTime'>

@@ -1,7 +1,7 @@
 <template>
 <div id='groups' v-cloak>
-    <el-form :inline="true" :model="searchKey" size='small' class="demo-form-inline">
-        <el-form-item label="组名称:" prop='name'>
+    <el-form :inline="true" :model="searchKey" ref='searchForm' size='small'>
+        <el-form-item label="组名称" prop='name'>
             <el-input v-model.trim="searchKey.name"></el-input>
         </el-form-item>
         <el-form-item>
@@ -63,18 +63,12 @@ export default {
          init(){
             this.operPlatUrl = window.config.operPlatUrl;
             this.initPaging();
-            this.initSearch();
             this.initData();
         },
         initPaging(){
             this.pageOption.page = 1;
             this.pageOption.total = 0;
             this.pageOption.size = 10;
-        },
-        initSearch(){
-            this.searchKey = {
-                  name: ''
-            };
         },
         initData(){
             this.loading = true;
@@ -105,7 +99,8 @@ export default {
             this.initData();
         },
         resetClick(){
-            this.init();
+            this.initData();
+            this.$refs.searchForm.resetFields();
         },
         handleSelectionChange(val) {
             this.selector = [];

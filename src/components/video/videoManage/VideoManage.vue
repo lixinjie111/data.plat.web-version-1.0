@@ -2,20 +2,20 @@
     <!-- 基本信息 -->
 <div>
     <div class="c-wrapper-20" v-cloak v-show="!panel.show">
-        <el-form ref="searchForm" :inline="true" class="demo-form-inline" size="small">
-            <el-form-item label="文件名: ">
+        <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
+            <el-form-item label="文件名" prop='fileName'>
                 <el-input v-model.trim="searchKey.fileName"></el-input>
             </el-form-item>
-            <el-form-item label="车辆编号: ">
+            <el-form-item label="车辆编号" prop="VehicleId">
                 <el-input v-model.trim="searchKey.VehicleId"></el-input>
             </el-form-item>
-            <el-form-item label="车牌号: ">
+            <el-form-item label="车牌号" prop="plateNo">
                 <el-input v-model.trim="searchKey.plateNo"></el-input>
             </el-form-item>
-            <el-form-item label="摄像头序列号: ">
+            <el-form-item label="摄像头序列号" prop='camId'>
                 <el-input v-model.trim="searchKey.camId"></el-input>
             </el-form-item>
-            <el-form-item label="视频来源: ">
+            <el-form-item label="视频来源" prop='source'>
                 <el-select v-model="searchKey.source">
                     <el-option
                         v-for="item in sourceList"
@@ -49,9 +49,9 @@
             </el-form-item>
         </el-form>
         <div class="c-button-wrapper c-text-right">
-            <el-button size="mini" plain icon="el-icon-download" @click="downLoadZipFile">批量下载</el-button>
+            <el-button size="mini" plain icon="el-icon-download" @click="downClick">批量下载</el-button>
         </div>
-        <el-table stripe max-height="620"
+        <el-table stripe max-height="499"
             :data="dataList"
             v-loading="loading"
             class='c-mb-70'
@@ -159,7 +159,6 @@ export default {
     methods: {
         init(){
             this.initPaging();
-            this.initSearch();
             this.initData();
         },
         initPageOption() {
@@ -191,17 +190,6 @@ export default {
             this.pageOption.total = 0;
             this.pageOption.size = 10;
         },
-        initSearch(){
-            this.searchKey = {
-                fileName: '',
-                VehicleId: '',
-                plateNo: '',
-                camId: '',
-                source:'',
-                startTime:'',
-                endTime:''
-            };
-        },
         initData(){
             this.dataList = [];
             this.loading = true;
@@ -210,6 +198,11 @@ export default {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 },
+                'fileName':this.searchKey.fileName,
+                'vehicleId':this.searchKey.VehicleId,
+                'plateNo':this.searchKey.plateNo,
+                'source':this.searchKey.source,
+                'camCode':this.searchKey.camId,
                 'protocal': JSON.parse(localStorage.getItem('protocal')) || '',
                 'startBeginTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
                 'startEndTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
@@ -245,7 +238,8 @@ export default {
             this.initData();
         },
         resetClick(){
-            this.init();
+            this.initData();
+            this.$refs.searchForm.resetFields();
         },
         vehiclePanelFn(e){
             this.panel.show = false;
@@ -255,19 +249,45 @@ export default {
             this.panel.show = false;
             this.panel.cfgShow = false;
         },
-        downLoadZipFile(item){
+        downClick(item){
             if(this.selector.length > 0) {
                 downLoadZipFile({
                     'fileIds':this.selector
                 }).then(res => {
-                    if(res.status == '200'){
-                        this.$message.success(res.message);
-                    }else{
-                        this.$message.error(res.message);
-                    }
+                    this.downloadFile(res);
                 })
             }else{
                 this.$message.error('请选择要下载的文件!');
+            }
+        },
+        downloadFile(res){
+            if (res.data) {
+                if ('msSaveBlob' in navigator) { // 对IE和Edge的兼容
+                    window.navigator.msSaveBlob(res.data, decodeURI(res.headers['content-disposition'].split('filename=')[1]))
+                } else {
+                    let blob = res.data
+
+                    // console.log('res.data ----------- ' + JSON.stringify(res))
+
+                    let a = document.createElement('a');
+                    a.setAttribute('id','exportLog');
+                    a.style.display = 'none'
+
+                    // let a = document.getElementById('exportLog')
+                    let url = window.URL.createObjectURL(blob)
+
+                    let filename = decodeURI(res.headers['content-disposition'].split('filename=')[1])
+                    // let filename = 'car_' + (new Date()).getTime() + '.txt';
+                    // let filename = 'filename.txt';
+
+                    var evt = document.createEvent('HTMLEvents') // 对firefox的兼容
+                    evt.initEvent('click', false, false) // 对firefox的兼容
+                    a.href = url
+                    a.download = filename
+                    a.dispatchEvent(evt) // 对firefox的兼容
+                    a.click()
+                    window.URL.revokeObjectURL(url)
+                }
             }
         },
         s_to_hs(s){

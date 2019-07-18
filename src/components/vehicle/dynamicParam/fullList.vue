@@ -1,13 +1,13 @@
 <template>
 <div id='lists' v-cloak>
-        <el-form :inline="true" :model="searchKey" ref="searchForm" size='small' class="demo-form-inline">
-            <el-form-item label="SID:" prop='sid'>
+        <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
+            <el-form-item label="SID" prop='sid'>
                 <el-input v-model.trim="searchKey.sid"></el-input>
             </el-form-item>
-            <el-form-item label="英文名称:">
+            <el-form-item label="英文名称" prop='enName'>
                 <el-input v-model.trim="searchKey.enName"></el-input>
             </el-form-item>
-            <el-form-item label="中文名称:">
+            <el-form-item label="中文名称" prop='chName'>
                 <el-input v-model.trim="searchKey.chName"></el-input>
             </el-form-item>
             <el-form-item>
@@ -15,7 +15,7 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="dataList" class='c-mt-10 c-mb-70' max-height="620" v-loading="loading" @selection-change="handleSelectionChange" stripe>
+        <el-table :data="dataList" class='c-mt-10 c-mb-70' max-height="499" v-loading="loading" @selection-change="handleSelectionChange" stripe>
             <el-table-column fixed align="center" type="selection"></el-table-column>
             <el-table-column align="center" prop="sid" label="SID"></el-table-column>
             <el-table-column align="center" prop="name" label="英文名称"></el-table-column>
@@ -78,20 +78,12 @@ export default {
          init(){
             this.operPlatUrl = window.config.operPlatUrl;
             this.initPaging();
-            this.initSearch();
             this.initData();         
         },
         initPaging(){
             this.pageOption.page = 1;
             this.pageOption.total = 0;
             this.pageOption.size = 10;
-        },
-        initSearch(){
-            this.searchKey = {
-                sid: null,
-                enName:'',
-                chName:''
-            };
         },
         initData(){
             this.loading = true;
@@ -132,7 +124,8 @@ export default {
             });
         },
         resetClick(){
-            this.init();
+            this.$refs.searchForm.resetFields();
+            this.initData();
         },
         handleSelectionChange(val) {
             this.selector = [];

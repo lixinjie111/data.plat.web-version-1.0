@@ -2,17 +2,17 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <div v-show="!panel.detailShow && !panel.localDataShow">
-            <el-form :inline="true" :model="searchKey" ref="searchForm" size='small' class="demo-form-inline">
+            <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
                 <el-form-item label="车辆编号" prop='vehicleId'>
                     <el-input v-model.trim="searchKey.vehicleId"></el-input>
                 </el-form-item>
-                <el-form-item label="事件名称">
+                <el-form-item label="事件名称" prop='eventName'>
                     <el-input v-model.trim="searchKey.eventName"></el-input>
                 </el-form-item>
-                <el-form-item label="事件编号">
+                <el-form-item label="事件编号" prop='eventNo'>
                     <el-input v-model.trim="searchKey.eventNo"></el-input>
                 </el-form-item>
-                <el-form-item label="事件触发时间">
+                <el-form-item label="事件触发时间" prop='time'>
                     <el-date-picker
                         v-model.trim="searchKey.time"
                         type="datetimerange"
@@ -31,7 +31,7 @@
                 <el-button size="mini" plain icon="el-icon-edit" @click="localClick();">获取本地数据</el-button>
             </div>
             
-            <el-table :data="dataList" v-loading='loading' stripe border max-height="620" class='c-mb-70'>
+            <el-table :data="dataList" v-loading='loading' stripe border max-height="499" class='c-mb-70'>
                 <el-table-column fixed align="center" prop="eventName" label="事件名称"></el-table-column>
                 <el-table-column align="center" prop="eventNo" label="事件编号"></el-table-column>
                 <el-table-column align="center" prop="vehicleId" label="车辆编号"></el-table-column>
@@ -155,7 +155,6 @@ export default {
             this.panel.detailShow = false;
             this.panel.localDataShow = false;
             this.initPaging();
-            this.initSearch();
             this.dynamicParamList();
             this.dataList = [];
         },
@@ -164,14 +163,6 @@ export default {
             this.pageOption.page = 1;
             this.pageOption.total = 0;
             this.pageOption.size = 10;
-        },
-        initSearch(){
-            this.searchKey = {
-                vehicleId: '',
-                eventName: '',
-                eventNo: '',
-                time:''
-            };
         },
         dynamicParamList(){
             this.dataList = [];

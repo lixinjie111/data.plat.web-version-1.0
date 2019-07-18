@@ -47,7 +47,9 @@ export const queryVideoList = params => { return axios.post(`${HTTPURL}cam/query
 /**
  * 批量下载
  */
-export const downLoadZipFile = params => { return axios.post(`${HTTPURL}cam/downLoadZipFile`, params).then(res => res.data); };
+export const downLoadZipFile = params => { return axios.post(`${HTTPURL}cam/downLoadZipFile`, params,{
+    responseType: 'blob'
+  }).then(res => res.data); };
 /**
  * 删除文件
  */

@@ -2,20 +2,20 @@
 <!-- 基本信息 -->
 <div class="c-wrapper-20" v-cloak>
     <div v-show="!panel.show">
-        <el-form ref="searchForm" :inline="true" :model="searchKey" class="demo-form-inline" size="small">
-            <el-form-item label="文件名: ">
+        <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
+            <el-form-item label="文件名" prop='fileName'>
                 <el-input v-model.trim="searchKey.fileName"></el-input>
             </el-form-item>
-            <el-form-item label="摄像头编号: ">
+            <el-form-item label="摄像头编号" prop='camCode'>
                 <el-input v-model.trim="searchKey.camCode"></el-input>
             </el-form-item>
-            <el-form-item label="道路名称: ">
+            <el-form-item label="道路名称" prop='roadName'>
                 <el-input v-model.trim="searchKey.roadName"></el-input>
             </el-form-item>
-            <el-form-item label="路侧点名称: ">
+            <el-form-item label="路侧点名称" prop='roadPointName'>
                 <el-input v-model.trim="searchKey.roadPointName"></el-input>
             </el-form-item>
-            <el-form-item label="视频来源: ">
+            <el-form-item label="视频来源" prop='source'>
                 <el-select v-model="searchKey.source">
                     <el-option
                         v-for="item in sourceList"
@@ -25,7 +25,7 @@
                     ></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="下载状态: ">
+            <el-form-item label="下载状态" prop='taskStatus'>
                 <el-select v-model="searchKey.taskStatus">
                     <el-option
                         v-for="item in statusList"
@@ -68,7 +68,7 @@
         v-loading='loading' 
         stripe 
         border 
-        max-height="620" 
+        max-height="499" 
         class='c-mb-70'>
             <el-table-column fixed align="center" type="index" min-width="5%" label="序号" :index='indexMethod'></el-table-column>
             <el-table-column align="center" prop="fileName" min-width="12%" label="文件名称"></el-table-column>
@@ -210,27 +210,12 @@ export default {
             this.manageShow = true;
             this.playbackShow = false;
             this.initPaging();
-            this.initSearch();
             this.initData();
         },
         initPaging(){
             this.pageOption.page = 1;
             this.pageOption.total = 0;
             this.pageOption.size = 10;
-        },
-        initSearch(){
-            this.searchKey = {
-                fileName: '',
-                camCode: '',
-                roadName: '',
-                roadPointName: '',
-                source: '',
-                taskStatus: '',
-                startBeginTime:'',
-                startEndTime:'',
-                stopBeginTime:'',
-                stopEndTime:''
-            };
         },
         initData(){
             this.dataList = [];
@@ -240,6 +225,12 @@ export default {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 },
+                'fileName':this.searchKey.fileName,
+                'camCode':this.searchKey.camCode,
+                'roadName':this.searchKey.roadName,
+                'roadPointName':this.searchKey.roadPointName,
+                'source':this.searchKey.source,
+                'taskStatus':this.searchKey.taskStatus,
                 'startBeginTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
                 'startEndTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
                 'stopBeginTime': this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
@@ -269,8 +260,8 @@ export default {
             });
         },
         resetClick(){
-            this.init();
             this.$refs.searchForm.resetFields();
+            this.initData();
         },
         addTask(item){
             this.panel.show = true;

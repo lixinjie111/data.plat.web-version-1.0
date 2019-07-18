@@ -29,7 +29,7 @@
             v-loading='loading' 
             stripe 
             border 
-            max-height="620" 
+            max-height="499" 
             class='c-mb-70'>
               <el-table-column fixed align="center" min-width="5%" type="index" label="序号" :index='indexMethod'></el-table-column>
               <el-table-column align="center" min-width="16%" prop="routeId" label="行程ID"></el-table-column>
@@ -42,7 +42,7 @@
               <el-table-column align="center" min-width="11%" prop="vehicleId" label="车辆编号"></el-table-column>
               <el-table-column align="center" min-width="10%" prop="plateNo" label="车牌号"></el-table-column>
               <el-table-column align="center" min-width="7%" prop="mileage" label="行驶距离(km)"></el-table-column>
-              <el-table-column align="center" min-width="9%" prop="durationTime" label="行驶时长(h)"></el-table-column>
+              <el-table-column align="center" min-width="9%" prop="durationTime" label="行驶时长(min)"></el-table-column>
               <el-table-column align="center" min-width="9%" label="平均速度(km/h)">
                 <template slot-scope="scope">{{scope.row.avgSpeed}}</template>
               </el-table-column>
@@ -237,14 +237,8 @@
         };
       },
       init() {
-        this.initSearchKey();
         this.initPaging();
         this.queryPathList();
-      },
-      initSearchKey() {
-        this.searchKey.vehicleId = '';
-        this.searchKey.plateNo = "";
-        this.searchKey.time = '';
       },
       initPaging() {
         this.pageOption.page = 1;
@@ -341,6 +335,7 @@
         });
       },
       resetClick(searchForm) {
+        this.queryPathList();
         this.$refs[searchForm].resetFields();
       },
       changePageSize(value) {//每页显示条数变更

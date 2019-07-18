@@ -49,9 +49,9 @@
               <th style='width:15%;'>时间</th>
               <th style='width:12%;'>经度</th>
               <th style='width:12%;'>纬度</th>
-              <th style='width:12%;'>速度</th>
+              <th style='width:12%;'>速度(km/h)</th>
               <th style='width:12%;'>航向角</th>
-              <th>高程</th>
+              <th>高程(m)</th>
             </tr>
             </thead>
             <tbody class="tbody">
@@ -104,6 +104,10 @@ import { error } from 'util';
           isBottom:false,
           pageIndex:1
         },
+        exportTime:{
+          startTime:'',
+          endTime:''
+        }
       }
     },
     mounted() {
@@ -334,15 +338,10 @@ import { error } from 'util';
             let params = {
               'vehicleId':this.data.vehicleId,
               'plateNo': this.data.plateNo,
-              'startTime': this.data.startTime ? this.$dateUtil.dateToMs(this.data.startTime) : '',
-              'endTime':this.data.endTime ? this.$dateUtil.dateToMs(this.data.endTime) : ''
+              'startTime': this.exportTime.startTime ? this.$dateUtil.dateToMs(this.exportTime.startTime) : '',
+              'endTime':this.exportTime.endTime ? this.$dateUtil.dateToMs(this.exportTime.endTime) : ''
             }
-            exportPathExcel({
-              'vehicleId':this.data.vehicleId,
-              'plateNo': this.data.plateNo,
-              'startTime': this.data.startTime ? this.$dateUtil.dateToMs(this.data.startTime) : '',
-              'endTime':this.data.endTime ? this.$dateUtil.dateToMs(this.data.endTime) : ''
-            }).then(res => {
+            exportPathExcel(params).then(res => {
                 this.downloadFile(res);
             });
         })
@@ -392,7 +391,8 @@ import { error } from 'util';
         this.requestDataParams.requestRowKey=null;
         this.requestDataParams.loadMoreData="下滑加载更多";
         this.requestDataParams.pageIndex=1;
-
+        this.exportTime.startTime = item.originStartTime;
+        this.exportTime.endTime = item.originEndTime;
         //初始化选择项
         this.selectItem=0;
 

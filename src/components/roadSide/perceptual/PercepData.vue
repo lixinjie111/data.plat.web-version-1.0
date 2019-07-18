@@ -1,11 +1,11 @@
 <template>
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
-        <el-form ref="searchForm" :inline="true" :model="searchKey" :rules="rules" class="demo-form-inline" size="small">
-            <el-form-item label="路侧基本点:">
+        <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
+            <el-form-item label="路侧基本点:" prop='rsPtId'>
                 <el-input v-model.trim="searchKey.rsPtId" clearable @change="changeEvent($event, 'rsPtId')" @blur='getRequestData("rsPtId")' @keyup.13='getRequestData("rsPtId")'></el-input>
             </el-form-item>
-            <el-form-item label="摄像头ID:">
+            <el-form-item label="摄像头ID:" prop='cameraId'>
                 <el-select v-model="searchKey.cameraId" @change='getRequestData("cameraId")' v-if="cameraIdList.length > 0">
                     <el-option
                         v-for="item in cameraIdList"
@@ -27,7 +27,7 @@
                 </el-select>
                 <el-input v-model.trim="searchKey.serialNum" clearable @change="changeEvent($event, 'serialNum')" @blur='getRequestData("serialNum")' @keyup.13='getRequestData("serialNum")' v-else></el-input>
             </el-form-item>
-            <el-form-item label="感知设备ID:">
+            <el-form-item label="感知设备ID:" prop='deviceId'> 
                 <el-select v-model="searchKey.deviceId" @change='getRequestData("deviceId")' v-if="!inputFlag">
                     <el-option
                         v-for="item in deviceIdList"
@@ -54,25 +54,9 @@
                     :picker-options="endTimeOption">
                 </el-date-picker>
             </el-form-item>
-
-            <!-- <el-form-item label="开始时间:" prop='startTime'>
-                <el-date-picker
-                    v-model.trim="searchKey.startTime"
-                    type="date"
-                    placeholder="开始时间"
-                    :picker-options="startTimeOption">
-                </el-date-picker>
-            </el-form-item>
-            <el-form-item label="结束时间:" prop='endTime'>
-                <el-date-picker
-                    v-model.trim="searchKey.endTime"
-                    type="date"
-                    placeholder="结束时间"
-                    :picker-options="endTimeOption">
-                </el-date-picker>
-            </el-form-item> -->
             <el-form-item>
                 <el-button type="warning" icon="el-icon-search" :loading='searchLoad' @click="searchClick('searchKey')">查询</el-button>
+                <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
         <el-table 
@@ -178,19 +162,6 @@ export default {
                 deviceId:'',
                 startTime: new Date(),
                 endTime: new Date()
-            },
-            rules:{
-                serialNum:[
-                    { required: true, message: '摄像头序列号不能为空!', trigger: 'blur' },
-                ],
-                startTime:[
-                    { required: true, message: '开始时间不能为空', trigger: 'change' },
-                    { validator: _checkStartTime, trigger: 'blur' }
-                ],
-                endTime:[
-                    { required: true, message: '结束时间不能为空', trigger: 'change' },
-                    { validator: _checkEndTime, trigger: 'blur' }
-                ]
             },
             startTimeOption: {
                 disabledDate: time => {
@@ -352,6 +323,7 @@ export default {
                     this.dataList = res.data;
                     this.pageOption.total = res.data.length;
                     if(this.pageOption.total > this.paging.size) {
+                        console.log(this.dataList);
                         this.initShowData();
                     }else {
                         this.showDataList = this.dataList;
@@ -401,6 +373,9 @@ export default {
         getCarmSerial(){
             let serialNum = this.searchKey.serialNum;
             this.getCameraIds('',serialNum,'','');
+        },
+        resetClick(){
+            this.$refs.searchForm.resetFields();
         }
     }
 }

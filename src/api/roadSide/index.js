@@ -42,7 +42,7 @@ export const queryRoadVideoList = params => { return axios.post(`${HTTPURL}road/
 /**
  * 批量下载
  */
-export const downLoadZipFile = params => { return axios.get(`${HTTPURL}cam/downLoadZipFile`, {params: params}).then(res => res.data); };
+export const downLoadZipFile = params => { return axios.post(`${HTTPURL}cam/downLoadZipFile`,params).then(res => res.data); };
 
  /**
  * 删除视频
