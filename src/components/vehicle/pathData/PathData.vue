@@ -324,8 +324,6 @@
               }
               this.dataList = data_convert;
               this.pageOption.total = res.data.totalCount;
-          }else{
-            this.$message.error(res.message);
           }
           this.loading = false;
           this.searchLoading = false;

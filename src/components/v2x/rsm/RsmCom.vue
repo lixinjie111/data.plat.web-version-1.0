@@ -27,7 +27,7 @@
                     <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>          
             </el-form>
-            <el-table class='c-mt-10' :data="dataList" v-loading='loading' max-height="620" stripe>
+            <el-table class='c-mt-10 c-mb-70' :data="dataList" v-loading='loading' max-height="620" stripe>
                 <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
                 <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
                 <el-table-column align="center" prop="rsuId" label="RSUId"></el-table-column>
@@ -217,9 +217,6 @@ export default {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;
-                    this.$message.success(res.message);
-                }else{
-                    this.$message.error(res.message);
                 }
                 this.loading = false;
                 this.searchLoad = false;

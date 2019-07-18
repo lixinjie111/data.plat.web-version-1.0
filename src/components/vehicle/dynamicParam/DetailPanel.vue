@@ -97,8 +97,6 @@ export default {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;
-                }else{
-                    this.$message.error(res.message);
                 }
                 this.loading = false;
             })

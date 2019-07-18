@@ -217,10 +217,7 @@ export default {
                 sIds:sIds.join(',')
             }).then(res => {
                 if(res.status == '200'){
-                    this.$message.sucess(res.message);
                     this.$emit("localDataPanelBack");
-                }else{
-                    this.$message.error(res.message);
                 }
             })
         },

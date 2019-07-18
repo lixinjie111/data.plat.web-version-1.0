@@ -54,6 +54,7 @@
         <el-table stripe max-height="620"
             :data="dataList"
             v-loading="loading"
+            class='c-mb-70'
             @selection-change="handleSelectionChange">
             <el-table-column align="center" fixed min-width="1%" type="selection"></el-table-column>
             <el-table-column align="center" min-width="2%" label="序号" type="index" :index="indexMethod"></el-table-column>
@@ -179,7 +180,8 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                window.location.href="http://172.17.1.13:9091/dataPlatApp/cam/download/"+item.fileName;
+                window.location.href="http://120.133.21.14:9091/dataPlatApp/cam/download/"+item.fileName;
+                // window.location.href="http://172.17.1.13:9091/dataPlatApp/cam/download/"+item.fileName;
             }).catch(() => {
                 this.$message.info('已取消导出');          
             });
@@ -220,8 +222,6 @@ export default {
                     });
                     this.dataList = res.data.list || [];
                     this.pageOption.total = res.data.totalCount || 0;
-                }else{
-                    this.$message.error(res.message); 
                 }
                 this.loading = false;
                 this.searchLoading = false;
@@ -301,8 +301,6 @@ export default {
                     if(res.status == '200'){
                         this.$message.success(res.message);
                         this.initData();
-                    }else{
-                        this.$message.error(res.message);
                     }
                     item.delLoading = false;
                 }).catch(error => {

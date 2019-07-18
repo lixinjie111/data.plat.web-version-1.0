@@ -248,8 +248,6 @@ import { error } from 'util';
               }
               this.dataList = this.dataList.concat(data_convert);
             }
-          }else{
-            this.$message.error(res.message);
           }
         }).catch(err => {
 
@@ -336,29 +334,51 @@ import { error } from 'util';
             cancelButtonText: '取消',
             type: 'warning'
         }).then(() => {
+            let params = {
+              'vehicleId':this.data.vehicleId,
+              'plateNo': this.data.plateNo,
+              'startTime': this.data.startTime ? this.$dateUtil.dateToMs(this.data.startTime) : '',
+              'endTime':this.data.endTime ? this.$dateUtil.dateToMs(this.data.endTime) : ''
+            }
             exportPathExcel({
               'vehicleId':this.data.vehicleId,
               'plateNo': this.data.plateNo,
               'startTime': this.data.startTime ? this.$dateUtil.dateToMs(this.data.startTime) : '',
               'endTime':this.data.endTime ? this.$dateUtil.dateToMs(this.data.endTime) : ''
             }).then(res => {
-              // console.log(res);
-                // this.$message.success(res.message);
-                this.$message.success('导出成功！');
+                this.downloadFile(res);
             });
         })
-        // let url = 'vehicle/path/detail/export';
+      },
+      downloadFile(res){
+          if (res.data) {
+              if ('msSaveBlob' in navigator) { // 对IE和Edge的兼容
+                  window.navigator.msSaveBlob(res.data, decodeURI(res.headers['content-disposition'].split('filename=')[1]))
+              } else {
+                  let blob = res.data
 
-        // this.$api.download(url, params,
-        //   response => {
-        //     if (response.status >= 200 && response.status < 300) {
+                  // console.log('res.data ----------- ' + JSON.stringify(res))
 
-        //       this.$message.error("下载成功 ！");
-        //     } else {
-        //       this.$message.error("下载失败 ！");
-        //     }
-        //   }
-        // );
+                  let a = document.createElement('a');
+                  a.setAttribute('id','exportLog');
+                  a.style.display = 'none'
+
+                  // let a = document.getElementById('exportLog')
+                  let url = window.URL.createObjectURL(blob)
+
+                  let filename = decodeURI(res.headers['content-disposition'].split('filename=')[1])
+                  // let filename = 'car_' + (new Date()).getTime() + '.txt';
+                  // let filename = 'filename.txt';
+
+                  var evt = document.createEvent('HTMLEvents') // 对firefox的兼容
+                  evt.initEvent('click', false, false) // 对firefox的兼容
+                  a.href = url
+                  a.download = filename
+                  a.dispatchEvent(evt) // 对firefox的兼容
+                  a.click()
+                  window.URL.revokeObjectURL(url)
+              }
+          }
       },
       backClick() {
         this.$emit('PathDataInfoBack')
@@ -390,8 +410,6 @@ import { error } from 'util';
         }).then(res => {
           if(res.status == '200'){
             this.drawPath(res.data.list);
-          }else{
-            this.$message.error(res.message);
           }
         })
 

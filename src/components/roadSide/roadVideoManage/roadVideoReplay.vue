@@ -1,6 +1,6 @@
 <template>
     <!-- 基本信息 -->
-    <div class="c-wrapper-20" v-cloak>
+    <div v-cloak>
         <p class="c-title c-border-bottom">历史回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
         <div class="yk-search-box c-mt-30">
             <div class="yk-search-block yk-block-label">

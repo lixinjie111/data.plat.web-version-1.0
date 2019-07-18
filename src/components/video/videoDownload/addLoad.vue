@@ -219,8 +219,6 @@ export default {
                                 return _item;
                             });
                             this.plateNoList.push(_result);
-                        }else{
-                            this.$message.error(res.message);
                         }
                     })
                 }, 1000);
@@ -263,8 +261,6 @@ export default {
                                 return _item;
                             });
                             this.vehicleIdList = _result;
-                        }else{
-                            this.$message.error(res.message);
                         }
                         this.vehicleIdLoading = false;
                     })
@@ -349,8 +345,6 @@ export default {
                     }).then(res => {
                         if(res.status == '200'){
                             this.backClick();
-                        }else{
-                            this.$message.error(res.message);
                         }
                         this.loading = false;
                     })

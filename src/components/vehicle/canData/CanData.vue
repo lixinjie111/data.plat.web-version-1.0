@@ -151,8 +151,6 @@ export default {
                 if(res.status == '200'){
                     this.pageOption.total = res.data.list.length;
                     callback(res.data.list); 
-                }else{
-                    this.$message.error(res.message);
                 }
                 this.loading = false;
                 this.searchLoading = false;

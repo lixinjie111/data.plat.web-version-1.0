@@ -28,7 +28,9 @@ export const exportExcel = params => { return axios.post(`${HTTPURL}common/expor
 /**
  * 导出全部轨迹数据
  */
-export const exportPathExcel = params => { return axios.post(`${HTTPURL}vehicle/path/detail/export`, params).then(res => res.data); };
+export const exportPathExcel = params => { return axios.post(`${HTTPURL}vehicle/path/detail/export`, params,{
+    responseType: 'blob'
+  }).then(res => res); };
 
 
 /**

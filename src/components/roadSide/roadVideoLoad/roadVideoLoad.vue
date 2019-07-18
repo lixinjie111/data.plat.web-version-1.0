@@ -248,9 +248,7 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
-                    this.pageOption.total = res.totalCount;
-                }else{
-                    this.$message.error(res.message);
+                    this.pageOption.total = res.data.totalCount;
                 }
                 this.searchLoading = false;
                 this.loading = false;
@@ -289,8 +287,6 @@ export default {
                 }).then(res => {
                     if(res.status == '200'){
                         this.$message.success(res.message);
-                    }else{
-                        this.$message.error(res.message);
                     }
                 })
             })

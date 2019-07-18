@@ -11,6 +11,21 @@ import {HTTPURL,operPlatUrl} from '../requestUrl';
  */
 export const queryCamList = params => { return axios.post(`${HTTPURL}cam/queryCamList`, params).then(res => res.data); };
 
+/**
+ * 报活
+ */
+export const startStream = params => { return axios.post(`${HTTPURL}cam/startStream`, params).then(res => res.data); };
+
+/**
+ * 调用报活
+ */
+export const sendStreamHeart = params => { return axios.post(`${HTTPURL}cam/sendStreamHeart`, params).then(res => res.data); };
+
+/**
+ * 获取设备id
+ */
+export const queryDeviceType = params => { return axios.post(`${HTTPURL}vehicle/queryDeviceType`, params).then(res => res.data); };
+
 
 /**
  * 视频管理

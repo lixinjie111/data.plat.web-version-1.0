@@ -53,7 +53,7 @@
             <el-button size="mini" plain icon="el-icon-download" @click="downClick">批量下载</el-button>
         </div>
 
-        <el-table ref="multipleTable" :data="dataList" v-loading="loading"
+        <el-table ref="multipleTable" :data="dataList" v-loading="loading" class='c-mb-70'
             @selection-change="handleSelectionChange">
             <el-table-column fixed align="center" min-width="2%" type="selection"></el-table-column>
             <el-table-column align="center" min-width="3%" label="No" type="index" :index='indexMethod'></el-table-column>
@@ -278,8 +278,6 @@ export default {
                 }).then(res => {
                     if(res.status == '200'){
                         this.$message.success(res.data.message);
-                    }else{
-                        this.$message.error(res.data.message);
                     }
                 })
             }else{
@@ -317,8 +315,6 @@ export default {
                     if(res.status == '200'){
                         this.$message.success(res.data.message);
                         this.initData();
-                    }else{
-                        this.$message.error(res.data.message);
                     }
                     item.delLoading = false;
                 })
@@ -348,7 +344,8 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                window.location.href="http://172.17.1.13:9091/dataPlatApp/road/download/"+item.fileName;
+                window.location.href="http://120.133.21.14:9091/dataPlatApp/road/download/"+item.fileName;
+                // window.location.href="http://172.17.1.13:9091/dataPlatApp/road/download/"+item.fileName;
             }).catch(() => {
                 this.$message.info('已取消导出');          
             });

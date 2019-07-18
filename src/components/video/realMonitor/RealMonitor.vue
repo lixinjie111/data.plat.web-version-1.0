@@ -93,7 +93,7 @@
 <script>
 import MaxMap from './maxMap.vue';
 import DropDownList from '../../../common/view/DropDownList.vue';
-import {queryCamList} from '@/api/video';
+import {queryCamList,startStream,queryDeviceType,sendStreamHeart} from '@/api/video';
 export default {
     name: 'RealMonitor',
     components: {
@@ -230,21 +230,27 @@ export default {
             
             this.isStart = false;
             this.playerOptions.sources[0].src = '';
-
-            this.$api.post('vehicle/queryDeviceType',{//获取设备id
+            queryDeviceType({//获取设备id
             'vehicleId':this.vehicleId
-            },response => {
-                if(response.data.code == '200'){
-                    this.deviceType =  response.data.data.type;
+            }).then(res => {
+                if(res.status == '200'){
+                    this.deviceType =  res.data.type;
                 }
-            }); 
+            })
+            // this.$api.post('vehicle/queryDeviceType',{//获取设备id
+            // 'vehicleId':this.vehicleId
+            // },response => {
+            //     if(response.data.code == '200'){
+            //         this.deviceType =  response.data.data.type;
+            //     }
+            // }); 
         },
         realMonit(){
             if(this.vehicleId != ''){
                 this.isStart = true;
                 this.isMaskShow = false;
                 if(this.playerOptions.sources[0].src){
-                    this.player.play();
+                    // this.player.play();
                     //直播报活调用
                     this.repeatFn();
                     //计算视频播放时长
@@ -257,33 +263,56 @@ export default {
                     },1000);
                     this.getTotalTime(this.monitStartTime);
                 }else{
-                    this.$api.post('cam/startStream',{
+                    startStream({
                             'camId':this.serialNum,'vehicleId':this.vehicleId,
                             'protocal':this.protocal
-                        },response => {
-                        if(response.data.code == '200'){
-                            //获取视频地址并赋值
-                            let videoUrl = response.data.data.rtmp;
-                            this.playerOptions.sources[0].src = videoUrl;
-                            // this.player.load(videoUrl);
-                            //直播报活调用
-                            this.repeatFn();
-                            this.monitStartTime = this.getCurTime();
+                        }).then(res => {
+                            if(res.status == '200'){
+                                //获取视频地址并赋值
+                                let videoUrl = res.data.rtmp;
+                                this.playerOptions.sources[0].src = videoUrl;
+                                // this.player.load(videoUrl);
+                                //直播报活调用
+                                this.repeatFn();
+                                this.monitStartTime = this.getCurTime();
 
-                            //计算视频播放时长
-                            this.playTimer = setInterval(() => {
-                                this.totalTime ++ ;
-                                this.totalTimeformat = this.formatSeconds(this.totalTime);
-                                if(this.deviceType != '-1'){
-                                    this.$refs.maxMap.getGps(this.vehicleId,(new Date()).getTime(),this.deviceType);
-                                }
-                            },1000);
+                                //计算视频播放时长
+                                this.playTimer = setInterval(() => {
+                                    this.totalTime ++ ;
+                                    this.totalTimeformat = this.formatSeconds(this.totalTime);
+                                    if(this.deviceType != '-1'){
+                                        this.$refs.maxMap.getGps(this.vehicleId,(new Date()).getTime(),this.deviceType);
+                                    }
+                                },1000);
 
-                            this.getTotalTime(this.monitStartTime);
-                        }else{
-                            this.$message.error(response.data.message);
-                        }
-                    }); 
+                                this.getTotalTime(this.monitStartTime);
+                            }
+                    });
+                    // this.$api.post('cam/startStream',{
+                    //         'camId':this.serialNum,'vehicleId':this.vehicleId,
+                    //         'protocal':this.protocal
+                    //     },response => {
+                    //     if(response.data.code == '200'){
+                    //         //获取视频地址并赋值
+                    //         let videoUrl = response.data.data.rtmp;
+                    //         this.playerOptions.sources[0].src = videoUrl;
+                    //         // this.player.load(videoUrl);
+                    //         //直播报活调用
+                    //         this.repeatFn();
+                    //         this.monitStartTime = this.getCurTime();
+
+                    //         //计算视频播放时长
+                    //         this.playTimer = setInterval(() => {
+                    //             this.totalTime ++ ;
+                    //             this.totalTimeformat = this.formatSeconds(this.totalTime);
+                    //             if(this.deviceType != '-1'){
+                    //                 this.$refs.maxMap.getGps(this.vehicleId,(new Date()).getTime(),this.deviceType);
+                    //             }
+                    //         },1000);
+
+                    //         this.getTotalTime(this.monitStartTime);
+                    //     }
+                    // }); 
                 }
             }else{
                 this.$message.error('请选择车牌号!');
@@ -302,10 +331,15 @@ export default {
             },5000)
         },
         videoActive(){//调用报活接口
-            this.$api.post('cam/sendStreamHeart',{
-                    'camId':this.serialNum,'vehicleId':this.vehicleId,
-                    'protocal':this.protocal
-                },response => {}); 
+            sendStreamHeart({
+                'camId':this.serialNum,'vehicleId':this.vehicleId,
+                'protocal':this.protocal
+            }).then(res => {
+            })
+            // this.$api.post('cam/sendStreamHeart',{
+            //         'camId':this.serialNum,'vehicleId':this.vehicleId,
+            //         'protocal':this.protocal
+            //     },response => {}); 
         },
         endVideo(){//停止直播
             clearInterval(this.playTimer);
@@ -352,8 +386,6 @@ export default {
                 }).then(res => {
                     if(res.status == '200'){
                         this.plateNoList = res.data;
-                    }else{
-                        this.$message.error(res.message);
                     }
                     this.plateNoLoading = false;
                 })
@@ -411,8 +443,6 @@ export default {
                     }).then(res => {
                         if(res.status == '200'){
                             this.plateNoList = res.data;
-                        }else{
-                            this.$message.error(res.message);
                         }
                         this.plateNoLoading = false;
                     })
@@ -483,8 +513,6 @@ export default {
                 }).then(res => {
                     if(res.status == '200'){
                         this.vehicleIdList = res.data;
-                    }else{
-                        this.$message.error(res.message);
                     }
                     this.vehicleIdLoading = false;
                 })

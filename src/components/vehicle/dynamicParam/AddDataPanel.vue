@@ -1,6 +1,6 @@
 <template>
 <div class="c-wrapper-20" v-show="isShow">
-    <el-tabs v-model="activeName">
+    <!-- <el-tabs v-model="activeName">
         <el-tab-pane label="全集数据" name="first">
             <full-list ref='fullList'  :title="panel.title" :type="panel.type" :data="panel.data"></full-list>
         </el-tab-pane>
@@ -11,7 +11,7 @@
     <div class="c-text-center c-mt-30">
         <el-button size="small" type="warning" @click="confirmClick">确定</el-button>
         <el-button size="small" type="warning" @click="cancelClick">取消</el-button>
-    </div>
+    </div> -->
     <el-tabs v-model="activeName">
         <el-tab-pane label="全集数据" name="first">
             <full-list ref='fullList'  :title="panel.title" :type="panel.type" :data="panel.data"></full-list>
@@ -87,8 +87,6 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     callback(res.data);
-                }else{
-                    this.$message.error(res.message);
                 }
             })
         },

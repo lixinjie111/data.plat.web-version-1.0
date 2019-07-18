@@ -332,43 +332,10 @@ export default {
                             if(this.searchKey.deviceId != info[0].deviceId) this.searchKey.deviceId = info[0].deviceId;
                         }
                     }
-                }else{
-                    this.$message.error(res.message);
                 }
             }).catch(err => {
                 this.$message.error(res.message);
             })
-            // this.$api.post('perception/findRoadMonitorCamera', this.requestData, response => {
-            //     if(response.status == 200){
-            //         let info = response.data;
-            //         if(info.length > 0) {
-            //             this.searchKey.rsPtId = info[0].rsPtId;
-            //             if(type == 'rsPtId') {
-            //                 this.initSearch();
-            //                 info.forEach(element => {
-            //                     this.cameraIdList.push({
-            //                         value: element.cameraId
-            //                     });
-            //                     this.serialNumList.push({
-            //                         value: element.serialNum
-            //                     });
-            //                     this.deviceIdList.push({
-            //                         value: element.deviceId
-            //                     });
-            //                 });
-            //             }else {
-            //                 if(this.searchKey.rsPtId != info[0].rsPtId) this.searchKey.rsPtId = info[0].rsPtId;
-            //                 if(this.searchKey.cameraId != info[0].cameraId) this.searchKey.cameraId = info[0].cameraId;
-            //                 if(this.searchKey.serialNum != info[0].serialNum) this.searchKey.serialNum = info[0].serialNum;
-            //                 if(this.searchKey.deviceId != info[0].deviceId) this.searchKey.deviceId = info[0].deviceId;
-            //             }
-            //         }else {
-            //             this.$message.error("没要找到对应信息！");
-            //         }
-            //     }else{
-            //         this.$message.error("获取列表error！");
-            //     }
-            // });
         },
         initData(){
             this.initPaging();
@@ -389,8 +356,6 @@ export default {
                     }else {
                         this.showDataList = this.dataList;
                     }
-                }else{
-                    this.$message.error(res.message);
                 }
                 this.searchLoad = false;
                 this.loading = false;

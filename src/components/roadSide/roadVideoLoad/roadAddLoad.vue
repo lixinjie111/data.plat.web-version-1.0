@@ -278,8 +278,6 @@ export default {
             }).then( res => {
                 if(res.status == '200'){
                     this.roadCamList = res.data;
-                }else{
-                    this.$message.error(res.message);
                 }
             })
         },
@@ -348,8 +346,6 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     this.$emit('backDownPage');
-                }else{
-                    this.$message.error(res.message);
                 }
             })
         },

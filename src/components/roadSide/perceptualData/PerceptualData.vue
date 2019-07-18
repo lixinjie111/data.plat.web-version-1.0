@@ -151,7 +151,7 @@ export default {
         },
         queryRoadRegionTree(){
             queryRoadRegionTree().then(res => {
-                if(res.status == '200' || res.code == '200') {
+                if(res.status == '200') {
                     this.initDataList = res.data;
                     let len = this.initDataList.length;
                     for(let i=0;i<len;i++){//遍历省市数据
@@ -274,7 +274,7 @@ export default {
                 queryRoadCamList({
                     roadCode:node.data.code
                 }).then(res => {
-                    if(res.status == '200' || res.code == '200') {
+                    if(res.status == '200') {
                         var roadCode = this.newData[0].children;
                         var protocal = JSON.stringify(res.data[0].protocol);
                         localStorage.setItem('protocal',protocal);
@@ -319,8 +319,6 @@ export default {
                     let videoUrl = res.data.rtmp;
                     this.embedFlash(videoUrl);
                     camerData.icon = "sl-pause-icon";
-                }else if(res.status == '510'){
-                    this.$message.error(res.message);
                 }
             });
         },
