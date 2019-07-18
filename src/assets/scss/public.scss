@@ -143,6 +143,18 @@
 		background-color: $yellow;
 		margin-top: -10px;
 	}
+	&.el-breadcrumb {
+		padding-left: 20px;
+		&:after {
+			background-color: transparent;
+		}
+	}
+}
+h3.c-title {
+	padding-left: 20px;
+	&:after {
+		background-color: transparent;
+	}
 }
 .c-page {
 	position: absolute;
