@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper" v-cloak> 
-        <div class="c-wrapper-20 c-detail-box">
+        <div class="c-detail-box">
             <p class="c-title c-border-bottom">新建任务<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
             <div class="c-add-box">
                 <el-form ref="addForm" :inline="true" :model="formParams" :rules="rules" size="small" label-position="right" label-width="120px">

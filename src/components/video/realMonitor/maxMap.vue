@@ -35,6 +35,7 @@
   </div>
 </template>
 <script>
+  import {gpsInfo} from '@/api/video';
   import TusvnMap from "@/common/view/TusvnMap/TusvnMap.vue";
   import Map3D from "@/common/view/map3D/map3D.vue";
   import {setInterval, clearInterval} from 'timers';
@@ -86,67 +87,66 @@
         this.mapConvert();
       },
       getGps(vehicleId, time, deviceType) {
-        let _this = this;
-        _this.$api.post('vehicle/gpsInfo', {
+        gpsInfo({
           'vehicleId': vehicleId, 'type': deviceType, 'time': time,
-        }, response => {
-          if (response.data.code == '200') {
-            if (response.data.data != '') {
-              _this.speed = (response.data.data.speed).toFixed(2);//获取速度
-              _this.courseAngle = (response.data.data.courseAngle).toFixed(4);//获取航向角
-              _this.lon = (response.data.data.lon).toFixed(8);//获取经度
-              _this.lat = (response.data.data.lat).toFixed(8);//获取纬度
-              _this.gpsTime = response.data.data.gpsTime;//获取时间
+        }).then(res => {
+          if(res.status == '200'){
+              if (res.data != '') {
+                this.speed = Number(res.data.speed).toFixed(2);//获取速度
+                this.courseAngle = Number(res.data.courseAngle).toFixed(4);//获取航向角
+                this.lon = Number(res.data.lon).toFixed(8);//获取经度
+                this.lat = Number(res.data.lat).toFixed(8);//获取纬度
+                this.gpsTime = res.data.gpsTime;//获取时间
 
-              let mapSize = _this.$refs.refRealMap.getCurrentExtent();//获取地图的范围
-              let minX = mapSize[0];
-              let minY = mapSize[1];
-              let maxX = mapSize[2];
-              let maxY = mapSize[3];
-              //路线所在层
-              // _this.$refs.refRealMap.addVectorLayer('CarLine');
-              // 车辆所在的层
-              // _this.$refs.refRealMap.addVectorLayer("CarLayer");
-              //当小车的行驶轨迹超出地图范围，就重新定位地图
-              // if(!_this.$refs.refRealMap2.isInDivPolygon(_this.lon,_this.lat))
-              // {
-              //     _this.$refs.refRealMap2.centerAt(_this.lon,_this.lat);
-              // }
+                let mapSize = this.$refs.refRealMap.getCurrentExtent();//获取地图的范围
+                let minX = mapSize[0];
+                let minY = mapSize[1];
+                let maxX = mapSize[2];
+                let maxY = mapSize[3];
+                //路线所在层
+                // this.$refs.refRealMap.addVectorLayer('CarLine');
+                // 车辆所在的层
+                // this.$refs.refRealMap.addVectorLayer("CarLayer");
+                //当小车的行驶轨迹超出地图范围，就重新定位地图
+                // if(!this.$refs.refRealMap2.isInDivPolygon(this.lon,this.lat))
+                // {
+                //     this.$refs.refRealMap2.centerAt(this.lon,this.lat);
+                // }
 
-              _this.$refs.refRealMap.centerAt(_this.lon, _this.lat);//定位小车始终在地图中间位置
-              // 画车的行驶路线
-              var p1 = [];
+                this.$refs.refRealMap.centerAt(this.lon, this.lat);//定位小车始终在地图中间位置
+                // 画车的行驶路线
+                var p1 = [];
 
-              if (_this.lon && _this.lat) {
-                p1.push(parseFloat(_this.lon), parseFloat(_this.lat));
+                if (this.lon && this.lat) {
+                  p1.push(parseFloat(this.lon), parseFloat(this.lat));
+                }
+                this.lineArray.push(p1);
+                // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
+                
+                this.$refs.refRealMap.addLineString(this.lineArray, 'line_01', '#093bbb', 'round', 'round', [5, 0], 0, 10, 5, "CarLine");
+                // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset
+                //  添加小车
+                this.$refs.refRealMap.addImg(this.lon, this.lat, "car_01", "CarLayer", 'static/images/vehicle/geolocation_marker_heading.png', [24, 49], (this.courseAngle / 180) * Math.PI, null, null, null);//部署路径
+                // this.$refs.refRealMap.addImg(this.lon,this.lat,"car_01","CarLayer",'../../../static/images/vehicle/geolocation_marker_heading.png',[24,49],(this.courseAngle/180)*Math.PI,null,null,null);
+
+                // 地图旋转
+                this.$refs.refRealMap.rotateMap(-(this.courseAngle / 180.0) * Math.PI);
+              } else {
+                this.speed = '--';//获取速度
+                this.courseAngle = '--';//获取航向角
+                this.lon = '--';//获取经度
+                this.lat = '--';//获取纬度
+                this.gpsTime = '--';//获取时间
+
+                this.timer = setInterval(function () {
+                  this.$message.error('暂无GPS数据!');
+                  return;
+                }, 1000);
+                clearInterval(this.timer);
+                this.timer = null;
               }
-              _this.lineArray.push(p1);
-              // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
-              
-              _this.$refs.refRealMap.addLineString(_this.lineArray, 'line_01', '#093bbb', 'round', 'round', [5, 0], 0, 10, 5, "CarLine");
-              // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset
-              //  添加小车
-              _this.$refs.refRealMap.addImg(_this.lon, _this.lat, "car_01", "CarLayer", 'static/images/vehicle/geolocation_marker_heading.png', [24, 49], (_this.courseAngle / 180) * Math.PI, null, null, null);//部署路径
-              // _this.$refs.refRealMap.addImg(_this.lon,_this.lat,"car_01","CarLayer",'../../../static/images/vehicle/geolocation_marker_heading.png',[24,49],(_this.courseAngle/180)*Math.PI,null,null,null);
-
-              // 地图旋转
-              _this.$refs.refRealMap.rotateMap(-(_this.courseAngle / 180.0) * Math.PI);
-            } else {
-              this.speed = '--';//获取速度
-              this.courseAngle = '--';//获取航向角
-              this.lon = '--';//获取经度
-              this.lat = '--';//获取纬度
-              this.gpsTime = '--';//获取时间
-
-              this.timer = setInterval(function () {
-                this.$message.error('暂无GPS数据!');
-                return;
-              }, 1000);
-              clearInterval(this.timer);
-              this.timer = null;
-            }
           }
-        });
+        })
       },
       fd() {
         this.isFd = false;

@@ -26,6 +26,15 @@ export const sendStreamHeart = params => { return axios.post(`${HTTPURL}cam/send
  */
 export const queryDeviceType = params => { return axios.post(`${HTTPURL}vehicle/queryDeviceType`, params).then(res => res.data); };
 
+/**
+ * 获取直播gps
+ */
+export const gpsInfo = params => { return axios.post(`${HTTPURL}vehicle/gpsInfo`, params).then(res => res.data); };
+/**
+ * 获取回放gps
+ */
+export const historyGpsInfo = params => { return axios.post(`${HTTPURL}vehicle/historyGpsInfo`, params).then(res => res.data); };
+
 
 /**
  * 视频管理

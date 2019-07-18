@@ -38,7 +38,7 @@
                         </el-table-column>
                     </el-table>
 
-                    <div class="c-text-center c-mt-30">
+                    <div class="c-text-center c-mt-20">
                         <el-button type="warning" size="small" @click="okClick">确定</el-button>
                         <el-button type="warning" size="small" @click="cancelClick">取消</el-button>
                     </div>

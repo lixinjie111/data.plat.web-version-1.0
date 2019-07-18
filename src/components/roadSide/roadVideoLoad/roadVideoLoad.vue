@@ -308,28 +308,6 @@ export default {
         indexMethod(index){
             return index + this.pageOption.size * (this.pageOption.page-1) + 1;
         },
-        sureFunc(){
-            this.dialogOption.loading = true;
-            this.$api.post('cam/redoVideoTask',this.dialogOption.data,response => {
-                if(response.data.code == '200'){
-                    this.$message.success('再次下载视频任务成功!');
-                }else{
-                    this.$message.error("再次下载视频任务失败！");
-                }
-                this.initDialogData();
-            },error => {
-                this.$message.error("再次下载视频任务error！");
-                this.initDialogData();
-            });
-        },
-        initDialogData() {
-            this.dialogOption.loading = false;
-            this.dialogOption.show = false;
-            this.dialogOption.data = {};
-        },
-        handleClose(done) {
-            this.initDialogData();
-        },
         backFn(){
             this.panel.show = false;
             this.dialogOption.show = false;

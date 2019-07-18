@@ -50,6 +50,7 @@
     </div>
     </template>
     <script>
+    import {queryRoadCameraDetailsByDeviceId} from '@/api/roadSide'
     import TusvnMap from "../../../common/view/TusvnMap/TusvnMap.vue";
     export default {
         name:'RoadVideoReplay',
@@ -85,7 +86,6 @@
                 this.endTime = videoInfo.endTime;
                 this.roadPoint = videoInfo.roadPointName;
                 this.videoPath = videoInfo.destPath + '.mp4';
-                // this.mapInfo(videoInfo.fileName);
                 this.mapDetail(videoInfo.camCode);
             },
             backClick(){
@@ -116,23 +116,12 @@
             hideMap(){
                 this.isSlideOut = false;
             },
-            mapInfo(fileName){
-                this.$api.post('road/getRoadVideoDetailByParam',{  
-                    "fileId": fileName          
-                },response => {
-                    if(response.status >= 200 && response.status < 300){
-                        let {lon,lat} = response.data;
-                        this.lon = lon;
-                        this.lat = lat;
-                    }
-                });
-            },
             mapDetail(deviceId){
-                this.$api.post('road/queryRoadCameraDetailsByDeviceId',{  
-                    "deviceId": deviceId          
-                },response => {
-                    if(response.status >= 200 && response.status < 300){
-                        let {ptLon,ptLat} = response.data.data;
+                queryRoadCameraDetailsByDeviceId({  
+                    'deviceId': deviceId          
+                }).then(res => {
+                    if(res.status == '200'){
+                        let {ptLon,ptLat} = res.data;
                         if(ptLon == undefined){
                             this.lon = '--';
                         }else{
@@ -146,7 +135,7 @@
                             this.lat = ptLat;
                         }
                     }
-                });
+                })
             }
         },
         mounted(){

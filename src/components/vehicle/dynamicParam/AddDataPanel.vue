@@ -1,17 +1,5 @@
 <template>
 <div class="c-wrapper-20" v-show="isShow">
-    <!-- <el-tabs v-model="activeName">
-        <el-tab-pane label="全集数据" name="first">
-            <full-list ref='fullList'  :title="panel.title" :type="panel.type" :data="panel.data"></full-list>
-        </el-tab-pane>
-        <el-tab-pane label="组数据" name="second">
-            <group-list ref='groupList' :title="panel.title" :type="panel.type" :data="panel.data"></group-list>
-        </el-tab-pane>
-    </el-tabs>
-    <div class="c-text-center c-mt-30">
-        <el-button size="small" type="warning" @click="confirmClick">确定</el-button>
-        <el-button size="small" type="warning" @click="cancelClick">取消</el-button>
-    </div> -->
     <el-tabs v-model="activeName">
         <el-tab-pane label="全集数据" name="first">
             <full-list ref='fullList'  :title="panel.title" :type="panel.type" :data="panel.data"></full-list>
@@ -20,7 +8,7 @@
             <group-list ref='groupList' :title="panel.title" :type="panel.type" :data="panel.data"></group-list>
         </el-tab-pane>
     </el-tabs>
-    <div class="c-text-center c-mt-30">
+    <div class="c-text-center c-mt-20">
         <el-button size="small" type="warning" @click="confirmClick">确定</el-button>
         <el-button size="small" type="warning" @click="cancelClick">取消</el-button>
     </div>

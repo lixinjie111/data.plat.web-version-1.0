@@ -254,7 +254,6 @@ export default {
                 let data = [];
                 if (hasChild) {
                     var areaArray = this.newData[0].children;
-                    // console.log(areaArray)
                     for(var i=0;i<areaArray.length;i++){
                         var obj = {};
                         obj.label = areaArray[i].label;
@@ -263,7 +262,6 @@ export default {
                         // obj.leaf = true;
                         data.push(obj);
                     }
-                    // console.log(data);
                 } else {
                     data = [];
                 }

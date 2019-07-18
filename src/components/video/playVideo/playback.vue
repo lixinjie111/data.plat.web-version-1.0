@@ -50,6 +50,7 @@
 import TusvnMap from "../../../common/view/TusvnMap/TusvnMap.vue";
 import HistoryMap from './historyMap.vue';
 import { clearTimeout } from 'timers';
+import {queryDeviceType,historyGpsInfo} from '@/api/video';
 export default {
     name: 'RealMonitor',
     props: ['title','type','data'],
@@ -91,24 +92,23 @@ export default {
             this.serialNum = historyInfo.camId;
             this.position = historyInfo.camDirection;
             this.camStatus = historyInfo.camStatus;
-            this.$api.post('vehicle/queryDeviceType',{//获取设备id
+            queryDeviceType({//获取设备id
                 'vehicleId':this.vehicleId
-                },response => {
-                    if(response.data.code == '200'){
-                        this.deviceType =  response.data.data.type;
-                        // this.historyVideo(val,this.deviceType);
-                    }
-            });
+            }).then(res => {
+                if(res.status == '200'){
+                    this.deviceType =  res.data.type;
+                }
+            })
             this.historyStartTimes = this.$dateUtil.dateToMs(historyInfo.startTime);//以秒为时间单位
             this.historyEndTimes = this.$dateUtil.dateToMs(historyInfo.endTime);//以秒为时间单位
             this.getGps(this.vehicleId,this.historyStartTimes,this.historyEndTimes,this.deviceType);
         },
         getGps(vehicleId,startTime,endTime,deviceType){
-          this.$api.post('vehicle/historyGpsInfo',{
-            'vehicleId':vehicleId,'type':deviceType,'beginTime':startTime,'endTime':endTime
-            },response => {
-                if(response.data.code == 200){
-                    this.gpsArr = response.data.data;
+            historyGpsInfo({
+                'vehicleId':vehicleId,'type':deviceType,'beginTime':startTime,'endTime':endTime
+            }).then(res => {
+                if(res.status == '200'){
+                    this.gpsArr = res.data;
                     // this.$refs.historyMap.getGps(this.gpsArr);
                     // this.speed = response.data.data.speed;//速度
                     // this.courseAngle = response.data.data.courseAngle;//朝向
@@ -118,9 +118,8 @@ export default {
                     //绘制小车
                     // this.$refs.refRealMap.addImg(this.lon,this.lat,"car_01","CarLayer",'../../../static/images/vehicle/geolocation_marker_heading.png',[24,49],this.courseAngle,null,null,null);
                     // this.$refs.refRealMap.addImg(this.lon,this.lat,"car_01","CarLayer",'static/images/vehicle/geolocation_marker_heading.png',[24,49],this.courseAngle,null,null,null);//部署
-
                 }
-            });
+            })
         },
         videoProcess(){
             let myVideo = document.getElementById('my-video');

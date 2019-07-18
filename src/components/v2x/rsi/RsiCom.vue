@@ -29,7 +29,7 @@
         <el-table class='c-mt-10 c-mb-70' :data="dataList" v-loading='loading' max-height="620" stripe>
             <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
             <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
-            <el-table-column align="center" prop="targetRsuIds" label="RSUId"></el-table-column>
+            <el-table-column align="center" prop="rsuId" label="RSUId"></el-table-column>
             <el-table-column align="center" label="时间">
                 <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
             </el-table-column>

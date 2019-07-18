@@ -22,6 +22,10 @@ export const startStreamRoad = params => { return axios.post(`${HTTPURL}road/sta
  */
 export const stopStream = params => { return axios.post(`${HTTPURL}road/stopStream`, params).then(res => res.data); };
  /**
+ * 获取路侧摄像头
+ */
+export const queryRoadCameraDetailsByDeviceId = params => { return axios.post(`${HTTPURL}road/queryRoadCameraDetailsByDeviceId`, params).then(res => res.data); };
+ /**
  * 查询在线车辆数
  */
 export const getRoadSideCameraStaticsAndListByDist = params => { return axios.get(`${operPlatUrl}v2x/remote/device/getRoadSideCameraStaticsAndListByDist`, {params: params}).then(res => res.data); };

@@ -29,18 +29,6 @@
                 </div>
                 
         </div>
-        <!-- <div class="pages">
-            <el-pagination
-                background
-                @current-change="handleCurrentChange" 
-                :current-page="pageOption.page"
-                :total="pageOption.total" 
-                @size-change="handleSizeChange"
-                :page-sizes="[10,20,50,100,200]" 
-                :page-size="pageOption.size"
-                layout="total, sizes, prev, pager, next">
-            </el-pagination>
-        </div> -->
     </div>
                 
 </div>

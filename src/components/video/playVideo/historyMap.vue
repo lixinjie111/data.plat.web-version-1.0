@@ -54,10 +54,10 @@ export default {
                 return;
             }
             else{
-                _this.speed = gpsArr.speed.toFixed(2);//获取速度
-                _this.courseAngle = gpsArr.courseAngle.toFixed(4);//获取航向角
-                _this.lon = gpsArr.lon.toFixed(8);//获取经度
-                _this.lat = gpsArr.lat.toFixed(8);//获取纬度
+                _this.speed = Number(gpsArr.speed).toFixed(2);//获取速度
+                _this.courseAngle = Number(gpsArr.courseAngle).toFixed(4);//获取航向角
+                _this.lon = Number(gpsArr.lon).toFixed(8);//获取经度
+                _this.lat = Number(gpsArr.lat).toFixed(8);//获取纬度
                 _this.gpsTime = gpsArr.gpsTime;//获取时间
                 // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset
                 //  添加小车
@@ -132,30 +132,49 @@ export default {
     },
 }
 </script>
+
+<style>
+.colGrap{
+    color:#666;
+}
+.yk-search-block.ml5{
+  margin-left:8px;
+}
+.yk-search-block span.yellow{
+    background:rgb(255,255,25);
+    padding:5px;
+}
+.yk-btn.yk-btn2{
+    width:70px;
+    height:28px;
+    line-height:28px;
+}
+</style>
 <style scoped lang="scss">
 @import "@/assets/scss/theme.scss";
 .history-map-warpper{
   width: 100%;
   height: 100%;
-  ul{
-    width:180px;
-    position: absolute;
-    top:10px;
-    right:10px;
-    padding:5px 10px 2px;
-    border:1px solid #999;
-    background:rgba(255,255,225,.5);
-    li{
-      height:28px;
-      font-size:12px;
-      line-height:28px;
-      span {
-        display: inline-block;
-        vertical-align: middle;
-      }
-      @include lineClampOne();
-    }
+      ul{
+        width:180px;
+        position: absolute;
+        top:10px;
+        right:10px;
+        padding:5px 10px 2px;
+        border:1px solid #999;
+        background:rgba(255,255,225,.5);
+        li{
+        height:28px;
+        font-size:12px;
+        line-height:28px;
+        padding-left:28px;
+            span {
+                display: inline-block;
+                vertical-align: middle;
+            }
+        }
   }
+
   .zoom-btn{
     position: absolute;
     right:5px;
@@ -175,7 +194,6 @@ export default {
     }
   }
   .icon{
-    width:25px;
     height:100%;
     vertical-align: middle;
     &.speed{
@@ -211,21 +229,3 @@ export default {
     }
 }
 </style>
-<style>
-.colGrap{
-    color:#666;
-}
-.yk-search-block.ml5{
-  margin-left:8px;
-}
-.yk-search-block span.yellow{
-    background:rgb(255,255,25);
-    padding:5px;
-}
-.yk-btn.yk-btn2{
-    width:70px;
-    height:28px;
-    line-height:28px;
-}
-</style>
-

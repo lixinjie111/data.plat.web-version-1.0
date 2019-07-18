@@ -73,13 +73,10 @@
       </div>
 
     </div>
-    <!-- <alert-panel ref="refBaseMsgAlert" :title="panel.title" :msg="panel.msg"
-                 @AlertEvent="exportTrailData"></alert-panel> -->
   </div>
 </template>
 <script>
   import TusvnMap from "@/common/view/TusvnMap/TusvnMap.vue";
-  // import AlertPanel from '@/common/view/Alert.vue'
   import { setTimeout } from 'timers';
   import {pathDetailList,exportPathExcel} from '@/api/vehicle';
 import { error } from 'util';

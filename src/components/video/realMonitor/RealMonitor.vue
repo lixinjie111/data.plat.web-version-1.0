@@ -234,16 +234,10 @@ export default {
             'vehicleId':this.vehicleId
             }).then(res => {
                 if(res.status == '200'){
+                    console.log(res.data.type);
                     this.deviceType =  res.data.type;
                 }
             })
-            // this.$api.post('vehicle/queryDeviceType',{//获取设备id
-            // 'vehicleId':this.vehicleId
-            // },response => {
-            //     if(response.data.code == '200'){
-            //         this.deviceType =  response.data.data.type;
-            //     }
-            // }); 
         },
         realMonit(){
             if(this.vehicleId != ''){
@@ -288,31 +282,6 @@ export default {
                                 this.getTotalTime(this.monitStartTime);
                             }
                     });
-                    // this.$api.post('cam/startStream',{
-                    //         'camId':this.serialNum,'vehicleId':this.vehicleId,
-                    //         'protocal':this.protocal
-                    //     },response => {
-                    //     if(response.data.code == '200'){
-                    //         //获取视频地址并赋值
-                    //         let videoUrl = response.data.data.rtmp;
-                    //         this.playerOptions.sources[0].src = videoUrl;
-                    //         // this.player.load(videoUrl);
-                    //         //直播报活调用
-                    //         this.repeatFn();
-                    //         this.monitStartTime = this.getCurTime();
-
-                    //         //计算视频播放时长
-                    //         this.playTimer = setInterval(() => {
-                    //             this.totalTime ++ ;
-                    //             this.totalTimeformat = this.formatSeconds(this.totalTime);
-                    //             if(this.deviceType != '-1'){
-                    //                 this.$refs.maxMap.getGps(this.vehicleId,(new Date()).getTime(),this.deviceType);
-                    //             }
-                    //         },1000);
-
-                    //         this.getTotalTime(this.monitStartTime);
-                    //     }
-                    // }); 
                 }
             }else{
                 this.$message.error('请选择车牌号!');
@@ -336,10 +305,6 @@ export default {
                 'protocal':this.protocal
             }).then(res => {
             })
-            // this.$api.post('cam/sendStreamHeart',{
-            //         'camId':this.serialNum,'vehicleId':this.vehicleId,
-            //         'protocal':this.protocal
-            //     },response => {}); 
         },
         endVideo(){//停止直播
             clearInterval(this.playTimer);
