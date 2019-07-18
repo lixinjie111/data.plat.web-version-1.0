@@ -26,7 +26,7 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
-        <el-table class='c-mt-10 c-mb-70' :data="dataList" max-height="620" stripe v-loading='loading'>
+        <el-table class='c-mt-10 c-mb-70' :data="dataList" max-height="499" stripe v-loading='loading'>
             <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
             <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
             <el-table-column align="center" prop="hvid" label="自车Id"></el-table-column>

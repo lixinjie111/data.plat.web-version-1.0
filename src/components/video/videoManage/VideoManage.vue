@@ -51,7 +51,7 @@
         <div class="c-button-wrapper c-text-right">
             <el-button size="mini" plain icon="el-icon-download" @click="downLoadZipFile">批量下载</el-button>
         </div>
-        <el-table stripe max-height="620"
+        <el-table stripe max-height="499"
             :data="dataList"
             v-loading="loading"
             class='c-mb-70'

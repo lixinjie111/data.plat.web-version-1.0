@@ -68,7 +68,7 @@
         v-loading='loading' 
         stripe 
         border 
-        max-height="620" 
+        max-height="499" 
         class='c-mb-70'>
             <el-table-column fixed align="center" type="index" min-width="5%" label="序号" :index='indexMethod'></el-table-column>
             <el-table-column align="center" prop="fileName" min-width="12%" label="文件名称"></el-table-column>

@@ -31,7 +31,7 @@
                 <el-button size="mini" plain icon="el-icon-edit" @click="localClick();">获取本地数据</el-button>
             </div>
             
-            <el-table :data="dataList" v-loading='loading' stripe border max-height="620" class='c-mb-70'>
+            <el-table :data="dataList" v-loading='loading' stripe border max-height="499" class='c-mb-70'>
                 <el-table-column fixed align="center" prop="eventName" label="事件名称"></el-table-column>
                 <el-table-column align="center" prop="eventNo" label="事件编号"></el-table-column>
                 <el-table-column align="center" prop="vehicleId" label="车辆编号"></el-table-column>

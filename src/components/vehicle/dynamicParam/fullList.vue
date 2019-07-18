@@ -15,7 +15,7 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="dataList" class='c-mt-10 c-mb-70' max-height="620" v-loading="loading" @selection-change="handleSelectionChange" stripe>
+        <el-table :data="dataList" class='c-mt-10 c-mb-70' max-height="499" v-loading="loading" @selection-change="handleSelectionChange" stripe>
             <el-table-column fixed align="center" type="selection"></el-table-column>
             <el-table-column align="center" prop="sid" label="SID"></el-table-column>
             <el-table-column align="center" prop="name" label="英文名称"></el-table-column>

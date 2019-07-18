@@ -29,7 +29,7 @@
             v-loading='loading' 
             stripe 
             border 
-            max-height="620" 
+            max-height="499" 
             class='c-mb-70'>
               <el-table-column fixed align="center" min-width="5%" type="index" label="序号" :index='indexMethod'></el-table-column>
               <el-table-column align="center" min-width="16%" prop="routeId" label="行程ID"></el-table-column>

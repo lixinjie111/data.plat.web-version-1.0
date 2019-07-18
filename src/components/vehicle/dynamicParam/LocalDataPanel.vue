@@ -25,7 +25,7 @@
                         <el-button size="mini" plain icon="el-icon-receiving" @click="addDataSet();">获取数据集</el-button>
                     </div>
 
-                    <el-table max-height="620" :data="dataList" v-loading='loading' stripe>
+                    <el-table max-height="499" :data="dataList" v-loading='loading' stripe>
                         <el-table-column fixed align="center" prop="sid" label="SID"></el-table-column>
                         <el-table-column align="center" prop="name" label="英文名称"></el-table-column>
                         <el-table-column align="center" prop="longidentifier" label="中文名称"></el-table-column>
