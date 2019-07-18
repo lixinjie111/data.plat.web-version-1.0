@@ -2,11 +2,11 @@
     <div class="c-wrapper-20 c-detail-box">
         <p class="c-title">{{title}}</p>
         <ul class="c-detail-table-vertical clearfix">
-            <li v-for="(item,index) in infoTagData" :key="index" class="list">
-                <p class="title">{{item.title}}</p>
+            <li v-for="(item,index) in infoTagData" :key="index" class="list" :style="{'margin-top': item.title ? '0' : '-1px'}">
+                <p class="title" v-if="item.title">{{item.title}}</p>
                 <div v-for="(subItem,subIndex) in item.list" :key="subIndex" class="inner-list">
                     <span class="sub-title">{{subItem.name}}</span>
-                    <em class="desc">{{subItem.value}}</em>
+                    <em class="desc">{{subItem.value || '--'}}</em>
                 </div>
             </li>         
         </ul>

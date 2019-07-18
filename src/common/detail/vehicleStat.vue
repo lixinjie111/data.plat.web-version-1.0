@@ -5,7 +5,7 @@
             <ul class="veh-operation-info-bottom clearfix">
                 <li v-for="(item,index) in statData" :key="index" class="veh-operation-info-list">
                     <p class="title">{{item.name}}</p>
-                    <p class="text">{{item.value}}</p>
+                    <p class="text">{{item.value || '--'}}</p>
                 </li>
             </ul>  
         </div>    

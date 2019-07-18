@@ -3,13 +3,13 @@
         <img class="base-img" :src="baseData.vehicelPic">
         <div class="base-info">
             <div class="base-info-top">
-                <label>车辆编号：</label>
+                <label>车牌号：</label>
                 <span>{{baseData.platNo}}</span>
             </div> 
             <ul class="base-info-bottom">
                 <li v-for="(item,index) in baseData.list" :key="index" class="base-info-list">
                     <p class="title">{{item.name}}</p>
-                    <p class="text" :class="item.isYellow ? 'c-yellow' : item.isBlue ? 'c-blue' : ''">{{item.value}}</p>
+                    <p class="text" :class="item.isYellow ? 'c-yellow' : item.isBlue ? 'c-blue' : ''">{{item.value || '--'}}</p>
                 </li>
 
             </ul>     

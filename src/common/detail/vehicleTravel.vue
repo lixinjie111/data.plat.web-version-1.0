@@ -9,7 +9,7 @@
                     </div>
                     <div class="info">
                         <p class="title">{{item.name}}</p>
-                        <p class="text">{{item.value}}</p>
+                        <p class="text">{{item.value || '--'}}</p>
                     </div>
                 </div>
             </li>
@@ -49,7 +49,8 @@ export default {
                 @include layoutMode();
                 .img {
                     max-width: 52px;
-                    height: 52px;
+                    // height: 52px;
+                    object-fit: none;
                 }
             }
             .info {
