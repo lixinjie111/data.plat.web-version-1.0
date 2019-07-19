@@ -3,7 +3,7 @@ import axios from 'axios';
 import Qs from 'qs'
 
 // axios.defaults.withCredentials = true;
-Vue.prototype.$http = axios;
+// Vue.prototype.$http = axios;
 // 权限
 // import { removeAuthInfo } from '@/utils/auth';
 

@@ -237,7 +237,6 @@ export default {
         },
         resetClick(){
             this.loading = false;
-            this.findRsmPage();
             this.$refs.searchForm.resetFields();
         },
         getIsNan(val){

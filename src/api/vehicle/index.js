@@ -65,12 +65,12 @@ export const getDetatilList = params => { return axios.post(`${operPlatUrl}dynam
 /**
  * 全集数据
  */
-export const findVehicleProperty = params => { return axios.post(`${operPlatUrl}vehicleTerminal/remote/findVehicleProperty`, params).then(res => res.data); };
+export const findVehicleProperty = params => { return axios.post(`${operPlatUrl}vehicleTerminal/v2/remote/findVehicleProperty`, params).then(res => res.data); };
 
 /**
  * 本地组数据
  */
-export const findVehicleGroup = params => { return axios.post(`${operPlatUrl}vehicleTerminal/remote/findVehicleGroup`, params).then(res => res.data); };
+export const findVehicleGroup = params => { return axios.post(`${operPlatUrl}vehicleTerminal/v2/remote/findVehicleGroup`, params).then(res => res.data); };
 
 /**
  * 提交本地数据

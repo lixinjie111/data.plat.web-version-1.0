@@ -28,7 +28,7 @@ export const queryRoadCameraDetailsByDeviceId = params => { return axios.post(`$
  /**
  * 查询在线车辆数
  */
-export const getRoadSideCameraStaticsAndListByDist = params => { return axios.get(`${operPlatUrl}v2x/remote/device/getRoadSideCameraStaticsAndListByDist`, {params: params}).then(res => res.data); };
+export const getRoadSideCameraStaticsAndListByDist = params => { return axios.get(`${operPlatUrl}v2x/v2/remote/device/getRoadSideCameraStaticsAndListByDist`, {params: params}).then(res => res.data); };
 
 /**
  * 视频管理
@@ -57,6 +57,10 @@ export const queryRoadTaskList = params => { return axios.post(`${HTTPURL}road/q
  * 视频下载
  */
 export const redoVideoTask = params => { return axios.post(`${HTTPURL}cam/redoVideoTask`, params).then(res => res.data); };
+ /**
+ * 视频导出
+ */
+export const exportVideo = params => { return axios.post(`${HTTPURL}dataPlatApp/road/download/`, {params: params}).then(res => res.data); };
  /**
  * 新建下载任务
  */

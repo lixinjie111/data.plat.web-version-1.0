@@ -23,28 +23,28 @@
             <table class="yk-table">
                 <thead>
                 <tr>                        
-                    <th scope="col" style="width:11%;">道路ID</th>
-                    <th scope="col" style="width:10%;">道路名称</th>
-                    <th scope="col" style="width:20%;">经纬度</th>                       
+                    <th scope="col" style="width:8%;">道路ID</th>
+                    <th scope="col" style="width:14%;">道路名称</th>
+                    <th scope="col" style="width:22%;">经纬度</th>                       
                     <th scope="col" style="width:20%;">所属行政区域</th>
-                    <th scope="col" style="width:14%;">所属MEC</th>
+                    <th scope="col" style="width:15%;">所属MEC</th>
                     <th scope="col" style="width:12%;">绑定设备数</th>
                 </tr>
                 </thead>
                 <tbody style="height:auto;min-height:auto;">
                     <tr class="yk-table-body">
                         <!-- 道路Id -->
-                        <td style="width:11%;">{{rspRoadId}}</td>
+                        <td style="width:8%;">{{rspRoadId}}</td>
                         <!-- 道路名称 -->
-                        <td style="width:10%;">{{roadName}}</td>
+                        <td style="width:14%;">{{roadName}}</td>
                         <!-- 经纬度 -->
-                        <td style="width:20%;">{{lon}},{{lat}}</td>
+                        <td style="width:22%;">{{lon}},{{lat}}</td>
                         <!-- 所属行政区域 -->
                         <td style="width:20%;">{{distName}}</td>
                         <!-- 所属MEC -->
                         <td style="width:14%;">{{mecName}}</td>
                         <!-- 绑定设备数 -->
-                        <td style="width:11%;">{{bindingDevCount}}</td>
+                        <td style="width:10%;">{{bindingDevCount}}</td>
                     </tr>
                 </tbody>
             </table>                
@@ -58,8 +58,8 @@
             <table class="yk-table">
                 <thead>
                 <tr>                        
-                    <th scope="col" style="width:4%;">序号</th>
-                    <th scope="col" style="width:8%;">设备类型</th>
+                    <th scope="col" style="width:5%;">序号</th>
+                    <th scope="col" style="width:12%;">设备类型</th>
                     <th scope="col" style="width:8%;">设备ID</th>
                     <th scope="col" style="width:28%;">设备序列号</th>                       
                     <th scope="col" style="width:10%;">朝向</th>
@@ -69,11 +69,11 @@
                 <tr class="yk-table-body" v-for='(item,index) in deviceDataList' :key="index" style="height:auto;min-height:auto;">
                     <td style="width:7%;">{{ index + paging.size * (paging.index)+1}}</td>
                     <!--设备类型-->
-                    <td style="width:13%;">{{item.deviceType}}</td>
+                    <td style="width:20%;">{{item.deviceTypeName}}</td>
                     <!-- 设备ID-->
                     <td style="width:14%;">{{item.deviceId}}</td>
                     <!--设备序列号-->
-                    <td style="width:51%;">{{item.serialNum}}</td>
+                    <td style="width:45%;">{{item.serialNum}}</td>
                     <!-- 朝向-->
                     <td>{{item.direction}}</td>
                     </tr>

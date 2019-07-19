@@ -321,9 +321,9 @@ export default {
                         item.loading = false;
                     });
                     this.dataList = res.data;
+                    this.showDataList = this.dataList;
                     this.pageOption.total = res.data.length;
                     if(this.pageOption.total > this.paging.size) {
-                        console.log(this.dataList);
                         this.initShowData();
                     }else {
                         this.showDataList = this.dataList;

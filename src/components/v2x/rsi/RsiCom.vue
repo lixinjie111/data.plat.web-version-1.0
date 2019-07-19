@@ -161,7 +161,7 @@ export default {
     methods: {
         init(){
             this.findRsiPage();
-            this.initPaging();
+            // this.initPaging();
         },
         initPageOption() {
             this.dataList = [];
@@ -215,7 +215,6 @@ export default {
             });
         },
         resetClick(){
-            this.findRsiPage();
             this.$refs.searchForm.resetFields();
         },
         getIsNan(val){

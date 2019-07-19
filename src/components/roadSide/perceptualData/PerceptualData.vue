@@ -47,7 +47,7 @@
                     @node-collapse="endPlay"
                     >
                     <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
-                        <i class="sl-video-icon" :class="data.icon" v-if="data.icon"></i>
+                        <i class="sl-video-icon" :class="data.icon" :id='data.id' v-if="data.icon"></i>
                         <span class="sl-play-text">{{ node.label }}</span>              
                     </span>
                 </el-tree>
@@ -127,6 +127,7 @@ export default {
             defaultProps: {
                 children: 'children',
                 label: 'label',
+                node:'',
                 isLeaf: 'leaf'
             },
             requestData: {
@@ -210,7 +211,6 @@ export default {
                     this.newData = this.data;
                 }
             }
-            
         },
         showMapBar(){
             this.isSlideIn = true;
@@ -224,7 +224,7 @@ export default {
             this.isSlideOut = false;
         },
         handleNodeClick(data){
-            if(data.label.includes('路') || data.label.includes('道')){
+            if(data.road){
                 this.roadName = data.label;
             }
             this.roadNewName = this.roadName;
@@ -258,6 +258,7 @@ export default {
                         var obj = {};
                         obj.label = areaArray[i].label;
                         obj.code = areaArray[i].code;
+                        obj.road = true;
                         // obj.isLeaf = 'leaf';
                         // obj.leaf = true;
                         data.push(obj);
@@ -311,8 +312,8 @@ export default {
                     this.roadNewName = this.roadName;
                     this.roadPointName = camerData.rsPtName;
                     this.roadPointId = camerData.rsPtId;
-                    this.lon = (camerData.ptLon).toFixed(8);
-                    this.lat = (camerData.ptLat).toFixed(8);
+                    this.lon = Number(camerData.ptLon).toFixed(8);
+                    this.lat = Number(camerData.ptLat).toFixed(8);
                     this.isMaskShow = false;
                     let videoUrl = res.data.rtmp;
                     this.embedFlash(videoUrl);
@@ -394,10 +395,10 @@ export default {
                     citycode: areaCode
                 }).then(res =>{
                     if(res.status == '200'){
-                        this.camDetail = res.data.body.list;
-                        this.camTotal = res.data.body.count;
-                        this.monitNum = res.data.body.monitorCount;
-                        this.onlineNum = res.data.body.onlineCount;
+                        this.camDetail = res.data.list;
+                        this.camTotal = res.data.count;
+                        this.monitNum = res.data.monitorCount;
+                        this.onlineNum = res.data.onlineCount;
                     }
                 });
          }

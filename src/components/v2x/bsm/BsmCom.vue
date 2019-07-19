@@ -229,8 +229,11 @@ export default {
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;
                 }
+                this.loading = false;
+                this.searchLoad = false;
             }).catch(err => {
                 this.loading = false;
+                this.searchLoad = false;
             })
         },
         searchClick(){
@@ -253,7 +256,6 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.findBSMList();
         },
         getIsNan(val){
             return typeof(val) == 'number' && window.isNaN(val);
@@ -272,7 +274,7 @@ export default {
             this.panel.cfgShow = false;
         },
         indexMethod(index){
-            return (this.pageOption.index-1) * this.pageOption.size + index + 1;
+            return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         }
     },
     mounted(){

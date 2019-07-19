@@ -170,7 +170,7 @@ export default {
     methods: {
         init(){
             this.findEventList();
-            this.initPaging();
+            // this.initPaging();
         },
         initPageOption() {
             this.dataList = [];
@@ -216,7 +216,6 @@ export default {
             });
         },
         resetClick(){
-            this.findEventList();
             this.$refs.searchForm.resetFields();
         },
         changePageSize(value) {//每页显示条数变更

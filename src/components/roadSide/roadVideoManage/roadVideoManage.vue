@@ -100,7 +100,7 @@
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local';
 import RoadVideoReplay from './roadVideoReplay.vue';
-import {queryRoadVideoList,downLoadZipFile,removeVideo} from '@/api/roadSide'
+import {queryRoadVideoList,downLoadZipFile,removeVideo,exportVideo} from '@/api/roadSide'
 export default {
     name: 'VideoDownload',
     components: {
@@ -117,6 +117,7 @@ export default {
             endTime:'',
             searchLoading:false,
             loading:false,
+            fileName:'',
             currentDatas: [
                 {vId:'1222',plateNo:'京N-9932',vin:'2342',serialNumber:'3242',workStatusName:'2',directionName:'前',isBindName:'未绑定',camTypeName:'sdfs',manuName:'2423',bindDate:'2019-03-05'},
                 {vId:'1222',plateNo:'京N-9932',vin:'2342',serialNumber:'3242',workStatusName:'2',directionName:'前',isBindName:'未绑定',camTypeName:'sdfs',manuName:'2423',bindDate:'2019-03-05'},
@@ -251,8 +252,6 @@ export default {
             this.panel.cfgShow = false;
         },
         downClick(item){
-            let fileIds = [];
-            fileIds.push(this.selector);
             if(this.selector.length > 0) {
                 downLoadZipFile({
                     'fileIds':this.selector
@@ -325,6 +324,9 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
+                // exportVideo({
+                //     'params':item.fileName
+                // }).then();
                 window.location.href="http://120.133.21.14:9091/dataPlatApp/road/download/"+item.fileName;
                 // window.location.href="http://172.17.1.13:9091/dataPlatApp/road/download/"+item.fileName;
             }).catch(() => {
