@@ -179,7 +179,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                window.location.href="http://120.133.21.14:9091/dataPlatApp/cam/download/"+item.fileName;
+                window.location.href=window.config.downloadUrl+item.fileName;
                 // window.location.href="http://172.17.1.13:9091/dataPlatApp/cam/download/"+item.fileName;
             }).catch(() => {
                 this.$message.info('已取消导出');          

@@ -73,6 +73,7 @@
             <el-table-column align="center" min-width="20%" prop="endTime" label="操作">
                 <template slot-scope="scope">
                     <el-button size="mini" type="warning" plain @click="replay(scope.row)">回放</el-button>
+                    <!-- <el-button size="mini" type="warning" plain @click="exportClick(scope.row)">导出</el-button> -->
                     <el-button size="mini" type="warning" plain @click="exportClick(scope.row)">导出</el-button>
                     <el-button size="mini" type="warning" plain @click="delClick(scope.row)">删除</el-button>
                 </template>
@@ -101,6 +102,7 @@ import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local';
 import RoadVideoReplay from './roadVideoReplay.vue';
 import {queryRoadVideoList,downLoadZipFile,removeVideo,exportVideo} from '@/api/roadSide'
+import axios from 'axios'
 export default {
     name: 'VideoDownload',
     components: {
@@ -327,7 +329,9 @@ export default {
                 // exportVideo({
                 //     'params':item.fileName
                 // }).then();
-                window.location.href="http://120.133.21.14:9091/dataPlatApp/road/download/"+item.fileName;
+
+                axios.get(window.config.downloadUrl+item.fileName, {}).then();
+                // window.location.href=window.config.downloadUrl+item.fileName;
                 // window.location.href="http://172.17.1.13:9091/dataPlatApp/road/download/"+item.fileName;
             }).catch(() => {
                 this.$message.info('已取消导出');          

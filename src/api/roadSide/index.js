@@ -60,7 +60,7 @@ export const redoVideoTask = params => { return axios.post(`${HTTPURL}cam/redoVi
  /**
  * 视频导出
  */
-export const exportVideo = params => { return axios.post(`${HTTPURL}dataPlatApp/road/download/`, {params: params}).then(res => res.data); };
+export const exportVideo = params => { return axios.get(`${HTTPURL}dataPlatApp/road/download/`, {params: params}).then(res => res.data); };
  /**
  * 新建下载任务
  */
