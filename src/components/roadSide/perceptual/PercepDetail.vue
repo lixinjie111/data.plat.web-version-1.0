@@ -95,7 +95,7 @@ import TList from '@/common/utils/list.js'
 import TMDate from '@/common/utils/date.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap2.vue";
-import {findRoadMonitorCameraInfo,getVideoUrlInfo} from '@/api/roadSide';
+import {findRoadMonitorCameraInfo,getVideoUrlInfo,findPerceptionRecordsInfo} from '@/api/roadSide';
 export default {
     name: 'PercepDetail',
     components: {
@@ -255,7 +255,6 @@ export default {
             })
         },
         findPerceptionRecords() {
-            // console.log("加载数据---------------");
             this.loading = true;
             this.dataList = [];
             this.tusvnOption.show = false;
@@ -379,8 +378,8 @@ export default {
             // console.log(obj.controlBar.currentTimeDisplay.contentEl_);
             // obj.controlBar.currentTimeDisplay.contentEl_.innerHTML = this.curTimeDate;
             obj.controlBar.progressControl.children_[0].children_[2].el_.setAttribute('data-current-time', this.curTimeDate);
-            console.log("&&&&&&&&&&&&&&&&&&&");
-            console.log(this.curTime, this.currentMillisecond);
+            // console.log("&&&&&&&&&&&&&&&&&&&");
+            // console.log(this.curTime, this.currentMillisecond);
             if(this.stopFrequentLoad.timer) {
                 clearTimeout(this.stopFrequentLoad.timer);
                 this.stopFrequentLoad.timer = setTimeout(() => {
@@ -396,7 +395,7 @@ export default {
         },
         showDetail(row) {
             if(row) {
-                console.log("进入列表-----------");
+                // console.log("进入列表-----------");
                 // console.log(row);
                 row.loading = true;
                 this.tusvnOption.show = false;

@@ -100,6 +100,7 @@ import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import PlayBack from '@/components/video/playVideo/playback.vue'
 import {queryVideoList,downLoadZipFile,removeVideo} from '@/api/video'
+import axios from 'axios'
 export default {
     name: 'VideoManage',
     components: {
@@ -179,7 +180,9 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                window.location.href=window.config.downloadUrl+item.fileName;
+                
+                axios.get(window.config.downloadUrl+item.fileName, {}).then();
+                // window.location.href=window.config.downloadUrl+item.fileName;
                 // window.location.href="http://172.17.1.13:9091/dataPlatApp/cam/download/"+item.fileName;
             }).catch(() => {
                 this.$message.info('已取消导出');          
