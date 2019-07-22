@@ -309,7 +309,7 @@ export default {
             })
         },
         initData(){
-            this.initPaging();
+            // this.initPaging();
             this.loading = true;
             findVideoRecords({
                 'serialNum':  this.searchKey.serialNum,
@@ -323,7 +323,7 @@ export default {
                     this.dataList = res.data;
                     this.showDataList = this.dataList;
                     this.pageOption.total = res.data.length;
-                    if(this.pageOption.total > this.paging.size) {
+                    if(this.pageOption.total > this.pageOption.size) {
                         this.initShowData();
                     }else {
                         this.showDataList = this.dataList;

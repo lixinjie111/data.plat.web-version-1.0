@@ -1,36 +1,24 @@
 <template>
-<div>
-    <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
-    <div class="yk-cfg-box yk-scroll-y" id="idPanelBox" :style="'height:' + current.height + 'px'">
-        <div class="yk-panel-box yk-gap10">
-                <div class="yk-btn-box yk-left yk-b-border">
-                        <span class="title">数据查看</span>
-                </div>
-                <div>
-                    <el-form :inline="true" :model="searchKey" size='small'>
-                        <el-form-item label="数据ID:" prop='dataId'>
-                            <el-input v-model.trim="searchKey.dataId"></el-input>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" :loading='loading' @click="searchClick('searchKey')">查询</el-button>
-                            <el-button type="primary" @click="resetClick()">重置</el-button>
-                        </el-form-item>
-                    </el-form>
-                    <el-table :data="dataList" class='c-mt-10' max-height="499" stripe>
-                        <el-table-column align="center" fixed prop="timestamp" label="时间戳"></el-table-column>
-                        <el-table-column align="center" prop="dataId" label="数据ID"></el-table-column>
-                        <el-table-column align="center" prop="enName" label="英文名称"></el-table-column>
-                        <el-table-column align="center" prop="chName" label="中文名称"></el-table-column>
-                        <el-table-column align="center" prop="enName" label="数据值"></el-table-column>
-                        <el-table-column align="center" label="时间">
-                            <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp)}}</template>
-                        </el-table-column>         
-                    </el-table>
-                </div>
-                
-        </div>
-    </div>
-                
+<div id='groups' v-cloak>
+    <el-form :inline="true" :model="searchKey" ref='searchForm' size='small'>
+        <el-form-item label="数据ID" prop='dataId'>
+            <el-input v-model.trim="searchKey.dataId"></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick('searchKey')">查询</el-button>
+            <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
+        </el-form-item>
+    </el-form>
+    <el-table :data="dataList" v-loading="loading" class='c-mt-10 c-mb-70' stripe>
+        <el-table-column fixed align="center" prop="timestamp" label="时间戳"></el-table-column>
+        <el-table-column align="center" prop="dataId" label="数据ID"></el-table-column>
+        <el-table-column align="center" prop="enName" label="英文名称"></el-table-column>
+        <el-table-column align="center" prop="chName" label="中文名称"></el-table-column>
+        <el-table-column align="center" prop="enName" label="数据值"></el-table-column>
+        <el-table-column align="center" label="时间">
+            <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp)}}</template>
+        </el-table-column>    
+    </el-table>
 </div>
 </template>
 <script>
@@ -43,6 +31,7 @@ export default {
     },
     data(){
         return {
+            searchLoading:false,
             pageOption: {
                 page: 1,
                 size: 10,
@@ -66,11 +55,11 @@ export default {
         init(queryId,dataId){
             if(queryId != undefined) this.searchKey.queryId = queryId;
             if(dataId != undefined) this.searchKey.dataId = dataId;
-            this.$refs.page.internalCurrentPage = this.currentPage;
-            this.paging.index = 1;
-            this.getDetatilList();
+            // this.$refs.page.internalCurrentPage = this.currentPage;
+            this.pageOption.page = 1;
+            this.getDetatil();
         },
-        getDetatilList(){
+        getDetatil(){
             let _this = this;
             this.dataList = [];
             this.loading = true;
@@ -90,23 +79,22 @@ export default {
             })
         },
         searchClick(){
-            this.pageOption.index = 0;
-            this.getDetatilList();
+            this.pageOption.page = 0;
+            this.getDetatil();
         },
         backClick(){
             this.$emit('detailPanelBack')
         },
         resetClick(){
             this.searchKey.dataId ="";
-            this.init();
         },
         handleSizeChange(value) {//每页显示条数变更
             this.pageOption.size = value;
-            this.getDetatilList();
+            this.getDetatil();
         },
         handleCurrentChange(value) {//页码变更
             this.pageOption.page = value;
-            this.getDetatilList();
+            this.getDetatil();
         }
     },
     mounted(){

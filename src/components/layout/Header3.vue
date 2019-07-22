@@ -8,9 +8,10 @@
             <el-dropdown trigger="hover">
                 <span class="el-dropdown-link userinfo-inner">
                     <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
-                    <em class="name c-vertical-middle">admin2</em>
+                    <em class="name c-vertical-middle">{{$store.state.user.name}}</em>
                 </span>
                 <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item divided>版本v1.1</el-dropdown-item>
                     <el-dropdown-item divided @click.native="logoutClick">登出</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
@@ -18,8 +19,8 @@
     </div>
 </template>
 <script>
+import {requestLogout} from '@/api/login'
 import SessionUtils from '@/store/session.js'
-
 export default {
     data(){
         return {
@@ -28,16 +29,21 @@ export default {
     },
     methods: {
         logoutClick(){
-            
-            this.$router.push('/login');
-            
-            SessionUtils.deleteItem('login');
+            let token = SessionUtils.getItem('login').token;
+            requestLogout({
+                token:token
+            }).then(res => {
+                if(res.status == '200'){
+                    this.$router.push('/login');
+                    this.$store.dispatch('logout');
+                    SessionUtils.deleteItem('login');
+                }
+            });
         }
     },
    
     
     mounted(){
-        
     },
     beforeDestroy(){
 

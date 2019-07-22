@@ -7,10 +7,13 @@ Vue.use(VueX)
 
 const store = new VueX.Store({
     state: {
+        platform: "20000",
         login: false,
+        operations:[],
+        token:'',
         user: {
             name: '',
-            pass: '',
+            id: '',
         },     // 用户信息
         auth: {     // 权限
 
@@ -32,8 +35,18 @@ const store = new VueX.Store({
     },
     mutations: {
         login(state,data){
-            state.login = data.bool;
-            state.user = JSON.parse(data.data);
+            state.operations = data.data.operations;
+            state.token = data.data.token;
+            state.login = data.data.bool;
+            state.user.name = data.data.loginName;
+            state.user.id = data.data.userNo;
+        },
+        logout(state,data){
+            state.operations = [];
+            state.token = "";
+            state.login = false;
+            state.user.name = "";
+            state.user.id = "";
         },
         initMenus(state,url){
             state.menus = Utils.setMenuByPath(url);
@@ -58,11 +71,11 @@ const store = new VueX.Store({
     },
     actions: {
         login(context,user){
-            console.log('store -- actions --- login : ' + JSON.stringify(user))
+            // console.log('store -- actions --- login : ' + JSON.stringify(user))
             let temp = {
                 type: 'login',
                 bool: true,
-                data: JSON.stringify(user)
+                data:user
             }
             context.commit('login',temp);
         },
@@ -72,7 +85,7 @@ const store = new VueX.Store({
                 bool: false,
                 data: null
             }
-            context.commit('login',temp);
+            context.commit('logout',temp);
         },
         initMenus(context,url){
             context.commit('initMenus',url);

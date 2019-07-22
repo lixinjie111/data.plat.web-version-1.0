@@ -1,16 +1,9 @@
 <template>
-<div style='width:100%;height:100%;background:rgba(0,0,0,.3);position:absolute;top:0;left:50%;margin-left:-50%;'>
-    <div class="yk-container cation" style='width:800px;height:600px;background:#fff;overflow:hidden;overflow-y:scroll;position:relative;top:20px;left:50%;margin-left:-500px;z-index:2000;'>
-        <div class="yk-search-box" style="border-bottom:1px solid #ccc;">                
-            <div class="yk-search-block yk-block-label">
-                <label class="colGrap">路侧点: </label>
-                <span>{{roadPointName}}</span>
-            </div>          
-        </div>
-        <el-page-header @back="backClick"></el-page-header>
-        <!-- <div class="yk-btn-box yk-right yk-b-10">
-            <span class="yk-btn-back" @click="backClick();">返回</span>
-        </div> -->
+<div class='c-view-dialog'>
+    <div>
+
+        <p class="c-title c-border-bottom">查看路侧点信息<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
+        <div class="base-info-top"><label>路侧点:</label> <span>{{roadPointName}}</span></div>
         <div class='roadMapInfo c-mt-10'>
             <tusvn-map ref="perceMap2" targetId="mec11" overlayContainerId="mec12" :isMasker='false' :isCircle='false'></tusvn-map>
         </div>
@@ -158,40 +151,19 @@ export default {
     }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@import "@/assets/scss/theme.scss";
+.base-info-top {
+    font-size:16px;
+    color:#666;
+    padding: 0 30px;
+    height: 54px;
+    @include layoutMode(align);
+    span {
+        color: $black;
+    }
+}
 .roadMapInfo{
-    width:100%;
     height:300px;
-    border:1px solid #f1f1f1;
-}
-.yk-table-box{
-    height:246px;
-    min-height:246px;
-    overflow:hidden;
-    overflow-y: auto;
-}
-.yk-container::-webkit-scrollbar-thumb{ 
-   background-color:#333; 
-   height:50px; 
-   outline-offset:-2px; 
-   outline:2px solid #fff; 
-   -webkit-border-radius:4px; 
-   border: 2px solid #fff; 
-} 
-/*---鼠标点击滚动条显示样式--*/ 
-.yk-container::-webkit-scrollbar-thumb:hover{ 
-   background-color:#666; 
-   height:50px; 
-   -webkit-border-radius:4px; 
-} 
-/*---滚动条大小--*/ 
-.yk-container::-webkit-scrollbar{ 
-   width:8px; 
-   height:8px; 
-} 
-/*---滚动框背景样式--*/ 
-.yk-container::-webkit-scrollbar-track-piece{ 
-   background-color:#fff; 
-   -webkit-border-radius:0; 
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
-        <div v-show="!panel.show && !panel.cfgShow" class="yk-container c-mt-10">
+        <div v-show="!panel.show" class="yk-container c-mt-10">
             <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
                 <el-form-item label="车辆编号" prop='vehicleId'>
                     <el-input v-model="searchKey.vehicleId"></el-input>
@@ -75,7 +75,8 @@
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
         </div>
-        <bsm-detail ref='bsmDetail' v-show='panel.cfgShow' :data='panel.data' @backClick='backFn'></bsm-detail>
+        <!-- 设备基本信息 -->
+        <bsm-detail title="基本信息" v-if='detailLayShow' :infoTagData="detailInfo" @backClick='backFn'></bsm-detail>
     </div>
 </template>
 <script>
@@ -129,6 +130,8 @@ export default {
             searchLoad:false,
             startTime:'',
             endTime:'',
+            detailInfo:{},
+            detailLayShow:false,
             searchKey: {
                 vehicleId: '',
                 startTime: '',
@@ -146,7 +149,6 @@ export default {
                 msg: '',
                 data: [],
                 show: false,
-                cfgShow: false,
             },  
             current: {
                 top: 0,
@@ -198,12 +200,9 @@ export default {
             this.pageOption.page = 1;
         },
         detail(item){
-            this.panel.title = '明细';
-            this.panel.type = 'detail';
-            this.panel.data = item;
+            this.detailInfo = item;
             this.panel.show = false;
-            this.panel.cfgShow = true;
-            this.$refs.bsmDetail.init(item);
+            this.detailLayShow = true;
         },
         initPaging(){
             this.pageOption.page = 1;
@@ -271,7 +270,7 @@ export default {
         },
         backFn(){
             this.panel.show = false;
-            this.panel.cfgShow = false;
+            this.detailLayShow = false;
         },
         indexMethod(index){
             return (this.pageOption.page-1) * this.pageOption.size + index + 1;

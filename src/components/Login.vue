@@ -14,14 +14,14 @@
                         </div>
                         <div class="yk-form-group">
                             <span class="yk-input-title">用户名：</span>
-                            <input class="yk-login-input yk-margin-10 yk-margin-top-20" autocomplete="off" placeholder="请输入用户名">
+                            <input class="yk-login-input yk-margin-10 yk-margin-top-20" autocomplete="off" v-model='user.name' placeholder="请输入用户名">
                         </div>
                         <div class="yk-form-group yk-border-bottom ">
                             <span class="yk-input-title">密&nbsp;&nbsp;&nbsp;码：</span>
-                            <input class="yk-login-input yk-margin-10 yk-margin-bottom-20" type="password" autocomplete="off" placeholder="请输入密码">
+                            <input class="yk-login-input yk-margin-10 yk-margin-bottom-20" type="password" autocomplete="off" v-model='user.pass' placeholder="请输入密码" @keyup.enter="loginClick">
                         </div>
                         <div class="yk-form-group yk-center">
-                            <span class="yk-btn-login yk-margin-10 yk-margin-top-20" @click="loginClick();">登录</span>
+                            <span class="yk-btn-login yk-margin-10 yk-margin-top-20" @click="loginClick">登录</span>
                         </div>
                     </form>
                 </div>
@@ -30,7 +30,7 @@
     </div>
 </template>
 <script>
-
+import {requestLogin} from '@/api/login'
 import SessionUtils from '@/store/session.js'
 
 export default {
@@ -45,72 +45,28 @@ export default {
     },
     methods:{
         loginClick(){
-            
             //跳过登陆直接进入系统
-            this.$router.push('/main');
-            let temp = {
-                name: 'admin',
-                pass: 123456
-            }
-            SessionUtils.setItem('login',temp);
-               
-            if(!this.user || !this.user.name || !this.user.pass) return;
+            // this.$router.push('/main');
+            // let temp = {
+            //     name: 'admin',
+            //     pass: 123456
+            // }
+            // SessionUtils.setItem('login',temp);
             
-            this.$api.post('admin/sys/user/login',{
-                "userNo": this.user.name,
-                "password":this.user.pass
-            },response => {
-                if(response.status >= 200 && response.status < 300){
-                    console.log('登录成功 ！ : ' + JSON.stringify(response.data));
-
-                    let temp = response.data.body;                            
-                    temp = JSON.parse(temp);
-
-                    // this.$store.dispatch('login',true,temp);
+            if(!this.user || !this.user.name || !this.user.pass) return;
+            requestLogin({
+                "userNo": this.user.name, 
+                "password": this.user.pass, 
+                "platform": "20000"
+            }).then(res => {
+                if(res.status == '200'){
+                    let temp = res.data;
                     SessionUtils.setItem('login',temp);
-                   
-                    // sessionStore.login(tUser);
-                    this.$router.push({ path: '/home' ,params: {key:'登录成功!'}});
-                    
-                }else{
-                    console.log('登录失败 ！ ' + response.message);
-                    const tip2 = {
-                        isShow: true,
-                        type: 'warning',
-                        msg: response.message
-                    };
-                    this.$store.dispatch('popPrompt',tip2);
+                    this.$router.push('/home');
+                    this.$message.success(res.message);
                 }
-            });   
+            })
             
-            //跳过登陆直接进入系统
-            // this.$router.push({ path: '/main' ,params: {key:'hello ! login success !!!'}});
-            
-            if(!this.user || !this.user.name || !this.user.pass) return;
-            
-            this.$api.post('admin/sys/user/login',{
-                "userNo": this.user.name,
-                "password":this.user.pass
-            },response => {
-                if(response.status >= 200 && response.status < 300){
-                    console.log('登录成功 ！ : ' + JSON.stringify(response.data));
-
-                    let tUser = response.data.body;                            
-                    tUser = JSON.parse(tUser);
-                    // this.$store.dispatch('login',tUser);
-                    sessionStore.login(tUser);
-                    this.$router.push({ path: '/main' ,params: {key:'登录成功!'}});                        
-                    
-                }else{
-                    console.log('登录失败 ！ ' + response.message);
-                    const tip2 = {
-                        isShow: true,
-                        type: 'warning',
-                        msg: response.message
-                    };
-                    this.$store.dispatch('popPrompt',tip2);
-                }
-            });
         },
     },
     mounted(){

@@ -80,6 +80,12 @@
 .c-text-center {
 	text-align: center;
 }
+.c-text-all {
+	@include layoutMode(all);
+}
+.c-text-between {
+	@include layoutMode(between);
+}
 .c-pull-right {
 	float: right;
 }
@@ -98,7 +104,27 @@
 	display: inline-block;
 	vertical-align: bottom;
 }
+
+.c-font-14 {
+	font-size: 14px !important;
+}
+.c-font-16 {
+	font-size: 16px !important;
+}
 //间距
+.c-ml-10 {
+	margin-left: 10px;
+}
+.c-mt-10 {
+	margin-top: 10px;
+}
+.c-mr-10 {
+	margin-right: 10px;
+}
+.c-mb-10 {
+	margin-bottom: 10px;
+}
+
 .c-ml-20 {
 	margin-left: 20px;
 }
@@ -111,6 +137,33 @@
 .c-mb-20 {
 	margin-bottom: 20px;
 }
+
+.c-pdl-10 {
+	padding-left: 10px;
+}
+.c-pdt-10 {
+	padding-top: 10px;
+}
+.c-pdr-10 {
+	padding-right: 10px;
+}
+.c-pdb-10 {
+	padding-bottom: 10px;
+}
+
+.c-pdl-20 {
+	padding-left: 20px;
+}
+.c-pdt-20 {
+	padding-top: 20px;
+}
+.c-pdr-20 {
+	padding-right: 20px;
+}
+.c-pdb-20 {
+	padding-bottom: 20px;
+}
+
 .c-mb-70  {
 	margin-bottom: 70px;
 }
@@ -123,6 +176,9 @@
 }
 .c-wrapper-20 {
 	margin: 20px;
+}
+.c-padding-20 {
+	padding: 20px;
 }
 //面包屑&&通用标题
 .c-title {
@@ -163,7 +219,7 @@ h3.c-title {
 	bottom: 0;
 	z-index: 9;
 	height: 70px;
-	background-color: #f7f7f7;
+	background-color: $bgColor;
 	@include layoutMode(both);
 }
 
@@ -201,15 +257,24 @@ h3.c-title {
 	height: 62px;
 }
 
-.c-width-200 {
-	width: 200px;
+.c-red {
+	color: $red !important;
 }
-
 .c-yellow {
 	color: $yellow !important;
 }
+.c-green {
+	color: $green !important;
+}
 .c-blue {
 	color: $blue !important;
+}
+
+.c-pos-relative {
+	position: relative;
+}
+.c-pos-absolute {
+	position: absolute;
 }
 
 // 实体弹窗蒙层
@@ -231,4 +296,83 @@ h3.c-title {
 	bottom: 0;
 	z-index: 10;
 	background-color: #f7f7f7;
+}
+
+// c-detail-lable-box
+.c-detail-lable-list {
+	position: relative;
+	font-size: 16px;
+	line-height: 28px;
+	.c-detail-lable {
+		float: left;
+		padding: 10px 0;
+		min-width: 20%;
+		.name {
+			color: $fontGrayColor;
+		}
+		.value {
+			color: $black;
+		}
+	}
+	.c-pos-btn {
+		position: absolute;
+		right: 0;
+		bottom: 10px;
+	}
+	&.c-padding-20 {
+		.c-pos-btn {
+			right: 20px;
+			bottom: 30px;
+		}
+	}
+	&.el-form {
+		font-size: 16px;
+		.el-form-item {
+			float: none;
+			margin-bottom: 0;
+			margin-right: 50px;
+			min-width: 0;
+		}
+		.el-form-item__label {
+			font-size: 16px;
+		}
+		.c-pos-btn {
+			right: 0;
+			bottom: 30px;
+			margin-right: 0;
+		}
+	}
+}
+
+//地图
+.c-map-big-wrapper {
+    height: 320px;
+    background-color: $mapBgColor;
+}
+//地图视频
+.c-map-video-wrapper {
+	position: relative;
+	// 视频16：9
+	.c-video-wrapper {
+		position: relative;
+		width: 66%;
+		padding-bottom: 37.125%;
+		background-color: $black;
+		.c-video {
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			background-color: $black;
+		}
+	}
+	.c-map-wrapper {
+		position: absolute;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		width: 34%;
+    	background-color: $mapBgColor;
+	}
 }

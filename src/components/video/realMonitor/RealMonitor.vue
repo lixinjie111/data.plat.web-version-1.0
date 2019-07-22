@@ -1,6 +1,6 @@
 <template>
     <!-- 基本信息 -->
-    <div class="c-wrapper-20" v-cloak>
+    <!-- <div class="c-wrapper-20" v-cloak>
         <el-form ref='searchForm' size="small" :inline="true">
             <el-form-item label="车牌号: ">
                 <el-select
@@ -56,12 +56,12 @@
                 <el-button type="warning" size="small" v-if="isStart" @click='endVideo'>结束监控</el-button>
                 <el-button type="warning" size="small" v-else :disabled="isDisabled ? true : false" @click='realMonit'>开始监控</el-button>
             </el-form-item>
-        </el-form>
+        </el-form> -->
         <!-- <video id='myvideo' width=960 height=540 class="video-js vjs-default-skin" controls> --> 
                 <!-- RTMP直播源地址-->
                 <!-- <source src="rtmp://live.hkstv.hk.lxdns.com/live/hks1">    
             </video> -->
-        <div class="video-wrapper">
+        <!-- <div class="video-wrapper">
             <div class='video-left'>
                 <video-player id='video' class="vjs-custom-skin" 
                     ref="videoPlayer"
@@ -87,6 +87,33 @@
                     <span>使用流量: </span>--
                 </li>
             </ul>
+        </div>
+    </div> -->
+
+    <!-- 信息&&地图视频模块 -->
+    <div class="c-detail-box c-wrapper-20 c-padding-20">
+        <el-form ref="searchForm" :inline="true" :model="searchKey" size="small" class="c-detail-lable-list c-pdb-20">
+            <el-form-item label="活动名称：" class="c-detail-lable">
+                <el-input v-model.trim="searchKey.name"></el-input>
+            </el-form-item>
+            <el-form-item label="活动区域：" class="c-detail-lable">
+                <el-select v-model.trim="searchKey.region">
+                    <el-option label="区域一" value="shanghai"></el-option>
+                    <el-option label="区域二" value="beijing"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="行驶里程：" class="c-detail-lable">606.5 km</el-form-item>
+            <el-form-item label="行驶时长：" class="c-detail-lable">563 min</el-form-item>
+            <el-form-item class="c-pos-btn">
+                <el-button type="warning" plain icon="el-icon-search">开始监控</el-button>
+            </el-form-item>
+        </el-form>
+        <!-- 地图视频模块 -->
+        <div class="c-map-video-wrapper">
+            <div class="c-video-wrapper">
+                <video class="c-video"></video>
+            </div>
+            <div class="c-map-wrapper"></div>
         </div>
     </div>
 </template>

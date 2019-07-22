@@ -46,27 +46,27 @@
           }
         },
         methods: {
-          init:function(data){
-            this.dataInfo = data;
-            this.dataList = data.phases;
-          },
-          backClick(){
-              this.$emit('goBack');
-          },
-          formatTime(value){
-            let tDate = value ? new Date(value) : new Date(); 
-            const year = tDate.getFullYear();
-            const month = this.formatNum(tDate.getMonth() + 1);
-            const day = this.formatNum(tDate.getDate());
-            const hour = this.formatNum(tDate.getHours());
-            const minutes = this.formatNum(tDate.getMinutes());
-            const seconds = this.formatNum(tDate.getSeconds());
-            const millisecond = this.formatNum(tDate.getMilliseconds());
-            return year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds + ':' + millisecond ;
-        },
-        formatNum(value){
-            return value < 10 ? '0' + value : value;
-        }
+            init:function(data){
+                this.dataInfo = data;
+                this.dataList = data.phases;
+            },
+            backClick(){
+                this.$emit('goBack');
+            },
+            formatTime(value){
+                let tDate = value ? new Date(value) : new Date(); 
+                const year = tDate.getFullYear();
+                const month = this.formatNum(tDate.getMonth() + 1);
+                const day = this.formatNum(tDate.getDate());
+                const hour = this.formatNum(tDate.getHours());
+                const minutes = this.formatNum(tDate.getMinutes());
+                const seconds = this.formatNum(tDate.getSeconds());
+                const millisecond = this.formatNum(tDate.getMilliseconds());
+                return year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds + ':' + millisecond ;
+            },
+            formatNum(value){
+                return value < 10 ? '0' + value : value;
+            }
         },
         mounted(){
         }       

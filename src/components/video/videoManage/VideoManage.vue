@@ -3,16 +3,13 @@
 <div>
     <div class="c-wrapper-20" v-cloak v-show="!panel.show">
         <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
-            <el-form-item label="文件名" prop='fileName'>
-                <el-input v-model.trim="searchKey.fileName"></el-input>
-            </el-form-item>
             <el-form-item label="车辆编号" prop="VehicleId">
                 <el-input v-model.trim="searchKey.VehicleId"></el-input>
             </el-form-item>
             <el-form-item label="车牌号" prop="plateNo">
                 <el-input v-model.trim="searchKey.plateNo"></el-input>
             </el-form-item>
-            <el-form-item label="摄像头序列号" prop='camId'>
+            <el-form-item label="摄像头编号" prop='camId'>
                 <el-input v-model.trim="searchKey.camId"></el-input>
             </el-form-item>
             <el-form-item label="视频来源" prop='source'>
@@ -61,7 +58,7 @@
             <el-table-column align="center" min-width="12%" label="文件名称" prop="fileName"></el-table-column>
             <el-table-column align="center" min-width="8%" label="车辆编号" prop="vehicleId"></el-table-column>
             <el-table-column align="center" min-width="7%" label="车牌号" prop="plateNo"></el-table-column>
-            <el-table-column align="center" min-width="12%" label="摄像头序列号" prop="camId"></el-table-column>
+            <el-table-column align="center" min-width="12%" label="摄像头编号" prop="camId"></el-table-column>
             <el-table-column align="center" min-width="10%" label="开始时间" prop="startTime"></el-table-column>
             <el-table-column align="center" min-width="10%" label="结束时间" prop="endTime"></el-table-column>
             <el-table-column align="center" min-width="6%" label="视频时长(Min)">
