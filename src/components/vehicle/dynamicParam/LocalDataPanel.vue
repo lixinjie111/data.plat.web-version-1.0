@@ -25,13 +25,13 @@
                         <el-button size="mini" plain icon="el-icon-receiving" @click="addDataSet();">获取数据集</el-button>
                     </div>
 
-                    <el-table max-height="499" :data="dataList" v-loading='loading' stripe>
-                        <el-table-column fixed align="center" prop="sid" label="SID"></el-table-column>
-                        <el-table-column align="center" prop="name" label="英文名称"></el-table-column>
-                        <el-table-column align="center" prop="longidentifier" label="中文名称"></el-table-column>
-                        <el-table-column align="center" prop="datType" label="类型"></el-table-column>
-                        <el-table-column align="center" prop="description" label="描述"></el-table-column>
-                        <el-table-column align="center" label="操作">
+                    <el-table max-height="724" :data="dataList" v-loading='loading' stripe>
+                        <el-table-column prop="sid" label="SID"></el-table-column>
+                        <el-table-column prop="name" label="英文名称"></el-table-column>
+                        <el-table-column prop="longidentifier" label="中文名称"></el-table-column>
+                        <el-table-column prop="datType" label="类型"></el-table-column>
+                        <el-table-column prop="description" label="描述"></el-table-column>
+                        <el-table-column label="操作">
                             <template slot-scope="scope">
                                 <el-button size='mini' type="primary" :loading="scope.row.loading" @click='deleteClick(scope.row)'>删除</el-button>
                             </template>

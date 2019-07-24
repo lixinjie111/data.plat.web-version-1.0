@@ -29,24 +29,24 @@
             v-loading='loading' 
             stripe 
             border 
-            max-height="499" 
+            max-height="724" 
             class='c-mb-70'>
-              <el-table-column fixed align="center" min-width="5%" type="index" label="序号" :index='indexMethod'></el-table-column>
-              <el-table-column align="center" min-width="16%" prop="routeId" label="行程ID"></el-table-column>
-              <el-table-column align="center" min-width="12%" label="行程开始时间">
+              <el-table-column min-width="5%" type="index" label="序号" :index='indexMethod'></el-table-column>
+              <el-table-column min-width="16%" prop="routeId" label="行程编号"></el-table-column>
+              <el-table-column min-width="12%" label="行程开始时间">
                   <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.startTime)}}</template>
               </el-table-column>
-              <el-table-column align="center" min-width="12%" label="行程结束时间">
+              <el-table-column min-width="12%" label="行程结束时间">
                   <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.endTime)}}</template>
               </el-table-column>
-              <el-table-column align="center" min-width="11%" prop="vehicleId" label="车辆编号"></el-table-column>
-              <el-table-column align="center" min-width="10%" prop="plateNo" label="车牌号"></el-table-column>
-              <el-table-column align="center" min-width="7%" prop="mileage" label="行驶距离(km)"></el-table-column>
-              <el-table-column align="center" min-width="9%" prop="durationTime" label="行驶时长(min)"></el-table-column>
-              <el-table-column align="center" min-width="9%" label="平均速度(km/h)">
+              <el-table-column min-width="11%" prop="vehicleId" label="车辆编号"></el-table-column>
+              <el-table-column min-width="10%" prop="plateNo" label="车牌号"></el-table-column>
+              <el-table-column min-width="7%" prop="mileage" label="行驶距离(km)"></el-table-column>
+              <el-table-column min-width="9%" prop="durationTime" label="行驶时长(min)"></el-table-column>
+              <el-table-column min-width="9%" label="平均速度(km/h)">
                 <template slot-scope="scope">{{scope.row.avgSpeed}}</template>
               </el-table-column>
-              <el-table-column align="center" min-width="9%" label="操作">
+              <el-table-column min-width="9%" label="操作">
                   <template slot-scope="scope">
                     <el-button size="small" icon="el-icon-view" circle type="warning" plain :loading="scope.row.viewLoading" @click="viewTrackData(scope.row)"></el-button>
                   </template>

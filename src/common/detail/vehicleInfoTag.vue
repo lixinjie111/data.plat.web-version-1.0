@@ -1,6 +1,6 @@
 <template>
     <div class="c-wrapper-20 c-detail-box">
-        <p class="c-title">{{title}}</p>
+        <!-- <p class="c-title">{{title}}</p> -->
         <ul class="c-detail-table-vertical clearfix">
             <li v-for="(item,index) in infoTagData" :key="index" class="list" :style="{'margin-top': item.title ? '0' : '-1px'}">
                 <p class="title" v-if="item.title">{{item.title}}</p>

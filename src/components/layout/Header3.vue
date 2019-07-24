@@ -12,19 +12,26 @@
                 </span>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item divided>版本v1.1</el-dropdown-item>
+                    <el-dropdown-item divided @click.native="resetPassword">修改密码</el-dropdown-item>
                     <el-dropdown-item divided @click.native="logoutClick">登出</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
+        <dialog-reset-password v-if="dialogResetPasswordFlag" @cancleFunc="cancleFunc"></dialog-reset-password>
     </div>
 </template>
 <script>
 import {requestLogout} from '@/api/login'
 import SessionUtils from '@/store/session.js'
+import DialogResetPassword from "./components/resetPassword.vue";
 export default {
+    components: {
+        DialogResetPassword
+    },
     data(){
         return {
-            name: 'Header'
+            name: 'Header',
+            dialogResetPasswordFlag: false,
         }
     },
     methods: {
@@ -39,7 +46,13 @@ export default {
                     SessionUtils.deleteItem('login');
                 }
             });
-        }
+        },
+        resetPassword(){ 
+            this.dialogResetPasswordFlag = true;
+        },
+        cancleFunc() {
+            this.dialogResetPasswordFlag = false;
+        },
     },
    
     

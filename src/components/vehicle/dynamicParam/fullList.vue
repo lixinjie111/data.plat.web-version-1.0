@@ -15,13 +15,13 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="dataList" class='c-mt-10 c-mb-70' max-height="499" v-loading="loading" @selection-change="handleSelectionChange" stripe>
-            <el-table-column fixed align="center" type="selection"></el-table-column>
-            <el-table-column align="center" prop="sid" label="SID"></el-table-column>
-            <el-table-column align="center" prop="name" label="英文名称"></el-table-column>
-            <el-table-column align="center" prop="longidentifier" label="中文名称"></el-table-column>
-            <el-table-column align="center" prop="datType" label="类型"></el-table-column>
-            <el-table-column align="center" prop="description" label="描述"></el-table-column>
+        <el-table :data="dataList" class='c-mt-10 c-mb-70' max-height="724" v-loading="loading" @selection-change="handleSelectionChange" stripe>
+            <el-table-column type="selection"></el-table-column>
+            <el-table-column prop="sid" label="SID"></el-table-column>
+            <el-table-column prop="name" label="英文名称"></el-table-column>
+            <el-table-column prop="longidentifier" label="中文名称"></el-table-column>
+            <el-table-column prop="datType" label="类型"></el-table-column>
+            <el-table-column prop="description" label="描述"></el-table-column>
         </el-table>
         <div class="c-page clearfix">
             <el-pagination

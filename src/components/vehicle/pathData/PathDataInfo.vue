@@ -1,12 +1,85 @@
 <template>
-  <div class="yk-left">
+<div class="c-view-dialog" v-cloak>
+        <div class="c-scroll-wrap">
+            <div class="c-scroll-inner">
+                <h3 class="c-title">
+                    轨迹数据 > 查看轨迹
+                    <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
+                </h3>
+                <!-- 信息模块 -->
+                <div class="c-detail-lable-list clearfix c-detail-box c-wrapper-20 c-padding-20">
+                    
+                    <p class="c-detail-lable">
+                        <span class="name">车牌号：</span>
+                        <span class="value">{{data.plateNo}}</span>
+                    </p>
+                    <p class="c-detail-lable">
+                        <span class="name">车辆编号：</span>
+                        <span class="value">{{data.vehicleId}}</span>
+                    </p>
+                    <p class="c-detail-lable">
+                        <span class="name">行程开始时间：</span>
+                        <span class="value">{{data.startTime}}</span>
+                    </p>
+                    <p class="c-detail-lable">
+                        <span class="name">行程结束时间:</span>
+                        <span class="value">{{data.endTime}}</span>
+                    </p>
+                    <p class="c-detail-lable">
+                        <span class="name">行驶里程：</span>
+                        <span class="value">{{data.mileage}} km</span>
+                    </p>
+                    <p class="c-detail-lable">
+                        <span class="name">行驶时长：</span>
+                        <span class="value">{{data.durationTime}} min</span>
+                    </p>
+                    <el-button class="c-pos-btn" type="warning" size="small" plain @click="exportTrailDataAlert">导出数据</el-button>
+                </div>
+                <div class="map-div">
+                    <tusvn-map ref="refMap" targetId="pathDataMap" overlayContainerId="mec4" :isMasker='false'
+                              :isCircle='false' @MapInitComplete="mapComplete"></tusvn-map>
+                </div>
+                <div class="table-div">
+                  <table class="yk-table1">
+                    <thead>
+                    <tr>
+                      <th style='width:5%;'>序号</th>
+                      <th style='width:15%;'>时间</th>
+                      <th style='width:12%;'>经度</th>
+                      <th style='width:12%;'>纬度</th>
+                      <th style='width:12%;'>速度(km/h)</th>
+                      <th style='width:12%;'>航向角</th>
+                      <th>高程(m)</th>
+                    </tr>
+                    </thead>
+                    <tbody class="tbody">
+                    <tr class="yk-table-body mouse-cursor" :class="index==selectItem?'table-row-color1':'table-row-color2'"
+                        v-for='(item,index) in dataList' :key="index"
+                        @click.stop="selectRow(item,index);">
+                      <td style='width:5%;'>{{ index+1 }}</td>
+                      <td style='width:15.2%;'>{{$dateUtil.formatTime(item.timestamp,'yy-mm-dd hh:mm:ss:ms')}}</td>
+                      <td style='width:12%;'>{{item.gnss_LONG}}</td>
+                      <td style='width:12.2%;'>{{item.gnss_LAT}}</td>
+                      <td style='width:12.2%;'>{{item.gnss_SPD}}</td>
+                      <td style='width:12%;'>{{item.gnss_HEAD}}</td>
+                      <td>{{item.gnss_HIGHT}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="remaining-pages">{{requestDataParams.loadMoreData}}</div>
+
+              </div>
+        </div>
+</div>
+  <!-- <div class="yk-left">
     <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
     <div class="yk-first">
       <div class="yk-title" style="display: inline-block;">
         轨迹详情
       </div>
       <div class="c-button-wrapper c-text-right">
-          <el-button size="mini" plain icon="el-icon-top-right" @click="exportTrailDataAlert">导出轨迹数据</el-button>
+          <el-button size="mini" plain icon="el-icon-top-right" @click="exportTrailDataAlert">导出轨迹</el-button>
       </div>
       <div>
         <div class="yk-block yk-gap20">
@@ -73,7 +146,7 @@
       </div>
 
     </div>
-  </div>
+  </div> -->
 </template>
 <script>
   import TusvnMap from "@/common/view/TusvnMap/TusvnMap.vue";
@@ -453,7 +526,7 @@ import { error } from 'util';
     color: #D0D0D0;
   }
   .yk-table1 {
-    table-layout: fixed;
+    /* table-layout: fixed; */
     word-break: break-all;
     font-size: 14px;
     color: #777C7C;
@@ -463,7 +536,7 @@ import { error } from 'util';
     width: -webkit-fill-available;
     width: -moz-fill-available;
     width: -o-fill-available;
-    border: 2px solid #00c1de;
+    border: 2px solid #f59307;
     border-radius: 5px;
     position: relative;
     -webkit-border-radius: 5px;
@@ -473,7 +546,7 @@ import { error } from 'util';
   }
 
   .yk-table1:hover {
-    border: 2px solid #00c1de;
+    border: 2px solid #f59307;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -516,7 +589,7 @@ import { error } from 'util';
   }
 
   .table-row-color1 {
-    background-color: #2DCA93;
+    background-color: #f59307;
   }
 
   .table-row-color2 {
@@ -524,12 +597,12 @@ import { error } from 'util';
   }
 
   .map-div {
-    width: 100%;
+    width: 98%;
     height: 315px;
-    border: 2px solid #00c1de;
+    border: 2px solid #f59307;
     box-sizing: border-box;
     display: inline-block;
-    /* position: absolute; */
+    margin-left:20px;
   }
 
   .mouse-cursor:hover {
@@ -537,9 +610,11 @@ import { error } from 'util';
   }
 
   .table-div {
+    width:98%;
     overflow: hidden;
     height: 300px;
     display: inline-block;
+    margin-left:20px;
   }
 
   .yk-title {

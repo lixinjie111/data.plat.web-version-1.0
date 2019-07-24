@@ -3,9 +3,6 @@
 <div class="c-wrapper-20" v-cloak>
     <div v-show="!panel.show">
         <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
-            <el-form-item label="文件名" prop='fileName'>
-                <el-input v-model.trim="searchKey.fileName"></el-input>
-            </el-form-item>
             <el-form-item label="摄像头编号" prop='camCode'>
                 <el-input v-model.trim="searchKey.camCode"></el-input>
             </el-form-item>
@@ -67,24 +64,23 @@
         :data="dataList" 
         v-loading='loading' 
         stripe 
-        border 
-        max-height="499" 
+        max-height="724" 
         class='c-mb-70'>
-            <el-table-column fixed align="center" type="index" min-width="5%" label="序号" :index='indexMethod'></el-table-column>
-            <el-table-column align="center" prop="fileName" min-width="12%" label="文件名称"></el-table-column>
-            <el-table-column align="center" prop="camCode" min-width="8%" label="摄像头编号"></el-table-column>
-            <el-table-column align="center" prop="roadName" min-width="8%" label="道路名称"></el-table-column>
-            <el-table-column align="center" prop="roadPointName" min-width="9%" label="路侧点名称"></el-table-column>
-            <el-table-column align="center" label="创建时间" min-width="10%">
+            <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
+            <el-table-column prop="fileName" min-width="18%" label="文件名称"></el-table-column>
+            <el-table-column prop="camCode" min-width="6%" label="摄像头编号"></el-table-column>
+            <el-table-column prop="roadName" min-width="9%" label="道路名称"></el-table-column>
+            <el-table-column prop="roadPointName" min-width="9%" label="路侧点名称"></el-table-column>
+            <el-table-column label="创建时间" min-width="10%">
                 <template slot-scope="scope">{{scope.row.createDate}}</template>
             </el-table-column>
-            <el-table-column align="center" label="开始时间" min-width="10%">
+            <el-table-column label="开始时间" min-width="10%">
                 <template slot-scope="scope">{{scope.row.startTime}}</template>
             </el-table-column>
-            <el-table-column align="center" label="结束时间" min-width="10%">
+            <el-table-column label="结束时间" min-width="10%">
                 <template slot-scope="scope">{{scope.row.endTime}}</template>
             </el-table-column>
-            <el-table-column align="center" prop="plateNo" min-width="8%" label="下载状态">
+            <el-table-column prop="plateNo" min-width="9%" label="下载状态">
                 <template slot-scope="scope">
                     <span v-if='scope.row.taskStatus == "0"'>未下载</span>
                     <span v-if='scope.row.taskStatus == "1"'>下载中</span>
@@ -92,12 +88,12 @@
                     <span v-if='scope.row.taskStatus == "3"'>下载失败</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" prop="note" label="失败原因" min-width="12%"></el-table-column>
+            <el-table-column prop="note" label="失败原因" min-width="9%"></el-table-column>
 
-            <el-table-column align="center" label="视频来源" min-width="7%">
+            <el-table-column label="视频来源" min-width="7%">
                 <template slot-scope="scope">{{scope.row == '1' ? '直播' : '手动获取'}}</template>
             </el-table-column>
-            <el-table-column align="center" label="操作" min-width="10%">
+            <el-table-column label="操作" min-width="4%">
                 <template slot-scope="scope">
                     <el-button size="small" 
                     icon="el-icon-download" 

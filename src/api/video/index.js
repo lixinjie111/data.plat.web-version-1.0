@@ -9,6 +9,7 @@ import {HTTPURL,operPlatUrl} from '../requestUrl';
 /**
  * 获取摄像头相关数据
  */
+// export const queryCamList = params => { return axios.post(`${HTTPURL}vehicle/queryVehicleCamList`, params).then(res => res.data); };
 export const queryCamList = params => { return axios.post(`${HTTPURL}cam/queryCamList`, params).then(res => res.data); };
 
 /**

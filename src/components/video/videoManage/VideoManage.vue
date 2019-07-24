@@ -48,31 +48,31 @@
         <div class="c-button-wrapper c-text-right">
             <el-button size="mini" plain icon="el-icon-download" @click="downClick">批量下载</el-button>
         </div>
-        <el-table stripe max-height="499"
+        <el-table stripe max-height="724"
             :data="dataList"
             v-loading="loading"
             class='c-mb-70'
             @selection-change="handleSelectionChange">
-            <el-table-column align="center" fixed min-width="1%" type="selection"></el-table-column>
-            <el-table-column align="center" min-width="2%" label="序号" type="index" :index="indexMethod"></el-table-column>
-            <el-table-column align="center" min-width="12%" label="文件名称" prop="fileName"></el-table-column>
-            <el-table-column align="center" min-width="8%" label="车辆编号" prop="vehicleId"></el-table-column>
-            <el-table-column align="center" min-width="7%" label="车牌号" prop="plateNo"></el-table-column>
-            <el-table-column align="center" min-width="12%" label="摄像头编号" prop="camId"></el-table-column>
-            <el-table-column align="center" min-width="10%" label="开始时间" prop="startTime"></el-table-column>
-            <el-table-column align="center" min-width="10%" label="结束时间" prop="endTime"></el-table-column>
-            <el-table-column align="center" min-width="6%" label="视频时长(Min)">
+            <el-table-column type="selection"></el-table-column>
+            <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
+            <el-table-column min-width="20%" label="文件名称" prop="fileName"></el-table-column>
+            <el-table-column min-width="8%" label="车辆编号" prop="vehicleId"></el-table-column>
+            <el-table-column min-width="8%" label="车牌号" prop="plateNo"></el-table-column>
+            <el-table-column min-width="8%" label="摄像头编号" prop="camId"></el-table-column>
+            <el-table-column min-width="12%" label="开始时间" prop="startTime"></el-table-column>
+            <el-table-column min-width="12%" label="结束时间" prop="endTime"></el-table-column>
+            <el-table-column min-width="8%" label="视频时长(Min)">
                 <template slot-scope="scope">{{s_to_hs(scope.row.duration)}}</template>
             </el-table-column>
-            <el-table-column align="center" min-width="6%" label="视频大小(MB)" prop="fileSizeUnit"></el-table-column>
-            <el-table-column align="center" min-width="8%" label="视频来源">
+            <el-table-column min-width="8%" label="视频大小(MB)" prop="fileSizeUnit"></el-table-column>
+            <el-table-column min-width="6%" label="视频来源">
                 <template slot-scope="scope">{{scope.row.source==1 ? '直播' : '手动获取'}}</template>
             </el-table-column>
-            <el-table-column align="center" min-width="18%" label="操作">
+            <el-table-column min-width="10%" label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="warning" plain @click="replay(scope.row)">回放</el-button>
-                    <el-button size="mini" type="warning" plain @click="exportClick(scope.row)">导出</el-button>
-                    <el-button size="mini" type="warning" plain @click="removeVideo(scope.row)">删除</el-button>
+                    <el-button size="small" icon="el-icon-view" circle type="warning" plain @click="replay(scope.row)"></el-button>
+                    <el-button size="small" icon="el-icon-download" circle type="warning" plain @click="exportClick(scope.row)"></el-button>
+                    <el-button size="small" icon="el-icon-delete" circle type="warning" plain @click="removeVideo(scope.row)"></el-button>
                 </template>
             </el-table-column>
         </el-table>

@@ -2,7 +2,7 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
-            <el-form-item label="RSUId" prop='rsuId'>
+            <el-form-item label="RSU编号" prop='rsuId'>
                 <el-input v-model="searchKey.rsuId"></el-input>
             </el-form-item>
             <el-form-item label="开始时间" prop='startTime'>
@@ -26,26 +26,26 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>               
         </el-form>
-        <el-table class='c-mt-10 c-mb-70' :data="dataList" v-loading='loading' max-height="499" stripe>
-            <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
-            <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
-            <el-table-column align="center" prop="rsuId" label="RSUId"></el-table-column>
-            <el-table-column align="center" label="时间">
+        <el-table class='c-mt-10 c-mb-70' :data="dataList" v-loading='loading' max-height="724" stripe>
+            <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
+            <el-table-column prop="msgCnt" label="消息编号" min-width="6%"></el-table-column>
+            <el-table-column prop="rsuId" label="RSU编号" min-width="6%"></el-table-column>
+            <el-table-column label="时间" min-width="10%">
                 <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
             </el-table-column>
-            <el-table-column align="center" label="经度">
+            <el-table-column label="经度" min-width="8%">
                 <template slot-scope="scope">{{scope.row.longitude.toFixed(8)}}</template>
             </el-table-column>
-            <el-table-column align="center" label="纬度">
+            <el-table-column label="纬度" min-width="8%">
                 <template slot-scope="scope">{{scope.row.latitude.toFixed(8)}}</template>
             </el-table-column>
-            <el-table-column align="center" prop="elevation" label="高程"></el-table-column>
-            <el-table-column align="center" prop='content' label="消息内容"></el-table-column>
-            <el-table-column align="center" prop='pathPtNum' label="坐标点个数"></el-table-column>
-            <el-table-column align="center" label="坐标点串" width='140' :show-overflow-tooltip="true">
+            <el-table-column prop="elevation" label="高程" min-width="8%"></el-table-column>
+            <el-table-column prop='content' label="消息内容" min-width="10%"></el-table-column>
+            <el-table-column prop='pathPtNum' label="坐标点个数" min-width="8%"></el-table-column>
+            <el-table-column label="坐标点串" width='140' :show-overflow-tooltip="true" min-width="24%">
                 <template slot-scope="scope" class="sl-table-text">{{scope.row.alertPath.length > 0 ? scope.row.alertPath : ''}}</template>
             </el-table-column>
-            <el-table-column align="center" prop='alertRadius' label="警告半径"></el-table-column>
+            <el-table-column prop='alertRadius' label="警告半径" min-width="10%"></el-table-column>
         </el-table>
         <div class="c-page clearfix">
             <el-pagination

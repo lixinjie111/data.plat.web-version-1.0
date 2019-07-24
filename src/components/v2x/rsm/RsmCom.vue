@@ -3,7 +3,7 @@
     <div class="c-wrapper-20" v-cloak>
         <div v-show='infoIsShow'>
             <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
-                <el-form-item label="RSUId" prop='rsuId'>
+                <el-form-item label="RSU编号" prop='rsuId'>
                     <el-input v-model="searchKey.rsuId"></el-input>
                 </el-form-item>
                 <el-form-item label="开始时间" prop='startTime'>
@@ -27,24 +27,24 @@
                     <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>          
             </el-form>
-            <el-table class='c-mt-10 c-mb-70' :data="dataList" v-loading='loading' max-height="499" stripe>
-                <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
-                <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
-                <el-table-column align="center" prop="rsuId" label="RSUId"></el-table-column>
-                <el-table-column align="center" label="时间">
+            <el-table class='c-mt-10 c-mb-70' :data="dataList" v-loading='loading' max-height="724" stripe>
+                <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
+                <el-table-column prop="msgCnt" min-width='10' label="消息编号"></el-table-column>
+                <el-table-column prop="rsuId" label="RSU编号" min-width='10'></el-table-column>
+                <el-table-column label="时间" min-width='8'>
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
                 </el-table-column>
-                <el-table-column align="center" label="经度">
+                <el-table-column label="经度" min-width='9'>
                     <template slot-scope="scope">{{scope.row.lonRsm.toFixed(8)}}</template>
                 </el-table-column>
-                <el-table-column align="center" label="纬度">
+                <el-table-column label="纬度" min-width='9'>
                     <template slot-scope="scope">{{scope.row.latRsm.toFixed(8)}}</template>
                 </el-table-column>
-                <el-table-column align="center" prop="elevRsm" label="高程"></el-table-column>
-                <el-table-column align="center" prop='num' label="参与者个数"></el-table-column>
-                <el-table-column align="center" label="操作">
+                <el-table-column prop="elevRsm" label="高程" min-width='9'></el-table-column>
+                <el-table-column prop='num' label="参与者个数" min-width='8'></el-table-column>
+                <el-table-column label="操作" min-width='5'>
                     <template slot-scope="scope">
-                        <el-button size="mini" type="warning" plain @click="detail(scope.row)">查看详情</el-button>
+                        <el-button size="small" icon="el-icon-view" circle type="warning" plain @click="detail(scope.row)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>

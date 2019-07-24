@@ -31,39 +31,27 @@
                 <el-button size="mini" plain icon="el-icon-edit" @click="localClick();">获取本地数据</el-button>
             </div>
             
-            <el-table :data="dataList" v-loading='loading' stripe border max-height="499" class='c-mb-70'>
-                <el-table-column fixed align="center" prop="eventName" label="事件名称"></el-table-column>
-                <el-table-column align="center" prop="eventNo" label="事件编号"></el-table-column>
-                <el-table-column align="center" prop="vehicleId" label="车辆编号"></el-table-column>
-                <el-table-column align="center" label="事件触发时间">
+            <el-table :data="dataList" v-loading='loading' stripe border max-height="724" class='c-mb-70'>
+                <el-table-column prop="eventName" min-width='12%' label="事件名称"></el-table-column>
+                <el-table-column prop="eventNo" min-width='18%' label="事件编号"></el-table-column>
+                <el-table-column prop="vehicleId" min-width='12%' label="车辆编号"></el-table-column>
+                <el-table-column label="事件触发时间" min-width='12%'>
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.eventTime)}}</template>
                 </el-table-column>
-                <el-table-column align="center" label="数据采集开始时间">
+                <el-table-column label="数据采集开始时间" min-width='12%'>
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.beginTime)}}</template>
                 </el-table-column>
-                <el-table-column align="center" label="数据采集结束时间">
+                <el-table-column label="数据采集结束时间" min-width='12%'>
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.endTime)}}</template>
                 </el-table-column>
-                <el-table-column align="center" prop="status" label="采集状态"></el-table-column>
-                <el-table-column align="center" prop="vehicleId" label="操作">
+                <el-table-column prop="status" label="采集状态" min-width='12%'></el-table-column>
+                <el-table-column prop="vehicleId" label="操作" min-width='6%'>
                     <template slot-scope="scope">
-                        <el-button size="mini" type="warning" plain @click="lookClick(scope.row)">查看</el-button>
+                        <el-button size="small" icon="el-icon-view" circle type="warning" plain @click="lookClick(scope.row)"></el-button>
                     </template>
                 </el-table-column>                
             </el-table>
         </div>
-        <!-- <div class="c-page clearfix">
-            <el-pagination
-                background
-                @current-change="changePageCurrent" 
-                :current-page="pageOption.page" 
-                :total="pageOption.total"
-                @size-change="changePageSize"
-                :page-sizes="[10,20,50,100,200]" 
-                :page-size="pageOption.size"
-                layout="total, sizes, prev, pager, next">
-            </el-pagination>
-        </div> -->
         <div>
             <local-data-panel title="获取本地数据" ref="localDataPanel" @localDataPanelBack="init" v-show="!panel.detailShow && panel.localDataShow" :type="panel.type" :data="panel.data"></local-data-panel>
             <detail-panel ref="detailPanel" @detailPanelBack="panelBack" v-show="panel.detailShow && !panel.localDataShow" :title="panel.title" :type="panel.type" :data="panel.data"></detail-panel>

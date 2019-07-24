@@ -10,12 +10,12 @@
         </el-form-item>
     </el-form>
     <el-table :data="dataList" v-loading="loading" class='c-mt-10 c-mb-70' stripe>
-        <el-table-column fixed align="center" prop="timestamp" label="时间戳"></el-table-column>
-        <el-table-column align="center" prop="dataId" label="数据ID"></el-table-column>
-        <el-table-column align="center" prop="enName" label="英文名称"></el-table-column>
-        <el-table-column align="center" prop="chName" label="中文名称"></el-table-column>
-        <el-table-column align="center" prop="enName" label="数据值"></el-table-column>
-        <el-table-column align="center" label="时间">
+        <el-table-column prop="timestamp" label="时间戳"></el-table-column>
+        <el-table-column prop="dataId" label="数据ID"></el-table-column>
+        <el-table-column prop="enName" label="英文名称"></el-table-column>
+        <el-table-column prop="chName" label="中文名称"></el-table-column>
+        <el-table-column prop="enName" label="数据值"></el-table-column>
+        <el-table-column label="时间">
             <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp)}}</template>
         </el-table-column>    
     </el-table>

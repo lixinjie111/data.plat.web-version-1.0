@@ -10,9 +10,9 @@
         </el-form-item>
     </el-form>
     <el-table :data="dataList" v-loading="loading" class='c-mt-10 c-mb-70' @selection-change="handleSelectionChange" stripe>
-        <el-table-column fixed align="center" type="selection"></el-table-column>
-        <el-table-column align="center" prop="name" label="组名称"></el-table-column>
-        <el-table-column align="center" prop="description" label="描述"></el-table-column>
+        <el-table-column type="selection"></el-table-column>
+        <el-table-column prop="name" label="组名称"></el-table-column>
+        <el-table-column prop="description" label="描述"></el-table-column>
     </el-table>
     <div class="c-page clearfix">
         <el-pagination

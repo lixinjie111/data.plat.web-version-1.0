@@ -27,38 +27,38 @@
                     <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="dataList" v-loading='loading' max-height="499" class='c-mt-10 c-mb-70' stripe>
-                <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
-                <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
-                <el-table-column align="center" prop="vehicleId" label="车辆编号"></el-table-column>
-                <el-table-column align="center" prop="plateNo" label="车牌号码"></el-table-column>
-                <el-table-column align="center" label="时间">
+            <el-table :data="dataList" v-loading='loading' max-height="724" class='c-mt-10 c-mb-70' stripe>
+                <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
+                <el-table-column prop="msgCnt" min-width="5%" label="消息编号"></el-table-column>
+                <el-table-column prop="vehicleId" min-width="10%" label="车辆编号"></el-table-column>
+                <el-table-column prop="plateNo" label="车牌号码" min-width="10%"></el-table-column>
+                <el-table-column label="时间" min-width="10%">
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.gpstime)}}</template>
                 </el-table-column>
-                <el-table-column align="center" label="经度">
+                <el-table-column label="经度" min-width="8%">
                     <template slot-scope="scope">{{Number(scope.row.longitude).toFixed(8)}}</template>
                 </el-table-column>
-                <el-table-column align="center" label="纬度">
+                <el-table-column label="纬度" min-width="8%">
                     <template slot-scope="scope">{{Number(scope.row.latitude).toFixed(8)}}</template>
                 </el-table-column>
-                <el-table-column align="center" prop="altitude" label="高程"></el-table-column>
-                <el-table-column align="center" label="车速">
+                <el-table-column prop="altitude" label="高程" min-width="8%"></el-table-column>
+                <el-table-column label="车速" min-width="8%">
                     <template slot-scope="scope">{{Number(scope.row.speed).toFixed(1)}}</template>
                 </el-table-column>
-                <el-table-column align="center" label="航向">
+                <el-table-column label="航向" min-width="8%">
                     <template slot-scope="scope">{{Number(scope.row.heading).toFixed(1)}}</template>
                 </el-table-column>
-                <el-table-column align="center" prop="angle" label="方向盘转角"></el-table-column>
-                <el-table-column align="center" label="刹车踏板">
+                <el-table-column prop="angle" label="方向盘转角" min-width="8%"></el-table-column>
+                <el-table-column label="刹车踏板" min-width="8%">
                     <template slot-scope="scope">
                             <div v-if="scope.row.brakePedal == 'on' || scope.row.brakePedal == 'ON'" class="msg-right">是</div>
                             <div v-if="scope.row.brakePedal == 'off' || scope.row.brakePedal == 'OFF'" class="msg-right">否</div>
                             <div v-if="scope.row.brakePedal == 'unavailable' || scope.row.brakePedal == 'UNAVAILABLE'" class="msg-right">不支持</div>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="操作">
+                <el-table-column label="操作" min-width="5%"> 
                     <template slot-scope="scope">
-                        <el-button size="mini" type="warning" plain @click="detail(scope.row)">明细</el-button>
+                        <el-button size="small" icon="el-icon-view" circle type="warning" plain @click="detail(scope.row)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -191,7 +191,7 @@ export default {
     },
     methods: {
         init(){
-            this.findBSMList();
+            this.findBSMLists();
             this.initPaging();
         },
         initPageOption() {
@@ -209,7 +209,7 @@ export default {
             this.pageOption.total = 0;
             this.pageOption.size = 10;
         },
-        findBSMList(){
+        findBSMLists(){
             this.dataList = [];
             this.loading = true;
             findBSMList({
@@ -247,7 +247,7 @@ export default {
             }
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                    this.findBSMList();
+                    this.findBSMLists();
                 } else {
                     return false;
                 }
@@ -262,11 +262,11 @@ export default {
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();
             this.pageOption.size = value;
-            this.findBSMList();
+            this.findBSMLists();
         },
         changePageCurrent(value) {//页码变更
             this.pageOption.page = value;
-            this.findBSMList();
+            this.findBSMLists();
         },
         backFn(){
             this.panel.show = false;
@@ -276,7 +276,7 @@ export default {
             return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         }
     },
-    mounted(){
+    created(){
         this.init();
     },
     beforeDestroy(){

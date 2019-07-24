@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueX from 'vuex'
-
 import { Utils } from '@/common/utils/utils.js'
 
 Vue.use(VueX)
@@ -38,8 +37,8 @@ const store = new VueX.Store({
             state.operations = data.data.operations;
             state.token = data.data.token;
             state.login = data.data.bool;
-            state.user.name = data.data.loginName;
-            state.user.id = data.data.userNo;
+            state.user.name = data.data.userNo;
+            state.user.id = data.data.id;
         },
         logout(state,data){
             state.operations = [];

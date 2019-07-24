@@ -30,6 +30,7 @@
     </div>
 </template>
 <script>
+import { mapActions } from 'vuex';
 import {requestLogin} from '@/api/login'
 import SessionUtils from '@/store/session.js'
 

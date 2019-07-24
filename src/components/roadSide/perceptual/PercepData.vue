@@ -91,16 +91,16 @@
             :data="showDataList"
             v-loading="loading" 
             stripe>
-            <el-table-column fixed align="center" min-width="5%" label="编号" type="index" :index="indexMethod"></el-table-column>
-            <el-table-column align="center" min-width="20%" label="摄像头序列号" prop="serialNum"></el-table-column>
-            <el-table-column align="center" min-width="35%" label="文件名称" prop="fileName"></el-table-column>
-            <el-table-column align="center" min-width="15%" label="开始时间">
+            <el-table-column min-width="5%" label="编号" type="index" :index="indexMethod"></el-table-column>
+            <el-table-column min-width="20%" label="摄像头序列号" prop="serialNum"></el-table-column>
+            <el-table-column min-width="35%" label="文件名称" prop="fileName"></el-table-column>
+            <el-table-column min-width="15%" label="开始时间">
                 <template slot-scope="scope">{{$dateUtil.formatTimeReal(scope.row.startTime)}}</template>
             </el-table-column>
-            <el-table-column align="center" min-width="15%" label="结束时间">
+            <el-table-column min-width="15%" label="结束时间">
                 <template slot-scope="scope">{{$dateUtil.formatTimeReal(scope.row.endTime)}}</template>
             </el-table-column>
-            <el-table-column align="center" min-width="10%" label="操作">
+            <el-table-column min-width="10%" label="操作">
                 <template slot-scope="scope">
                     <el-button size="small" icon="el-icon-view" circle type="warning" plain :loading="scope.row.loading" @click="goDetail(scope.row)"></el-button>
                 </template>

@@ -3,9 +3,6 @@
     <div class="c-wrapper-20" v-cloak>
         <div v-show="!panel.show">
             <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
-                <el-form-item label="文件名" prop='fileName'>
-                    <el-input v-model.trim="searchKey.fileName"></el-input>
-                </el-form-item>
                 <el-form-item label="摄像头编号" prop='camCode'>
                     <el-input v-model.trim="searchKey.camCode"></el-input>
                 </el-form-item>
@@ -66,20 +63,19 @@
             :data="dataList" 
             v-loading='loading' 
             stripe 
-            border 
-            max-height="499" 
+            max-height="724" 
             class='c-mb-70'>
-                <el-table-column fixed align="center" min-width="5%" label="序号" type="index" :index="indexMethod"></el-table-column>
-                <el-table-column align="center" min-width="20%" label="文件名称" prop="fileName"></el-table-column>
-                <el-table-column align="center" min-width="8%" label="车辆编号" prop="vehicleId"></el-table-column>
-                <el-table-column align="center" min-width="8%" label="车牌号" prop="plateNo"></el-table-column>
-                <el-table-column align="center" min-width="8%" label="摄像头编号" prop="camCode"></el-table-column>
-                <el-table-column align="center" min-width="11%" label="开始时间" prop="startTime"></el-table-column>
-                <el-table-column align="center" min-width="11%" label="结束时间" prop="endTime"></el-table-column>
-                <el-table-column align="center" min-width="9%" label="视频来源">
+                <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
+                <el-table-column min-width="18%" label="文件名称" prop="fileName"></el-table-column>
+                <el-table-column min-width="11%" label="车辆编号" prop="vehicleId"></el-table-column>
+                <el-table-column min-width="11%" label="车牌号" prop="plateNo"></el-table-column>
+                <el-table-column min-width="11%" label="摄像头编号" prop="camCode"></el-table-column>
+                <el-table-column min-width="11%" label="开始时间" prop="startTime"></el-table-column>
+                <el-table-column min-width="11%" label="结束时间" prop="endTime"></el-table-column>
+                <el-table-column min-width="11%" label="视频来源">
                     <template slot-scope="scope">{{scope.row.source==1 ? '直播' : '手动获取'}}</template>
                 </el-table-column>
-                <el-table-column align="center" min-width="10%" label="下载状态">
+                <el-table-column min-width="11%" label="下载状态">
                     <template slot-scope="scope">
                         <template v-if="scope.row.taskStatus == 0">未下载</template>
                         <template v-if="scope.row.taskStatus == 1">下载中</template>
@@ -87,7 +83,7 @@
                         <template v-if="scope.row.taskStatus == 3">下载失败</template>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" min-width="10%" label="操作">
+                <el-table-column min-width="5%" label="操作">
                     <template slot-scope="scope">
                         <el-button size="small" icon="el-icon-download" circle type="warning" v-if="scope.row.taskStatus == 0 || scope.row.taskStatus == 3" plain :loading="scope.row.downLoading" @click="reloadClick(scope.row)"></el-button>
                     </template>

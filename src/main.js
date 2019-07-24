@@ -23,6 +23,7 @@ Vue.prototype.$dateUtil = TDate;
 //全局静态文件引入
 import '@/assets/scss/reset.scss';
 import '@/assets/scss/public.scss';
+import '@/assets/scss/map.scss';
 import '@/assets/scss/element-ui-reset.scss';
 import '@/assets/icon-font/iconfont.css';
 import '@/assets/icon-font/iconfont.js';
@@ -34,7 +35,17 @@ import 'vue-video-player/src/custom-theme.css'
 import 'videojs-flash'
 Vue.use(VideoPlayer);
 
+//高德地图
+import VueAMap from "vue-amap";
+Vue.use(VueAMap);
 
+VueAMap.initAMapApiLoader({
+  key: "8bf04484a44d846096c9ab84730e88b8",
+  plugin: [
+    "AMap.ElasticMarker"
+  ],
+  uiVersion: "1.0"
+});
 
 /* eslint-disable no-new */
 // Vue.filter('toFixed',function (value,num) {

@@ -26,12 +26,12 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
-        <el-table class='c-mt-10 c-mb-70' :data="dataList" max-height="499" stripe v-loading='loading'>
-            <el-table-column fixed align="center" type="index" label="No" :index='indexMethod'></el-table-column>
-            <el-table-column align="center" prop="msgCnt" label="消息编号"></el-table-column>
-            <el-table-column align="center" prop="hvid" label="自车Id"></el-table-column>
-            <el-table-column align="center" prop="rvid" label="远车Id"></el-table-column>
-            <el-table-column align="center" label="预警类型">
+        <el-table class='c-mt-10 c-mb-70' :data="dataList" max-height="724" stripe v-loading='loading'>
+            <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
+            <el-table-column prop="msgCnt" label="消息编号" min-width="8%"></el-table-column>
+            <el-table-column prop="hvid" label="自车编号" min-width="8%"></el-table-column>
+            <el-table-column prop="rvid" label="远车编号" min-width="8%"></el-table-column>
+            <el-table-column label="预警类型" min-width="10%">
                 <template slot-scope="scope">
                     <div v-if="scope.row.event == 0">无预警/解除预警</div>
                     <div v-if="scope.row.event == 1">前向碰撞预警</div>
@@ -45,17 +45,17 @@
                     <div v-if="scope.row.event == 12">路侧告警</div>
                 </template>
             </el-table-column>
-            <el-table-column align="center" prop="alarmLvl" label="预警级别"></el-table-column>
-            <el-table-column align="center" prop="dist" label="车距"></el-table-column>
-            <el-table-column align="center" label="gps时间">
+            <el-table-column prop="alarmLvl" label="预警级别" min-width="7%"></el-table-column>
+            <el-table-column prop="dist" label="车距" min-width="7%"></el-table-column>
+            <el-table-column label="gps时间" min-width="10%">
                 <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.gpstime)}}</template>
             </el-table-column>
-            <el-table-column align="center" prop="hlon" label="HV经度"></el-table-column>
-            <el-table-column align="center" prop="hlat" label="HV纬度"></el-table-column>
-            <el-table-column align="center" prop="hheading" label="HV方向"></el-table-column>
-            <el-table-column align="center" prop="rlon" label="RV经度"></el-table-column>
-            <el-table-column align="center" prop="rlat" label="RV纬度"></el-table-column>
-            <el-table-column align="center" prop="rheading" label="RV方向"></el-table-column>   
+            <el-table-column prop="hlon" label="自车经度" min-width="7%"></el-table-column>
+            <el-table-column prop="hlat" label="自车纬度" min-width="7%"></el-table-column>
+            <el-table-column prop="hheading" label="自车方向" min-width="7%"></el-table-column>
+            <el-table-column prop="rlon" label="远车经度" min-width="7%"></el-table-column>
+            <el-table-column prop="rlat" label="远车纬度" min-width="7%"></el-table-column>
+            <el-table-column prop="rheading" label="远车方向" min-width="7%"></el-table-column>   
         </el-table>
         <div class="c-page clearfix">
             <el-pagination

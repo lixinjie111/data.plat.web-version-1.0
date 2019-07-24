@@ -3,9 +3,6 @@
 <div class="c-wrapper-20" v-cloak>
     <div v-show="!panel.show">
         <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
-            <el-form-item label="文件名" prop='fileName'>
-                <el-input v-model.trim="searchKey.fileName"></el-input>
-            </el-form-item>
             <el-form-item label="摄像头编号" prop='camCode'>
                 <el-input v-model.trim="searchKey.camCode"></el-input>
             </el-form-item>
@@ -55,26 +52,26 @@
 
         <el-table ref="multipleTable" :data="dataList" v-loading="loading" class='c-mb-70'
             @selection-change="handleSelectionChange">
-            <el-table-column fixed align="center" min-width="2%" type="selection"></el-table-column>
-            <el-table-column align="center" min-width="3%" label="No" type="index" :index='indexMethod'></el-table-column>
-            <el-table-column align="center" min-width="15%" prop="fileName" label="文件名称"></el-table-column>
-            <el-table-column align="center" min-width="10%" prop="camCode" label="摄像头编号"></el-table-column>
-            <el-table-column align="center" min-width="10%" prop="roadPointName" label="路侧点名称"></el-table-column>
-            <el-table-column align="center" min-width="10%" prop="roadName" label="道路名称"></el-table-column>
-            <el-table-column align="center" min-width="10%" prop="startTime" label="开始时间"></el-table-column>
-            <el-table-column align="center" min-width="10%" prop="endTime" label="结束时间"></el-table-column>
-            <el-table-column align="center" min-width="10%" prop="duration" label="视频时长(Min)">
+            <el-table-column type="selection"></el-table-column>
+            <el-table-column label="序号" type="index" :index='indexMethod'></el-table-column>
+            <el-table-column min-width="18%" prop="fileName" label="文件名称"></el-table-column>
+            <el-table-column min-width="6%" prop="camCode" label="摄像头编号"></el-table-column>
+            <el-table-column min-width="16%" prop="roadPointName" label="路侧点名称"></el-table-column>
+            <el-table-column min-width="10%" prop="roadName" label="道路名称"></el-table-column>
+            <el-table-column min-width="10%" prop="startTime" label="开始时间"></el-table-column>
+            <el-table-column min-width="10%" prop="endTime" label="结束时间"></el-table-column>
+            <el-table-column min-width="8%" prop="duration" label="视频时长(Min)">
                 <template slot-scope="scope">{{s_to_hs(scope.row.duration)}}</template>
             </el-table-column>
-            <el-table-column align="center" min-width="10%" prop="fileSizeUnit" label="视频大小(MB)"></el-table-column>
-            <el-table-column align="center" min-width="8%" prop="endTime" label="视频来源">
+            <el-table-column min-width="8%" prop="fileSizeUnit" label="视频大小(MB)"></el-table-column>
+            <el-table-column min-width="6%" prop="endTime" label="视频来源">
                 <template slot-scope="scope">{{scope.row.source == '1' ? '直播' : '手动获取'}}</template>
             </el-table-column>
-            <el-table-column align="center" min-width="20%" prop="endTime" label="操作">
+            <el-table-column min-width="10%" prop="endTime" label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="warning" plain @click="replay(scope.row)">回放</el-button>
-                    <el-button size="mini" type="warning" plain @click="exportClick(scope.row)">导出</el-button>
-                    <el-button size="mini" type="warning" plain @click="delClick(scope.row)">删除</el-button>
+                    <el-button size="small" icon="el-icon-view" circle type="warning" plain @click="replay(scope.row)"></el-button>
+                    <el-button size="small" icon="el-icon-download" circle type="warning" plain @click="exportClick(scope.row)"></el-button>
+                    <el-button size="small" icon="el-icon-delete" circle type="warning" plain @click="delClick(scope.row)"></el-button>
                 </template>
             </el-table-column>
         </el-table>
