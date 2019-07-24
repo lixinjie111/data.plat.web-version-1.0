@@ -1,93 +1,109 @@
 <template>
     <!-- 基本信息 -->
-    <div class="yk-container sl-percepDetail-container">
-        <el-page-header @back="$router.go(-1);" content="路侧摄像头视频及感知数据" class="c-mt-30"></el-page-header>
-        <div class='percep-con clearfix'>
-            <div class='percep-video'>
-                <p class="percep-title">路侧摄像头视频数据</p>
-                <video-player class="video-player vjs-custom-skin sl-video-player"
-                    ref="videoPlayer"
-                    :playsinline="true"
-                    :options="playerOptions" 
-                    @loadeddata="onPlayerLoadedData"
-                    @timeupdate="onPlayerTimeupdate"
-                    @error="playerError"
-                ></video-player>                
-            </div>
-            <div class='sl-btn-box clearfix'>
-                <el-button class="sl-btn" type="primary" icon="el-icon-arrow-left" @click="reduceTime"></el-button>
-                <div class='time-input'>
-                    <el-date-picker
-                        v-model="curTime"
-                        type="datetime"
-                        format='yyyy-MM-dd HH:mm:ss'
-                        @change='changeDate'
-                        :picker-options="pickerOptions">
-                        placeholder="选择日期时间">
-                    </el-date-picker>
-                    <span class='time-point'>.</span>
-                    <div class='time-ms'>
-                        <el-input 
-                            type='text' 
-                            readonly
-                            v-model="currentMillisecond">
-                        </el-input>
+    <div class="c-view-dialog" v-cloak>
+        <div class="c-scroll-wrap">
+            <div class="c-scroll-inner">
+                <h3 class="c-title">
+                    路侧摄像头视频数据
+                    <el-page-header @back="$router.go(-1);" class="c-return-btn"></el-page-header>
+                </h3>
+                <div class="sl-percepDetail-container c-wrapper-20">
+                    <div class='sl-btn-box clearfix'>
+                        <el-button class="sl-btn" type="warning" icon="el-icon-arrow-left" @click="reduceTime"></el-button>
+                        <div class='time-input'>
+                            <el-date-picker
+                                v-model="curTime"
+                                type="datetime"
+                                format='yyyy-MM-dd HH:mm:ss'
+                                @change='changeDate'
+                                :picker-options="pickerOptions">
+                                placeholder="选择日期时间">
+                            </el-date-picker>
+                            <span class='time-point'>.</span>
+                            <div class='time-ms'>
+                                <el-input 
+                                    type='text' 
+                                    readonly
+                                    v-model="currentMillisecond">
+                                </el-input>
+                            </div>
+                        </div>
+                        <el-button class="sl-btn" type="warning" icon="el-icon-arrow-right" @click="addTime"></el-button>
                     </div>
-                </div>
-                <el-button class="sl-btn" type="primary" icon="el-icon-arrow-right" @click="addTime"></el-button>
-            </div>
-            <div class="percep-data">
-                <p class="percep-title">融合感知数据</p>
-                <div class="percep-wrap" v-loading="tusvnOption.loading" >
-                    <tusvn-map 
-                        target-id="tusvnMap" 
-                        ref="tusvnMap" 
-                        @mapcomplete="mapcomplete"
-                        v-show="tusvnOption.show">
-                    </tusvn-map>
+                    <div class="sl-percepDetail-content c-mt-20">
+                        <div class="sl-table c-padding-20 c-detail-box">
+                            <el-table
+                                ref="percepDetailTable" 
+                                :data="dataList" 
+                                stripe 
+                                border
+                                v-loading="loading" 
+                                highlight-current-row
+                                @current-change="showDetail"
+                                max-height="763"
+                                :cell-style="{
+                                    cursor: 'pointer'
+                                }">
+                                <!-- 关于分页 -->
+                                <!-- <el-table-column min-width="5%" label="编号" type="index" :index="indexMethod"></el-table-column> -->
+                                <el-table-column label="编号" type="index"></el-table-column>
+                                <el-table-column min-width="18%" label="时间">
+                                    <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp, 'yy-mm-dd hh:mm:ss:ms')}}</template>
+                                </el-table-column>
+                                <el-table-column min-width="25%" label="感知目标数据">
+                                    <template slot-scope="scope">
+                                        <el-popover placement="top" width="350" trigger="hover" popper-class="sl-table-popover">
+                                            <div class="popover-content" v-html="scope.row.field"></div>
+                                            <p class="sl-table-text" slot="reference" v-html='scope.row.field'></p>
+                                        </el-popover>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column min-width="50%" label="原始感知数据">
+                                    <template slot-scope="scope">
+                                        <el-popover placement="top" width="600" trigger="hover" popper-class="sl-table-popover" >
+                                            <div class="popover-content" v-html="scope.row.data"></div>
+                                            <p class="sl-table-text" slot="reference" v-html='scope.row.data'></p>
+                                        </el-popover>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column min-width="7%" label="操作">
+                                    <template slot-scope="scope">
+                                        <!-- <el-button class="el-button--small" type="primary" :loading="scope.row.loading" @click="showDetail(scope.row)">查看</el-button> -->
+                                        <!-- <el-button size="mini" type="primary" :loading="scope.row.loading">查看</el-button> -->
+                                        <el-button size="small" icon="el-icon-view" circle type="warning" plain :loading="scope.row.loading"></el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                        <div class='percep-con c-padding-20 c-detail-box clearfix'>
+                            <div class='percep-video'>
+                                <p class="c-title percep-title">路侧摄像头视频数据</p>
+                                <video-player class="video-player vjs-custom-skin sl-video-player"
+                                    ref="videoPlayer"
+                                    :playsinline="true"
+                                    :options="playerOptions" 
+                                    @loadeddata="onPlayerLoadedData"
+                                    @timeupdate="onPlayerTimeupdate"
+                                    @error="playerError"
+                                ></video-player>                
+                            </div>
+                            <div class="percep-data">
+                                <p class="c-title percep-title">融合感知数据</p>
+                                <div class="percep-wrap" v-loading="tusvnOption.loading" >
+                                    <tusvn-map 
+                                        class="sl-tusvn-map"
+                                        target-id="tusvnMap" 
+                                        ref="tusvnMap" 
+                                        @mapcomplete="mapcomplete"
+                                        v-show="tusvnOption.show">
+                                    </tusvn-map>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <el-table 
-            class="c-mt-30" 
-            ref="percepDetailTable" 
-            :data="dataList" 
-            stripe 
-            v-loading="loading" 
-            highlight-current-row
-            @current-change="showDetail"
-            :cell-style="{
-                cursor: 'pointer'
-            }">
-            <!-- 关于分页 -->
-            <!-- <el-table-column align="center" min-width="5%" label="编号" type="index" :index="indexMethod"></el-table-column> -->
-            <el-table-column fixed align="center" min-width="5%" label="编号" type="index"></el-table-column>
-            <el-table-column align="center" min-width="15%" label="时间">
-                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp, 'yy-mm-dd hh:mm:ss:ms')}}</template>
-            </el-table-column>
-            <el-table-column align="center" min-width="25%" label="感知目标数据">
-                <template slot-scope="scope">
-                    <el-popover placement="top" width="388" trigger="hover" popper-class="sl-table-popover">
-                        <div class="popover-content" v-html="scope.row.field"></div>
-                        <p class="sl-table-text" slot="reference" v-html='scope.row.field'></p>
-                    </el-popover>
-                </template>
-            </el-table-column>
-            <el-table-column align="center" min-width="45%" label="原始感知数据">
-                <template slot-scope="scope">
-                    <el-popover placement="top" width="715" trigger="hover" popper-class="sl-table-popover" >
-                        <div class="popover-content" v-html="scope.row.data"></div>
-                        <p class="sl-table-text" slot="reference" v-html='scope.row.data'></p>
-                    </el-popover>
-                </template>
-            </el-table-column>
-            <el-table-column align="center" min-width="12%" label="操作">
-                <template slot-scope="scope">
-                    <!-- <el-button class="el-button--small" type="primary" :loading="scope.row.loading" @click="showDetail(scope.row)">查看</el-button> -->
-                    <el-button size="mini" type="primary" :loading="scope.row.loading">查看</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
     </div>
 </template>
 <script>
@@ -143,7 +159,7 @@ export default {
                 loop: false, // 导致视频一结束就重新开始。
                 preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
                 language: 'zh-CN',
-                aspectRatio: '4:3', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+                aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
                 fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
                 sources: [{
                     type: "video/mp4",
@@ -475,82 +491,74 @@ export default {
 
 <style scoped lang="scss">
 @import "@/assets/scss/theme.scss";
+.sl-percepDetail-content {
+    @include layoutMode(between);
+    .sl-table {
+        flex: 1;
+        margin-right: 10px;
+        .sl-table-text {
+            @include lineClamp(4);
+        }
+        .el-table {
+
+        }
+    }
+    .percep-con {
+        padding-top: 0;
+        width: 600px;
+    }
+    .percep-title {
+        font-size: 18px;
+        padding-left: 20px;
+        &:after {
+            left: 0;
+        }
+    }
+    .video-player {
+        background-color: #000;
+    }
+    .percep-wrap {
+        position: relative;
+        padding-bottom: 56.25%;
+        background-color: #000;
+        .sl-tusvn-map {
+            position: absolute;
+            left: 0;
+            rop: 0;
+            right: 0;
+            bottom: 0;
+        }
+    }
+}
+
 .sl-btn-box{
-    margin: 200px 15px 0;
-    float:left;
-}
-.sl-btn{
-    width:40px;
-    height:40px;
-    float:left;
-    font-size: 30px;
-    padding: 0;
-}
-.percep-con {
-    margin: 10px 40px;
-    text-align: center;
-}
-.percep-title {
-    font-size: 18px;
-    color: #409EFF;
-    text-align: left;
-}
-.percep-video{
-    width: 520px;
-    float:left;
-}
-.video-player {
-    width: 520px;
-    background-color: #000;
-}
-.percep-data{
-    width:520px;
-    float:left;
-}
-.time-input{
-    float:left;
-    position:relative;
-}
-.time-ms {
-    position: absolute;
-    right: 0;
-    top: 1px;
-    bottom: 1px;
-    width: 43px;
-}
-.time-point{
-    font-size:24px;
-    position:absolute;
-    top:0;
-    bottom:0;
-    right:46px;
-    z-index:10;
-    line-height: 34px;
-    color: #606266;
-}
-.yk-table-box{
-    min-height:100px;
-    position:static;
-    clear:both;
-    overflow-y:auto;
-}
-.sl-table thead tr {
-    text-align: center;
-}
-.sl-table tbody {
-    height: auto;
-    overflow-y: hidden;
-}
-.sl-table tbody tr {
-    text-align: center;
-}
-.percep-wrap {
-    width: 100%;
-    height: 390px;
-    background-color: #000;
-}
-.sl-table-text {
-    @include lineClamp(4);
+    .sl-btn{
+        width:40px;
+        height:40px;
+        float:left;
+        padding: 0;
+    }
+    .time-input{
+        float:left;
+        position:relative;
+    }
+    .time-ms {
+        position: absolute;
+        right: 0;
+        top: 1px;
+        bottom: 1px;
+        width: 43px;
+    }
+    .time-point{
+        font-size:24px;
+        position:absolute;
+        top:0;
+        bottom:0;
+        right:46px;
+        z-index:10;
+        line-height: 34px;
+        color: #606266;
+    }
 }
 </style>
 <style lang="scss">

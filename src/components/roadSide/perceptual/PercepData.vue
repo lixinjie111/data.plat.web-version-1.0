@@ -3,10 +3,29 @@
     <div class="c-wrapper-20" v-cloak>
         <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
             <el-form-item label="路侧基本点:" prop='rsPtId'>
-                <el-input v-model.trim="searchKey.rsPtId" clearable @change="changeEvent($event, 'rsPtId')" @blur='getRequestData("rsPtId")' @keyup.13='getRequestData("rsPtId")'></el-input>
+                <el-select 
+                    v-model="searchKey.rsPtId"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词">
+                    <!-- :remote-method=""> -->
+                    <el-option
+                        v-for="item in rsPtIdList"
+                        :key="item.value"
+                        :label="item.value"
+                        :value="item.value"
+                    ></el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="摄像头ID:" prop='cameraId'>
-                <el-select v-model="searchKey.cameraId" @change='getRequestData("cameraId")' v-if="cameraIdList.length > 0">
+                <el-select 
+                    v-model="searchKey.cameraId"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词">
+                    <!-- :remote-method=""> -->
                     <el-option
                         v-for="item in cameraIdList"
                         :key="item.value"
@@ -14,10 +33,15 @@
                         :value="item.value"
                     ></el-option>
                 </el-select>
-                <el-input v-model.trim="searchKey.cameraId" clearable @change="changeEvent($event, 'cameraId')" @blur='getRequestData("cameraId")' @keyup.13='getRequestData("cameraId")' v-else></el-input>
             </el-form-item>
             <el-form-item label="摄像头序列号:" prop='serialNum'>
-                <el-select v-model="searchKey.serialNum" @change='getRequestData("serialNum")' v-if="!inputFlag">
+                <el-select 
+                    v-model="searchKey.serialNum"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词">
+                    <!-- :remote-method=""> -->
                     <el-option
                         v-for="item in serialNumList"
                         :key="item.value"
@@ -25,10 +49,15 @@
                         :value="item.value"
                     ></el-option>
                 </el-select>
-                <el-input v-model.trim="searchKey.serialNum" clearable @change="changeEvent($event, 'serialNum')" @blur='getRequestData("serialNum")' @keyup.13='getRequestData("serialNum")' v-else></el-input>
             </el-form-item>
             <el-form-item label="感知设备ID:" prop='deviceId'> 
-                <el-select v-model="searchKey.deviceId" @change='getRequestData("deviceId")' v-if="!inputFlag">
+                <el-select 
+                    v-model="searchKey.deviceId"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词">
+                    <!-- :remote-method=""> -->
                     <el-option
                         v-for="item in deviceIdList"
                         :key="item.value"
@@ -36,7 +65,6 @@
                         :value="item.value"
                     ></el-option>
                 </el-select>
-                <el-input v-model.trim="searchKey.deviceId" clearable @change="changeEvent($event, 'deviceId')" @blur='getRequestData("deviceId")' @keyup.13='getRequestData("deviceId")' v-else></el-input>
             </el-form-item>
             <el-form-item label="开始时间" prop='startTime'>
                 <el-date-picker
@@ -74,7 +102,7 @@
             </el-table-column>
             <el-table-column align="center" min-width="10%" label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="primary" :loading="scope.row.loading" @click="goDetail(scope.row)">打开</el-button>
+                    <el-button size="small" icon="el-icon-view" circle type="warning" plain :loading="scope.row.loading" @click="goDetail(scope.row)"></el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -149,6 +177,7 @@ export default {
             },
             searchLoad:false,
             loading: false,
+            rsPtIdList:[],
             cameraIdList:[],
             serialNumList:[],
             deviceIdList:[],
@@ -213,100 +242,14 @@ export default {
             this.pageOption.total = 0;
             this.pageOption.page = 1;
         },
-        changeEvent($event, type) {
-            if($event == '') {
-                this.searchKey.rsPtId = '';
-                this.searchKey.cameraId = '';
-                this.searchKey.serialNum = '';
-                this.searchKey.deviceId = '';
-                this.inputFlag = true;
-                this.requestData = {};
-                this.initSearch();
-            }
-        },
         goDetail(row){
             this.$router.push('/percepDetail/'+row.serialNum+'/'+row.startTime+'/'+row.endTime);
         },
         initSearch(){
+            this.rsPtIdList = [];
             this.cameraIdList = [];
             this.serialNumList = [];
             this.deviceIdList = [];
-        },
-        getRequestData(type){
-            if(this.searchKey[type] != '') {
-
-                this.requestData = {};
-
-                if(type == 'rsPtId') {
-
-                    this.inputFlag = false;
-
-                    this.searchKey.cameraId = '';
-                    this.searchKey.serialNum = '';
-                    this.searchKey.deviceId = '';
-
-                }else {
-
-                    if(type == 'cameraId' && this.cameraIdList.length == 0) {
-
-                        this.inputFlag = true;
-                        this.searchKey.rsPtId = '';
-                        this.searchKey.serialNum = '';
-                        this.searchKey.deviceId = '';
-                    }else if(type == 'serialNum' && this.serialNumList.length == 0) {
-
-                        this.inputFlag = true;
-                        this.searchKey.rsPtId = '';
-                        this.searchKey.cameraId = '';
-                        this.searchKey.deviceId = '';
-                    }else if(type == 'deviceId' && this.deviceIdList.length == 0) {
-
-                        this.inputFlag = true;
-                        this.searchKey.rsPtId = '';
-                        this.searchKey.cameraId = '';
-                        this.searchKey.serialNum = '';
-                    }
-                }
-
-                this.requestData[type] = this.searchKey[type];
-                
-                this.getCameraIds(type);
-
-            }else {
-                this.inputFlag = true;
-            }
-  
-        },
-        getCameraIds(type){//获取摄像头Id列表
-            findRoadMonitorCameraInfo(this.requestData).then(res => {
-                if(res.status == '200'){
-                    let info = res.data;
-                    if(info.length > 0) {
-                        this.searchKey.rsPtId = info[0].rsPtId;
-                        if(type == 'rsPtId') {
-                            this.initSearch();
-                            info.forEach(element => {
-                                this.cameraIdList.push({
-                                    value: element.cameraId
-                                });
-                                this.serialNumList.push({
-                                    value: element.serialNum
-                                });
-                                this.deviceIdList.push({
-                                    value: element.deviceId
-                                });
-                            });
-                        }else {
-                            if(this.searchKey.rsPtId != info[0].rsPtId) this.searchKey.rsPtId = info[0].rsPtId;
-                            if(this.searchKey.cameraId != info[0].cameraId) this.searchKey.cameraId = info[0].cameraId;
-                            if(this.searchKey.serialNum != info[0].serialNum) this.searchKey.serialNum = info[0].serialNum;
-                            if(this.searchKey.deviceId != info[0].deviceId) this.searchKey.deviceId = info[0].deviceId;
-                        }
-                    }
-                }
-            }).catch(err => {
-                this.$message.error(res.message);
-            })
         },
         initData(){
             // this.initPaging();
