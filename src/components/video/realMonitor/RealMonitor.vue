@@ -296,7 +296,6 @@ export default {
                                     this.totalTime ++ ;
                                     this.totalTimeformat = this.formatSeconds(this.totalTime);
                                     if(this.deviceType != '-1'){
-                                        console.log('调用gps')
                                         this.$refs.maxMap.getGps(this.vehicleId,(new Date()).getTime(),this.deviceType);
                                     }
                                 },1000);
@@ -334,6 +333,7 @@ export default {
             this.isMaskShow = true;
             this.isStart = false;
             this.player.pause();
+            this.$refs.maxMap.removeMasks();
             // this.$refs.maxMap.removeOverLays('line_01');
             // this.$refs.maxMap.removeOverLays('car_01');
             // this.$refs.maxMap.removeLineArray();
