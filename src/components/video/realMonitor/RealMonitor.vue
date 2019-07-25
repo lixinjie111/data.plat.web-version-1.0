@@ -61,7 +61,38 @@
                 <!-- RTMP直播源地址-->
                 <!-- <source src="rtmp://live.hkstv.hk.lxdns.com/live/hks1">    
             </video> -->
-         <div class="video-wrapper">
+            <!-- 地图视频模块 -->
+            <div class="c-map-video-wrapper">
+                <div class="c-video-wrapper">
+                     <video-player id='video' class="c-video" 
+                    ref="videoPlayer"
+                    :options="playerOptions"
+                    controls
+                    @ended="onPlayerEnded"
+                ></video-player>
+                <div class='video-mask' v-show='isMaskShow'></div>
+                    <video class="c-video"></video>
+                </div>
+                <div class="c-map-wrapper" :class='{"map-change-max":changeSize}'>
+                    <div class='c-map-btn-left' @click='mapChangeMax'></div>
+                    <div class='c-map-btn-right' @click='mapChangeMin'></div>
+                    <max-map ref='maxMap'></max-map>
+                </div>
+            </div>
+            <div class='monit-detail'>
+                    <ul class="clearfix">
+                        <li>
+                            <span>开始时间:</span> {{monitStartTime ? monitStartTime : '--'}}
+                        </li>
+                        <li>
+                            <span style="margin-left:14px;">累计时长: </span>{{totalTimeformat ? totalTimeformat : '--'}}
+                        </li>
+                        <li>
+                            <span>使用流量: </span>--
+                        </li>
+                    </ul>
+            </div>
+         <!-- <div class="video-wrapper">
             <div class='video-left'>
                 <video-player id='video' class="vjs-custom-skin" 
                     ref="videoPlayer"
@@ -71,23 +102,13 @@
                 ></video-player>
                 <div class='video-mask' v-show='isMaskShow'></div>
             </div>
-            <div class="video-right" :class="{ max:changeRed == true}">
-                <max-map ref='maxMap' @changeMax='changeMaxFn' @changeMin='changeMinFn'></max-map>
+            <div class="video-right" :class='{"map-change-max":changeSize}'>
+                <div class='c-map-btn-left' @click='mapChangeMax'></div>
+                <div class='c-map-btn-right' @click='mapChangeMin'></div>
+                <max-map ref='maxMap'></max-map>
             </div>
-        </div>
-        <div class='monit-detail'>
-            <ul class="clearfix">
-                <li>
-                    <span>开始时间:</span> {{monitStartTime ? monitStartTime : '--'}}
-                </li>
-                <li>
-                    <span style="margin-left:14px;">累计时长: </span>{{totalTimeformat ? totalTimeformat : '--'}}
-                </li>
-                <li>
-                    <span>使用流量: </span>--
-                </li>
-            </ul>
-        </div>
+        </div> -->
+      
     </div> 
 
 </template>
@@ -129,7 +150,7 @@ export default {
             vehicleIdTimer: null,
             plateNoLoading: false,
             vehicleIdLoading: false,
-
+            changeSize:false,
             formParams:{
                 plateNo:'',
                 vehicleId:'',
@@ -275,6 +296,7 @@ export default {
                                     this.totalTime ++ ;
                                     this.totalTimeformat = this.formatSeconds(this.totalTime);
                                     if(this.deviceType != '-1'){
+                                        console.log('调用gps')
                                         this.$refs.maxMap.getGps(this.vehicleId,(new Date()).getTime(),this.deviceType);
                                     }
                                 },1000);
@@ -356,11 +378,11 @@ export default {
                 })
             }, 1000);  
         },
-        changeMaxFn(){
-            this.changeRed = true;
+        mapChangeMax(){
+            this.changeSize = true;
         },
-        changeMinFn(){
-            this.changeRed = false;
+        mapChangeMin(){
+            this.changeSize = false;
         },
         formatSeconds(value) { 
             let _totalTime = '';

@@ -89,6 +89,36 @@
         markers:{
           maskCar:null
         },
+        pointList:[
+          {
+          
+        lng:116.390228,
+          lat:39.90523
+          
+          },
+
+        {
+         
+          lng:116.397445,
+          lat:39.90923
+          
+         
+          
+          },
+        
+        {
+         
+          lng:116.427475,
+          lat:39.90963
+          
+          },
+            {
+         
+          lng:116.557498,
+          lat:39.899236
+          
+          }
+        ]
       }
     },
     methods: {
@@ -99,11 +129,11 @@
             center: [121.262939,31.245149], //初始化地图中心点
             mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
         });
+
         this.markers.maskCar = new AMap.Marker({
           position:  [121.262939,31.245149],   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
           icon:'static/images/vehicle/car-white.png',
         });
-        console.log(this.markers.maskCar);
         this.distanceMap.add(this.markers.maskCar);
       },
       getGps(vehicleId, time, deviceType) {
@@ -119,10 +149,39 @@
                     this.vehicleInfo.gpsTime = res.data.gpsTime;//获取时间
                     let _position = ConvertCoord.wgs84togcj02(res.data.lon,res.data.lat);
                     this.distanceMap.setCenter(_position);
-                    this.distanceMap.setAngle(this.vehicleInfo.courseAngle);
+                    this.markers.maskCar.setAngle(res.data.courseAngle);
+                    this.distanceMapLine();
               }
             })
         
+      },
+      distanceMapLine(){
+          let _this = this,
+              lngX,  
+              latY,         
+              lineArr = new Array();   
+
+              for(var i = 1;i<this.pointList.length;i++){
+                  lngX = this.pointList[i].lng;
+                  latY = this.pointList[i].lat;
+                  lineArr.push(new AMap.LngLat(lngX,latY));
+              }
+              let polyline = new AMap.Polyline({
+                    map: _this.distanceMap,
+                    path: lineArr,
+                    strokeColor: "#f00",
+                    strokeWeight: 2,
+                    // 折线样式还支持 'dashed'
+                    strokeStyle: "solid",
+                    /* // strokeStyle是dashed时有效
+                      strokeDasharray: [10, 5],*/
+                    lineJoin: 'round',
+                    lineCap: 'round'
+            });
+            console.log(lineArr);
+            console.log('绘制路线')
+            // this.markers.polyline.push(polyline);
+
       },
       // getGps(vehicleId, time, deviceType) {
       //   gpsInfo({
