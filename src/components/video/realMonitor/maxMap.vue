@@ -118,10 +118,8 @@
                     this.vehicleInfo.lat = Number(res.data.lat).toFixed(8);//获取纬度
                     this.vehicleInfo.gpsTime = res.data.gpsTime;//获取时间
                     let _position = ConvertCoord.wgs84togcj02(res.data.lon,res.data.lat);
-                    let _courseAngle = ConvertCoord.wgs84togcj02(_this.vehicleInfo.courseAngle);
                     this.distanceMap.setCenter(_position);
-                    this.distanceMap.setAngle(_courseAngle);
-                    this.distanceMap.BezierCurve(_this.BezierCurveOptions);
+                    this.distanceMap.setAngle(this.vehicleInfo.courseAngle);
               }
             })
         
