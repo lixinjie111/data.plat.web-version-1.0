@@ -11,6 +11,7 @@
                     placeholder="请输入关键词"
                     :remote-method="searchPlateNo"
                     @change="getCamareInfo"
+                    @click.native="getPlateNoList"
                     :loading="plateNoLoading">
                     <el-option
                         v-for="(item,index) in plateNoList"
@@ -30,6 +31,7 @@
                     placeholder="请输入关键词"
                     :remote-method="searchVehicleId"
                     @change="getCamareInfo"
+                    @click.native="getVehicleIds"
                     :loading="vehicleIdLoading">
                     <el-option
                         v-for="(item,index) in vehicleIdList"
