@@ -134,7 +134,7 @@
           let polyline = new AMap.Polyline({
                   map: this.distanceMap,
                   path: this.pointList,
-                  strokeColor: "#f00",
+                  strokeColor: "#F49308",
                   strokeWeight: 2,
                   // 折线样式还支持 'dashed'
                   strokeStyle: "solid",
