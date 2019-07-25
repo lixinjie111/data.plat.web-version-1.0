@@ -1,49 +1,54 @@
 <template>
     <!-- 基本信息 -->
-    <div class="c-wrapper-20" v-cloak>
-        <p class="c-title c-border-bottom">历史回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
-        <el-form ref="form" size="small" :inline="true" class='c-mt-20'>
-            <el-form-item label="车牌号：">
-                {{plateNo ? plateNo : '--'}}
-            </el-form-item>
-            <el-form-item label="车辆编号：">
-                {{vehicleId ? vehicleId : '--'}}
-            </el-form-item>
-            <el-form-item label="序列号: ">
-                {{serialNum ? serialNum : '--'}}
-            </el-form-item>
-            <el-form-item label="摄像头朝向: ">
-                {{position ? position : '--'}}
-            </el-form-item>
-            <el-form-item label="状态: ">
-                {{camStatus ? camStatus : '--'}}
-            </el-form-item>
-        </el-form>
-        <div class="video-wrapper">
-            <div class='video-left'>
-                <div class="video-inner">
+    <div class="c-view-dialog" v-cloak>
+        <h3 class="c-title c-border-bottom">视频管理 > 回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></h3>
+        <div class="c-wrapper-20">
+            <el-form ref="form" size="small" :inline="true" class='c-mt-20'>
+                <el-form-item label="车牌号：">
+                    {{plateNo ? plateNo : '--'}}
+                </el-form-item>
+                <el-form-item label="车辆编号：">
+                    {{vehicleId ? vehicleId : '--'}}
+                </el-form-item>
+                <el-form-item label="序列号: ">
+                    {{serialNum ? serialNum : '--'}}
+                </el-form-item>
+                <el-form-item label="摄像头朝向: ">
+                    {{position ? position : '--'}}
+                </el-form-item>
+                <el-form-item label="状态: ">
+                    {{camStatus ? camStatus : '--'}}
+                </el-form-item>
+            </el-form>
+            <!-- 地图视频模块 -->
+            <div class="c-map-video-wrapper">
+                <div class="c-video-wrapper">
+                    <div class="c-video">
+                        <video id="my-video" class="video-js video-js vjs-big-play-centered" ref='myVideo' :src="videoPath" controls preload="auto" @seeking="videoProcess">
+                            <source :src="videoPath" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="c-map-wrapper" :class='{"map-change-max":changeSize}'>
+                    <div class='c-map-btn-left' @click='mapChangeMax'></div>
+                    <div class='c-map-btn-right' @click='mapChangeMin'></div>
+                    <history-map ref='historyMap'></history-map>
+                </div>
+            </div>
+            <!-- <div class="video c-mt-10">
+                <input type='hidden' v-model='curTime' />
+                <div class='video-box'>
                     <video id="my-video" class="video-js video-js vjs-big-play-centered" ref='myVideo' :src="videoPath" controls preload="auto" @seeking="videoProcess">
-                     <source :src="videoPath" type="video/mp4">
+                        <source :src="videoPath" type="video/mp4">
                     </video>
                 </div>
             </div>
-            <div class="video-right" :class="{ max:changeRed == true}">
-                <history-map ref='historyMap' @changeMax='changeMaxFn' @changeMin='changeMinFn'></history-map>
-            </div>
+            <div class="Gps c-mt-10">
+                <div :class="{ hmax:changeRed == true}" style="border:1px solid #666;position:relative;width:390px;height:400px;float:right;">
+                    <history-map ref='historyMap' @changeMax='changeMaxFn' @changeMin='changeMinFn'></history-map>
+                </div>
+            </div> -->
         </div>
-        <!-- <div class="video c-mt-10">
-            <input type='hidden' v-model='curTime' />
-            <div class='video-box'>
-                <video id="my-video" class="video-js video-js vjs-big-play-centered" ref='myVideo' :src="videoPath" controls preload="auto" @seeking="videoProcess">
-                    <source :src="videoPath" type="video/mp4">
-                </video>
-            </div>
-        </div>
-        <div class="Gps c-mt-10">
-            <div :class="{ hmax:changeRed == true}" style="border:1px solid #666;position:relative;width:390px;height:400px;float:right;">
-                <history-map ref='historyMap' @changeMax='changeMaxFn' @changeMin='changeMinFn'></history-map>
-            </div>
-        </div> -->
     </div>
 </template>
 <script>
@@ -60,6 +65,7 @@ export default {
     },
     data(){
         return {
+            changeSize:false,
             myPlayer:'',
             curTime:'',
             sCurTime:'',
@@ -187,11 +193,11 @@ export default {
         backClick(){
             this.$emit('backVideoManage');
         },
-        changeMaxFn(){
-            this.changeRed = true;
+        mapChangeMax(){
+            this.changeSize = true;
         },
-        changeMinFn(){
-            this.changeRed = false;
+        mapChangeMin(){
+            this.changeSize = false;
         },
     },
     mounted(){

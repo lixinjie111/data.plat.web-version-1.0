@@ -169,7 +169,6 @@ export default {
             localStorage.setItem('playHistoryInfo',manaInfo);
             this.panel.show = true;
             this.isPlaybackShow = true;
-            // this.$router.push({name:'PlayBack'});
         },
         exportClick(item) {
             this.$confirm('是否导出文件?', '提示', {

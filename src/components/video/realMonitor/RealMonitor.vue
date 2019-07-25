@@ -4,13 +4,13 @@
         <el-form ref='searchForm' size="small" :inline="true">
             <el-form-item label="车牌号: ">
                 <el-select
-                    v-model="formParams.plateNo"
+                    v-model="searchKey.plateNo"
                     filterable
                     remote
+                    value-key="plateNo"
                     placeholder="请输入关键词"
                     :remote-method="searchPlateNo"
-                    @click.native="getPlateNoList"
-                    @change="handleSelectPlateNo"
+                    @change="getCamareInfo"
                     :loading="plateNoLoading">
                     <el-option
                         v-for="(item,index) in plateNoList"
@@ -23,13 +23,13 @@
             
             <el-form-item label="车辆编号: " prop='vehicleId'>
                 <el-select
-                    v-model="formParams.vehicleId"
+                    v-model="searchKey.vehicleId"
                     filterable
                     remote
+                    value-key="vehicleId"
                     placeholder="请输入关键词"
                     :remote-method="searchVehicleId"
-                    @change="handleSelectVehicleId"
-                    @click.native='getVehicleIds'
+                    @change="getCamareInfo"
                     :loading="vehicleIdLoading">
                     <el-option
                         v-for="(item,index) in vehicleIdList"
@@ -40,17 +40,17 @@
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="摄像头序列号: ">
-                {{serialNum ? serialNum : '--'}}
+            <el-form-item label="摄像头序列号: " prop="serialNum">
+                {{searchKey.serialNum ? searchKey.serialNum : '--'}}
             </el-form-item>
-            <el-form-item label="摄像头朝向: ">
-                {{position ? position : '--'}}
+            <el-form-item label="摄像头朝向: " prop="position">
+                {{searchKey.position ? searchKey.position : '--'}}
             </el-form-item>
-            <el-form-item label="摄像头状态: ">
-                <template v-if='status=="0"'>未知</template>
-                <template v-if='status=="1"'>在线</template>
-                <template v-if='status=="2"'>离线</template>
-                <template v-if='status=="3"'>未注册</template>
+            <el-form-item label="摄像头状态: " prop="status">
+                <template v-if='searchKey.status=="0"'>未知</template>
+                <template v-if='searchKey.status=="1"'>在线</template>
+                <template v-if='searchKey.status=="2"'>离线</template>
+                <template v-if='searchKey.status=="3"'>未注册</template>
             </el-form-item>
             <el-form-item>
                 <el-button type="warning" size="small" v-if="isStart" @click='endVideo'>结束监控</el-button>
@@ -124,12 +124,7 @@ export default {
     },
     data(){
         return {
-            vehicleId:'',
-            position:'',
-            status:'',
             timer:null,
-            plateNo:'',
-            serialNum:'',
             deviceType:'',
             protocalArr:[],
             protocal:'',
@@ -140,28 +135,27 @@ export default {
             totalTime:0,
             totalTimeformat:'',
             dataList: [], 
-            plateNoList: [],
-            vehicleIdList: [], 
             isStart:false,
             isDisabled: false,
             isMaskShow:true,
             isMapShow:false,
-            plateNoTimer: null,
-            vehicleIdTimer: null,
+            // plateNoTimer: null,
+            // vehicleIdTimer: null,
+            
+            allList: [],
+            plateNoList: [],
+            vehicleIdList: [], 
             plateNoLoading: false,
             vehicleIdLoading: false,
+
             changeSize:false,
-            formParams:{
-                plateNo:'',
-                vehicleId:'',
-                position:''
-            },
+
             searchKey:{
                 vehicleId:'',
-                factoryName:'',
-                model:'',
                 plateNo:'',
-                serialNum:''
+                serialNum:'',
+                position:'',
+                status:'',
             },
             playerOptions: {
                 overNative: true,
@@ -204,34 +198,35 @@ export default {
         }
     },
     methods: {
-        getPlateNo(index, searchVal){//根据车牌号查询vehicleID、序列号、朝向、状态
-            switch (searchVal.position){
+        getPlateNo(item){//根据车牌号查询vehicleID、序列号、朝向、状态
+            switch (item.position){
                 case '0':
-                    this.position = "前向";
+                    this.searchKey.position = "前向";
                     break;
                 
                 case '1':
-                    this.position = "后向";
+                    this.searchKey.position = "后向";
                     break;
                 
                 case "2":
-                    this.position = "侧向";
+                    this.searchKey.position = "侧向";
                     break;
                 
                 case "3":
-                    this.position = "环视";
+                    this.searchKey.position = "环视";
                     break;
                 
                 case "4":
-                    this.position = "车内";
+                    this.searchKey.position = "车内";
                     break;
                 
             }
-            this.status = searchVal.status;
-            this.vehicleId = searchVal.vehicleId;
-            this.serialNum = searchVal.serialNum;
+            this.searchKey.status = item.status;
+            this.searchKey.vehicleId = item.vehicleId;
+            this.searchKey.plateNo = item.plateNo;
+            this.searchKey.serialNum = item.serialNum;
             this.isStart = false;
-            if(this.status != '1'){//摄像头状态为不在线时,开始监控按钮不可点击
+            if(this.searchKey.status != '1'){//摄像头状态为不在线时,开始监控按钮不可点击
                 this.isDisabled = true;
             }else{
                 this.isDisabled = false;
@@ -253,7 +248,7 @@ export default {
             this.isStart = false;
             this.playerOptions.sources[0].src = '';
             queryDeviceType({//获取设备id
-            'vehicleId':this.vehicleId
+            'vehicleId':this.searchKey.vehicleId
             }).then(res => {
                 if(res.status == '200'){
                     this.deviceType =  res.data.type;
@@ -261,7 +256,7 @@ export default {
             })
         },
         realMonit(){
-            if(this.vehicleId != ''){
+            if(this.searchKey.vehicleId != ''){
                 this.isStart = true;
                 this.isMaskShow = false;
                 if(this.playerOptions.sources[0].src){
@@ -273,13 +268,13 @@ export default {
                         this.totalTime ++ ;
                         this.totalTimeformat = this.formatSeconds(this.totalTime);
                         if(this.deviceType != '-1'){
-                            this.$refs.maxMap.getGps(this.vehicleId,(new Date()).getTime(),this.deviceType);
+                            this.$refs.maxMap.getGps(this.searchKey.vehicleId,(new Date()).getTime(),this.deviceType);
                         }
                     },1000);
                     this.getTotalTime(this.monitStartTime);
                 }else{
                     startStream({
-                            'camId':this.serialNum,'vehicleId':this.vehicleId,
+                            'camId':this.searchKey.serialNum,'vehicleId':this.searchKey.vehicleId,
                             'protocal':this.protocal
                         }).then(res => {
                             if(res.status == '200'){
@@ -296,7 +291,7 @@ export default {
                                     this.totalTime ++ ;
                                     this.totalTimeformat = this.formatSeconds(this.totalTime);
                                     if(this.deviceType != '-1'){
-                                        this.$refs.maxMap.getGps(this.vehicleId,(new Date()).getTime(),this.deviceType);
+                                        this.$refs.maxMap.getGps(this.searchKey.vehicleId,(new Date()).getTime(),this.deviceType);
                                     }
                                 },1000);
 
@@ -322,7 +317,7 @@ export default {
         },
         videoActive(){//调用报活接口
             sendStreamHeart({
-                'camId':this.serialNum,'vehicleId':this.vehicleId,
+                'camId':this.searchKey.serialNum,'vehicleId':this.searchKey.vehicleId,
                 'protocal':this.protocal
             }).then(res => {
             })
@@ -360,23 +355,27 @@ export default {
             this.old_time = this.$dateUtil.dateToMs(t);
         },
         getPlateNoList(){
-            this.plateNoLoading = true;
-            clearTimeout(this.plateNoTimer);
-            this.plateNoTimer = setTimeout(() => {
-                this.plateNoList = [];
-                queryCamList({
-                    vehicleId:this.searchKey.vehicleId,
-                    factoryName:this.searchKey.factoryName,
-                    model:this.searchKey.model,
-                    plateNo:this.searchKey.plateNo,
-                    serialNum:this.searchKey.serialNum
-                }).then(res => {
-                    if(res.status == '200'){
-                        this.plateNoList = res.data;
-                    }
-                    this.plateNoLoading = false;
-                })
-            }, 1000);  
+            if(!this.searchKey.plateNo) {
+
+                // clearTimeout(this.plateNoTimer);
+                // this.plateNoTimer = setTimeout(() => {
+                    
+                    if(!this.allList.length) {
+                        this.plateNoLoading = true;
+                        queryCamList({}).then(res => {
+                            if(res.status == '200'){
+                                this.allList = res.data;
+                                this.plateNoList = res.data;
+                            }
+                            this.plateNoLoading = false;
+                        }).catch(err => {
+                            this.plateNoLoading = false;
+                        });
+                   }
+                // }, 1000);  
+            }else {
+                this.plateNoList = this.allList;
+            }
         },
         mapChangeMax(){
             this.changeSize = true;
@@ -417,33 +416,61 @@ export default {
         },
         searchPlateNo(query) {
             if (query !== '') {
-                this.plateNoLoading = true;
-                clearTimeout(this.plateNoTimer);
-                this.plateNoTimer = setTimeout(() => {
-                    this.plateNoList = [];
-                    queryCamList({
-                        vehicleId:this.searchKey.vehicleId,
-                        factoryName:this.searchKey.factoryName,
-                        model:this.searchKey.model,
-                        plateNo:this.searchKey.plateNo,
-                        serialNum:this.searchKey.serialNum
-                    }).then(res => {
-                        if(res.status == '200'){
-                            this.plateNoList = res.data;
-                        }
-                        this.plateNoLoading = false;
-                    })
-                }, 1000);
+                // this.plateNoLoading = true;
+                // clearTimeout(this.plateNoTimer);
+                // this.plateNoTimer = setTimeout(() => {
+                    this.plateNoList = this.allList.filter(item => {
+                      return item.plateNo.toLowerCase()
+                        .indexOf(query.toLowerCase()) > -1;
+                    });
+                // }, 1000);
             } else {
-                this.plateNoList = [];
+                this.plateNoList = this.allList;
             }
         },
-        handleSelectPlateNo(item) {
-            this.vehicleIdList = [{
-                plateNo: item.plateNo,
-                vehicleId: item.vehicleId,
-                position: item.position
-            }];
+        searchVehicleId(query) {
+            if (query !== '') {
+                // this.plateNoLoading = true;
+                // clearTimeout(this.plateNoTimer);
+                // this.plateNoTimer = setTimeout(() => {
+                    this.vehicleIdList = this.allList.filter(item => {
+                      return item.vehicleId.toLowerCase()
+                        .indexOf(query.toLowerCase()) > -1;
+                    });
+                // }, 1000);
+            } else {
+                this.vehicleIdList = this.allList;
+            }
+        },
+        getVehicleIds(){
+            if(!this.searchKey.vehicleId) {
+
+                // clearTimeout(this.plateNoTimer);
+                // this.plateNoTimer = setTimeout(() => {
+                    
+                    if(!this.allList.length) {
+                        this.vehicleIdLoading = true;
+                        queryCamList({}).then(res => {
+                            if(res.status == '200'){
+                                this.allList = res.data;
+                                this.vehicleIdList = res.data
+                            }
+                            this.vehicleIdLoading = false;
+                        }).catch(err => {
+                            this.vehicleIdLoading = false;
+                        });
+                   }
+                // }, 1000);  
+            }else {
+                this.vehicleIdList = this.allList;
+            }
+        },
+        getCamareInfo(item){
+            
+            this.plateNoList = [];
+            this.plateNoList.push(item);
+            this.vehicleIdList = [];
+            this.vehicleIdList.push(item);
 
             clearInterval(this.playTimer);
             clearTimeout(this.timer);
@@ -459,68 +486,11 @@ export default {
             this.isStart = false;
             this.playerOptions.sources[0].src = '';
 
-            this.formParams.plateNo = item.plateNo;
-            this.formParams.vehicleId = item.vehicleId;
-            this.formParams.camSerialNum = '';
-            this.formParams.camDeviceId = '';
-            this.formParams.camDirection = '';
-            this.getCamareInfo(item);
-        },
-        searchVehicleId(query) {
-            if (query !== '') {
-                this.getVehicleIds();
-            } else {
-                this.vehicleIdList = [];
-            }
-        },
-        handleSelectVehicleId(item) {
-            this.plateNoList = [{
-                plateNo: item.plateNo,
-                vehicleId: item.vehicleId,
-                position: item.position
-            }];
-            this.formParams.plateNo = item.plateNo;
-            this.formParams.vehicleId = item.vehicleId;
-            this.formParams.camSerialNum = '';
-            this.formParams.camDeviceId = '';
-            this.formParams.camDirection = '';
-            this.getCamareInfo(item);
-        },
-        getVehicleIds(){
-            this.vehicleIdLoading = true;
-            clearTimeout(this.vehicleIdTimer);
-            this.vehicleIdTimer = setTimeout(() => {
-                this.vehicleIdList = [];
-                queryCamList({
-                    vehicleId:this.searchKey.vehicleId,
-                    factoryName:this.searchKey.factoryName,
-                    model:this.searchKey.model,
-                    plateNo:this.searchKey.plateNo,
-                    serialNum:this.searchKey.serialNum
-                }).then(res => {
-                    if(res.status == '200'){
-                        this.vehicleIdList = res.data;
-                    }
-                    this.vehicleIdLoading = false;
-                })
-            }, 1000);
-        },
-        getCamareInfo(item){
-            let index = 0;
-            let searchVal = '';
-            let platLen = this.plateNoList.length;
-            let vehicleIdLen = this.vehicleIdList.length;
-            if(platLen > 1){
-                index = this.plateNoList.indexOf(item);
-                searchVal = this.plateNoList[index]
-            }else{
-                index = this.vehicleIdList.indexOf(item);
-                searchVal = this.vehicleIdList[index];
-            }
-            this.protocal = searchVal.protocal;
+
+            this.protocal = item.protocal;
             let protocal = JSON.stringify(this.protocal);
             localStorage.setItem('protocal',protocal);
-            this.getPlateNo(index, searchVal);
+            this.getPlateNo(item);
         },
     },
     mounted(){

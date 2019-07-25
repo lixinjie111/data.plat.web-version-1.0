@@ -1,27 +1,16 @@
 <template>
-    <!-- 基本信息 -->
-<div class='history-map-warpper'>
-    <tusvn-map ref="refRealMap2" @MapInitComplete="mapComplete" targetId="mec5" overlayContainerId="mec6" :isMasker='false' :isCircle='false'></tusvn-map>
-    <span v-show='isFd' class="zoom-btn fd" @click="fd">+</span>
-    <span v-show='isSx' class="zoom-btn sx" @click="sx">-</span>
+<div id='map-container' class="map-container">
     <ul>
-        <li class='icon speed'>
-            <span>{{speed ? (speed+'km/h') : ' -- '}}</span>
-        </li>
-        <li class='icon angle'>
-            <span>{{courseAngle ? (courseAngle+'度') : ' -- '}}</span>
-        </li>
-        <li class='icon position'>
-            <span>{{lon ? lon : ' - '}},{{lat ? lat : ' - '}}</span>
-        </li>
-        <li class='icon time'>
-            <span>{{gpsTime ? gpsTime : ' -- '}}</span>
-        </li>
+      <li><p class='speed'>车速:{{vehicleInfo.speed ? (vehicleInfo.speed+'km/h') : ' -- '}}</p></li>
+      <li><p class='angle'>航向角:{{vehicleInfo.courseAngle ? (vehicleInfo.courseAngle+'度') : ' -- '}}</p></li>
+      <li><p class='lonlat'>经纬度:{{vehicleInfo.lon ? vehicleInfo.lon : ' -- '}},{{vehicleInfo.lat ? vehicleInfo.lat : ' -- '}}</p></li>
+      <li><p class='time'>时间:{{vehicleInfo.gpsTime ? vehicleInfo.gpsTime : ' -- '}}</p></li>
     </ul>
 </div>
 
 </template>
 <script>
+import ConvertCoord from'@/common/utils/coordConvert.js';
 import TusvnMap from "../../../common/view/TusvnMap/TusvnMap.vue";
 
 export default {
@@ -39,92 +28,76 @@ export default {
             lon:'',
             lat:'',
             gpsTime:'',
-            isFd:true,
-            isSx:false,
             getGpsTime:null,
-            lineArray:[],
-            lineArray2:[],
+            zoom:11,
+            markers:{
+                maskCar:null,
+                polyline:[]
+            },
+            pointList:[],
+            vehicleInfo:{
+                speed:'',
+                courseAngle:'',
+                lon:'',
+                lat:'',
+                gpsTime:'',
+            },
         }
     },
     methods: {
+        initMap(){
+            this.distanceMap = new AMap.Map('map-container', {
+                resizeEnable: true, //是否监控地图容器尺寸变化
+                zoom:this.zoom, //初始化地图层级
+                center: [121.262939,31.245149], //初始化地图中心点
+                mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
+            });
+
+            this.markers.maskCar = new AMap.Marker({
+                position:  [121.262939,31.245149],   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+                icon:'static/images/vehicle/car-white.png',
+            });
+            this.distanceMap.add(this.markers.maskCar);
+            this.distanceMapLine();
+        },
         getGps(gpsArr,newArr,curTime){
             let _this = this;
-
             if(gpsArr == [] || gpsArr == null || gpsArr.length < 1){//判断有无返回值,否则会导致地图定位不准，显示为空白
                 return;
             }
             else{
-                _this.speed = Number(gpsArr.speed).toFixed(2);//获取速度
-                _this.courseAngle = Number(gpsArr.courseAngle).toFixed(4);//获取航向角
-                _this.lon = Number(gpsArr.lon).toFixed(8);//获取经度
-                _this.lat = Number(gpsArr.lat).toFixed(8);//获取纬度
-                _this.gpsTime = gpsArr.gpsTime;//获取时间
-                // lon,lat,id,layerId,carImgUrl,size,rotation,rotateWithView,opacity,offset
-                //  添加小车
-                _this.$refs.refRealMap2.addImg(_this.lon,_this.lat,"car_01","CarLayer",'static/images/vehicle/geolocation_marker_heading.png',[24,49],(_this.courseAngle/180)*Math.PI,null,null,null);//部署路径
-                // _this.$refs.refRealMap2.addImg(_this.lon,_this.lat,"car_01","CarLayer",'../../../static/images/vehicle/geolocation_marker_heading.png',[24,49],(_this.courseAngle/180)*Math.PI,null,null,null);
-        
-                let mapSize = _this.$refs.refRealMap2.getCurrentExtent();
-                let minX = mapSize[0];
-                let minY = mapSize[1];
-                let maxX = mapSize[2];
-                let maxY = mapSize[3];
-                
-                //当小车的行驶轨迹超出地图范围，就重新定位地图
-                // if(_this.lon<minX || _this.lat<minY || _this.lon>maxX || _this.lat>maxY){
-                //         _this.$refs.refRealMap2.centerAt(_this.lon,_this.lat);
-                        
-                // }
-                if(newArr == '0'){//点击播放器进度条,重新绘制车辆轨迹
-                    var p2 = [];
-                    // _this.lineArray = [];
-                    if(_this.lon && _this.lat){
-                        p2.push(parseFloat(_this.lon),parseFloat(_this.lat));
-                    }
-                    _this.lineArray.push(p2);
-                    _this.lineArray2 = [];
-                    _this.lineArray = _this.lineArray.slice(0,curTime);//修改原画线的数组,只保留从0到当前时间的数据
-                    _this.lineArray2 = _this.lineArray2.concat(_this.lineArray);;
-                    
-                    // let newLineArray = _this.lineArray.concat(_this.lineArray2);
-                    _this.$refs.refRealMap2.addLineString(_this.lineArray2,'line_02','#093bbb','round','round',[5,0],0,10,5,"CarLine2");
-                }else{
-                    var p1 = [];
-                    if(_this.lon && _this.lat){
-                        p1.push(parseFloat(_this.lon),parseFloat(_this.lat));
-                    }
-                    _this.lineArray.push(p1);
-                    // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
-                    _this.$refs.refRealMap2.addLineString(_this.lineArray,'line_01','#093bbb','round','round',[5,0],0,10,5,"CarLine");
-                }
-                
-                _this.$refs.refRealMap2.centerAt(_this.lon,_this.lat);//定位小车始终在地图中间位置
-                // 地图旋转
-                _this.$refs.refRealMap2.rotateMap(-(_this.courseAngle/180.0)*Math.PI); 
-            
-                
+                console.log(gpsArr);
+                this.vehicleInfo.speed = Number(gpsArr.speed).toFixed(2);//获取速度
+                this.vehicleInfo.courseAngle = Number(gpsArr.courseAngle).toFixed(4);//获取航向角
+                this.vehicleInfo.lon = Number(gpsArr.lon).toFixed(8);//获取经度
+                this.vehicleInfo.lat = Number(gpsArr.lat).toFixed(8);//获取纬度
+                this.vehicleInfo.gpsTime = gpsArr.gpsTime;//获取时间
+                let _position = ConvertCoord.wgs84togcj02(gpsArr.lon,gpsArr.lat);
+                this.distanceMap.setCenter(_position);
+                this.markers.maskCar.setPosition(_position);
+                this.markers.maskCar.setAngle(gpsArr.courseAngle);
+                this.pointList.push(_position);
+                this.distanceMapLine();
             }
         },
-        fd(){
-            this.isFd = false;
-            this.isSx = true;
-            this.$emit('changeMax');
-            this.$refs.refRealMap2.resize([990,400]);
+        distanceMapLine(){
+            let polyline = new AMap.Polyline({
+                    map: this.distanceMap,
+                    path: this.pointList,
+                    strokeColor: "#F49308",
+                    strokeWeight: 2,
+                    // 折线样式还支持 'dashed'
+                    strokeStyle: "solid",
+                    /* // strokeStyle是dashed时有效
+                        strokeDasharray: [10, 5],*/
+                    lineJoin: 'round',
+                    lineCap: 'round'
+            });
+            this.markers.polyline.push(polyline);
         },
-        sx(){
-            this.isFd = true;
-            this.isSx = false;
-            this.$emit('changeMin');
-            this.$refs.refRealMap2.resize([390,400]);
-        },
-        mapComplete(){
-            //回放路线所在层
-            this.$refs.refRealMap2.addVectorLayer('CarLine2');
-            // 车辆所在的层
-            this.$refs.refRealMap2.addVectorLayer("CarLayer");
-        }
     },
     mounted(){
+        this.initMap();
     },
     beforeDestroy(){
         let _this = this;
