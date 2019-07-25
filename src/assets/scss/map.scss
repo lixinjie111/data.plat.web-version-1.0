@@ -1,0 +1,78 @@
+@charset "UTF-8";
+.map-container{
+    width:100%;
+    height:100%;
+    ul{
+        position: absolute;
+        z-index:100;
+        padding:10px;
+        li{
+            display:block;
+            float: left;
+            width:269px;
+            height:35px;
+            padding-top:5px;
+            padding-left:10px;
+            margin-right:1px;
+            margin-bottom:1px;
+            box-sizing: border-box;
+            background:rgba(0,0,0,.4);
+            p{
+                padding-left:36px;
+                line-height: 35px;
+                font-size:14px;
+                color:#fff;
+                display:block;
+                &.speed{
+                    height:22px;
+                    line-height:22px;
+                    background:url(../images/videoMap/speed.png) left top no-repeat;
+                }
+                &.angle{
+                    height:25px;
+                    line-height:25px;
+                    background:url(../images/videoMap/angle.png) left top no-repeat;
+                }
+                &.lonlat{
+                    height:26px;
+                    line-height:26px;
+                    background:url(../images/videoMap/lonlat.png) left top no-repeat;
+                }
+                &.time{
+                    height:26px;
+                    line-height:26px;
+                    background:url(../images/videoMap/time.png) left top no-repeat;
+                }
+            }
+        }
+    }
+}
+.c-map-video-wrapper .map-change-max{
+    width:100%;
+    .c-map-btn-right{
+        width:15px;
+        height:120px;
+        position: absolute;
+        top:50%;
+        left:0;
+        cursor: pointer;
+        z-index:100;
+        margin-top:-60px;
+        background: url(../images/videoMap/right-bar.png) no-repeat;
+    }
+    .map-container ul{
+        right:0;
+        width:561px;
+    }
+}
+.c-map-btn-left{
+    position: absolute;
+    top:50%;
+    left:-15px;
+    width:15px;
+    height: 120px;
+    margin-top:-60px;
+    z-index: 1000;
+    cursor: pointer;
+    background:url(../images/videoMap/left-bar.png) no-repeat;
+}
