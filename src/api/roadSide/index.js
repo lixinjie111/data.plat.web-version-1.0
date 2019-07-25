@@ -24,7 +24,7 @@ export const stopStream = params => { return axios.post(`${HTTPURL}road/stopStre
  /**
  * 获取路侧摄像头
  */
-export const queryRoadCameraDetailsByDeviceId = params => { return axios.post(`${HTTPURL}road/queryRoadCameraDetailsByDeviceId`, params).then(res => res.data); };
+export const queryRoadCamCoordinate = params => { return axios.post(`${HTTPURL}road/queryRoadCamCoordinate`, params).then(res => res.data); };
  /**
  * 查询在线车辆数
  */

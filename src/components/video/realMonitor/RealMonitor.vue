@@ -224,9 +224,9 @@ export default {
             this.monitStartTime = '';
 
 
-            this.$refs.maxMap.removeOverLays('line_01');
-            this.$refs.maxMap.removeOverLays('car_01');
-            this.$refs.maxMap.removeGpsInfo();
+            // this.$refs.maxMap.removeOverLays('line_01');
+            // this.$refs.maxMap.removeOverLays('car_01');
+            // this.$refs.maxMap.removeGpsInfo();
             console.log('因为切换车牌号,所以相应汽车的实时监控停止!');
             
             this.isStart = false;
@@ -312,9 +312,9 @@ export default {
             this.isMaskShow = true;
             this.isStart = false;
             this.player.pause();
-            this.$refs.maxMap.removeOverLays('line_01');
-            this.$refs.maxMap.removeOverLays('car_01');
-            this.$refs.maxMap.removeLineArray();
+            // this.$refs.maxMap.removeOverLays('line_01');
+            // this.$refs.maxMap.removeOverLays('car_01');
+            // this.$refs.maxMap.removeLineArray();
         },
         getCurTime(){
             let curTime = null;
@@ -429,9 +429,9 @@ export default {
             this.totalTime = 0;
             this.totalTimeformat = '';
             this.monitStartTime = '';
-            this.$refs.maxMap.removeOverLays('line_01');
-            this.$refs.maxMap.removeOverLays('car_01');
-            this.$refs.maxMap.removeGpsInfo();
+            // this.$refs.maxMap.removeOverLays('line_01');
+            // this.$refs.maxMap.removeOverLays('car_01');
+            // this.$refs.maxMap.removeGpsInfo();
             console.log('因为切换车牌号,所以相应汽车的实时监控停止!');
 
             this.isStart = false;

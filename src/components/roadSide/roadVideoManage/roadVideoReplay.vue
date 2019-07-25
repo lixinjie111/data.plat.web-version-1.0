@@ -50,7 +50,7 @@
     </div>
     </template>
     <script>
-    import {queryRoadCameraDetailsByDeviceId} from '@/api/roadSide'
+    import {queryRoadCamCoordinate} from '@/api/roadSide'
     import TusvnMap from "../../../common/view/TusvnMap/TusvnMap.vue";
     export default {
         name:'RoadVideoReplay',
@@ -117,10 +117,11 @@
                 this.isSlideOut = false;
             },
             mapDetail(deviceId){
-                queryRoadCameraDetailsByDeviceId({  
+                queryRoadCamCoordinate({  
                     'deviceId': deviceId          
                 }).then(res => {
                     if(res.status == '200'){
+                        console.log(res.data)
                         let {ptLon,ptLat} = res.data;
                         if(ptLon == undefined){
                             this.lon = '--';

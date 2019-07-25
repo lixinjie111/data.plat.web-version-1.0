@@ -254,12 +254,40 @@ export default {
                 downLoadZipFile({
                     'fileIds':this.selector
                 }).then(res => {
-                    if(res.status == '200'){
-                        this.$message.success(res.data.message);
-                    }
+                    this.downloadFile(res);
                 })
             }else{
                 this.$message.error('请选择要下载的文件!');
+            }
+        },
+        downloadFile(res){
+            if (res.data) {
+                if ('msSaveBlob' in navigator) { // 对IE和Edge的兼容
+                    window.navigator.msSaveBlob(res.data, decodeURI(res.headers['content-disposition'].split('filename=')[1]))
+                } else {
+                    let blob = res.data
+
+                    // console.log('res.data ----------- ' + JSON.stringify(res))
+
+                    let a = document.createElement('a');
+                    a.setAttribute('id','exportLog');
+                    a.style.display = 'none'
+
+                    // let a = document.getElementById('exportLog')
+                    let url = window.URL.createObjectURL(blob)
+
+                    let filename = decodeURI(res.headers['content-disposition'].split('filename=')[1])
+                    // let filename = 'car_' + (new Date()).getTime() + '.txt';
+                    // let filename = 'filename.txt';
+
+                    var evt = document.createEvent('HTMLEvents') // 对firefox的兼容
+                    evt.initEvent('click', false, false) // 对firefox的兼容
+                    a.href = url
+                    a.download = filename
+                    a.dispatchEvent(evt) // 对firefox的兼容
+                    a.click()
+                    window.URL.revokeObjectURL(url)
+                }
             }
         },
         s_to_hs(s){

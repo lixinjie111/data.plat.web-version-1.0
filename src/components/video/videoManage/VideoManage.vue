@@ -254,6 +254,7 @@ export default {
                 downLoadZipFile({
                     'fileIds':this.selector
                 }).then(res => {
+                    console.log(res);
                     this.downloadFile(res);
                 })
             }else{

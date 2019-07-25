@@ -2,7 +2,7 @@
         <div class="yk-container">
             <div class="yk-container">
             <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
-            <el-table class='c-mt-10' :data="dataList" max-height='500' stripe>
+            <el-table class='c-mt-10' :data="dataList" max-height='724' stripe>
                 <el-table-column salign="center" label="参与者类型" prop="pctType"></el-table-column>
                 <el-table-column prop="sourceType" label="检测类型"></el-table-column>
                 <el-table-column prop="plateNo" label="车牌号"></el-table-column>
