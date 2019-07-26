@@ -15,7 +15,7 @@
                     :loading="plateNoLoading">
                     <el-option
                         v-for="(item,index) in plateNoList"
-                        :key="index"
+                        :key="item.serialNum+index"
                         :label="item.plateNo"
                         :value="item">
                     </el-option>
@@ -35,7 +35,7 @@
                     :loading="vehicleIdLoading">
                     <el-option
                         v-for="(item,index) in vehicleIdList"
-                        :key="index"
+                        :key="item.serialNum+index"
                         :label="item.vehicleId"
                         :value="item">
                     </el-option>
@@ -199,8 +199,8 @@ export default {
                 
             }
             this.searchKey.status = item.status;
-            this.searchKey.vehicleId = item.vehicleId;
-            this.searchKey.plateNo = item.plateNo;
+            // this.searchKey.vehicleId = item.vehicleId;
+            // this.searchKey.plateNo = item.plateNo;
             this.searchKey.serialNum = item.serialNum;
             this.isStart = false;
             if(this.searchKey.status != '1'){//摄像头状态为不在线时,开始监控按钮不可点击
@@ -219,7 +219,7 @@ export default {
             
             this.playerOptions.sources[0].src = '';
             queryDeviceType({//获取设备id
-            'vehicleId':this.searchKey.vehicleId
+            'vehicleId':this.searchKey.vehicleId.vehicleId
             }).then(res => {
                 if(res.status == '200'){
                     this.deviceType =  res.data.type;
@@ -227,7 +227,7 @@ export default {
             })
         },
         realMonit(){
-            if(this.searchKey.vehicleId != ''){
+            if(this.searchKey.vehicleId.vehicleId != ''){
                 this.isStart = true;
                 this.isMaskShow = false;
                 if(this.playerOptions.sources[0].src){
@@ -239,13 +239,14 @@ export default {
                         this.totalTime ++ ;
                         this.totalTimeformat = this.formatSeconds(this.totalTime);
                         if(this.deviceType != '-1'){
-                            this.$refs.maxMap.getGps(this.searchKey.vehicleId,(new Date()).getTime(),this.deviceType);
+                            this.$refs.maxMap.getGps(this.searchKey.vehicleId.vehicleId,(new Date()).getTime(),this.deviceType);
                         }
                     },1000);
                     this.getTotalTime(this.monitStartTime);
                 }else{
                     startStream({
-                            'camId':this.searchKey.serialNum,'vehicleId':this.searchKey.vehicleId,
+                            'camId':this.searchKey.serialNum,
+                            'vehicleId':this.searchKey.vehicleId.vehicleId,
                             'protocal':this.protocal
                         }).then(res => {
                             if(res.status == '200'){
@@ -262,7 +263,7 @@ export default {
                                     this.totalTime ++ ;
                                     this.totalTimeformat = this.formatSeconds(this.totalTime);
                                     if(this.deviceType != '-1'){
-                                        this.$refs.maxMap.getGps(this.searchKey.vehicleId,(new Date()).getTime(),this.deviceType);
+                                        this.$refs.maxMap.getGps(this.searchKey.vehicleId.vehicleId,(new Date()).getTime(),this.deviceType);
                                     }
                                 },1000);
                                 this.getTotalTime(this.monitStartTime);
@@ -287,7 +288,8 @@ export default {
         },
         videoActive(){//调用报活接口
             sendStreamHeart({
-                'camId':this.searchKey.serialNum,'vehicleId':this.searchKey.vehicleId,
+                'camId':this.searchKey.serialNum,
+                'vehicleId':this.searchKey.vehicleId.vehicleId,
                 'protocal':this.protocal
             }).then(res => {
             })
@@ -322,7 +324,7 @@ export default {
             this.old_time = this.$dateUtil.dateToMs(t);
         },
         getPlateNoList(){
-            if(!this.searchKey.plateNo) {
+            if(!this.searchKey.plateNo.plateNo) {
                     
                     if(!this.allList.length) {
                         this.plateNoLoading = true;
@@ -398,7 +400,7 @@ export default {
             }
         },
         getVehicleIds(){
-            if(!this.searchKey.vehicleId) {         
+            if(!this.searchKey.vehicleId.vehicleId) {         
                     if(!this.allList.length) {
                         this.vehicleIdLoading = true;
                         queryCamList({}).then(res => {
@@ -420,6 +422,9 @@ export default {
             this.plateNoList.push(item);
             this.vehicleIdList = [];
             this.vehicleIdList.push(item);
+
+            this.searchKey.plateNo = item;
+            this.searchKey.vehicleId = item;
 
             this.totalTime = 0;
             this.totalTimeformat = '';
