@@ -20,12 +20,12 @@
 	.el-select {
 		display: block;
 	}
-	.el-input__inner {
-		box-sizing: border-box;
-		width: 260px;
-	}
+	// .el-input__inner {
+	// 	box-sizing: border-box;
+	// 	width: 260px;
+	// }
 	.el-date-editor.el-input, .el-date-editor.el-input__inner {
-		width: 260px;
+		width: 100%;
 	}
 	&.el-form--inline {
 		.el-input__inner {
@@ -49,18 +49,18 @@
 		.el-date-editor.el-input, .el-date-editor.el-input__inner {
 			width: 100%;
 		}
-		&.el-form--inline {
-			.el-input__inner {
-				box-sizing: border-box;
-				width: 100%;
-			}
-			.el-date-editor.el-input, .el-date-editor.el-input__inner {
-				width: 100%;
-			}
-			// .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
-			// 	width: 350px;
-			// }
-		}
+		// &.el-form--inline {
+		// 	.el-input__inner {
+		// 		box-sizing: border-box;
+		// 		width: 100%;
+		// 	}
+		// 	.el-date-editor.el-input, .el-date-editor.el-input__inner {
+		// 		width: 100%;
+		// 	}
+		// 	// .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
+		// 	// 	width: 350px;
+		// 	// }
+		// }
 	}
 }
 .el-dialog__wrapper, .el-message-box__wrapper {

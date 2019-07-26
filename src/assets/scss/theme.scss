@@ -37,19 +37,24 @@ $blue: #2ea7d4;
 //垂直水平居中
 @mixin layoutMode($Mode:both) {
   display: flex;
+  //垂直
   @if $Mode==align {
     align-items: center;
   }
+  //水平
   @if $Mode==pack {
     justify-content: center;
   }
+  //垂直水平居中
   @if $Mode==both {
     align-items: center;
     justify-content: center;
   }
+  //左右两边居中
   @if $Mode==between {
     justify-content: space-between;
   }
+  //左右两边并垂直居中
   @if $Mode==all {
     align-items: center;
     justify-content: center;
