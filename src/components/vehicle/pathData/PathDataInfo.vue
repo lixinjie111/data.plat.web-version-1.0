@@ -35,12 +35,14 @@
                     </p>
                     <el-button class="c-pos-btn" type="warning" size="small" plain @click="exportTrailDataAlert">导出轨迹</el-button>
                 </div>
-                <div class="map-div">
-                    <tusvn-map ref="refMap" targetId="pathDataMap" overlayContainerId="mec4" :isMasker='false'
+                <div class="c-wrapper-20 c-detail-box c-padding-20">
+                    <div class="c-map-big-wrapper">
+                      <tusvn-map ref="refMap" targetId="pathDataMap" overlayContainerId="mec4" :isMasker='false'
                               :isCircle='false' @MapInitComplete="mapComplete"></tusvn-map>
+                    </div>
                 </div>
-                <div class="table-div">
-                  <table class="yk-table1">
+                <div class="c-wrapper-20 c-detail-box c-padding-20">
+                  <!-- <table class="yk-table1">
                     <thead>
                     <tr>
                       <th style='width:5%;'>序号</th>
@@ -65,88 +67,33 @@
                       <td>{{item.gnss_HIGHT}}</td>
                     </tr>
                     </tbody>
-                  </table>
+                  </table> -->
+
+                  <el-table 
+                      ref="tableBox"
+                      :data="dataList"
+                      border
+                      min-height="300"
+                      max-height="300"
+                      highlight-current-row
+                      @current-change="currentRow"
+                      stripe>
+                      <el-table-column label="序号" type="index"></el-table-column>
+                      <el-table-column min-width="20%" label="时间">
+                          <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp,'yy-mm-dd hh:mm:ss:ms')}}</template>
+                      </el-table-column>
+                      <el-table-column min-width="20%" label="经度" prop="gnss_LONG"></el-table-column>
+                      <el-table-column min-width="20%" label="纬度" prop="gnss_LAT"></el-table-column>
+                      <el-table-column min-width="20%" label="速度(km/h)" prop="gnss_SPD"></el-table-column>
+                      <el-table-column min-width="15%" label="航向角" prop="gnss_HEAD"></el-table-column>
+                      <el-table-column min-width="15%" label="高程(m)" prop="gnss_HIGHT"></el-table-column>
+                  </el-table>
+                  <div class="c-mt-20 c-text-center">{{requestDataParams.loadMoreData}}</div>
                 </div>
-                <div class="remaining-pages">{{requestDataParams.loadMoreData}}</div>
 
               </div>
         </div>
 </div>
-  <!-- <div class="yk-left">
-    <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
-    <div class="yk-first">
-      <div class="yk-title" style="display: inline-block;">
-        轨迹详情
-      </div>
-      <div class="c-button-wrapper c-text-right">
-          <el-button size="mini" plain icon="el-icon-top-right" @click="exportTrailDataAlert">导出轨迹</el-button>
-      </div>
-      <div>
-        <div class="yk-block yk-gap20">
-          <label>车牌号:</label>
-          <span>{{data.plateNo}}</span>
-        </div>
-        <div class="yk-block yk-gap20">
-          <label>车牌编号:</label>
-          <span>{{data.vehicleId}}</span>
-        </div>
-      </div>
-      <div class="yk-second">
-        <div class="yk-block yk-gap20">
-          <label>行程开始时间:</label>
-          <span>{{data.startTime}}</span>
-        </div>
-        <div class="yk-block yk-gap20">
-          <label>行程结束时间:</label>
-          <span>{{data.endTime}}</span>
-        </div>
-        <div class="yk-block yk-gap20">
-          <label>行驶里程:</label>
-          <span>{{data.mileage}} km</span>
-        </div>
-        <div class="yk-block yk-gap20">
-          <label>行驶时长:</label>
-          <span>{{data.durationTime}} min</span>
-        </div>
-      </div>
-      <div class="map-div">
-          <tusvn-map ref="refMap" targetId="pathDataMap" overlayContainerId="mec4" :isMasker='false'
-                    :isCircle='false' @MapInitComplete="mapComplete"></tusvn-map>
-      </div>
-      <div>
-        <div class="table-div">
-          <table class="yk-table1">
-            <thead>
-            <tr>
-              <th style='width:5%;'>序号</th>
-              <th style='width:15%;'>时间</th>
-              <th style='width:12%;'>经度</th>
-              <th style='width:12%;'>纬度</th>
-              <th style='width:12%;'>速度(km/h)</th>
-              <th style='width:12%;'>航向角</th>
-              <th>高程(m)</th>
-            </tr>
-            </thead>
-            <tbody class="tbody">
-            <tr class="yk-table-body mouse-cursor" :class="index==selectItem?'table-row-color1':'table-row-color2'"
-                v-for='(item,index) in dataList' :key="index"
-                @click.stop="selectRow(item,index);">
-              <td style='width:5%;'>{{ index+1 }}</td>
-              <td style='width:15.2%;'>{{$dateUtil.formatTime(item.timestamp,'yy-mm-dd hh:mm:ss:ms')}}</td>
-              <td style='width:12%;'>{{item.gnss_LONG}}</td>
-              <td style='width:12.2%;'>{{item.gnss_LAT}}</td>
-              <td style='width:12.2%;'>{{item.gnss_SPD}}</td>
-              <td style='width:12%;'>{{item.gnss_HEAD}}</td>
-              <td>{{item.gnss_HIGHT}}</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="remaining-pages">{{requestDataParams.loadMoreData}}</div>
-      </div>
-
-    </div>
-  </div> -->
 </template>
 <script>
   import TusvnMap from "@/common/view/TusvnMap/TusvnMap.vue";
@@ -175,7 +122,8 @@ import { error } from 'util';
           requestRowKey:null,
           loadMoreData:"下滑加载更多",
           isBottom:false,
-          pageIndex:1
+          pageIndex:1,
+          pageTotal:0
         },
         exportTime:{
           startTime:'',
@@ -188,7 +136,8 @@ import { error } from 'util';
       // setTimeout(() => {
       //   this.$refs.refMap.resize([1398, 315]);
       // }, 30);
-      let table = document.getElementsByClassName("tbody")[0];
+      // let table = document.getElementsByClassName("tbody")[0];
+      let table = this.$refs.tableBox;
 
       //注册键盘事件
       document.onkeydown = function () {
@@ -225,13 +174,28 @@ import { error } from 'util';
           }
         }
       }
-
-      table.onscroll=function () {
-        if (table.scrollTop + table.clientHeight+1 >= table.scrollHeight) {
-          if (self.requestDataParams.isBottom==false)
-           self.addPageData();
-        }
-      }
+      this.$refs.tableBox.bodyWrapper.addEventListener('scroll', (res) => {
+ 
+          let height = res.target;
+       
+          let clientHeight = height.clientHeight;
+          let scrollTop = height.scrollTop;
+          let scrollHeight = height.scrollHeight;
+       
+          if(clientHeight + scrollTop + 50 > scrollHeight){
+            console.log("-----------");
+              if(!this.isBottom) {
+                self.addPageData();
+              }
+          }
+       
+      },true);
+      // table.onscroll=function () {
+      //   if (table.scrollTop + table.clientHeight+1 >= table.scrollHeight) {
+      //     if (self.requestDataParams.isBottom==false)
+      //      self.addPageData();
+      //   }
+      // }
     },
     methods: {
       mapComplete(){
@@ -241,7 +205,7 @@ import { error } from 'util';
       addPageData() {
         pathDetailList({
           page: {
-              'pageSize': 100,
+              'pageSize': 10,
               'pageIndex': this.requestDataParams.pageIndex
           }, 
           'vehicleId': this.data.vehicleId,
@@ -251,14 +215,17 @@ import { error } from 'util';
         }).then(res => {
           if(res.status == '200'){
             //重新赋值目前查询的总行数
-            if (res.data.list.length==100){
-              this.requestDataParams.requestRowKey = res.data.list[res.data.list.length-1].rowkey;
-              this.requestDataParams.pageIndex+=1;
-            }
-            if (res.data.list.length<100){
-              this.requestDataParams.isBottom=true;
-              this.requestDataParams.loadMoreData="所有数据加载完毕！"
-            }
+            this.requestDataParams.pageTotal = res.data.totalCount;
+
+            
+            // if (res.data.list.length==10){
+            //   this.requestDataParams.requestRowKey = res.data.list[res.data.list.length-1].rowkey;
+            //   this.requestDataParams.pageIndex+=1;
+            // }
+            // if (res.data.list.length<10){
+            //   this.requestDataParams.isBottom=true;
+            //   this.requestDataParams.loadMoreData="所有数据加载完毕！"
+            // }
 
             if (res.data &&res.data.list && res.data.list.length > 0) {
               //循环处理数据
@@ -321,6 +288,17 @@ import { error } from 'util';
                 }
               }
               this.dataList = this.dataList.concat(data_convert);
+
+
+              if(this.requestDataParams.pageTotal > this.dataList.length) {
+                this.requestDataParams.requestRowKey = res.data.list[res.data.list.length-1].rowkey;
+                this.requestDataParams.pageIndex+=1;
+              }else {
+                this.requestDataParams.isBottom=true;
+                this.requestDataParams.loadMoreData="所有数据加载完毕！"
+              }
+            }else {
+              this.isBottom = true;
             }
           }
         }).catch(err => {
@@ -335,38 +313,7 @@ import { error } from 'util';
           this.$message.error('轨迹数据不存在！');
           return;
         }
-        let tittle = [
-          {
-            key: "lng",
-            name: "经度",
-            sort: 1
-          },
-          {
-            key: "lat",
-            name: "纬度",
-            sort: 2
-          },
-          {
-            key: "altitude",
-            name: "高程",
-            sort: 3
-          },
-          {
-            key: "speed",
-            name: "速度",
-            sort: 4
-          },
-          {
-            key: "pathAngle",
-            name: "航向角",
-            sort: 5
-          },
-          {
-            key: "time",
-            name: "时间",
-            sort: 6
-          },
-        ];
+
         const datas = [];
 
         const formDataList = this.dataList;
@@ -471,7 +418,7 @@ import { error } from 'util';
 
         pathDetailList({
           page: {
-              'pageSize': 100,
+              'pageSize': 10,
               'pageIndex': 0
           }, 
           'vehicleId': item.vehicleId,
@@ -507,6 +454,12 @@ import { error } from 'util';
         //添加选中点
         this.$refs.refMap.addNormalPoint(start_lon, start_lat, 'heighLightPoint_01', "PathDataLayer", 5, "#FF0000", "#FFFF00", 2);
       },
+      // currentRow(val) {
+      //   console.log("--------------------------------");
+      //   console.log(val);
+      //   this.selectItem = val;
+      //   // this.$refs.tableBox.setCurrentRow(this.dataList[this.selectItem]);
+      // },
       selectRow(item, index) {
         let self = this;
         if (index ||index==0) {
@@ -520,11 +473,6 @@ import { error } from 'util';
   }
 </script>
 <style scoped>
-  .remaining-pages{
-    text-align:center;
-    font-size: 15px;
-    color: #D0D0D0;
-  }
   .yk-table1 {
     /* table-layout: fixed; */
     word-break: break-all;
