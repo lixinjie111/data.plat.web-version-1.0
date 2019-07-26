@@ -1,79 +1,97 @@
 <template>
-    <div class="wrapper" v-cloak>
-        <div class="c-detail-box">
-            <p class="c-title c-border-bottom">新建任务<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
-            <div class="c-add-box">
-                <el-form ref="addForm" :inline="true" :model="formParams" :rules="rules" size="small" label-position="right" label-width="120px">
-                    <el-form-item label="行政区域">
-                        <el-select
-                            v-model.trim="provinceSelected"
-                            @change="findMunicipal">
-                            <el-option
-                                v-for="item in provinceData"
-                                :key="item.name"
-                                :label="item.name"
-                                :value="item.name">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="市辖区">
-                        <el-select
-                            v-model.trim="municiSelected"
-                            @change='findArea'>
-                            <el-option
-                                v-for="item in municipalData"
-                                :key="item.name"
-                                :label="item.name"
-                                :value="item.name">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="区">
-                        <el-select
-                            v-model.trim="areaSelected"
-                            @change='changeRoad'>
-                            <el-option
-                                v-for="item in areaList"
-                                :key="item.name"
-                                :label="item.name"
-                                :value="item.name">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="道路名称">
-                        <select class="yk-select" v-model="roadSelected" @change="getRoadPoint">
-                            <option v-for="(item,index) in roadList" :key="index" :value="item">{{item.name}}</option>
-                        </select>
-                    </el-form-item>
-                    <el-form-item label="摄像头编号">
-                        <select class="yk-select" v-model="camSelected" @change="getRoadPoint">
-                            <option v-for="(item,index) in roadCamList" :key="index" :value="item">{{item.serialNum}}</option>
-                        </select>
-                    </el-form-item>
-                    <el-form-item label="开始时间" prop='startTime'>
-                        <el-date-picker
-                            v-model.trim="formParams.startTime"
-                            type="datetime"
-                            placeholder="开始时间"
-                            :picker-options="startTimeOption">
-                        </el-date-picker>
-                    </el-form-item>
-                    <el-form-item label="结束时间" prop='endTime'>
-                        <el-date-picker
-                            v-model.trim="formParams.endTime"
-                            type="datetime"
-                            placeholder="结束时间"
-                            :picker-options="endTimeOption">
-                        </el-date-picker>
-                    </el-form-item>
-                </el-form>
-                <div class="c-text-center">
-                    <el-button type="warning" size="small" @click="submitFunc" :loading="submitloading">确定</el-button>
-                    <el-button type="warning" size="small" plain @click="backClick">取消</el-button>
-                </div>
-            </div>
+<el-dialog 
+        title="新建任务" 
+        :visible.sync="visible"
+        :before-close="cancleFunc"
+        width="30%">
+        <el-form ref="dialogForm" :model="formParams" :rules="rules" size="small" label-position="right" label-width="120px">
+            <el-form-item label="行政区域">
+                <el-select
+                    v-model.trim="provinceSelected"
+                    @change="findMunicipal">
+                    <el-option
+                        v-for="item in provinceData"
+                        value-key="name"
+                        :key="item.name"
+                        :label="item.name"
+                        :value="item.name">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="市辖区">
+                <el-select
+                    v-model.trim="municiSelected"
+                    @change='findArea'>
+                    <el-option
+                        v-for="item in municipalData"
+                        value-key="name"
+                        :key="item.name"
+                        :label="item.name"
+                        :value="item.name">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="区">
+                <el-select
+                    v-model.trim="areaSelected"
+                    @change='changeRoad'>
+                    <el-option
+                        v-for="item in areaList"
+                        value-key="name"
+                        :key="item.name"
+                        :label="item.name"
+                        :value="item.name">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="道路名称">
+                <el-select
+                    v-model.trim="roadSelected"
+                    @change='getRoadPoint'>
+                    <el-option
+                        v-for="(item,index) in roadList"
+                        value-key="name"
+                        :key="index"
+                        :label="item.name"
+                        :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="摄像头编号">
+                <el-select
+                    v-model.trim="camSelected"
+                    @change='getRoadPoint'>
+                    <el-option
+                        v-for="(item,index) in roadCamList"
+                        value-key="serialNum"
+                        :key="index"
+                        :label="item.serialNum"
+                        :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="开始时间" prop='startTime'>
+                <el-date-picker
+                    v-model.trim="formParams.startTime"
+                    type="datetime"
+                    placeholder="开始时间"
+                    :picker-options="startTimeOption">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="结束时间" prop='endTime'>
+                <el-date-picker
+                    v-model.trim="formParams.endTime"
+                    type="datetime"
+                    placeholder="结束时间"
+                    :picker-options="endTimeOption">
+                </el-date-picker>
+            </el-form-item>
+        </el-form>
+        <div class="c-text-center">
+            <el-button type="warning" size="small" @click="submitFunc" :loading="submitloading">确定</el-button>
+            <el-button type="warning" size="small" plain @click="cancleFunc">取消</el-button>
         </div>
-    </div>
+</el-dialog>
 </template>
 
 <script>
@@ -118,6 +136,7 @@ export default {
             };
         return {
             camId:'',
+            visible:true,
             provinceSelected:'',
             municiSelected:'',
             areaSelected:'',
@@ -218,7 +237,9 @@ export default {
             this.queryRoadRegionTree();
             this.isStartTipsShow = false;
             this.isEndTipsShow = false;
-            this.provinceSelected = this.provinceData[0];
+            this.provinceSelected = '请选择';
+            this.roadSelected = '请选择';
+            this.camSelected = '请选择';
             this.municiSelected = this.municipalData[0];
             this.areaSelected = this.areaList[0];
         },
@@ -349,8 +370,8 @@ export default {
                 }
             })
         },
-    	backClick() {
-    		this.$emit('backDownPage');
+    	cancleFunc() {
+            this.$emit('backDownPage');
     	}
     },
     mounted(){

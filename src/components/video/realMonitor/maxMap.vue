@@ -8,38 +8,6 @@
       <li><p class='time'>时间:{{vehicleInfo.gpsTime ? vehicleInfo.gpsTime : ' -- '}}</p></li>
     </ul>
 </div>
-  <!-- 基本信息 -->
-  <!-- <div class="max-map-warpper">
-    <template v-show="!map3dShow">
-      <tusvn-map @MapInitComplete="mapComplete"
-                 @ViewLevelChange=ViewLevelChange
-                 @ExtentChange=ExtentChange
-                 ref="refRealMap" targetId="mec3" overlayContainerId="mec4" :isMasker='false'
-                 :isCircle='false'></tusvn-map>
-      <span v-show='isFd' class="zoom-btn fd" @click="fd">+</span>
-      <span v-show='isSx' class="zoom-btn sx" @click="sx">-</span>
-      <ul>
-        <li>
-          <i class='icon speed'></i>
-          <span>{{speed ? (speed+'km/h') : ' -- '}}</span>
-        </li>
-        <li>
-          <i class='icon angle'></i>
-          <span>{{courseAngle ? (courseAngle+'度') : ' -- '}}</span>
-        </li>
-        <li>
-          <i class='icon position'></i>
-          <span>{{lon ? lon : ' -- '}},{{lat ? lat : ' -- '}}</span>
-        </li>
-        <li>
-          <i class='icon time'></i>
-          <span>{{gpsTime ? gpsTime : ' -- '}}</span>
-        </li>
-      </ul>
-    </template>
-    <div v-show="map3dShow">
-    </div>
-  </div> -->
 </template>
 <script>
   import {gpsInfo} from '@/api/video';

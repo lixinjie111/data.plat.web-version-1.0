@@ -175,7 +175,7 @@ export default new Router({
             },            
             {
               path: '/roadAddLoad',    // 新建路侧视频下载
-              name: 'RoadVideoLoad',
+              name: 'RoadAddLoad',
               component: RoadVideoLoad,
             },            
             // {

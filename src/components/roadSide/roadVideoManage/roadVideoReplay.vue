@@ -1,49 +1,40 @@
 <template>
     <!-- 基本信息 -->
-    <div v-cloak>
-        <p class="c-title c-border-bottom">历史回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
-        <div class="yk-search-box c-mt-30">
-            <div class="yk-search-block yk-block-label">
-                <label>摄像头编号:</label>
-                <span>{{camCode}}</span>
-            </div>
-
-            <div class="yk-search-block yk-block-label">
-                <label class="yk-w-100">摄像头序列号:</label>
-                <span>{{camId}}</span>
-            </div>
-
-            <div class="yk-search-block yk-block-label">
-                <label class="yk-w-100">路侧点: </label>
-                <span>{{roadPoint}}</span>
-            </div>
-
-            <div class="yk-search-block yk-block-label">
-                <label class="yk-w-100 corl6">道路名称: </label>
-                <span>{{roadName}}</span>
-            </div>
-
-            <div class="yk-search-block yk-block-label">
-                <label class="yk-w-100 corl6">开始时间: </label>
-                <span>{{startTime}}</span>
-            </div>
-
-            <div class="yk-search-block yk-block-label">
-                <label class="endTimeW corl6">结束时间: </label>
-                <span>{{endTime}}</span>
-            </div>
-        </div>
-        <div class='roadReplay c-mt-10'>
-            <div class='video-box-replay'>
-                <video id="my-video" class="video-replay-js vjs-big-play-centered" ref='myVideo' controls preload="auto">
-                    <source :src="videoPath" type="video/mp4">
-                </video>
-            </div>
-            <div class='right-replay-box'>
-                <div class='map-bar-in btn-left' @click='showMap'></div>
-                <div class='map-lay' :class='{"show-map":isSlideOut == true}'>
-                    <div class='map-bar btn-right' @click='hideMap'></div>
-                        <tusvn-map ref="perceMap" targetId="mec9" overlayContainerId="mec10" :isMasker='false' :isCircle='false'></tusvn-map>
+    <div class="c-view-dialog" v-cloak>
+        <h3 class="c-title c-border-bottom">视频管理 > 回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></h3>
+        <div class="c-wrapper-20">
+            <el-form ref="form" size="small" :inline="true" class='c-mt-20'>
+                <el-form-item label="摄像头编号:">
+                    {{camCode ? camCode : '--'}}
+                </el-form-item>
+                <el-form-item label="摄像头序列号:">
+                    {{camId ? camId : '--'}}
+                </el-form-item>
+                <el-form-item label="路侧点: ">
+                    {{roadPoint ? roadPoint : '--'}}
+                </el-form-item>
+                <el-form-item label="道路名称: ">
+                    {{roadName ? roadName : '--'}}
+                </el-form-item>
+                <el-form-item label="开始时间: ">
+                    {{startTime ? startTime : '--'}}
+                </el-form-item>
+                <el-form-item label="结束时间: ">
+                    {{endTime ? endTime : '--'}}
+                </el-form-item>
+            </el-form>
+            <div class='roadReplay c-mt-10'>
+                <div class='video-box-replay'>
+                    <video id="my-video" class="video-replay-js vjs-big-play-centered" ref='myVideo' controls preload="auto">
+                        <source :src="videoPath" type="video/mp4">
+                    </video>
+                </div>
+                <div class='right-replay-box'>
+                    <div class='map-bar-in btn-left' @click='showMap'></div>
+                    <div class='map-lay' :class='{"show-map":isSlideOut == true}'>
+                        <div class='map-bar btn-right' @click='hideMap'></div>
+                            <tusvn-map ref="perceMap" targetId="mec9" overlayContainerId="mec10" :isMasker='false' :isCircle='false'></tusvn-map>
+                        </div>
                     </div>
                 </div>
         </div>
@@ -80,8 +71,6 @@
                 this.camId = videoInfo.camId;
                 this.camCode = videoInfo.camCode;
                 this.roadName = videoInfo.roadName;
-                // this.lon = videoInfo.ptLon == undefined ? '--' : videoInfo.ptLon;
-                // this.lat = videoInfo.ptLat == undefined ? '--' : videoInfo.ptLat;
                 this.startTime = videoInfo.startTime;
                 this.endTime = videoInfo.endTime;
                 this.roadPoint = videoInfo.roadPointName;

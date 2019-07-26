@@ -260,7 +260,6 @@ export default {
             this.panel.cfgShow = false;
         },
         addTask(item){
-            this.panel.show = true;
             this.dialogOption.show = true;
         },
         reloadClick(item){

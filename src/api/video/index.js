@@ -80,4 +80,4 @@ export const findByDeviceList = params => { return axios.post(`${operPlatUrl}veh
 /**
  * 新建下载任务
  */
-export const historyDownloadTask = params => { return axios.post(`${operPlatUrl}cam/historyDownloadTask`, params).then(res => res.data); };
+export const historyDownloadTask = params => { return axios.post(`${HTTPURL}cam/historyDownloadTask`, params).then(res => res.data); };

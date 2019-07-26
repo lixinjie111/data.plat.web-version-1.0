@@ -33,7 +33,7 @@
                         <span class="name">行驶时长：</span>
                         <span class="value">{{data.durationTime}} min</span>
                     </p>
-                    <el-button class="c-pos-btn" type="warning" size="small" plain @click="exportTrailDataAlert">导出数据</el-button>
+                    <el-button class="c-pos-btn" type="warning" size="small" plain @click="exportTrailDataAlert">导出轨迹</el-button>
                 </div>
                 <div class="map-div">
                     <tusvn-map ref="refMap" targetId="pathDataMap" overlayContainerId="mec4" :isMasker='false'

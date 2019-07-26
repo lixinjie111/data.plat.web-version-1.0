@@ -52,12 +52,6 @@ export default {
                 center: [121.262939,31.245149], //初始化地图中心点
                 mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
             });
-
-            this.markers.maskCar = new AMap.Marker({
-                position:  [121.262939,31.245149],   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
-                icon:'static/images/vehicle/car-white.png',
-            });
-            this.distanceMap.add(this.markers.maskCar);
             this.distanceMapLine();
         },
         getGps(gpsArr,newArr,curTime){
@@ -66,13 +60,24 @@ export default {
                 return;
             }
             else{
-                console.log(gpsArr);
+                let _position = ConvertCoord.wgs84togcj02(gpsArr.lon,gpsArr.lat);
+                if(!this.markers.maskCar) {
+                    this.markers.maskCar = new AMap.Marker({
+                        position:  _position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+                        icon:'static/images/vehicle/car-white.png',
+                    });
+                    this.distanceMap.add(this.markers.maskCar);
+                    this.distanceMap.setZoom(14);
+                }else {
+                    this.markers.maskCar.setPosition(_position);
+                    this.markers.maskCar.setAngle(gpsArr.courseAngle);
+                }
+                
                 this.vehicleInfo.speed = Number(gpsArr.speed).toFixed(2);//获取速度
                 this.vehicleInfo.courseAngle = Number(gpsArr.courseAngle).toFixed(4);//获取航向角
                 this.vehicleInfo.lon = Number(gpsArr.lon).toFixed(8);//获取经度
                 this.vehicleInfo.lat = Number(gpsArr.lat).toFixed(8);//获取纬度
                 this.vehicleInfo.gpsTime = gpsArr.gpsTime;//获取时间
-                let _position = ConvertCoord.wgs84togcj02(gpsArr.lon,gpsArr.lat);
                 this.distanceMap.setCenter(_position);
                 this.markers.maskCar.setPosition(_position);
                 this.markers.maskCar.setAngle(gpsArr.courseAngle);

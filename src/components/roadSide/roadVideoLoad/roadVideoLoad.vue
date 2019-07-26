@@ -260,7 +260,7 @@ export default {
             this.initData();
         },
         addTask(item){
-            this.panel.show = true;
+            console.log('新建')
             this.dialogOption.show = true;
         },
         reloadClick(item){
@@ -278,11 +278,6 @@ export default {
                 })
             })
         },
-        addTaskFn(){
-            this.panel.show = true;
-            this.dialogOption.show = true;
-            this.initData();
-        },
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();
             this.pageOption.size = value;
@@ -296,7 +291,6 @@ export default {
             return index + this.pageOption.size * (this.pageOption.page-1) + 1;
         },
         backFn(){
-            this.panel.show = false;
             this.dialogOption.show = false;
             this.init();
         }

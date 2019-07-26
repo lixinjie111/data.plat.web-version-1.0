@@ -41,12 +41,11 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-
-            <el-form-item label="摄像头序列号: " prop="serialNum">
-                {{searchKey.serialNum ? searchKey.serialNum : '--'}}
-            </el-form-item>
-            <el-form-item label="摄像头朝向: " prop="position">
+            <el-form-item label="摄像头方向: " prop="position">
                 {{searchKey.position ? searchKey.position : '--'}}
+            </el-form-item>
+             <el-form-item label="摄像头编号: " prop="serialNum">
+                {{searchKey.serialNum ? searchKey.serialNum : '--'}}
             </el-form-item>
             <el-form-item label="摄像头状态: " prop="status">
                 <template v-if='searchKey.status=="0"'>未知</template>
@@ -59,10 +58,6 @@
                 <el-button type="warning" size="small" v-else :disabled="isDisabled ? true : false" @click='realMonit'>开始监控</el-button>
             </el-form-item>
         </el-form> 
-        <!-- <video id='myvideo' width=960 height=540 class="video-js vjs-default-skin" controls> --> 
-                <!-- RTMP直播源地址-->
-                <!-- <source src="rtmp://live.hkstv.hk.lxdns.com/live/hks1">    
-            </video> -->
             <!-- 地图视频模块 -->
             <div class="c-map-video-wrapper">
                 <div class="c-video-wrapper">
@@ -94,22 +89,6 @@
                         </li>
                     </ul>
             </div>
-         <!-- <div class="video-wrapper">
-            <div class='video-left'>
-                <video-player id='video' class="vjs-custom-skin" 
-                    ref="videoPlayer"
-                    :options="playerOptions"
-                    controls
-                    @ended="onPlayerEnded"
-                ></video-player>
-                <div class='video-mask' v-show='isMaskShow'></div>
-            </div>
-            <div class="video-right" :class='{"map-change-max":changeSize}'>
-                <div class='c-map-btn-left' @click='mapChangeMax'></div>
-                <div class='c-map-btn-right' @click='mapChangeMin'></div>
-                <max-map ref='maxMap'></max-map>
-            </div>
-        </div> -->
       
     </div> 
 
@@ -141,9 +120,6 @@ export default {
             isDisabled: false,
             isMaskShow:true,
             isMapShow:false,
-            // plateNoTimer: null,
-            // vehicleIdTimer: null,
-            
             allList: [],
             plateNoList: [],
             vehicleIdList: [], 
@@ -240,11 +216,6 @@ export default {
             this.totalTime = 0;
             this.totalTimeformat = '';
             this.monitStartTime = '';
-
-
-            // this.$refs.maxMap.removeOverLays('line_01');
-            // this.$refs.maxMap.removeOverLays('car_01');
-            // this.$refs.maxMap.removeGpsInfo();
             console.log('因为切换车牌号,所以相应汽车的实时监控停止!');
             
             this.isStart = false;
@@ -296,7 +267,6 @@ export default {
                                         this.$refs.maxMap.getGps(this.searchKey.vehicleId,(new Date()).getTime(),this.deviceType);
                                     }
                                 },1000);
-
                                 this.getTotalTime(this.monitStartTime);
                             }
                     });
@@ -331,9 +301,6 @@ export default {
             this.isStart = false;
             this.player.pause();
             this.$refs.maxMap.removeMasks();
-            // this.$refs.maxMap.removeOverLays('line_01');
-            // this.$refs.maxMap.removeOverLays('car_01');
-            // this.$refs.maxMap.removeLineArray();
         },
         getCurTime(){
             let curTime = null;
@@ -358,9 +325,6 @@ export default {
         },
         getPlateNoList(){
             if(!this.searchKey.plateNo) {
-
-                // clearTimeout(this.plateNoTimer);
-                // this.plateNoTimer = setTimeout(() => {
                     
                     if(!this.allList.length) {
                         this.plateNoLoading = true;
@@ -374,7 +338,6 @@ export default {
                             this.plateNoLoading = false;
                         });
                    }
-                // }, 1000);  
             }else {
                 this.plateNoList = this.allList;
             }
@@ -418,38 +381,26 @@ export default {
         },
         searchPlateNo(query) {
             if (query !== '') {
-                // this.plateNoLoading = true;
-                // clearTimeout(this.plateNoTimer);
-                // this.plateNoTimer = setTimeout(() => {
                     this.plateNoList = this.allList.filter(item => {
                       return item.plateNo.toLowerCase()
                         .indexOf(query.toLowerCase()) > -1;
                     });
-                // }, 1000);
             } else {
                 this.plateNoList = this.allList;
             }
         },
         searchVehicleId(query) {
             if (query !== '') {
-                // this.plateNoLoading = true;
-                // clearTimeout(this.plateNoTimer);
-                // this.plateNoTimer = setTimeout(() => {
                     this.vehicleIdList = this.allList.filter(item => {
                       return item.vehicleId.toLowerCase()
                         .indexOf(query.toLowerCase()) > -1;
                     });
-                // }, 1000);
             } else {
                 this.vehicleIdList = this.allList;
             }
         },
         getVehicleIds(){
-            if(!this.searchKey.vehicleId) {
-
-                // clearTimeout(this.plateNoTimer);
-                // this.plateNoTimer = setTimeout(() => {
-                    
+            if(!this.searchKey.vehicleId) {         
                     if(!this.allList.length) {
                         this.vehicleIdLoading = true;
                         queryCamList({}).then(res => {
@@ -462,7 +413,6 @@ export default {
                             this.vehicleIdLoading = false;
                         });
                    }
-                // }, 1000);  
             }else {
                 this.vehicleIdList = this.allList;
             }
@@ -480,9 +430,6 @@ export default {
             this.totalTime = 0;
             this.totalTimeformat = '';
             this.monitStartTime = '';
-            // this.$refs.maxMap.removeOverLays('line_01');
-            // this.$refs.maxMap.removeOverLays('car_01');
-            // this.$refs.maxMap.removeGpsInfo();
             console.log('因为切换车牌号,所以相应汽车的实时监控停止!');
 
             this.isStart = false;

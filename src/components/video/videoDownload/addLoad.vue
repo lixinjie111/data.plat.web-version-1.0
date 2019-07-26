@@ -1,86 +1,87 @@
 <template>
-    <div class="wrapper" v-cloak> 
-        <div class="c-detail-box">
-            <p class="c-title c-border-bottom">新建任务<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
-            <div class="c-add-box">
-                <el-form ref="addForm" :inline="true" :model="formParams" :rules="rules" size="small" label-position="right" label-width="120px">
-                    <el-form-item label="车牌号: " prop='plateNo'>
-                        <el-select
-                            v-model="formParams.plateNo"
-                            filterable
-                            remote
-                            placeholder="请输入关键词"
-                            :remote-method="searchPlateNo"
-                            @change="handleSelectPlateNo"
-                            :loading="plateNoLoading">
-                            <el-option
-                                v-for="item in plateNoList"
-                                :key="item.plateNo"
-                                :label="item.plateNo"
-                                :value="item">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="车辆编号" prop='vehicleId'>
-                        <el-select
-                            v-model="formParams.vehicleId"
-                            filterable
-                            remote
-                            placeholder="请输入关键词"
-                            :remote-method="searchVehicleId"
-                            @change="handleSelectVehicleId"
-                            :loading="vehicleIdLoading">
-                            <el-option
-                                v-for="item in vehicleIdList"
-                                :key="item.vehicleId"
-                                :label="item.vehicleId"
-                                :value="item">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="摄像头编号" prop='camDeviceId'>
-                        <el-select
-                            v-model="formParams.camSerialNum"
-                            @change="handleSelectCamCode">
-                            <el-option
-                                v-for="item in camCodeList"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="摄像头朝向" prop='camDirection'>
-                        <p class="c-width-200">{{formParams.camDirection}}</p>
-                    </el-form-item>
-                    <el-form-item label="开始时间" prop='startTime'>
-                        <el-date-picker
-                            v-model.trim="formParams.startTime"
-                            type="datetime"
-                            placeholder="开始时间"
-                            :picker-options="startTimeOption">
-                        </el-date-picker>
-                    </el-form-item>
-                    <el-form-item label="结束时间" prop='endTime'>
-                        <el-date-picker
-                            v-model.trim="formParams.endTime"
-                            type="datetime"
-                            placeholder="结束时间"
-                            :picker-options="endTimeOption">
-                        </el-date-picker>
-                    </el-form-item>
-                </el-form>
-                <div class="c-text-center">
-                    <el-button type="warning" size="small" @click="submitFunc" :loading="submitloading">确定</el-button>
-                    <el-button type="warning" size="small" plain @click="backClick">取消</el-button>
-                </div>
-            </div>
+<el-dialog 
+        title="新建任务" 
+        :visible.sync="visible"
+        :before-close="cancleFunc"
+        width="30%">
+        <el-form ref="dialogForm" :model="formParams" :rules="rules" size="small" label-position="right" label-width="120px">
+            <el-form-item label="车牌号: " prop='plateNo'>
+                <el-select
+                    v-model="formParams.plateNo"
+                    filterable
+                    remote
+                    placeholder="请输入关键词"
+                    @click.native="getPlateNoList"
+                    :remote-method="searchPlateNo"
+                    @change="handleSelectPlateNo"
+                    :loading="plateNoLoading">
+                    <el-option
+                        v-for="item in plateNoList"
+                        value-key='plateNo'
+                        :key="item.plateNo"
+                        :label="item.plateNo"
+                        :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="车辆编号" prop='vehicleId'>
+                <el-select
+                    v-model="formParams.vehicleId"
+                    filterable
+                    remote
+                    placeholder="请输入关键词"
+                    :remote-method="searchVehicleId"
+                    @change="handleSelectVehicleId"
+                    :loading="vehicleIdLoading">
+                    <el-option
+                        v-for="item in vehicleIdList"
+                        :key="item.vehicleId"
+                        :label="item.vehicleId"
+                        :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="摄像头编号" prop='camDeviceId'>
+                <el-select
+                    v-model="formParams.camSerialNum"
+                    @change="handleSelectCamCode">
+                    <el-option
+                        v-for="item in camCodeList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="摄像头朝向" prop='camDirection'>
+                <p class="c-width-200">{{formParams.camDirection}}</p>
+            </el-form-item>
+            <el-form-item label="开始时间" prop='startTime'>
+                <el-date-picker
+                    v-model.trim="formParams.startTime"
+                    type="datetime"
+                    placeholder="开始时间"
+                    :picker-options="startTimeOption">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="结束时间" prop='endTime'>
+                <el-date-picker
+                    v-model.trim="formParams.endTime"
+                    type="datetime"
+                    placeholder="结束时间"
+                    :picker-options="endTimeOption">
+                </el-date-picker>
+            </el-form-item>
+        </el-form>
+        <div class="c-text-center">
+            <el-button type="warning" size="small" @click="submitFunc" :loading="submitloading">确定</el-button>
+            <el-button type="warning" size="small" plain @click="cancleFunc">取消</el-button>
         </div>
-    </div>
+</el-dialog>
 </template>
 
 <script>
-import {queryPage,findByDeviceList} from '@/api/video';
+import {queryPage,findByDeviceList,historyDownloadTask} from '@/api/video';
 export default {
     name: 'AddLoad',
     data () {
@@ -121,9 +122,9 @@ export default {
             };
         return {
             operPlatUrl: window.config.operPlatUrl,
-
+            visible: true,
             loading: false,
-
+            allList:[],
             typeList:[
                 {name:'车牌号',val:'0'},
                 {name:'车辆编号',val:'1'},
@@ -196,34 +197,40 @@ export default {
         }
     },
     methods: {
-        searchPlateNo(query) {
-            if (query !== '') {
-                this.plateNoLoading = true;
-                clearTimeout(this.plateNoTimer);
-                this.plateNoTimer = setTimeout(() => {
+        getPlateNoList(){
+            if(!this.formParams.plateNo) {    
+                if(!this.allList.length) {
+                    this.plateNoLoading = true;
                     this.plateNoList = [];
                     queryPage({
                         "page":{
                             "pageIndex": 0,
                             "pageSize": 500
                         },
-                        "plateNo": query,
+                        "plateNo": '',
                         "vehicleId": ''
                     }).then(res => {
                         if(res.status == '200'){
-                            let _result = res.data.list.map((item, index) => {
-                                let _item = {
-                                    plateNo: item.plateNo,
-                                    vehicleId: item.vehicleId
-                                };
-                                return _item;
-                            });
-                            this.plateNoList.push(_result);
+                            this.allList = res.data.list;
+                            this.plateNoList = res.data.list;
+                            this.plateNoLoading = false;
                         }
-                    })
-                }, 1000);
+                    }).catch(err => {
+                        this.plateNoLoading = false;
+                    });
+                }
+            }else {
+                this.plateNoList = this.allList;
+            }
+        },
+        searchPlateNo(query) {
+            if (query !== '') {
+                    this.plateNoList = this.allList.filter(item => {
+                        return item.plateNo.toLowerCase()
+                        .indexOf(query.toLowerCase()) > -1;
+                    });
             } else {
-                this.plateNoList = [];
+                this.plateNoList = this.allList;
             }
         },
         handleSelectPlateNo(item) {
@@ -331,20 +338,18 @@ export default {
             })
         },
         submitFunc() {
-            this.$refs.addForm.validate((valid) => {
+            this.$refs.dialogForm.validate((valid) => {
                 if (valid) {
                     this.loading = true;
-                    historyDownloadTask({
-                        'plateNo':this.formParams.plateNo,
-                        'vehicleId':this.formParams.vehicleId,
-                        'camSerialNum':this.formParams.camSerialNum,
-                        'camDeviceId':this.formParams.camDeviceId,
-                        'camDirection':this.formParams.camDirection,
+                    let protocal = localStorage.getItem('protocal');
+                    let formParamsInfo = Object.assign(this.formParams,{
+                        'protocal':protocal,
                         'startTime': this.formParams.startTime ? this.$dateUtil.dateToMs(this.formParams.startTime) : '',
                         'endTime': this.formParams.endTime ? this.$dateUtil.dateToMs(this.formParams.endTime) : ''
-                    }).then(res => {
+                    });
+                    historyDownloadTask(formParamsInfo).then(res => {
                         if(res.status == '200'){
-                            this.backClick();
+                            this.cancleFunc();
                         }
                         this.loading = false;
                     })
@@ -353,7 +358,7 @@ export default {
                 }
             });
         },
-        backClick() {
+        cancleFunc() {
             this.$emit('backDownPage');
         }
     }
