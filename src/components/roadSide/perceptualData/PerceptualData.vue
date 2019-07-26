@@ -296,8 +296,11 @@ export default {
                 }).then(res => {
                     if(res.status == '200') {
                         var roadCode = this.newData[0].children;
-                        var protocal = JSON.stringify(res.data[0].protocol);
-                        localStorage.setItem('protocal',protocal);
+                        // console.log(res);
+                        if(res.data.length) {
+                            var protocal = JSON.stringify(res.data[0].protocol);
+                            localStorage.setItem('protocal',protocal);
+                        }
                         var camDetail = res.data;
                         for(var i=0;i<camDetail.length;i++){
                             var obj = {};
