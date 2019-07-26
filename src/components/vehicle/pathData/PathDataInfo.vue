@@ -454,12 +454,12 @@ import { error } from 'util';
         //添加选中点
         this.$refs.refMap.addNormalPoint(start_lon, start_lat, 'heighLightPoint_01', "PathDataLayer", 5, "#FF0000", "#FFFF00", 2);
       },
-      // currentRow(val) {
-      //   console.log("--------------------------------");
-      //   console.log(val);
-      //   this.selectItem = val;
-      //   // this.$refs.tableBox.setCurrentRow(this.dataList[this.selectItem]);
-      // },
+      currentRow(val) {
+        console.log("--------------------------------");
+        console.log(val);
+        // this.selectItem = val;
+        // this.$refs.tableBox.setCurrentRow(this.dataList[this.selectItem]);
+      },
       selectRow(item, index) {
         let self = this;
         if (index ||index==0) {
