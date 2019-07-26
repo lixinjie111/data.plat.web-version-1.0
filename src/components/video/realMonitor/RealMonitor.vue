@@ -1,8 +1,8 @@
 <template>
     <!-- 基本信息 -->
-    <div class="c-wrapper-20" v-cloak>
-        <el-form ref='searchForm' size="small" :inline="true">
-            <el-form-item label="车牌号: ">
+    <div class="c-detail-box c-wrapper-20 c-padding-20" v-cloak>
+        <el-form ref='searchForm' size="small" :inline="true" class="c-detail-lable-list c-pdb-20">
+            <el-form-item label="车牌号: " class="c-detail-lable">
                 <el-select
                     v-model="searchKey.plateNo"
                     filterable
@@ -22,7 +22,7 @@
                 </el-select>
             </el-form-item>
             
-            <el-form-item label="车辆编号: " prop='vehicleId'>
+            <el-form-item label="车辆编号: " prop='vehicleId' class="c-detail-lable">
                 <el-select
                     v-model="searchKey.vehicleId"
                     filterable
@@ -41,22 +41,23 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="摄像头方向: " prop="position">
+            <el-form-item label="摄像头方向: " prop="position" class="c-detail-lable">
                 {{searchKey.position ? searchKey.position : '--'}}
             </el-form-item>
-             <el-form-item label="摄像头编号: " prop="serialNum">
+             <el-form-item label="摄像头编号: " prop="serialNum" class="c-detail-lable">
                 {{searchKey.serialNum ? searchKey.serialNum : '--'}}
             </el-form-item>
-            <el-form-item label="摄像头状态: " prop="status">
+            <el-form-item label="摄像头状态: " prop="status" class="c-detail-lable">
                 <template v-if='searchKey.status=="0"'>未知</template>
                 <template v-if='searchKey.status=="1"'>在线</template>
                 <template v-if='searchKey.status=="2"'>离线</template>
                 <template v-if='searchKey.status=="3"'>未注册</template>
             </el-form-item>
-            <el-form-item>
+            <el-form-item class="c-pos-btn">
                 <el-button type="warning" size="small" v-if="isStart" @click='endVideo'>结束监控</el-button>
                 <el-button type="warning" size="small" v-else :disabled="isDisabled ? true : false" @click='realMonit'>开始监控</el-button>
             </el-form-item>
+            
         </el-form> 
             <!-- 地图视频模块 -->
             <div class="c-map-video-wrapper">
@@ -230,7 +231,7 @@ export default {
                 this.isStart = true;
                 this.isMaskShow = false;
                 if(this.playerOptions.sources[0].src){
-                    // this.player.play();
+                    this.player.play();
                     //直播报活调用
                     this.repeatFn();
                     //计算视频播放时长
@@ -497,9 +498,6 @@ export default {
 }
 </style>
 <style>
-.amap-demo {
-    height: 300px;
-}
 .sl-real-momitor-video .vjs-text-track-display,
 .sl-real-momitor-video .video-js .vjs-big-play-button,
 .sl-real-momitor-video .vjs-button,

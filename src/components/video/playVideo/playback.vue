@@ -1,6 +1,6 @@
 <template>
     <!-- 基本信息 -->
-    <div class="c-view-dialog" v-cloak>
+    <div class="c-detail-box c-wrapper-20 c-view-dialog-54" v-cloak>
         <h3 class="c-title c-border-bottom">视频管理 > 回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></h3>
         <div class="c-wrapper-20">
             <el-form ref="form" size="small" :inline="true" class='c-mt-20'>
@@ -373,5 +373,9 @@ export default {
             }
         }
     }
+}
+.c-view-dialog-54{
+    background:#fff;
+    top:-20px;
 }
 </style>

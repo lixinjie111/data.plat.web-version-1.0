@@ -47,6 +47,7 @@ export default {
     methods: {
         initMap(){
             this.distanceMap = new AMap.Map('map-container', {
+                rotateEnable: true,//地图旋转
                 resizeEnable: true, //是否监控地图容器尺寸变化
                 zoom:this.zoom, //初始化地图层级
                 center: [121.262939,31.245149], //初始化地图中心点
@@ -63,6 +64,7 @@ export default {
                 let _position = ConvertCoord.wgs84togcj02(gpsArr.lon,gpsArr.lat);
                 if(!this.markers.maskCar) {
                     this.markers.maskCar = new AMap.Marker({
+                        angle: gpsArr.courseAngle,
                         position:  _position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
                         icon:'static/images/vehicle/car-white.png',
                     });
@@ -78,7 +80,8 @@ export default {
                 this.vehicleInfo.lon = Number(gpsArr.lon).toFixed(8);//获取经度
                 this.vehicleInfo.lat = Number(gpsArr.lat).toFixed(8);//获取纬度
                 this.vehicleInfo.gpsTime = gpsArr.gpsTime;//获取时间
-                this.distanceMap.setCenter(_position);
+                this.distanceMap.setCenter(_position);//定位地图中心点
+                this.distanceMap.setRotation(-gpsArr.courseAngle);//地图旋转
                 this.markers.maskCar.setPosition(_position);
                 this.markers.maskCar.setAngle(gpsArr.courseAngle);
                 this.pointList.push(_position);
