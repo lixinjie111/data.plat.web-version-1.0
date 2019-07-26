@@ -34,7 +34,8 @@
           maskCar:null,
           polyline:[]
         },
-        pointList:[]
+        pointList:[],
+        lastPoint: []
       }
     },
     methods: {
@@ -42,6 +43,7 @@
         this.distanceMap = new AMap.Map('map-container', {
             resizeEnable: true, //是否监控地图容器尺寸变化
             zoom: this.zoom, //初始化地图层级
+            rotateEnable: true,
             mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
         });
       },
@@ -57,16 +59,23 @@
                     this.vehicleInfo.lat = Number(res.data.lat).toFixed(8);//获取纬度
                     this.vehicleInfo.gpsTime = res.data.gpsTime;//获取时间
                     let _position = ConvertCoord.wgs84togcj02(res.data.lon,res.data.lat);
-                    this.pointList.push(_position);
-
+                    
+                    if(this.lastPoint.length) {
+                      this.pointList = [this.lastPoint, _position];
+                    }else {
+                      this.pointList = [_position];
+                    }
+                    this.lastPoint = _position;
                     this.distanceMap.setCenter(_position);
+                    this.distanceMap.setRotation(-res.data.courseAngle);
                     if(!this.markers.maskCar) {
                       this.markers.maskCar = new AMap.Marker({
                         position:  _position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+                        angle: res.data.courseAngle,
                         icon:'static/images/vehicle/car-white.png',
                       });
                       this.distanceMap.add(this.markers.maskCar);
-                      this.distanceMap.setZoom(14);
+                      this.distanceMap.setZoom(16);
                     }else {
                       this.markers.maskCar.setPosition(_position);
                       this.markers.maskCar.setAngle(res.data.courseAngle);
@@ -92,10 +101,16 @@
           this.markers.polyline.push(polyline);
       },
       removeMasks(){//清除图层
-        this.distanceMap.remove(this.markers.maskCar);
-        this.distanceMap.remove(this.markers.polyline);
-        this.markers.maskCar = null;
-        this.markers.polyline = [];
+        if(this.markers.maskCar) {
+          this.distanceMap.remove(this.markers.maskCar);
+          this.markers.maskCar = null;
+        }
+        if(this.markers.polyline.length) {
+          this.distanceMap.remove(this.markers.polyline);
+          this.markers.polyline = [];
+        }
+        this.pointList = [];
+        this.lastPoint = [];
       },
       clearVehicleInfo(){
         this.vehicleInfo.speed = '';

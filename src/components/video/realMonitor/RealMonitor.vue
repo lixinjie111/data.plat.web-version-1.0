@@ -214,9 +214,8 @@ export default {
             this.totalTime = 0;
             this.totalTimeformat = '';
             this.monitStartTime = '';
-            console.log('因为切换车牌号,所以相应汽车的实时监控停止!');
+            // console.log('因为切换车牌号,所以相应汽车的实时监控停止!');
             
-            this.isStart = false;
             this.playerOptions.sources[0].src = '';
             queryDeviceType({//获取设备id
             'vehicleId':this.searchKey.vehicleId
@@ -274,7 +273,7 @@ export default {
             }
         },
         onPlayerEnded() {
-            // console.log("playerEnded")
+            console.log("playerEnded")
             this.endVideo();
         },
         repeatFn(){//每5秒直播报活一次
@@ -421,22 +420,19 @@ export default {
             this.vehicleIdList = [];
             this.vehicleIdList.push(item);
 
-            clearInterval(this.playTimer);
-            clearTimeout(this.timer);
-            this.isMaskShow = true;
             this.totalTime = 0;
             this.totalTimeformat = '';
             this.monitStartTime = '';
-            console.log('因为切换车牌号,所以相应汽车的实时监控停止!');
+            // console.log('因为切换车牌号,所以相应汽车的实时监控停止!');
 
-            this.isStart = false;
             this.playerOptions.sources[0].src = '';
             this.protocal = item.protocal;
             let protocal = JSON.stringify(this.protocal);
             localStorage.setItem('protocal',protocal);
             this.getPlateNo(item);
             this.$refs.maxMap.clearVehicleInfo();
-            this.$refs.maxMap.removeMasks();
+            
+            this.endVideo();
         },
     },
     mounted(){
