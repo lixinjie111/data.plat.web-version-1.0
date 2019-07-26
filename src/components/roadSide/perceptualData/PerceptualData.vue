@@ -124,6 +124,11 @@ export default {
                     children:[]
                 }]
             },
+            roadsObj:{
+                children:[{
+                    children:[]
+                }]
+            },
             defaultProps: {
                 children: 'children',
                 label: 'label',
@@ -138,7 +143,7 @@ export default {
     },
     methods:{
         init(){
-            this.queryRoadRegionTree();
+            this.queryRoadRegionTrees();
             this.provinceSelected = this.provinceData[0];
             this.municiSelected = this.municipalData[0];
             this.operPlatUrl = window.config.operPlatUrl;
@@ -150,7 +155,7 @@ export default {
                     }
             },5000);
         },
-        queryRoadRegionTree(){
+        queryRoadRegionTrees(){
             queryRoadRegionTree().then(res => {
                 if(res.status == '200') {
                     this.initDataList = res.data;
@@ -160,6 +165,7 @@ export default {
                         provinceObj.name = this.initDataList[i].name;
                         provinceObj.code = this.initDataList[i].code;
                         this.provinceData.push(provinceObj);
+                        console.log(this.provinceData);
                     }
                 }
             })
@@ -181,6 +187,7 @@ export default {
                     municipalObj.name = this.initDataList[j].dataList[0].name;
                     municipalObj.code = this.initDataList[j].dataList[0].code;
                     this.municipalData.push(municipalObj);
+                    console.log(this.municipalData)
                     this.municipalData.unshift({name:'请选择',code:'0'})
                     this.municiSelected = this.municipalData[0];
                 }
@@ -195,9 +202,9 @@ export default {
             for(let j=0;j<len;j++){//查找辖区数据
                 if(municipalCode == this.initDataList[j].dataList[0].code){
                     let regionObj = {};
-                    let subDataList = this.initDataList[j].dataList[0].dataList[0].dataList;
+                    let subDataList = this.initDataList[j].dataList[0].dataList;
                     let subLen = subDataList.length;
-                    this.regionObj.label = this.initDataList[j].dataList[0].dataList[0].name;
+                    this.regionObj.label = this.initDataList[j].dataList[0].name;
                     this.regionObj.children = [];
                     
                     for(let i=0;i<subLen;i++){
@@ -205,10 +212,21 @@ export default {
                         subObj.label = subDataList[i].name;
                         subObj.code = subDataList[i].code;
                         this.regionObj.children.push(subObj);
+                        
                     }
+                    for(let x=0;x<subLen;x++){
+                            let roadObj = {};
+                            roadObj.label = subDataList[x].dataList[0].name;
+                            roadObj.code = subDataList[x].dataList[0].code;
+                            this.roadsObj.children.push(roadObj);
+                            console.log(subDataList[x].dataList[0].name);
+                            console.log(subDataList[x].dataList[0].code);
+                            console.log(this.roadsObj.children);
+                        }
                     this.regionData.push(this.regionObj);
                     this.data = this.regionData;
                     this.newData = this.data;
+                     console.log(this.regionData);
                 }
             }
         },
@@ -224,6 +242,7 @@ export default {
             this.isSlideOut = false;
         },
         handleNodeClick(data){
+            console.log(data);
             if(data.road){
                 this.roadName = data.label;
             }
@@ -254,6 +273,7 @@ export default {
                 let data = [];
                 if (hasChild) {
                     var areaArray = this.newData[0].children;
+                    console.log(this.newData);
                     for(var i=0;i<areaArray.length;i++){
                         var obj = {};
                         obj.label = areaArray[i].label;
@@ -262,6 +282,7 @@ export default {
                         // obj.isLeaf = 'leaf';
                         // obj.leaf = true;
                         data.push(obj);
+                        console.log(data);
                     }
                 } else {
                     data = [];
