@@ -95,13 +95,11 @@
 </template>
 <script>
 import MaxMap from './maxMap.vue';
-import DropDownList from '../../../common/view/DropDownList.vue';
 import {queryCamList,startStream,queryDeviceType,sendStreamHeart} from '@/api/video';
 export default {
     name: 'RealMonitor',
     components: {
         MaxMap,
-        DropDownList
     },
     data(){
         return {
@@ -418,7 +416,6 @@ export default {
             }
         },
         getCamareInfo(item){
-            
             this.plateNoList = [];
             this.plateNoList.push(item);
             this.vehicleIdList = [];
@@ -434,12 +431,12 @@ export default {
 
             this.isStart = false;
             this.playerOptions.sources[0].src = '';
-
-
             this.protocal = item.protocal;
             let protocal = JSON.stringify(this.protocal);
             localStorage.setItem('protocal',protocal);
             this.getPlateNo(item);
+            this.$refs.maxMap.clearVehicleInfo();
+            this.$refs.maxMap.removeMasks();
         },
     },
     mounted(){
