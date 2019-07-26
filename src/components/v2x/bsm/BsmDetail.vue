@@ -54,7 +54,7 @@ import vehicleInfoTag from '@/common/detail/vehicleInfoTag';
                         },
                         {
                             name:"车辆尺寸",
-                            value:this.infoTagData.length
+                            value:this.infoTagData.length-this.infoTagData.width-this.infoTagData.height
                         },
                         {
                             name:"GPS时间",

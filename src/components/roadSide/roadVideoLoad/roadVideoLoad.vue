@@ -69,7 +69,7 @@
             <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
             <el-table-column prop="fileName" min-width="18%" label="文件名称"></el-table-column>
             <el-table-column prop="camCode" min-width="6%" label="摄像头编号"></el-table-column>
-            <el-table-column prop="roadName" min-width="9%" label="道路名称"></el-table-column>
+            <el-table-column prop="roadName" min-width="8%" label="道路名称"></el-table-column>
             <el-table-column prop="roadPointName" min-width="9%" label="路侧点名称"></el-table-column>
             <el-table-column label="创建时间" min-width="10%">
                 <template slot-scope="scope">{{scope.row.createDate}}</template>
@@ -80,7 +80,7 @@
             <el-table-column label="结束时间" min-width="10%">
                 <template slot-scope="scope">{{scope.row.endTime}}</template>
             </el-table-column>
-            <el-table-column prop="plateNo" min-width="9%" label="下载状态">
+            <el-table-column prop="plateNo" min-width="6%" label="下载状态">
                 <template slot-scope="scope">
                     <span v-if='scope.row.taskStatus == "0"'>未下载</span>
                     <span v-if='scope.row.taskStatus == "1"'>下载中</span>
@@ -93,7 +93,7 @@
             <el-table-column label="视频来源" min-width="7%">
                 <template slot-scope="scope">{{scope.row == '1' ? '直播' : '手动获取'}}</template>
             </el-table-column>
-            <el-table-column label="操作" min-width="4%">
+            <el-table-column label="操作" min-width="5%">
                 <template slot-scope="scope">
                     <el-button size="small" 
                     icon="el-icon-download" 
@@ -260,7 +260,6 @@ export default {
             this.initData();
         },
         addTask(item){
-            console.log('新建')
             this.dialogOption.show = true;
         },
         reloadClick(item){

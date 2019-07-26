@@ -29,26 +29,26 @@
             </el-form>
             <el-table :data="dataList" v-loading='loading' max-height="724" class='c-mt-10 c-mb-70' stripe>
                 <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
-                <el-table-column prop="msgCnt" min-width="5%" label="消息编号"></el-table-column>
-                <el-table-column prop="vehicleId" min-width="10%" label="车辆编号"></el-table-column>
+                <el-table-column prop="msgCnt" min-width="8%" label="消息编号"></el-table-column>
+                <el-table-column prop="vehicleId" min-width="12%" label="车辆编号"></el-table-column>
                 <el-table-column prop="plateNo" label="车牌号码" min-width="10%"></el-table-column>
-                <el-table-column label="时间" min-width="10%">
+                <el-table-column label="时间" min-width="16%">
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.gpstime)}}</template>
                 </el-table-column>
-                <el-table-column label="经度" min-width="8%">
+                <el-table-column label="经度" min-width="12%">
                     <template slot-scope="scope">{{Number(scope.row.longitude).toFixed(8)}}</template>
                 </el-table-column>
-                <el-table-column label="纬度" min-width="8%">
+                <el-table-column label="纬度" min-width="12%">
                     <template slot-scope="scope">{{Number(scope.row.latitude).toFixed(8)}}</template>
                 </el-table-column>
-                <el-table-column prop="altitude" label="高程" min-width="8%"></el-table-column>
-                <el-table-column label="车速" min-width="8%">
+                <el-table-column prop="altitude" label="高程" min-width="6%"></el-table-column>
+                <el-table-column label="车速" min-width="6%">
                     <template slot-scope="scope">{{Number(scope.row.speed).toFixed(1)}}</template>
                 </el-table-column>
-                <el-table-column label="航向" min-width="8%">
+                <el-table-column label="航向" min-width="6%">
                     <template slot-scope="scope">{{Number(scope.row.heading).toFixed(1)}}</template>
                 </el-table-column>
-                <el-table-column prop="angle" label="方向盘转角" min-width="8%"></el-table-column>
+                <el-table-column prop="angle" label="方向盘转角" min-width="10%"></el-table-column>
                 <el-table-column label="刹车踏板" min-width="8%">
                     <template slot-scope="scope">
                             <div v-if="scope.row.brakePedal == 'on' || scope.row.brakePedal == 'ON'" class="msg-right">是</div>
@@ -191,6 +191,10 @@ export default {
     },
     methods: {
         init(){
+            let startTime = this.GetDateStr(2);
+            let endTime = this.getNowFormatDate();
+            this.searchKey.startTime = startTime;
+            this.searchKey.endTime = endTime;
             this.findBSMLists();
             this.initPaging();
         },
@@ -274,6 +278,25 @@ export default {
         },
         indexMethod(index){
             return (this.pageOption.page-1) * this.pageOption.size + index + 1;
+        },
+        getNowFormatDate() {//获取当前时间作为结束时间
+            var date = new Date();
+            var seperator1 = "-";
+            var seperator2 = ":";
+            var month = date.getMonth() + 1<10? "0"+(date.getMonth() + 1):date.getMonth() + 1;
+            var strDate = date.getDate()<10? "0" + date.getDate():date.getDate();
+            var currentdate = date.getFullYear() + seperator1  + month  + seperator1  + strDate
+                    + " "  + date.getHours()  + seperator2  + date.getMinutes()
+                    + seperator2 + date.getSeconds();
+            return currentdate;
+        },
+        GetDateStr(AddDayCount) { //获取当前时间之前的两天作为开始时间
+            var dd = new Date();
+            dd.setDate(dd.getDate()-AddDayCount);//获取AddDayCount天前的日期
+            var y = dd.getFullYear(); 
+            var m = (dd.getMonth()+1)<10?"0"+(dd.getMonth()+1):(dd.getMonth()+1);//获取当前月份的日期，不足10补0
+            var d = dd.getDate()<10?"0"+dd.getDate():dd.getDate();//获取当前几号，不足10补0
+            return y+"-"+m+"-"+d + " " + dd.getHours() + ":" + dd.getMinutes() + ":" + dd.getSeconds(); 
         }
     },
     created(){

@@ -28,15 +28,15 @@
         </el-form>
         <el-table class='c-mt-10 c-mb-70' :data="dataList" v-loading='loading' max-height="724" stripe>
             <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
-            <el-table-column prop="msgCnt" label="消息编号" min-width="6%"></el-table-column>
-            <el-table-column prop="rsuId" label="RSU编号" min-width="6%"></el-table-column>
-            <el-table-column label="时间" min-width="10%">
+            <el-table-column prop="msgCnt" label="消息编号" min-width="8%"></el-table-column>
+            <el-table-column prop="rsuId" label="RSU编号" min-width="8%"></el-table-column>
+            <el-table-column label="时间" min-width="14%">
                 <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
             </el-table-column>
-            <el-table-column label="经度" min-width="8%">
+            <el-table-column label="经度" min-width="10%">
                 <template slot-scope="scope">{{scope.row.longitude.toFixed(8)}}</template>
             </el-table-column>
-            <el-table-column label="纬度" min-width="8%">
+            <el-table-column label="纬度" min-width="10%">
                 <template slot-scope="scope">{{scope.row.latitude.toFixed(8)}}</template>
             </el-table-column>
             <el-table-column prop="elevation" label="高程" min-width="8%"></el-table-column>

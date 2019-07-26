@@ -110,7 +110,6 @@
                     'deviceId': deviceId          
                 }).then(res => {
                     if(res.status == '200'){
-                        console.log(res.data)
                         let {ptLon,ptLat} = res.data;
                         if(ptLon == undefined){
                             this.lon = '--';
@@ -151,10 +150,6 @@
         animation: am-show-map 1s ease-in;
         -webkit-animation: am-show-map 0.2s ease-in;
     }
-    /* #my-video_html5_api{
-        width:980px;
-        height:500px;
-    } */
     @media screen and (min-width: 950px) and (max-width:1240px){
         .endTimeW{
            width:100px;

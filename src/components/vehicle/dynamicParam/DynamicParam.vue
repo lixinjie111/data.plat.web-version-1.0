@@ -31,21 +31,21 @@
                 <el-button size="mini" plain icon="el-icon-edit" @click="localClick();">获取本地数据</el-button>
             </div>
             
-            <el-table :data="dataList" v-loading='loading' stripe border max-height="724" class='c-mb-70'>
-                <el-table-column prop="eventName" min-width='12%' label="事件名称"></el-table-column>
-                <el-table-column prop="eventNo" min-width='18%' label="事件编号"></el-table-column>
-                <el-table-column prop="vehicleId" min-width='12%' label="车辆编号"></el-table-column>
-                <el-table-column label="事件触发时间" min-width='12%'>
+            <el-table :data="dataList" v-loading='loading' stripe max-height="724" class='c-mb-70'>
+                <el-table-column prop="eventName" min-width='8%' label="事件名称"></el-table-column>
+                <el-table-column prop="eventNo" min-width='23%' label="事件编号"></el-table-column>
+                <el-table-column prop="vehicleId" min-width='8%' label="车辆编号"></el-table-column>
+                <el-table-column label="事件触发时间" min-width='15%'>
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.eventTime)}}</template>
                 </el-table-column>
-                <el-table-column label="数据采集开始时间" min-width='12%'>
+                <el-table-column label="数据采集开始时间" min-width='15%'>
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.beginTime)}}</template>
                 </el-table-column>
-                <el-table-column label="数据采集结束时间" min-width='12%'>
+                <el-table-column label="数据采集结束时间" min-width='15%'>
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.endTime)}}</template>
                 </el-table-column>
-                <el-table-column prop="status" label="采集状态" min-width='12%'></el-table-column>
-                <el-table-column prop="vehicleId" label="操作" min-width='6%'>
+                <el-table-column prop="status" label="采集状态" min-width='6%'></el-table-column>
+                <el-table-column prop="vehicleId" label="操作" min-width='5%'>
                     <template slot-scope="scope">
                         <el-button size="small" icon="el-icon-view" circle type="warning" plain @click="lookClick(scope.row)"></el-button>
                     </template>

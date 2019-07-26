@@ -69,13 +69,13 @@
                 <el-table-column min-width="18%" label="文件名称" prop="fileName"></el-table-column>
                 <el-table-column min-width="11%" label="车辆编号" prop="vehicleId"></el-table-column>
                 <el-table-column min-width="11%" label="车牌号" prop="plateNo"></el-table-column>
-                <el-table-column min-width="11%" label="摄像头编号" prop="camCode"></el-table-column>
-                <el-table-column min-width="11%" label="开始时间" prop="startTime"></el-table-column>
-                <el-table-column min-width="11%" label="结束时间" prop="endTime"></el-table-column>
-                <el-table-column min-width="11%" label="视频来源">
+                <el-table-column min-width="9%" label="摄像头编号" prop="camCode"></el-table-column>
+                <el-table-column min-width="15%" label="开始时间" prop="startTime"></el-table-column>
+                <el-table-column min-width="15%" label="结束时间" prop="endTime"></el-table-column>
+                <el-table-column min-width="8%" label="视频来源">
                     <template slot-scope="scope">{{scope.row.source==1 ? '直播' : '手动获取'}}</template>
                 </el-table-column>
-                <el-table-column min-width="11%" label="下载状态">
+                <el-table-column min-width="8%" label="下载状态">
                     <template slot-scope="scope">
                         <template v-if="scope.row.taskStatus == 0">未下载</template>
                         <template v-if="scope.row.taskStatus == 1">下载中</template>

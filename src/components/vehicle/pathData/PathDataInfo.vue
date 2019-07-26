@@ -35,11 +35,13 @@
                     </p>
                     <el-button class="c-pos-btn" type="warning" size="small" plain @click="exportTrailDataAlert">导出轨迹</el-button>
                 </div>
-                <div class="map-div">
-                    <tusvn-map ref="refMap" targetId="pathDataMap" overlayContainerId="mec4" :isMasker='false'
-                              :isCircle='false' @MapInitComplete="mapComplete"></tusvn-map>
+                <div class="c-detail-box c-wrapper-20 c-padding-20">
+                    <div class="c-map-big-wrapper">
+                      <tusvn-map ref="refMap" targetId="pathDataMap" overlayContainerId="mec4" :isMasker='false'
+                                :isCircle='false' @MapInitComplete="mapComplete"></tusvn-map>
+                    </div>
                 </div>
-                <div class="table-div">
+                <div class="c-wrapper-20 c-padding-20 c-detail-box">
                   <table class="yk-table1">
                     <thead>
                     <tr>
@@ -72,81 +74,6 @@
               </div>
         </div>
 </div>
-  <!-- <div class="yk-left">
-    <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
-    <div class="yk-first">
-      <div class="yk-title" style="display: inline-block;">
-        轨迹详情
-      </div>
-      <div class="c-button-wrapper c-text-right">
-          <el-button size="mini" plain icon="el-icon-top-right" @click="exportTrailDataAlert">导出轨迹</el-button>
-      </div>
-      <div>
-        <div class="yk-block yk-gap20">
-          <label>车牌号:</label>
-          <span>{{data.plateNo}}</span>
-        </div>
-        <div class="yk-block yk-gap20">
-          <label>车牌编号:</label>
-          <span>{{data.vehicleId}}</span>
-        </div>
-      </div>
-      <div class="yk-second">
-        <div class="yk-block yk-gap20">
-          <label>行程开始时间:</label>
-          <span>{{data.startTime}}</span>
-        </div>
-        <div class="yk-block yk-gap20">
-          <label>行程结束时间:</label>
-          <span>{{data.endTime}}</span>
-        </div>
-        <div class="yk-block yk-gap20">
-          <label>行驶里程:</label>
-          <span>{{data.mileage}} km</span>
-        </div>
-        <div class="yk-block yk-gap20">
-          <label>行驶时长:</label>
-          <span>{{data.durationTime}} min</span>
-        </div>
-      </div>
-      <div class="map-div">
-          <tusvn-map ref="refMap" targetId="pathDataMap" overlayContainerId="mec4" :isMasker='false'
-                    :isCircle='false' @MapInitComplete="mapComplete"></tusvn-map>
-      </div>
-      <div>
-        <div class="table-div">
-          <table class="yk-table1">
-            <thead>
-            <tr>
-              <th style='width:5%;'>序号</th>
-              <th style='width:15%;'>时间</th>
-              <th style='width:12%;'>经度</th>
-              <th style='width:12%;'>纬度</th>
-              <th style='width:12%;'>速度(km/h)</th>
-              <th style='width:12%;'>航向角</th>
-              <th>高程(m)</th>
-            </tr>
-            </thead>
-            <tbody class="tbody">
-            <tr class="yk-table-body mouse-cursor" :class="index==selectItem?'table-row-color1':'table-row-color2'"
-                v-for='(item,index) in dataList' :key="index"
-                @click.stop="selectRow(item,index);">
-              <td style='width:5%;'>{{ index+1 }}</td>
-              <td style='width:15.2%;'>{{$dateUtil.formatTime(item.timestamp,'yy-mm-dd hh:mm:ss:ms')}}</td>
-              <td style='width:12%;'>{{item.gnss_LONG}}</td>
-              <td style='width:12.2%;'>{{item.gnss_LAT}}</td>
-              <td style='width:12.2%;'>{{item.gnss_SPD}}</td>
-              <td style='width:12%;'>{{item.gnss_HEAD}}</td>
-              <td>{{item.gnss_HIGHT}}</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="remaining-pages">{{requestDataParams.loadMoreData}}</div>
-      </div>
-
-    </div>
-  </div> -->
 </template>
 <script>
   import TusvnMap from "@/common/view/TusvnMap/TusvnMap.vue";

@@ -31,7 +31,7 @@
                 <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
                 <el-table-column prop="msgCnt" min-width='10' label="消息编号"></el-table-column>
                 <el-table-column prop="rsuId" label="RSU编号" min-width='10'></el-table-column>
-                <el-table-column label="时间" min-width='8'>
+                <el-table-column label="时间" min-width='14'>
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
                 </el-table-column>
                 <el-table-column label="经度" min-width='9'>
