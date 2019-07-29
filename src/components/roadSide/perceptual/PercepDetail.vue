@@ -52,17 +52,17 @@
                                 </el-table-column>
                                 <el-table-column min-width="25%" label="感知目标数据">
                                     <template slot-scope="scope">
-                                        <el-popover placement="top" width="350" trigger="hover" popper-class="sl-table-popover">
-                                            <div class="popover-content" v-html="scope.row.field"></div>
-                                            <p class="sl-table-text" slot="reference" v-html='scope.row.field'></p>
+                                        <el-popover placement="top" width="350" trigger="hover" popper-class="c-table-popover">
+                                            <div class="c-table-popover-content" v-html="scope.row.field"></div>
+                                            <p class="c-table-popover-text" slot="reference" v-html='scope.row.field'></p>
                                         </el-popover>
                                     </template>
                                 </el-table-column>
                                 <el-table-column min-width="50%" label="原始感知数据">
                                     <template slot-scope="scope">
-                                        <el-popover placement="top" width="600" trigger="hover" popper-class="sl-table-popover" >
-                                            <div class="popover-content" v-html="scope.row.data"></div>
-                                            <p class="sl-table-text" slot="reference" v-html='scope.row.data'></p>
+                                        <el-popover placement="top" width="600" trigger="hover" popper-class="c-table-popover">
+                                            <div class="c-table-popover-content" v-html="scope.row.data"></div>
+                                            <p class="c-table-popover-text" slot="reference" v-html='scope.row.data'></p>
                                         </el-popover>
                                     </template>
                                 </el-table-column>
@@ -496,12 +496,6 @@ export default {
     .sl-table {
         flex: 1;
         margin-right: 10px;
-        .sl-table-text {
-            @include lineClamp(4);
-        }
-        .el-table {
-
-        }
     }
     .percep-con {
         padding-top: 0;
@@ -562,18 +556,6 @@ export default {
 }
 </style>
 <style lang="scss">
-.sl-table-popover {
-    .el-popover__title {
-        font-size: 14px;
-        line-height: 18px;
-    }
-    .popover-content {
-        padding-right: 5px;
-        max-height: 300px;
-        overflow-y: auto;
-    }
-
-}
 .sl-video-player {
     position: relative;
 }
