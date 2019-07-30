@@ -169,6 +169,10 @@ export default {
     },
     methods: {
         init(){
+            let startTime = this.$dateUtil.GetDateStr(2);
+            let endTime = this.$dateUtil.getNowFormatDate();
+            this.searchKey.startTime = startTime;
+            this.searchKey.endTime = endTime;
             this.findEventList();
             // this.initPaging();
         },

@@ -191,8 +191,8 @@ export default {
     },
     methods: {
         init(){
-            let startTime = this.GetDateStr(2);
-            let endTime = this.getNowFormatDate();
+            let startTime = this.$dateUtil.GetDateStr(1);
+            let endTime = this.$dateUtil.getNowFormatDate();
             this.searchKey.startTime = startTime;
             this.searchKey.endTime = endTime;
             this.findBSMLists();
@@ -279,25 +279,6 @@ export default {
         indexMethod(index){
             return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         },
-        getNowFormatDate() {//获取当前时间作为结束时间
-            var date = new Date();
-            var seperator1 = "-";
-            var seperator2 = ":";
-            var month = date.getMonth() + 1<10? "0"+(date.getMonth() + 1):date.getMonth() + 1;
-            var strDate = date.getDate()<10? "0" + date.getDate():date.getDate();
-            var currentdate = date.getFullYear() + seperator1  + month  + seperator1  + strDate
-                    + " "  + date.getHours()  + seperator2  + date.getMinutes()
-                    + seperator2 + date.getSeconds();
-            return currentdate;
-        },
-        GetDateStr(AddDayCount) { //获取当前时间之前的两天作为开始时间
-            var dd = new Date();
-            dd.setDate(dd.getDate()-AddDayCount);//获取AddDayCount天前的日期
-            var y = dd.getFullYear(); 
-            var m = (dd.getMonth()+1)<10?"0"+(dd.getMonth()+1):(dd.getMonth()+1);//获取当前月份的日期，不足10补0
-            var d = dd.getDate()<10?"0"+dd.getDate():dd.getDate();//获取当前几号，不足10补0
-            return y+"-"+m+"-"+d + " " + dd.getHours() + ":" + dd.getMinutes() + ":" + dd.getSeconds(); 
-        }
     },
     created(){
         this.init();

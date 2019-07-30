@@ -71,9 +71,9 @@
                 <div class='video-mask' v-show='isMaskShow'></div>
                     <video class="c-video"></video>
                 </div>
-                <div class="c-map-wrapper" :class='{"map-change-max":changeSize}'>
-                    <div class='c-map-btn-left' @click='mapChangeMax'></div>
-                    <div class='c-map-btn-right' @click='mapChangeMin'></div>
+                <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
+                    <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
+                    <div class='c-map-btn c-map-btn-right' @click='mapChangeMin' v-else></div>
                     <max-map ref='maxMap'></max-map>
                 </div>
             </div>
@@ -106,27 +106,21 @@ export default {
         return {
             timer:null,
             deviceType:'',
-            protocalArr:[],
             protocal:'',
             monitStartTime:'',
             playTimer:null,
             old_time:null,
-            changeRed:false,
             totalTime:0,
             totalTimeformat:'',
-            dataList: [], 
             isStart:false,
             isDisabled: false,
             isMaskShow:true,
-            isMapShow:false,
             allList: [],
             plateNoList: [],
             vehicleIdList: [], 
             plateNoLoading: false,
             vehicleIdLoading: false,
-
             changeSize:false,
-
             searchKey:{
                 vehicleId:'',
                 plateNo:'',
@@ -199,8 +193,6 @@ export default {
                 
             }
             this.searchKey.status = item.status;
-            // this.searchKey.vehicleId = item.vehicleId;
-            // this.searchKey.plateNo = item.plateNo;
             this.searchKey.serialNum = item.serialNum;
             this.isStart = false;
             if(this.searchKey.status != '1'){//摄像头状态为不在线时,开始监控按钮不可点击
@@ -231,7 +223,7 @@ export default {
                 this.isStart = true;
                 this.isMaskShow = false;
                 if(this.playerOptions.sources[0].src){
-                    this.player.play();
+                    // this.player.play();
                     //直播报活调用
                     this.repeatFn();
                     //计算视频播放时长
@@ -275,7 +267,6 @@ export default {
             }
         },
         onPlayerEnded() {
-            console.log("playerEnded")
             this.endVideo();
         },
         repeatFn(){//每5秒直播报活一次
@@ -451,41 +442,7 @@ export default {
     },
 }
 </script>
-<style scoped lang="scss">
-.video-wrapper{
-    position: relative;
-    padding-bottom: 28.125%;
-    .video-left,.video-right{
-        position: absolute;
-        width: 50%;
-        top: 0;
-        bottom:0;
-    }
-    .video-left{
-        left: 0;
-        background: #000;
-        .video-mask{
-            position:absolute;
-            top:0;left:0;
-            width:100%;
-            height:100%;
-            z-index:50;
-            background-color: #000;
-        }
-        #cmsplayer{
-            width:100%;
-            height:100%;
-        }
-    }
-    .video-right{
-        right: 0;
-        z-index:51;
-        border:1px solid #666;
-        &.max {
-            width: 100%;
-        }
-    }
-}    
+<style scoped lang="scss"> 
 .monit-detail {
     ul{
         overflow: hidden;

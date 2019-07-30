@@ -135,15 +135,12 @@ export default {
                 vehicleId: '',
                 camSerialNum:'',//摄像头序列号
                 camDeviceId:'',//摄像头编号
-                // camId: '',      //摄像头序列号
-                // camCode: '',    //摄像头编号
                 camDirection: '--',
                 startTime: '',
                 endTime: '',
                 protocal: ''
             },
 
-            plateNoTimer: null,
             vehicleIdTimer: null,
             plateNoLoading: false,
             vehicleIdLoading: false,

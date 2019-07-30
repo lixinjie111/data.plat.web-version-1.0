@@ -42,7 +42,7 @@
             <el-table-column prop="elevation" label="高程" min-width="8%"></el-table-column>
             <el-table-column prop='content' label="消息内容" min-width="10%"></el-table-column>
             <el-table-column prop='pathPtNum' label="坐标点个数" min-width="8%"></el-table-column>
-            <el-table-column label="坐标点串" width='140' :show-overflow-tooltip="true" min-width="24%">
+            <el-table-column label="坐标点串" width='140' :show-overflow-tooltip="true" min-width="24%" class='campLine'>
                 <template slot-scope="scope" class="sl-table-text">{{scope.row.alertPath.length > 0 ? scope.row.alertPath : ''}}</template>
             </el-table-column>
             <el-table-column prop='alertRadius' label="警告半径" min-width="10%"></el-table-column>
@@ -160,6 +160,10 @@ export default {
     },
     methods: {
         init(){
+            let startTime = this.$dateUtil.GetDateStr(1);
+            let endTime = this.$dateUtil.getNowFormatDate();
+            this.searchKey.startTime = startTime;
+            this.searchKey.endTime = endTime;
             this.findRsiPage();
             // this.initPaging();
         },
@@ -255,6 +259,9 @@ export default {
 <style scoped lang="scss">
 @import "@/assets/scss/theme.scss";
 .el-tooltip {
+    @include lineClamp(4);
+}
+.campLine{
     @include lineClamp(4);
 }
 </style>

@@ -1,24 +1,20 @@
 <template>
 <!--高德地图-->
-<div id='map-container' class="map-container">
-    <ul>
-      <li><p class='speed'>车速:{{vehicleInfo.speed ? (vehicleInfo.speed+'km/h') : ' -- '}}</p></li>
-      <li><p class='angle'>航向角:{{vehicleInfo.courseAngle ? (vehicleInfo.courseAngle+'度') : ' -- '}}</p></li>
-      <li><p class='lonlat'>经纬度:{{vehicleInfo.lon ? vehicleInfo.lon : ' -- '}},{{vehicleInfo.lat ? vehicleInfo.lat : ' -- '}}</p></li>
-      <li><p class='time'>时间:{{vehicleInfo.gpsTime ? vehicleInfo.gpsTime : ' -- '}}</p></li>
+<div class="c-map-container" id='map-container'>
+    <ul class="c-map-info clearfix c-icon-map-info">
+        <li class='c-map-info-list speed'>车速:{{vehicleInfo.speed ? (vehicleInfo.speed+'km/h') : ' -- '}}</li>
+        <li class='c-map-info-list angle'>航向角:{{vehicleInfo.courseAngle ? (vehicleInfo.courseAngle+'度') : ' -- '}}</li>
+        <li class='c-map-info-list lonlat'>经纬度:{{vehicleInfo.lon ? vehicleInfo.lon : ' -- '}},{{vehicleInfo.lat ? vehicleInfo.lat : ' -- '}}</li>
+        <li class='c-map-info-list time'>时间:{{vehicleInfo.gpsTime ? vehicleInfo.gpsTime : ' -- '}}</li>
     </ul>
 </div>
 </template>
 <script>
   import {gpsInfo} from '@/api/video';
-  import TusvnMap from "@/common/view/TusvnMap/TusvnMap.vue";
-  import Map3D from "@/common/view/map3D/map3D.vue";
   import ConvertCoord from'@/common/utils/coordConvert.js';
   export default {
     name: 'MaxMap',
-    components: {
-      TusvnMap, Map3D
-    },
+    components: {},
     data() {
       return {
         distanceMap:{},//创建地图对象
@@ -34,6 +30,7 @@
           maskCar:null,
           polyline:[]
         },
+        changeSize:false,
         pointList:[],
         lastPoint: []
       }
@@ -127,64 +124,3 @@
     },
   }
 </script>
-<style scoped lang="scss">
-@import "@/assets/scss/theme.scss";
-.max-map-warpper{
-  height: 100%;
-  ul{
-    width:180px;
-    position: absolute;
-    top:10px;
-    right:10px;
-    padding:5px 10px 2px;
-    border:1px solid #999;
-    background:rgba(255,255,225,.5);
-    li{
-      height:28px;
-      font-size:12px;
-      line-height:28px;
-      span {
-        display: inline-block;
-        vertical-align: middle;
-      }
-      @include lineClampOne();
-    }
-  }
-  .zoom-btn{
-    position: absolute;
-    right:5px;
-    bottom:8px;
-    text-indent: -999px;
-    width:40px;
-    height:40px;
-    cursor:pointer;
-    overflow: hidden;
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
-    &.fd{
-      background-image:url('../../../assets/images/maxMap/ico-max.png');
-    }
-    &.sx{
-      background-image:url('../../../assets/images/maxMap/ico-min.png');
-    }
-  }
-  .icon{
-    display: inline-block;
-    width:25px;
-    height:100%;
-    vertical-align: middle;
-    &.speed{
-        background:url('../../../assets/images/maxMap/ico-wheel.png') left center no-repeat;
-    }
-    &.angle{
-        background:url('../../../assets/images/maxMap/ico-angle.png') left center no-repeat;
-    }
-    &.position{
-        background:url('../../../assets/images/maxMap/icon-position.png') left center no-repeat;
-    }
-    &.time{
-        background:url('../../../assets/images/maxMap/ico-time.png') left center no-repeat;
-    }
-  }
-}
-</style>

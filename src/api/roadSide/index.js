@@ -6,9 +6,14 @@ import {HTTPURL,operPlatUrl} from '../requestUrl';
  */
 
  /**
- * 左侧树形菜单 省市区
+ * 左侧树形菜单 省
  */
-export const queryRoadRegionTree = params => { return axios.post(`${HTTPURL}road/queryRoadRegionTree`, params).then(res => res.data); };
+export const queryProvinceCityTree = params => { return axios.post(`${HTTPURL}road/queryProvinceCityTree`, params).then(res => res.data); };
+
+ /**
+ * 左侧树形菜单 区路
+ */
+export const queryCountyRoadTree = params => { return axios.post(`${HTTPURL}road/queryCountyRoadTree`, params).then(res => res.data); };
  /**
  * 左侧树形菜单
  */
@@ -28,7 +33,7 @@ export const queryRoadCamCoordinate = params => { return axios.post(`${HTTPURL}r
  /**
  * 查询在线车辆数
  */
-export const getRoadSideCameraStaticsAndListByDist = params => { return axios.get(`${operPlatUrl}v2x/v2/remote/device/getRoadSideCameraStaticsAndListByDist`, {params: params}).then(res => res.data); };
+export const getCityCameraStatics = params => { return axios.get(`${operPlatUrl}road/getCityCameraStatics`, {params: params}).then(res => res.data); };
 
 /**
  * 视频管理

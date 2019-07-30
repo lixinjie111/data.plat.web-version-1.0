@@ -222,7 +222,7 @@ export default {
             })
         },
         cancelClick(){
-           this.backClick();
+            this.backClick();
         },
     },
     mounted(){

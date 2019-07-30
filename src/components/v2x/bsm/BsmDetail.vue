@@ -54,7 +54,7 @@ import vehicleInfoTag from '@/common/detail/vehicleInfoTag';
                         },
                         {
                             name:"车辆尺寸",
-                            value:this.infoTagData.length-this.infoTagData.width-this.infoTagData.height
+                            value:this.infoTagData.length?this.infoTagData.length:'--'+'/'+this.infoTagData.width?this.infoTagData.width:'--'+'/'+this.infoTagData.height?this.infoTagData.height:'--'
                         },
                         {
                             name:"GPS时间",
@@ -86,7 +86,7 @@ import vehicleInfoTag from '@/common/detail/vehicleInfoTag';
                         },
                         {
                             name:"刹车状态",
-                            value:this.infoTagData.brakePedal=='ON' ? '是' : '否',
+                            value:this.infoTagData.brakePedal,
                         },
                         {
                             name:"档位状态",
@@ -94,7 +94,7 @@ import vehicleInfoTag from '@/common/detail/vehicleInfoTag';
                         },
                         {
                             name:"航向角",
-                            value:this.infoTagData.angle,
+                            value:this.infoTagData.heading,
                         },
                         {
                             name:"方向盘转角",
@@ -185,3 +185,4 @@ import vehicleInfoTag from '@/common/detail/vehicleInfoTag';
     padding-right:30px;
 }
 </style>
+

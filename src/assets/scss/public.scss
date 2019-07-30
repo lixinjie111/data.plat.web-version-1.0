@@ -288,6 +288,9 @@ h3.c-title {
 .c-black-box {
 	background-color: $black;
 }
+.c-gray-box {
+	background-color: $mapBgColor;
+}
 .c-add-box {
 	padding: 30px;
 }
@@ -387,35 +390,29 @@ h3.c-title {
 	}
 }
 
-//地图
-.c-map-big-wrapper {
-    height: 320px;
-    background-color: $mapBgColor;
+// 表格里的单元格里的内容超出四行显示省略号
+.c-table-popover-text {
+	@include lineClamp(4);
 }
-//地图视频
-.c-map-video-wrapper {
-	position: relative;
-	// 视频16：9
-	.c-video-wrapper {
-		position: relative;
-		width: 66%;
-		padding-bottom: 37.125%;
-		background-color: $black;
-		.c-video {
-			position: absolute;
-			left: 0;
-			right: 0;
-			top: 0;
-			bottom: 0;
-			background-color: $black;
-		}
-	}
-	.c-map-wrapper {
-		position: absolute;
-		right: 0;
-		top: 0;
-		bottom: 0;
-		width: 34%;
-    	background-color: $mapBgColor;
-	}
+// 单元格里的popover提示框
+.c-table-popover {
+	box-shadow: 0 2px 12px 0 rgba(0,0,0,.5);
+    .el-popover__title {
+        font-size: 14px;
+        line-height: 18px;
+    }
+    .c-table-popover-content {
+        padding-right: 5px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+}
+
+// 盒模型1：4
+.c-flex {
+    @include layoutMode(between);
+}
+.c-flex-1 {
+    flex: 1;
 }

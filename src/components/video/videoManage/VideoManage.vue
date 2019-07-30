@@ -94,14 +94,12 @@
 </template>
 <script>
 import TList from '@/common/utils/list.js'
-import VueDatepickerLocal from 'vue-datepicker-local'
 import PlayBack from '@/components/video/playVideo/playback.vue'
 import {queryVideoList,downLoadZipFile,removeVideo} from '@/api/video'
 import axios from 'axios'
 export default {
     name: 'VideoManage',
     components: {
-        VueDatepickerLocal,
         PlayBack
     },
     data(){
@@ -124,10 +122,6 @@ export default {
                 endTime: '',
             },
             selector: [],
-            auth: {
-                isUpadte: true,
-                isDelete: true,
-            },
             pageOption: {
                 page: 1,
                 size: 10,
@@ -253,7 +247,6 @@ export default {
                 downLoadZipFile({
                     'fileIds':this.selector
                 }).then(res => {
-                    console.log(res);
                     this.downloadFile(res);
                 })
             }else{
