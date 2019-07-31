@@ -52,18 +52,15 @@
 		.el-date-editor.el-input, .el-date-editor.el-input__inner {
 			width: 100%;
 		}
-		// &.el-form--inline {
-		// 	.el-input__inner {
-		// 		box-sizing: border-box;
-		// 		width: 100%;
-		// 	}
-		// 	.el-date-editor.el-input, .el-date-editor.el-input__inner {
-		// 		width: 100%;
-		// 	}
-		// 	// .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner {
-		// 	// 	width: 350px;
-		// 	// }
-		// }
+		&.el-form--inline {
+			.el-input__inner {
+				box-sizing: border-box;
+				width: 200px;
+			}
+			.el-date-editor.el-input, .el-date-editor.el-input__inner {
+				width: 200px;
+			}
+		}
 	}
 }
 .el-dialog__wrapper, .el-message-box__wrapper {

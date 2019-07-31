@@ -20,7 +20,7 @@
     position: absolute;
     right: 10px;
     bottom: 10px;
-    z-index: 9;
+    z-index: 1;
     width: 35px;
     height: 35px;
     background-size: 100% 100%;
@@ -77,7 +77,7 @@
         transition: width .3s ease-out;
     }
     .c-map-change-max{
-        width: 42% !important;
+        width: 40% !important;
     }
 }
 
@@ -88,10 +88,10 @@
         width: 560px;
     }
 }
-
+// 小地图里的弹层信息框
 .c-map-info {
     position: absolute;
-    z-index: 100;
+    z-index: 1;
     right: 10px;
     top: 10px;
     font-size: 14px;
@@ -103,7 +103,7 @@
         width: 100%;
         height: 36px;
         box-sizing: border-box;
-        background:rgba(0, 0, 0, .4);
+        background: rgba(0, 0, 0, .4);
         padding: 0 10px;
         
     }
@@ -154,6 +154,43 @@
     }
 }
 
+// 大地图里的弹层信息框
+.c-map-view-info {
+    position: absolute;
+    z-index: 1;
+    right: 10px;
+    top: 10px;
+    padding: 10px;
+    color: #fff;
+    line-height: 20px;
+    background: rgba(0, 0, 0, .4);
+    .list {
+        position: relative;
+        padding: 10px 0 10px 18px;
+        &:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 16px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #f59307;
+        }
+        .name {
+            font-size: 14px;
+            display: block;
+            height: 20px;
+        }
+        .value {
+            margin-top: 8px;
+            font-size: 16px;
+            display: block;
+            height: 20px;
+        }
+    }
+}
+
 
 //地图按钮
 .c-map-btn {
@@ -163,7 +200,7 @@
     width:15px;
     height: 120px;
     margin-top:-60px;
-    z-index: 1000;
+    z-index: 1;
     cursor: pointer;
     background-size: 100% 100%;
     &.c-map-btn-left {
