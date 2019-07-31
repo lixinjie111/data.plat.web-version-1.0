@@ -2,82 +2,65 @@
     <!-- 基本信息 -->
     <div class="c-view-dialog" v-cloak>
         <h3 class="c-title c-border-bottom">视频管理 > 回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></h3>
-        <div class="c-wrapper-20 c-detail-box c-padding-20">
-            <el-form ref="form" size="small" :inline="true">
-                <el-form-item label="摄像头编号:">
-                    {{camDetail.camCode ? camDetail.camCode : '--'}}
-                </el-form-item>
-                <el-form-item label="摄像头序列号:">
-                    {{camDetail.camId ? camDetail.camId : '--'}}
-                </el-form-item>
-                <el-form-item label="路侧点: ">
-                    {{camDetail.roadPoint ? camDetail.roadPoint : '--'}}
-                </el-form-item>
-                <el-form-item label="道路名称: ">
-                    {{camDetail.roadName ? camDetail.roadName : '--'}}
-                </el-form-item>
-                <el-form-item label="开始时间: ">
-                    {{camDetail.startTime ? camDetail.startTime : '--'}}
-                </el-form-item>
-                <el-form-item label="结束时间: ">
-                    {{camDetail.endTime ? camDetail.endTime : '--'}}
-                </el-form-item>
-            </el-form>
-            <div class="c-map-video-wrapper">
+        <div class="c-detail-box c-wrapper-20 c-padding-20">
+            <div class="c-detail-lable-list clearfix">
+                <p class="c-detail-lable">
+                    <span class="name">摄像头编号:</span>
+                    <span class="value">{{camDetail.camCode ? camDetail.camCode : '--'}}</span>
+                </p>
+                <p class="c-detail-lable">
+                    <span class="name">摄像头序列号:</span>
+                    <span class="value">{{camDetail.camId ? camDetail.camId : '--'}}</span>
+                </p>
+                <p class="c-detail-lable">
+                    <span class="name">路侧点:</span>
+                    <span class="value">{{camDetail.roadPoint ? camDetail.roadPoint : '--'}}</span>
+                </p>
+                <p class="c-detail-lable">
+                    <span class="name">道路名称:</span>
+                    <span class="value">{{camDetail.roadName ? camDetail.roadName : '--'}}</span>
+                </p>
+                <p class="c-detail-lable">
+                    <span class="name">开始时间:</span>
+                    <span class="value">{{camDetail.startTime ? camDetail.startTime : '--'}}</span>
+                </p>
+                <p class="c-detail-lable">
+                    <span class="name">结束时间:</span>
+                    <span class="value">{{camDetail.endTime ? camDetail.endTime : '--'}}</span>
+                </p>  
+            </div>
+            <div class="c-map-video-wrapper c-mt-20">
                 <div class="c-video-wrapper">
-                    <div class="c-video">
-                        <video ref='myVideo' controls preload="auto">
-                            <source :src="camDetail.videoPath" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="right-mask" v-show='isMaskShow'></div>
+                    <video class="c-video" controls preload="auto">
+                        <source :src="camDetail.videoPath" type="video/mp4">
+                    </video>
                 </div>
-                <!-- <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
+                <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                     <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
                     <div class='c-map-btn c-map-btn-right' @click='mapChangeMin' v-else></div>
                     <div class="c-map-container" id='map-container'>
                         <ul class="c-map-info clearfix c-icon-map-info">
-                            <li class='c-map-info-list speed'>摄像头编号:{{camDetail.camCode ? camDetail.camCode : ' -- '}}</li>
-                            <li class='c-map-info-list angle'>道路名称:{{camDetail.roadName ? camDetail.roadName : ' -- '}}</li>
+                            <li class='c-map-info-list speed'>路侧点名称:{{camDetail.roadName ? camDetail.roadName : ' -- '}}</li>
                             <li class='c-map-info-list lonlat'>经纬度:{{camDetail.lon ? camDetail.lon : ' -- '}},{{camDetail.lat ? camDetail.lat : ' -- '}}</li>
                         </ul>
                     </div>
-                </div> -->
+                </div>
             </div>
         </div>
-            <!-- <div class='roadReplay c-mt-10'>
-                <div class='video-box-replay'>
-                    <video id="my-video" class="video-replay-js vjs-big-play-centered" ref='myVideo' controls preload="auto">
-                        <source :src="videoPath" type="video/mp4">
-                    </video>
-                </div>
-                <div class='right-replay-box'>
-                    <div class='map-bar-in btn-left' @click='showMap'></div>
-                    <div class='map-lay' :class='{"show-map":isSlideOut == true}'>
-                        <div class='map-bar btn-right' @click='hideMap'></div>
-                            <tusvn-map ref="perceMap" targetId="mec9" overlayContainerId="mec10" :isMasker='false' :isCircle='false'></tusvn-map>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
     </div>
     </template>
     <script>
     import {queryRoadCamCoordinate} from '@/api/roadSide'
-    import TusvnMap from "../../../common/view/TusvnMap/TusvnMap.vue";
+    import ConvertCoord from'@/common/utils/coordConvert.js';
     export default {
         name:'RoadVideoReplay',
         components:{
-            TusvnMap
         },
         data(){
             return{
                 changeSize:false,
                 roadReplay:'',
-                isSlideIn:false,
-                isSlideOut:false,
                 isMaskShow:false,
-                id:'0021',
                 camDetail:{
                     lon:'--',
                     lat:'--',
@@ -137,6 +120,8 @@
                         }else{
                             this.camDetail.lon = ptLon;
                             this.camDetail.lat = ptLat;
+                            let _position = ConvertCoord.wgs84togcj02(ptLon,ptLat);
+                            this.distanceMap.setCenter(_position);
                         }
                     }
                 })

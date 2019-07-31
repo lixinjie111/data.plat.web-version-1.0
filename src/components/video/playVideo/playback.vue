@@ -3,25 +3,30 @@
     <div class="c-view-dialog" v-cloak>
         <h3 class="c-title c-border-bottom">视频管理 > 回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></h3>
         <div class="c-wrapper-20 c-detail-box c-padding-20">
-            <el-form ref="form" size="small" :inline="true">
-                <el-form-item label="车牌号：">
-                    {{plateNo ? plateNo : '--'}}
-                </el-form-item>
-                <el-form-item label="车辆编号：">
-                    {{vehicleId ? vehicleId : '--'}}
-                </el-form-item>
-                <el-form-item label="序列号: ">
-                    {{serialNum ? serialNum : '--'}}
-                </el-form-item>
-                <el-form-item label="摄像头朝向: ">
-                    {{position ? position : '--'}}
-                </el-form-item>
-                <el-form-item label="状态: ">
-                    {{camStatus ? camStatus : '--'}}
-                </el-form-item>
-            </el-form>
+            <div class="c-detail-lable-list clearfix">
+                <p class="c-detail-lable">
+                    <span class="name">车牌号:</span>
+                    <span class="value">{{plateNo ? plateNo : '--'}}</span>
+                </p>
+                <p class="c-detail-lable">
+                    <span class="name">车辆编号:</span>
+                    <span class="value">{{vehicleId ? vehicleId : '--'}}</span>
+                </p>
+                <p class="c-detail-lable">
+                    <span class="name">序列号:</span>
+                    <span class="value">{{serialNum ? serialNum : '--'}}</span>
+                </p>
+                <p class="c-detail-lable">
+                    <span class="name">摄像头朝向:</span>
+                    <span class="value">{{position ? position : '--'}}</span>
+                </p>
+                <p class="c-detail-lable">
+                    <span class="name">状态:</span>
+                    <span class="value">{{camStatus ? camStatus : '--'}}</span>
+                </p>
+            </div>
             <!-- 地图视频模块 -->
-            <div class="c-map-video-wrapper">
+            <div class="c-map-video-wrapper c-mt-20">
                 <div class="c-video-wrapper">
                     <div class="c-video">
                         <video id="my-video" class="video-js vjs-big-play-centered" ref='myVideo' :src="videoPath" controls preload="auto" @seeking="videoProcess">

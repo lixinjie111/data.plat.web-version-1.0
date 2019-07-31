@@ -223,7 +223,7 @@ export default {
                 this.isStart = true;
                 this.isMaskShow = false;
                 if(this.playerOptions.sources[0].src){
-                    // this.player.play();
+                    this.player.play();
                     //直播报活调用
                     this.repeatFn();
                     //计算视频播放时长

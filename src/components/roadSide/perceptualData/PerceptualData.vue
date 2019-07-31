@@ -77,7 +77,8 @@
                     <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
                     <div class='c-map-btn c-map-btn-right' @click='mapChangeMin' v-else></div>
                     <div class="c-map-container" id='map-container'>
-                        <ul class="c-map-info clearfix c-icon-map-info">
+
+                        <ul class="c-map-info clearfix">
                             <li class='c-map-info-list speed'>摄像头编号:{{camDetail.camId ? camDetail.camId : ' -- '}}</li>
                             <li class='c-map-info-list angle'>道路名称:{{camDetail.roadNewName ? camDetail.roadNewName : ' -- '}}</li>
                             <li class='c-map-info-list lonlat'>经纬度:{{camDetail.lon ? camDetail.lon : ' -- '}},{{camDetail.lat ? camDetail.lat : ' -- '}}</li>
