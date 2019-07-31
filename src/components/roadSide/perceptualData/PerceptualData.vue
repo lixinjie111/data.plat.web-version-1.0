@@ -442,7 +442,7 @@ export default {
         width: 130px !important;
     }
     .el-form-item {
-        margin: 0;
+        margin: 0 !important;
     }
 }
 .c-map-info{
