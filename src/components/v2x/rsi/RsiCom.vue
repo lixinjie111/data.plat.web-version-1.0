@@ -42,8 +42,13 @@
             <el-table-column prop="elevation" label="高程" min-width="8%"></el-table-column>
             <el-table-column prop='content' label="消息内容" min-width="10%"></el-table-column>
             <el-table-column prop='pathPtNum' label="坐标点个数" min-width="8%"></el-table-column>
-            <el-table-column label="坐标点串" width='140' :show-overflow-tooltip="true" min-width="24%" class='campLine'>
-                <template slot-scope="scope" class="sl-table-text">{{scope.row.alertPath.length > 0 ? scope.row.alertPath : ''}}</template>
+            <el-table-column min-width="20%" label="坐标点串" prop="fileName">
+                <template slot-scope="scope">
+                    <el-popover placement="top" width="350" trigger="hover" popper-class="c-table-popover">
+                        <div class="c-table-popover-content" v-html="scope.row.alertPath"></div>
+                        <p class="c-table-popover-text" slot="reference" v-html='scope.row.alertPath'></p>
+                    </el-popover>
+                </template>
             </el-table-column>
             <el-table-column prop='alertRadius' label="警告半径" min-width="10%"></el-table-column>
         </el-table>
