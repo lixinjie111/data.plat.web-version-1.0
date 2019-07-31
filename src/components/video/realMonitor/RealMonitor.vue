@@ -77,20 +77,20 @@
                     <max-map ref='maxMap'></max-map>
                 </div>
             </div>
-            <div class='monit-detail'>
-                    <ul class="clearfix">
-                        <li>
-                            <span>开始时间:</span> {{monitStartTime ? monitStartTime : '--'}}
-                        </li>
-                        <li>
-                            <span style="margin-left:14px;">累计时长: </span>{{totalTimeformat ? totalTimeformat : '--'}}
-                        </li>
-                        <li>
-                            <span>使用流量: </span>--
-                        </li>
-                    </ul>
-            </div>
-      
+            <div class="c-detail-lable-list clearfix c-mt-10 c-font-14">
+                <p class="c-detail-lable">
+                    <span class="name">开始时间：</span>
+                    <span class="value">{{monitStartTime ? monitStartTime : '--'}}</span>
+                </p>
+                <p class="c-detail-lable">
+                    <span class="name">累计时长：</span>
+                    <span class="value">{{totalTimeformat ? totalTimeformat : '--'}}</span>
+                </p>
+                <p class="c-detail-lable">
+                    <span class="name">使用流量：</span>
+                    <span class="value">--</span>
+                </p>
+            </div>      
     </div> 
 
 </template>

@@ -9,7 +9,7 @@
               <div class='c-wrapper-20 vehicle-detail'>
                   <ul><li>车辆编号: {{infoTagData.vehicleId ? infoTagData.vehicleId : '--'}}</li><li>车牌号: {{infoTagData.plateNo ? infoTagData.plateNo : '--'}}</li><li>GPS时间: {{$dateUtil.formatTime(infoTagData.gpstime)}}</li></ul>
               </div>
-              <vehicle-info-tag title="基本信息" :infoTagData="infoTagDataFilter"></vehicle-info-tag>
+              <vehicle-info-tag title="" :infoTagData="infoTagDataFilter"></vehicle-info-tag>
           </div>
       </div>
 </div>

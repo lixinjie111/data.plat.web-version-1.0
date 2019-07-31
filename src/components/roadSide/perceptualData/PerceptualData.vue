@@ -21,16 +21,6 @@
         </div>
         <!-- 信息&&地图视频模块 -->
         <div class="c-mt-20 c-flex">
-            <!-- <el-form ref="searchForm" :inline="true" size="small" class="c-detail-lable-list c-pdb-20">
-                <el-form-item label="摄像头编号:" class="c-detail-lable">
-                    {{camCode ? camCode : '--'}}
-                </el-form-item>
-                <el-form-item label="摄像头序列号:" class="c-detail-lable">
-                    {{camId ? camId : '--'}}
-                </el-form-item>
-                <el-form-item label="道路名称:" class="c-detail-lable">{{roadNewName ? roadNewName : "--"}}</el-form-item>
-                <el-form-item label="路侧点:" class="c-detail-lable" @click="goRoadSide">{{roadPointName ? roadPointName : "--"}}</el-form-item>
-            </el-form> -->
             <!-- 地图视频模块 -->
             <div class="c-gray-box road-cam-box">
                 <div class='cam-title'>摄像头组织结构</div>
@@ -57,26 +47,24 @@
                             </el-select>
                         </el-form-item>
                     </el-form>
-                    <div class="carm-oragn-sels">
-                        <div class='carm-info'>
-                            <span>总数:{{camStatusNums.camTotal}}</span>
-                            <span>在线:{{camStatusNums.onlineNum}}</span>
-                            <span>实时监控:{{camStatusNums.monitNum}}</span>
-                        </div>
-                        <el-tree
-                            class="c-mt-10"
-                            :data='newData' 
-                            :props="defaultProps" 
-                            :load="loadNode" 
-                            lazy 
-                            @node-click="handleNodeClick" 
-                            >
-                            <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
-                                <i class="sl-video-icon" :class="data.icon" :id='data.id' v-if="data.icon"></i>
-                                <span class="sl-play-text">{{ node.label }}</span>              
-                            </span>
-                        </el-tree>
+                    <div class="c-mt-10 c-flex">
+                        <span class="c-flex-1">总数:{{camStatusNums.camTotal}}</span>
+                        <span class="c-flex-1">在线:{{camStatusNums.onlineNum}}</span>
+                        <span class="c-flex-1">实时监控:{{camStatusNums.monitNum}}</span>
                     </div>
+                    <el-tree
+                        class="c-padding-10 carm-oragn-sels"
+                        :data='newData' 
+                        :props="defaultProps" 
+                        :load="loadNode" 
+                        lazy 
+                        @node-click="handleNodeClick" 
+                        >
+                        <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
+                            <i class="sl-video-icon" :class="data.icon" :id='data.id' v-if="data.icon"></i>
+                            <span class="sl-play-text">{{ node.label }}</span>              
+                        </span>
+                    </el-tree>
 
                 </div>
             </div>
@@ -98,79 +86,7 @@
                 </div>
             </div>
         </div>
-<!-- <div class="c-wrapper-20" v-cloak>
-    <div class="yk-search-box">
-        <div class="yk-search-block yk-block-label">
-            <label class="yk-w-90">摄像头编号:</label>
-            <span>{{camCode}}</span>
-        </div>
-
-        <div class="yk-search-block yk-block-label" style="margin-left:5px;">
-            <label class="yk-w-90">摄像头序列号: </label>
-            <span>{{camId}}</span>
-        </div>
-
-        <div class="yk-search-block yk-block-label">
-            <label class="yk-w-70 colGrap">道路名称: </label>
-            <span>{{roadNewName}}</span>
-        </div>
-
-        <div class="yk-search-block yk-block-label">
-            <label class="yk-w-60 colGrap">路侧点: </label>
-            <span class='rspRoad' ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{roadPointName}}</span>
-        </div>
-    </div>
-    <div class='left-box'>
-        <div class='carm-oragn'>
-            <span>摄像头组织结构</span>
-        </div>
-        <div class='carm-oragn-info'>
-            <div class="carm-oragn-sels">
-                <select style="width: 116px; height: 26px;" v-model="provinceSelected" @change="findMunicipal">
-                    <option v-for='(item,index) in provinceData' :key='index' :value='item'>{{item.name}}</option>
-                </select>
-                <select style="width: 116px; height: 26px;" v-model='municiSelected' @change='findArea'>
-                    <option v-for='(item,index) in municipalData' :key='index' :value="item">{{item.name}}</option>
-                </select>
-                <div class='carm-info'>
-                    <span>总数:{{camTotal}}</span>
-                    <span>在线:{{onlineNum}}</span>
-                    <span>实时监控:{{monitNum}}</span>
-                </div>
-                <el-tree 
-                    :data='newData' 
-                    :props="defaultProps" 
-                    :load="loadNode" 
-                    lazy 
-                    @node-click="handleNodeClick" 
-                    @node-collapse="endPlay"
-                    >
-                    <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
-                        <i class="sl-video-icon" :class="data.icon" :id='data.id' v-if="data.icon"></i>
-                        <span class="sl-play-text">{{ node.label }}</span>              
-                    </span>
-                </el-tree>
-            </div>
-
-        </div>
-    </div>
-    <div class='right-box'>
-        <div class="right-mask" v-show='isMaskShow'></div>
-        <div class="video-perce">
-            <div class='video-box-perce'>
-                <div id="cmsplayer" style="width:100%;height:100%"></div>
-            </div>
-        </div>
-
-        <div class='map-bar-in btn-left' @click='showMap'></div>
-        <div class='map-lay' :class='{"show-map":isSlideOut == true}'>
-            <div class='map-bar btn-right' @click='hideMap'></div>
-                <tusvn-map ref="perceMap" targetId="mec9" overlayContainerId="mec10" :isMasker='false' :isCircle='false'></tusvn-map>
-            </div>
-    </div>
-    <component :is='roadSideInfo' :roadPointId='roadPointId' :roadPointName='roadPointName' @roadInfoBack='backClick' />
-</div> -->
-<component :is='roadSideInfo' :roadPointId='roadPointId' :roadPointName='roadPointName' @roadInfoBack='backClick' />
+        <road-side-info v-if='roadSideShow' :roadPointId='camDetail.roadPointId' :roadPointName='camDetail.roadPointName' @roadInfoBack='backClick'></road-side-info>
 </div>
 </template>
 <script>
@@ -185,13 +101,13 @@ export default {
     },
     data(){
         return{
+            roadSideShow:false,
             provinceLoading:false,
             changeSize:false,
             isMaskShow:false,
             newData:[],
             provinceData:[],
             municipalData:[],
-            roadPointId:'--',
             roadSideInfo:null,
             camInfo:'',
             roadPointName:'--',
@@ -203,7 +119,8 @@ export default {
                 roadNewName:'--',
                 roadPointName:'--',
                 lon:'--',
-                lat:'--'
+                lat:'--',
+                roadPointId:'--',
             },
             searchKey:{
                 provinceSelected:'',
@@ -233,7 +150,6 @@ export default {
                 mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
             });
             this.queryProvinceCityTrees();
-            console.log(this.municiSelected);
             //1分钟刷一次实时状态
             setInterval(()=>{
                 if(this.municiSelected != undefined && this.municiSelected != ''){
@@ -242,7 +158,6 @@ export default {
             },5000);
         },
         queryProvinceCityTrees(){
-            console.log(this.searchKey.provinceSelected);
             if(this.searchKey.provinceSelected.code != '0'){
                 queryProvinceCityTree({
                 'type':'N'
@@ -317,7 +232,6 @@ export default {
                 }).then(res => {
                     if(res.status == '200') {
                         var roadCode = this.newData[0].children;
-                        // console.log(res);
                         if(res.data.length) {
                             var protocal = JSON.stringify(res.data[0].protocol);
                             localStorage.setItem('protocal',protocal);
@@ -345,7 +259,6 @@ export default {
             }
         },
         handleNodeClick(data){
-            console.log(data);
             if(data.road){
                 this.roadName = data.label;
             }
@@ -393,7 +306,6 @@ export default {
             document.getElementById("cmsplayer").innerHTML = embedCode;
         },
         startPlay(camerData){
-            console.log(camerData);
             let camList = this.camInfo;
             let camLen = camList.length;
             let protocal = JSON.parse(localStorage.getItem('protocal'));
@@ -435,11 +347,10 @@ export default {
             })
         },
         goRoadSide(){
-            let roadPointId = this.roadPointId;
-            this.roadSideInfo = RoadSideInfo;
+            this.roadSideShow = true;
         },
         backClick(){
-            this.roadSideInfo = null;
+            this.roadSideShow = false;
         },
         mapChangeMax(){
             this.changeSize = true;
@@ -448,41 +359,20 @@ export default {
             this.changeSize = false;
         },
         computCamNum(areaCode){
-            console.log(areaCode);
             //查询总数。在线数，实时监控数
             getCityCameraStatics({
                 cityCode: this.searchKey.municiSelected.code
             }).then(res =>{
                 if(res.status == '200'){
-                    console.log(res.data.count);
                     this.camStatusNums.camTotal = res.data.count;
                     this.camStatusNums.monitNum = res.data.monitorCount;
                     this.camStatusNums.onlineNum = res.data.onlineCount;
-                    console.log(this.camStatusNums.camTotal)
                 }
             });
-            // if(areaCode == 0){
-            //     this.camTotal=0;
-            //     this.onlineNum=0;
-            //     this.monitNum=0;
-            // }else {
-            //     getCityCameraStatics({
-            //         cityCode: this.searchKey.municiSelected.code
-            //     }).then(res =>{
-            //         if(res.status == '200'){
-            //             console.log(res.data);
-            //             this.camDetail = res.data.list;
-            //             this.camStatusNums.camTotal = res.data.count;
-            //             this.camStatusNums.monitNum = res.data.monitorCount;
-            //             this.camStatusNums.onlineNum = res.data.onlineCount;
-            //         }
-            //     });
-            // }
         }
     },
     watch:{
         'searchKey.municiSelected'(newVal, oldVal){
-            console.log(newVal);
             this.computCamNum(newVal.code)
         }
     },
@@ -493,9 +383,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 .road-cam-box{
+    position: relative;
     width:290px;
     padding:10px;
     box-sizing: border-box;
+    line-height: 20px;
     .cam-title{
         font-size:14px;
         text-align: left;
@@ -522,11 +414,13 @@ export default {
 </style>
 <style lang="scss">
 @import '@/assets/scss/theme.scss';
-.carm-oragn-sels { 
-    .el-tree{
-        position: relative;
-        min-height: 200px;
-        max-height:400px;
+.carm-oragn-sels {
+    &.el-tree{
+        position: absolute;
+        top: 106px;
+        left: 10px;
+        right: 10px;
+        bottom: 0;
         overflow-y: auto;
         .el-tree__empty-block {
             position: absolute;

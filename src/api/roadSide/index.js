@@ -46,6 +46,11 @@ export const getCityCameraStatics = params => { return axios.post(`${HTTPURL}roa
 export const queryRoadVideoList = params => { return axios.post(`${HTTPURL}road/queryRoadVideoList`, params).then(res => res.data); };
 
 /**
+ * 路侧点信息
+ */
+export const queryRoadPointInfo = params => { return axios.post(`${HTTPURL}road/queryRoadPointInfo`, params).then(res => res.data); };
+
+/**
  * 批量下载
  */
 export const downLoadZipFile = params => { return axios.post(`${HTTPURL}cam/downLoadZipFile`,params).then(res => res.data); };

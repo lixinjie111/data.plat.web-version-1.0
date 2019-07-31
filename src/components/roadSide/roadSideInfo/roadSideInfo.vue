@@ -1,177 +1,148 @@
 <template>
 <div class='c-view-dialog'>
-    <p class="c-title c-border-bottom">查看路侧点信息<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
-    <div class='c-detail-lable-list c-wrapper-20 c-padding-10'>
-        <div class="c-detail-lable-list clearfix c-detail-box c-wrapper-20 c-padding-20">
-            <p class="c-detail-lable">
-                <span class="name">路侧点:</span>
-                <span class="value">{{roadPointName}}</span>
-            </p>
-        </div>
-        <!-- 地图模块 -->
-        <div class="c-wrapper-20 c-detail-box c-padding-20">
-            <div class="c-map-big-wrapper" id='map-container' :class="isScaleMap ? 'c-map-on' : 'c-map-off'">
-                <span class="c-map-scale-btn" :class="isScaleMap ? 'c-map-scale-off' : 'c-map-scale-on'" @click="isScaleMap = !isScaleMap"></span>
-                <ul class="c-map-view-info">
-                    <li class="list">
-                        <span class="name">行政区域</span>
-                        <em class="value">上海市嘉定区</em>
-                    </li>
-                    <li class="list">
-                        <span class="name">所属MEC</span>
-                        <em class="value">上海嘉定边缘云</em>
-                    </li>
-                    <li class="list">
-                        <span class="name">摄像头朝向</span>
-                        <em class="value">东南向</em>
-                    </li>
-                </ul>
+    <div class="c-scroll-wrap">
+        <div class="c-scroll-inner">
+            <h3 class="c-title">
+                查看路侧点信息
+                <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
+            </h3>
+            <div class="c-detail-lable-list clearfix c-detail-box c-wrapper-20 c-padding-20">
+                <p class="c-detail-lable">
+                    <span class="name">路侧点:</span>
+                    <span class="value">{{roadPointName}}</span>
+                </p>
+            </div>
+            <!-- 地图模块 -->
+            <div class="c-wrapper-20 c-detail-box c-padding-20">
+                <div class="c-map-big-wrapper" id='map-container-r' :class="isScaleMap ? 'c-map-on' : 'c-map-off'">
+                    <span class="c-map-scale-btn" :class="isScaleMap ? 'c-map-scale-off' : 'c-map-scale-on'" @click="isScaleMap = !isScaleMap"></span>
+                    <ul class="c-map-view-info">
+                        <li class="list">
+                            <span class="name">道路名称</span>
+                            <em class="value">{{roadPointName ? roadPointName : ' -- '}}</em>
+                        </li>
+                        <li class="list">
+                            <span class="name">经纬度</span>
+                            <em class="value">{{camDetail.lon ? camDetail.lon : ' -- '}},{{camDetail.lat ? camDetail.lat : ' -- '}}</em>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 设备基本信息 -->
+            <vehicle-info-tag title="基本信息" :infoTagData="infoTagData"></vehicle-info-tag>  
+
+            <div class="c-wrapper-20 c-detail-box">
+                <p class='c-title'>绑定设备列表</p>
+                <el-table :data='deviceList'>
+                    <el-table-column label="序号" type="index"></el-table-column>
+                    <el-table-column min-width="18%" prop="deviceId" label="设备类型"></el-table-column>
+                    <el-table-column min-width="6%" prop="roadName" label="设备ID"></el-table-column>
+                    <el-table-column min-width="16%" prop="serialNum" label="设备序列号"></el-table-column>
+                    <el-table-column min-width="10%" prop="direction" label="朝向"></el-table-column>
+                </el-table>
             </div>
         </div>
-        <!-- <div class='roadMapInfo c-mt-10'>
-            <tusvn-map ref="perceMap2" targetId="mec11" overlayContainerId="mec12" :isMasker='false' :isCircle='false'></tusvn-map>
-        </div> -->
-        <div class="yk-search-box">                
-            <div class="yk-search-block yk-block-label">
-                <label class="colGrap">基本信息</label>
-            </div>          
-        </div>
-        <div class="yk-table-box" style="height:auto;min-height:auto;">
-            <table class="yk-table">
-                <thead>
-                <tr>                        
-                    <th scope="col" style="width:8%;">道路ID</th>
-                    <th scope="col" style="width:14%;">道路名称</th>
-                    <th scope="col" style="width:22%;">经纬度</th>                       
-                    <th scope="col" style="width:20%;">所属行政区域</th>
-                    <th scope="col" style="width:15%;">所属MEC</th>
-                    <th scope="col" style="width:12%;">绑定设备数</th>
-                </tr>
-                </thead>
-                <tbody style="height:auto;min-height:auto;">
-                    <tr class="yk-table-body">
-                        <!-- 道路Id -->
-                        <td style="width:8%;">{{rspRoadId}}</td>
-                        <!-- 道路名称 -->
-                        <td style="width:14%;">{{roadName}}</td>
-                        <!-- 经纬度 -->
-                        <td style="width:22%;">{{lon}},{{lat}}</td>
-                        <!-- 所属行政区域 -->
-                        <td style="width:20%;">{{distName}}</td>
-                        <!-- 所属MEC -->
-                        <td style="width:14%;">{{mecName}}</td>
-                        <!-- 绑定设备数 -->
-                        <td style="width:10%;">{{bindingDevCount}}</td>
-                    </tr>
-                </tbody>
-            </table>                
-        </div>
-        <div class="yk-search-box">                
-            <div class="yk-search-block yk-block-label">
-                <label class="colGrap">绑定设备列表</label>
-            </div>          
-        </div>
-        <div class="yk-table-box">
-            <table class="yk-table">
-                <thead>
-                <tr>                        
-                    <th scope="col" style="width:5%;">序号</th>
-                    <th scope="col" style="width:12%;">设备类型</th>
-                    <th scope="col" style="width:8%;">设备ID</th>
-                    <th scope="col" style="width:28%;">设备序列号</th>                       
-                    <th scope="col" style="width:10%;">朝向</th>
-                </tr>
-                </thead>
-                <tbody style="height:auto;min-height:auto;">
-                <tr class="yk-table-body" v-for='(item,index) in deviceDataList' :key="index" style="height:auto;min-height:auto;">
-                    <td style="width:7%;">{{ index + paging.size * (paging.index)+1}}</td>
-                    <!--设备类型-->
-                    <td style="width:20%;">{{item.deviceTypeName}}</td>
-                    <!-- 设备ID-->
-                    <td style="width:14%;">{{item.deviceId}}</td>
-                    <!--设备序列号-->
-                    <td style="width:45%;">{{item.serialNum}}</td>
-                    <!-- 朝向-->
-                    <td>{{item.direction}}</td>
-                    </tr>
-                </tbody>
-            </table>                
-        </div>
+
     </div>
+
 </div>
 
 </template>
 <script>
-import TusvnMap from "../../../common/view/TusvnMap/TusvnMap.vue";
+import vehicleInfoTag from '@/common/detail/vehicleInfoTag';
+import {queryRoadPointInfo} from '@/api/roadSide';
+import ConvertCoord from'@/common/utils/coordConvert.js';
 export default {
     props:['roadPointId','roadPointName'],
     components:{
-        TusvnMap
+        vehicleInfoTag
     },
     data(){
         return{
-            rspRoadId:'',
-            roadName:'',
-            lat:'',
-            lon:'',
-            distName:'',
-            mecName:'',
-            bindingDevCount:'',
-            deviceDataList:[],
-            paging: {
-                index: 0,
-                size: 10,
-                total: 0,
-            },
+            infoTagData:[],
+            deviceList:[],
+            isScaleMap: false,
+            camDetail:{
+                roadName:'',
+                lat:'',
+                lon:'',
+            }
+            
         }
     },
+    mounted(){
+        setTimeout(() => {
+            this.initMap();
+        }, 0);
+        this.getRoadPointDetail();
+    },
     methods:{
-        init(roadPId){
-            this.getRoadPointInfo(roadPId);
+        initMap(){
+            let _scale = new AMap.Scale(),
+                _toolbar = new AMap.ToolBar({
+                    liteStyle: true,
+                    position: 'LT'
+                });
+            // let _option = Object.assign({},this.$parent.$parent.$parent.defaultMapOption,{
+            //     mapStyle: 'light'
+            // });
+            this.distanceMap = new AMap.Map('map-container-r', this.$parent.$parent.$parent.$parent.defaultMapOption);
+            // this.distanceMap.setZoom();
+            this.distanceMap.addControl(_scale);
+            this.distanceMap.addControl(_toolbar);
         },
         backClick(){
             this.$emit('roadInfoBack');
         },
-        getRoadPointInfo(roadPointId){
-            this.$api.post('road/queryRoadPointInfo',{
-                "roadPointId":roadPointId
-            },response => {
-                if(response.status >= 200 && response.status < 300){
-                    let _this = this;
-                    _this.lon = response.data.data.lon;
-                    _this.lat = response.data.data.lat;
-                    _this.rspRoadId = response.data.data.rspRoadId;
-                    _this.distName = response.data.data.distName;
-                    _this.roadName = response.data.data.roadName;
-                    _this.mecName = response.data.data.mecName;
-                    _this.bindingDevCount = response.data.data.bindingDevCount;
-                    // _this.$refs.perceMap2.centerAt(_this.lon,_this.lat);
-                    
-                    let popupIntervalHandle = setInterval(() => {
-                        let layHtml = `<span>路侧点:${roadPointId}</span>`;;
-                        _this.$refs.perceMap2.addInfoWindow({
-                            id:"0033",
-                            content:layHtml,
-                            lon:_this.lon,
-                            lat:_this.lat
-                        });
-                        clearInterval(popupIntervalHandle);
-                    },100);
-                    let deviceList = response.data.data.deviceList;
-                    if(deviceList != '' || deviceList != [] || deviceList != null){
-                        _this.deviceDataList = response.data.data.deviceList;
-                        _this.$message.sucess(tip.msg);
-                        
-                    }else{
-                        this.$message.error('获取列表失败');
-                    }
+        getRoadPointDetail(){
+            queryRoadPointInfo({
+                "roadPointId":this.roadPointId
+            }).then(res => {
+                if(res.status == '200'){
+                    this.camDetail.lon = res.data.lon;
+                    this.camDetail.lat = res.data.lat;
+                    let _position = ConvertCoord.wgs84togcj02(res.data.lon,res.data.lat);
+                    this.distanceMap.setCenter(_position);
+                    this.infoTagData = [
+                        {
+                            title:"",
+                            list:[{
+                                        name:"道路ID",
+                                        value:res.data.rspRoadId,
+                                    },
+                                    {
+                                        name:"道路名称",
+                                        value:res.data.roadName,
+                                    },
+                                    {
+                                        name:"经纬度",
+                                        value:res.data.lon + ' , ' + res.data.lat,
+                                    }
+                            ]
+                        },
+                        {
+                            title:"",
+                            list:[{
+                                        name:"所属行政区域",
+                                        value:res.data.distName,
+                                    },
+                                    {
+                                        name:"所属MEC",
+                                        value:res.data.mecName,
+                                    },
+                                    {
+                                        name:"绑定设备数",
+                                        value:res.data.bindingDevCount,
+                                    }
+                            ],
+                        }
+                    ],
+                    this.deviceList = res.data.deviceList;
                 }
-            });
+            })
         },
 
-    },
-    mounted(){
-        this.init(this.roadPointId);
     }
 }
 </script>
