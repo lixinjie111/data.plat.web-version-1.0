@@ -6,7 +6,7 @@
                     <form>
                         <div class="yk-form-group yk-login-header yk-center">                    
                             <div class="yk-logo-img-box">
-                                <img class="yk-margin-left-30" src="@/assets/images/login-logo.png">                                
+                                <img class="yk-margin-left-30" src="static/images/login-logo.png">                                
                             </div>
                             <div class="yk-title">
                                 启迪智能网联汽车数据管理平台
@@ -164,7 +164,8 @@ export default {
         margin-bottom: 20px;
     }
     .yk-margin-left-30{
-        margin-left:30px;
+        // margin-left:30px;
+        margin: 0 auto;
     }
     .yk-input-title{
         user-select: none;        

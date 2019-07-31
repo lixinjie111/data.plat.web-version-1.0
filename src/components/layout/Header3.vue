@@ -1,8 +1,8 @@
 <template>
     <div id="header">
         <div class="logo">
-            <img src="../../assets/images/logo.png" class="logo-img c-vertical-middle"/>
-            <em class="name c-vertical-middle">数据管理平台</em>
+            <img src="static/images/logo.png" class="logo-img"/>
+            <!-- <em class="name">数据管理平台</em> -->
         </div>
         <div class="userinfo">
             <el-dropdown trigger="hover">
@@ -83,9 +83,9 @@ export default {
         }
     }
     .logo {
-        overflow: hidden;
+        @include layoutMode(align);
         .logo-img {
-            height: 25px;
+            height: 26px;
             margin-right: 10px;
         }
         .name {
