@@ -9,7 +9,11 @@
             <ul class="base-info-bottom">
                 <li v-for="(item,index) in baseData.list" :key="index" class="base-info-list">
                     <p class="title">{{item.name}}</p>
-                    <p class="text" :class="item.isYellow ? 'c-yellow' : item.isBlue ? 'c-blue' : ''">{{item.value || '--'}}</p>
+                    <p class="text c-yellow" v-if="item.isYellow">{{item.value || '--'}}</p>
+                    <p class="text c-red" v-else-if="item.isRed">{{item.value || '--'}}</p>
+                    <p class="text c-blue" v-else-if="item.isBlue">{{item.value || '--'}}</p>
+                    <p class="text c-green" v-else-if="item.isGreen">{{item.value || '--'}}</p>
+                    <p class="text" v-else>{{item.value || '--'}}</p>
                 </li>
 
             </ul>     

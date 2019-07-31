@@ -1,6 +1,6 @@
 <template>
     <div class="c-wrapper-20 c-detail-box">
-        <!-- <p class="c-title">{{title}}</p> -->
+        <p class="c-title" v-if="title">{{title}}</p>
         <ul class="c-detail-table-vertical clearfix">
             <li v-for="(item,index) in infoTagData" :key="index" class="list" :style="{'margin-top': item.title ? '0' : '-1px'}">
                 <p class="title" v-if="item.title">{{item.title}}</p>
@@ -40,7 +40,7 @@ export default {
         .title{
             height: 46px;
             @include layoutMode();
-            background-color: $bgColor;
+            background-color: $tableBgColor;
         }
         .inner-list{
             width: 100%;
@@ -52,7 +52,7 @@ export default {
                 box-sizing: border-box;
                 border-top: 1px solid  $borderColor;
                 border-right: 1px solid $borderColor;
-                background-color: $bgColor;
+                background-color: $tableBgColor;
                 @include layoutMode();
                 @include lineClamp(2);
            }

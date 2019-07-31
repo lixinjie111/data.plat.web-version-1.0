@@ -1,6 +1,6 @@
 <template>
     <div class="c-wrapper-20 c-detail-box">
-        <p class="c-title c-border-bottom">{{title}}</p>
+        <p class="c-title c-border-bottom" v-if="title">{{title}}</p>
         <ul class="travel-info clearfix">
             <li class="list" v-for="(item,index) in travelData" :key="index">
                 <div class="list-inner">

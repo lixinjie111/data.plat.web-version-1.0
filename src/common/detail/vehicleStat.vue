@@ -1,6 +1,6 @@
 <template>
     <div class="c-wrapper-20 c-detail-box">
-        <p class="c-title c-border-bottom">{{title}}</p>
+        <p class="c-title c-border-bottom" v-if="title">{{title}}</p>
         <div class="c-padding-10 veh-operation-info">
             <ul class="veh-operation-info-bottom clearfix">
                 <li v-for="(item,index) in statData" :key="index" class="veh-operation-info-list">
