@@ -33,7 +33,8 @@ export const queryRoadCamCoordinate = params => { return axios.post(`${HTTPURL}r
  /**
  * 查询在线车辆数
  */
-export const getCityCameraStatics = params => { return axios.get(`${operPlatUrl}road/getCityCameraStatics`, {params: params}).then(res => res.data); };
+export const getCityCameraStatics = params => { return axios.post(`${HTTPURL}road/getCityCameraStatics`, params).then(res => res.data); };
+// export const getCityCameraStatics = params => { return axios.get(`${HTTPURL}road/getCityCameraStatics`, {params: params}).then(res => res.data); };
 
 /**
  * 视频管理

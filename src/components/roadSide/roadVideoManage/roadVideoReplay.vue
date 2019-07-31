@@ -2,28 +2,50 @@
     <!-- 基本信息 -->
     <div class="c-view-dialog" v-cloak>
         <h3 class="c-title c-border-bottom">视频管理 > 回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></h3>
-        <div class="c-wrapper-20">
-            <el-form ref="form" size="small" :inline="true" class='c-mt-20'>
+        <div class="c-wrapper-20 c-detail-box c-padding-20">
+            <el-form ref="form" size="small" :inline="true">
                 <el-form-item label="摄像头编号:">
-                    {{camCode ? camCode : '--'}}
+                    {{camDetail.camCode ? camDetail.camCode : '--'}}
                 </el-form-item>
                 <el-form-item label="摄像头序列号:">
-                    {{camId ? camId : '--'}}
+                    {{camDetail.camId ? camDetail.camId : '--'}}
                 </el-form-item>
                 <el-form-item label="路侧点: ">
-                    {{roadPoint ? roadPoint : '--'}}
+                    {{camDetail.roadPoint ? camDetail.roadPoint : '--'}}
                 </el-form-item>
                 <el-form-item label="道路名称: ">
-                    {{roadName ? roadName : '--'}}
+                    {{camDetail.roadName ? camDetail.roadName : '--'}}
                 </el-form-item>
                 <el-form-item label="开始时间: ">
-                    {{startTime ? startTime : '--'}}
+                    {{camDetail.startTime ? camDetail.startTime : '--'}}
                 </el-form-item>
                 <el-form-item label="结束时间: ">
-                    {{endTime ? endTime : '--'}}
+                    {{camDetail.endTime ? camDetail.endTime : '--'}}
                 </el-form-item>
             </el-form>
-            <div class='roadReplay c-mt-10'>
+            <div class="c-map-video-wrapper">
+                <div class="c-video-wrapper">
+                    <div class="c-video">
+                        <video ref='myVideo' controls preload="auto">
+                            <source :src="camDetail.videoPath" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="right-mask" v-show='isMaskShow'></div>
+                </div>
+                <!-- <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
+                    <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
+                    <div class='c-map-btn c-map-btn-right' @click='mapChangeMin' v-else></div>
+                    <div class="c-map-container" id='map-container'>
+                        <ul class="c-map-info clearfix c-icon-map-info">
+                            <li class='c-map-info-list speed'>摄像头编号:{{camDetail.camCode ? camDetail.camCode : ' -- '}}</li>
+                            <li class='c-map-info-list angle'>道路名称:{{camDetail.roadName ? camDetail.roadName : ' -- '}}</li>
+                            <li class='c-map-info-list lonlat'>经纬度:{{camDetail.lon ? camDetail.lon : ' -- '}},{{camDetail.lat ? camDetail.lat : ' -- '}}</li>
+                        </ul>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+            <!-- <div class='roadReplay c-mt-10'>
                 <div class='video-box-replay'>
                     <video id="my-video" class="video-replay-js vjs-big-play-centered" ref='myVideo' controls preload="auto">
                         <source :src="videoPath" type="video/mp4">
@@ -37,7 +59,7 @@
                         </div>
                     </div>
                 </div>
-        </div>
+            </div> -->
     </div>
     </template>
     <script>
@@ -50,60 +72,53 @@
         },
         data(){
             return{
-                videoPath:'',
+                changeSize:false,
                 roadReplay:'',
                 isSlideIn:false,
                 isSlideOut:false,
+                isMaskShow:false,
                 id:'0021',
-                lon:'--',
-                lat:'--',
-                camId:'--',
-                camCode:'--',
-                roadPoint:'--',
-                roadName:'--',
-                startTime:'--',
-                endTime:'--'
+                camDetail:{
+                    lon:'--',
+                    lat:'--',
+                    camId:'--',
+                    camCode:'--',
+                    roadPoint:'--',
+                    roadName:'--',
+                    startTime:'--',
+                    endTime:'--',
+                    videoPath:'',
+                },
+                
+                
             }
         },
         methods:{
             init(){
+                this.distanceMap = new AMap.Map('map-container', {
+                    resizeEnable: true, //是否监控地图容器尺寸变化
+                    zoom: this.zoom, //初始化地图层级
+                    rotateEnable: true,
+                    mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
+                });
                 let videoInfo = JSON.parse(localStorage.getItem('videoInfo'));
-                this.camId = videoInfo.camId;
-                this.camCode = videoInfo.camCode;
-                this.roadName = videoInfo.roadName;
-                this.startTime = videoInfo.startTime;
-                this.endTime = videoInfo.endTime;
-                this.roadPoint = videoInfo.roadPointName;
-                this.videoPath = videoInfo.destPath + '.mp4';
+                this.camDetail.camId = videoInfo.camId;
+                this.camDetail.camCode = videoInfo.camCode;
+                this.camDetail.roadName = videoInfo.roadName;
+                this.camDetail.startTime = videoInfo.startTime;
+                this.camDetail.endTime = videoInfo.endTime;
+                this.camDetail.roadPoint = videoInfo.roadPointName;
+                this.camDetail.videoPath = videoInfo.destPath + '.mp4';
                 this.mapDetail(videoInfo.camCode);
             },
             backClick(){
                 this.$emit('backRoadManage');
             },
-            showMapBar(){
-                this.isSlideIn = true;
+            mapChangeMax(){
+                this.changeSize = true;
             },
-            hideMapBar(){
-                this.isSlideIn = false;
-            },
-            showMap(){
-                this.isSlideIn = false;
-                this.isSlideOut = true;
-                this.$refs.perceMap.resize([300,500]);
-                let _this = this;
-                let slideTime = setInterval(() => {
-                    let layHtml = `<div class='mapPop'><ul><li>摄像头:${_this.camId}</li><li>道路名称:${this.roadName}</li><li>经纬度:${this.lon},${this.lat}</li></ul></div>`;
-                    _this.$refs.perceMap.addInfoWindow({
-                        id:"0021",
-                        content:layHtml,
-                        lon:_this.lon,
-                        lat:_this.lat
-                    });
-                    clearInterval(slideTime);
-                },100);
-            },
-            hideMap(){
-                this.isSlideOut = false;
+            mapChangeMin(){
+                this.changeSize = false;
             },
             mapDetail(deviceId){
                 queryRoadCamCoordinate({  
@@ -112,16 +127,16 @@
                     if(res.status == '200'){
                         let {ptLon,ptLat} = res.data;
                         if(ptLon == undefined){
-                            this.lon = '--';
+                            this.camDetail.lon = '--';
                         }else{
-                            this.lon = ptLon;
-                            this.lat = ptLat;
+                            this.camDetail.lon = ptLon;
+                            this.camDetail.lat = ptLat;
                         }
                         if(ptLat == undefined){
-                            this.lat = '--';
+                            this.camDetail.lat = '--';
                         }else{
-                            this.lon = ptLon;
-                            this.lat = ptLat;
+                            this.camDetail.lon = ptLon;
+                            this.camDetail.lat = ptLat;
                         }
                     }
                 })

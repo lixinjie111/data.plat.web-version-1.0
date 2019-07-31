@@ -8,51 +8,55 @@
             <el-form-item label="行政区域">
                 <el-select
                     v-model.trim="provinceSelected"
+                    value-key="code"
+                    placeholder="请选择省"
                     @change="findMunicipal">
                     <el-option
                         v-for="item in provinceData"
-                        value-key="name"
-                        :key="item.name"
-                        :label="item.name"
-                        :value="item.name">
+                        :key="item.code"
+                        :label="item.label"
+                        :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="市辖区">
                 <el-select
                     v-model.trim="municiSelected"
+                    value-key="code"
+                    placeholder="请选择市"
                     @change='findArea'>
                     <el-option
                         v-for="item in municipalData"
-                        value-key="name"
-                        :key="item.name"
-                        :label="item.name"
-                        :value="item.name">
+                        :key="item.code"
+                        :label="item.label"
+                        :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="区">
                 <el-select
                     v-model.trim="areaSelected"
+                    value-key="code"
+                    placeholder="请选择区"
                     @change='changeRoad'>
                     <el-option
                         v-for="item in areaList"
-                        value-key="name"
-                        :key="item.name"
-                        :label="item.name"
-                        :value="item.name">
+                        :key="item.code"
+                        :label="item.label"
+                        :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="道路名称">
                 <el-select
                     v-model.trim="roadSelected"
+                    value-key="code"
+                    placeholder="请选择路"
                     @change='getRoadPoint'>
                     <el-option
-                        v-for="(item,index) in roadList"
-                        value-key="name"
-                        :key="index"
-                        :label="item.name"
+                        v-for="item in roadList"
+                        :key="item.code"
+                        :label="item.label"
                         :value="item">
                     </el-option>
                 </el-select>
@@ -60,11 +64,13 @@
             <el-form-item label="摄像头编号">
                 <el-select
                     v-model.trim="camSelected"
+                    value-key="serialNum"
+                    placeholder="请选择摄像头编号"
                     @change='getRoadPoint'>
                     <el-option
-                        v-for="(item,index) in roadCamList"
+                        v-for="item in roadCamList"
                         value-key="serialNum"
-                        :key="index"
+                        :key="item.serialNum"
                         :label="item.serialNum"
                         :value="item">
                     </el-option>
@@ -95,7 +101,7 @@
 </template>
 
 <script>
-import {queryRoadRegionTree,queryRoadCamList,roadDownloadTask} from '@/api/roadSide';
+import {queryProvinceCityTree,queryCountyRoadTree,queryRoadCamList,roadDownloadTask} from '@/api/roadSide';
 export default {
     name: 'MenuOneAdd',
     data () {
@@ -153,11 +159,11 @@ export default {
             plateNum:'',
             vehicleList:[],
             plateNoList:[],
-            roadCamList:[{name:'请选择',code:'0'}],
-            roadList:[{name:'请选择',code:'0'}],
-            provinceData:[{name:'请选择',code:'0'}],//省市
-            municipalData:[{name:'请选择',code:'0'}],//辖区
-            areaList:[{name:'请选择',code:'0'}],
+            roadCamList:[],
+            roadList:[],
+            provinceData:[],//省市
+            municipalData:[],//辖区
+            areaList:[],
             submitloading: false,
             formParams: {
                 vehicleId:'',
@@ -237,61 +243,43 @@ export default {
             this.queryRoadRegionTree();
             this.isStartTipsShow = false;
             this.isEndTipsShow = false;
-            this.provinceSelected = '请选择';
-            this.roadSelected = '请选择';
-            this.camSelected = '请选择';
             this.municiSelected = this.municipalData[0];
             this.areaSelected = this.areaList[0];
         },
         queryRoadRegionTree(){
-            queryRoadRegionTree().then( res => {
+            queryProvinceCityTree({
+                'type':'N'
+                }).then( res => {
                 if(res.status == '200'){
                     this.initDataList = res.data;
                     let len = this.initDataList.length;
-                    this.provinceData = [];
-                    for(let i=0;i<len;i++){//遍历省市数据
-                        let provinceObj = {};
-                        provinceObj.name = this.initDataList[i].name;
-                        provinceObj.code = this.initDataList[i].code;
-                        this.provinceData.push(provinceObj);
-                    }
-                    this.provinceData.unshift({name:'请选择',code:'0'})
+                    this.provinceData = res.data;
                 }
             })
         },
         findMunicipal(item){
-            let len = this.initDataList.length;
-            this.data = [];//切换下拉选择时,区路数据初始化
-            this.municipalData = [];
-            for(let j=0;j<len;j++){//查找辖区数据
-                if(item == this.initDataList[j].name){
-                    let municipalObj = {};
-                    municipalObj.name = this.initDataList[j].dataList[0].name;
-                    municipalObj.code = this.initDataList[j].dataList[0].code;
-                    this.municipalData.push(municipalObj);
-
-                    this.municipalData.unshift({name:'请选择',code:'0'})
-                    this.municiSelected = this.municipalData[0];
-                }
-            }
+            this.municiSelected = '';
+            this.areaSelected = '';
+            this.roadSelected = '';
+            this.roadSelected = '';
+            this.camSelected = '';
+            this.municipalData = item.children;
         },
         findArea(item){//遍历区数据
+            queryCountyRoadTree({
+                'cityCode':item.code,
+                'type':'N'
+            }).then(res => {
+                if(res.status == '200') {
+                    this.areaList = res.data;
+                }
+            })
             let len = this.initDataList.length;
             let areaCode = this.municiSelected.code;
-            for(let i=0;i<len;i++){
-                if(item == this.initDataList[i].dataList[0].name){
-                    this.areaList = this.initDataList[i].dataList[0].dataList;
-                }
-            }
+            this.areaList = item.children;
         },
         changeRoad(item){
-            let len = this.initDataList.length;
-            let roadCode = this.areaSelected.code;
-            for(let i=0;i<len;i++){
-                if(item == this.initDataList[i].dataList[0].dataList[0].name){
-                    this.roadList = this.initDataList[i].dataList[0].dataList[0].dataList;
-                }
-            }
+            this.roadList = item.children;
         },
         getRoadPoint(){
             queryRoadCamList({

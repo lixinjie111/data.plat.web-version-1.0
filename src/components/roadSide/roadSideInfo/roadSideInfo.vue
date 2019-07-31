@@ -1,12 +1,36 @@
 <template>
 <div class='c-view-dialog'>
-    <div>
-
-        <p class="c-title c-border-bottom">查看路侧点信息<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
-        <div class="base-info-top"><label>路侧点:</label> <span>{{roadPointName}}</span></div>
-        <div class='roadMapInfo c-mt-10'>
-            <tusvn-map ref="perceMap2" targetId="mec11" overlayContainerId="mec12" :isMasker='false' :isCircle='false'></tusvn-map>
+    <p class="c-title c-border-bottom">查看路侧点信息<el-page-header @back="backClick" class="c-return-btn"></el-page-header></p>
+    <div class='c-detail-lable-list c-wrapper-20 c-padding-10'>
+        <div class="c-detail-lable-list clearfix c-detail-box c-wrapper-20 c-padding-20">
+            <p class="c-detail-lable">
+                <span class="name">路侧点:</span>
+                <span class="value">{{roadPointName}}</span>
+            </p>
         </div>
+        <!-- 地图模块 -->
+        <div class="c-wrapper-20 c-detail-box c-padding-20">
+            <div class="c-map-big-wrapper" id='map-container' :class="isScaleMap ? 'c-map-on' : 'c-map-off'">
+                <span class="c-map-scale-btn" :class="isScaleMap ? 'c-map-scale-off' : 'c-map-scale-on'" @click="isScaleMap = !isScaleMap"></span>
+                <ul class="c-map-view-info">
+                    <li class="list">
+                        <span class="name">行政区域</span>
+                        <em class="value">上海市嘉定区</em>
+                    </li>
+                    <li class="list">
+                        <span class="name">所属MEC</span>
+                        <em class="value">上海嘉定边缘云</em>
+                    </li>
+                    <li class="list">
+                        <span class="name">摄像头朝向</span>
+                        <em class="value">东南向</em>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- <div class='roadMapInfo c-mt-10'>
+            <tusvn-map ref="perceMap2" targetId="mec11" overlayContainerId="mec12" :isMasker='false' :isCircle='false'></tusvn-map>
+        </div> -->
         <div class="yk-search-box">                
             <div class="yk-search-block yk-block-label">
                 <label class="colGrap">基本信息</label>

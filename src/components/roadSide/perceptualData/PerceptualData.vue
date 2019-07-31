@@ -35,8 +35,8 @@
             <div class="c-gray-box road-cam-box">
                 <div class='cam-title'>摄像头组织结构</div>
                 <div class='carm-oragn-info c-mt-10'>
-                    <el-form ref="searchForm" :inline="true" :model="searchKey" size="small" class="c-text-between">
-                        <el-form-item prop='provinceSelected'>
+                    <el-form size="small" class="c-text-between">
+                        <el-form-item>
                             <el-select v-model="searchKey.provinceSelected" value-key='code' placeholder="请选择省" :loading="provinceLoading" @change="getCityTrees">
                                 <el-option
                                 v-for="item in provinceData"
@@ -46,7 +46,7 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item prop='municiSelected'>
+                        <el-form-item>
                             <el-select v-model="searchKey.municiSelected" value-key='code' placeholder="请选择市" @change="queryCountyRoadTrees">
                                 <el-option
                                 v-for="item in municipalData"
@@ -196,6 +196,7 @@ export default {
             camInfo:'',
             roadPointName:'--',
             zoom:11,
+            camInfoNum:'',
             camDetail:{
                 camCode:'--',
                 camId:'--',
@@ -232,14 +233,16 @@ export default {
                 mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
             });
             this.queryProvinceCityTrees();
+            console.log(this.municiSelected);
             //1分钟刷一次实时状态
             setInterval(()=>{
-                if(this.municiSelected != null && this.municiSelected != ''){
+                if(this.municiSelected != undefined && this.municiSelected != ''){
                     this.computCamNum(this.municiSelected.code);
                 }
             },5000);
         },
         queryProvinceCityTrees(){
+            console.log(this.searchKey.provinceSelected);
             if(this.searchKey.provinceSelected.code != '0'){
                 queryProvinceCityTree({
                 'type':'N'
@@ -251,8 +254,13 @@ export default {
                     }
                 })
             }else{
+                this.camDetail.camCode = '--';
+                this.camDetail.camId = '--';
+                this.camDetail.roadPointName = '--';
+                this.camDetail.lon = '--';
+                this.camDetail.lat = '--';
                 this.newData = [];
-                this.searchKey.municiSelected = '请选择';
+                this.searchKey.municiSelected = '';
                 this.endPlay();
                 return false;
             }
@@ -288,7 +296,6 @@ export default {
                 let data = [];
                 if (hasChild) {
                     var areaArray = this.newData[0].children;
-                    console.log(this.newData);
                     for(var i=0;i<areaArray.length;i++){
                         var obj = {};
                         obj.label = areaArray[i].label;
@@ -297,7 +304,6 @@ export default {
                         // obj.isLeaf = 'leaf';
                         // obj.leaf = true;
                         data.push(obj);
-                        console.log(data);
                     }
                 } else {
                     data = [];
@@ -387,6 +393,7 @@ export default {
             document.getElementById("cmsplayer").innerHTML = embedCode;
         },
         startPlay(camerData){
+            console.log(camerData);
             let camList = this.camInfo;
             let camLen = camList.length;
             let protocal = JSON.parse(localStorage.getItem('protocal'));
@@ -422,7 +429,7 @@ export default {
             }
             let protocal = JSON.parse(localStorage.getItem('protocal'));
             stopStream({
-                "camId":this.camCode,"protocal":protocal
+                "camId":this.camDetail.camCode,"protocal":protocal
             }).then(res => {
 
             })
@@ -443,23 +450,34 @@ export default {
         computCamNum(areaCode){
             console.log(areaCode);
             //查询总数。在线数，实时监控数
-            if(areaCode == 0){
-                this.camTotal=0;
-                this.onlineNum=0;
-                this.monitNum=0;
-            }else {
-                getCityCameraStatics({
-                    citycode: this.searchKey.municiSelected.code
-                }).then(res =>{
-                    if(res.status == '200'){
-                        console.log(res.data);
-                        this.camDetail = res.data.list;
-                        this.camStatusNums.camTotal = res.data.count;
-                        this.camStatusNums.monitNum = res.data.monitorCount;
-                        this.camStatusNums.onlineNum = res.data.onlineCount;
-                    }
-                });
-         }
+            getCityCameraStatics({
+                cityCode: this.searchKey.municiSelected.code
+            }).then(res =>{
+                if(res.status == '200'){
+                    console.log(res.data.count);
+                    this.camStatusNums.camTotal = res.data.count;
+                    this.camStatusNums.monitNum = res.data.monitorCount;
+                    this.camStatusNums.onlineNum = res.data.onlineCount;
+                    console.log(this.camStatusNums.camTotal)
+                }
+            });
+            // if(areaCode == 0){
+            //     this.camTotal=0;
+            //     this.onlineNum=0;
+            //     this.monitNum=0;
+            // }else {
+            //     getCityCameraStatics({
+            //         cityCode: this.searchKey.municiSelected.code
+            //     }).then(res =>{
+            //         if(res.status == '200'){
+            //             console.log(res.data);
+            //             this.camDetail = res.data.list;
+            //             this.camStatusNums.camTotal = res.data.count;
+            //             this.camStatusNums.monitNum = res.data.monitorCount;
+            //             this.camStatusNums.onlineNum = res.data.onlineCount;
+            //         }
+            //     });
+            // }
         }
     },
     watch:{
@@ -531,6 +549,13 @@ export default {
     }
     .el-form-item {
         margin: 0;
+    }
+}
+.c-map-info{
+    &.c-icon-map-info{
+        .c-map-info-list{
+            width:55%;
+        }
     }
 }
 </style>
