@@ -1,6 +1,6 @@
 <template>
     <div class="c-wrapper-20">
-        <div class="c-pos-relative c-inline-block">
+        <div class="index-logo-wrap">
             <img class="index-logo" src="static/images/banner.png">
             <p class="index-text">智能网联汽车数据管理平台</p>
         </div>
@@ -55,9 +55,17 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
 .c-wrapper-20 {
-    padding-bottom: 80px;
+    .index-logo-wrap {
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        top: 20px;
+        bottom: 80px;
+        background-color: #000;
+    }
     .index-logo {
-        max-width: 100%;
+        width: 100%;
+        height: 100%;
     }
     .index-text {
         position: absolute;
