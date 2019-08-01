@@ -36,7 +36,7 @@ export default {
 .c-base-info {
     height: 240px;
     .base-img{
-        width: 300px;
+        width: 240px;
         height: 100%;
         float: left;  
         object-fit: contain;
@@ -46,7 +46,7 @@ export default {
     .base-info {
         position: relative;
         height: 100%;
-        margin-left: 300px;
+        margin-left: 240px;
         font-size: 16px;
         color: $fontGrayColor;
         .base-info-top {
