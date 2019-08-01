@@ -61,6 +61,7 @@ export default {
         right: 20px;
         top: 20px;
         bottom: 80px;
+        // bottom: 20px;
         background-color: #000;
     }
     .index-logo {
