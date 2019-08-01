@@ -2,7 +2,7 @@
 <div class="c-wrapper-20" v-show="isShow">
     <el-tabs v-model="activeName">
         <el-tab-pane label="全集数据" name="first">
-            <full-list ref='fullList'  :title="panel.title" :type="panel.type" :data="panel.data"></full-list>
+            <full-list ref='fullList' :title="panel.title" :type="panel.type" :data="panel.data"></full-list>
         </el-tab-pane>
         <el-tab-pane label="组数据" name="second">
             <group-list ref='groupList' :title="panel.title" :type="panel.type" :data="panel.data"></group-list>
@@ -10,7 +10,7 @@
     </el-tabs>
     <div class="c-text-center c-mt-20">
         <el-button size="small" type="warning" @click="confirmClick">确定</el-button>
-        <el-button size="small" type="warning" @click="cancelClick">取消</el-button>
+        <el-button size="small" type="warning" plain @click="cancelClick">取消</el-button>
     </div>
 </div>
 </template>
@@ -53,15 +53,16 @@ export default {
             this.$refs.groupList.initData();
         },
         confirmClick(){
-            this.getPropertybyGroupIds(this.$refs.groupList.selector.list,this.getLocalData);//获取组对应的property
+            this.getPropertybyGroupIds(this.$refs.groupList.selector,this.getLocalData);//获取组对应的property
         },
         cancelClick(){
-            this.$refs.fullList.selector.list=[];
-            this.$refs.groupList.selector.list=[];
+            this.$refs.fullList.selector=[];
+            this.$refs.groupList.selector=[];
             this.isShow=false;
             this.$emit("init");
         },
         getPropertybyGroupIds(list,callback){
+            console.log(list);
             let ids =[];
             list.forEach(item => {
                 ids.push(item.id);
@@ -74,15 +75,16 @@ export default {
                 'ids':ids
             }).then(res => {
                 if(res.status == '200'){
+                    console.log(res.data);
                     callback(res.data);
                 }
             })
         },
         getLocalData(listGroupProperty){
             let list = [];
-            TList.pushNoRepeat(list,this.$refs.fullList.selector.list);
+            TList.pushNoRepeat(list,this.$refs.fullList.selector);
             TList.pushNoRepeat(list,listGroupProperty);
-
+            console.log(this.$refs.fullList.selector);
             this.isShow=false;
             this.$emit("loadData",list);
         }

@@ -130,7 +130,9 @@ export default {
         handleSelectionChange(val) {
             this.selector = [];
             val.forEach(item => {
-                this.selector.push(item.sid);
+                let obj = {};
+                obj.sid = item.sid;
+                this.selector.push(obj);
             });
         },
        changePageSize(value) {//每页显示条数变更

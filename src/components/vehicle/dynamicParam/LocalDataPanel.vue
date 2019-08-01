@@ -40,7 +40,7 @@
 
                     <div class="c-text-center c-mt-20">
                         <el-button type="warning" size="small" @click="okClick">确定</el-button>
-                        <el-button type="warning" size="small" @click="cancelClick">取消</el-button>
+                        <el-button type="warning" size="small" plan @click="cancelClick">取消</el-button>
                     </div>
                     
                 </div>
@@ -129,12 +129,13 @@ export default {
     },
     methods: {
         init(){
-           this.isAddData=false;
-           this.isShow=true;
-           this.isTipsShow = false;
-           this.isTimeTipShow = false;
+            this.isAddData=false;
+            this.isShow=true;
+            this.isTipsShow = false;
+            this.isTimeTipShow = false;
         },
         loadData(list,pageSize){
+            console.log(list);
             if(list != undefined){
                 if(pageSize != undefined){
                     this.pageOption.size=pageSize;
@@ -144,6 +145,7 @@ export default {
                 this.pageOption.page = 0;
                 this.pageOption.total = list.length;
                 TList.pushNoRepeat(this.dataList,list);
+                console.log(this.dataList);
                 this.dataList.sort(function(a,b){
                     return parseInt(a.sid) - parseInt(b.sid);
                 });
@@ -193,14 +195,14 @@ export default {
         },
         okClick(){
             if(this.dataList.length == 0) {
-                this.$store.dispatch('showPrompt','请增加数据集 ！');
+                this.$message.error('showPrompt','请增加数据集 ！');
                 return;
             }
             let startTime = this.$dateUtil.dateToMs(this.searchKey.startTime);
             let endTime = this.$dateUtil.dateToMs(this.searchKey.endTime);
 
             if(endTime - startTime > 3600 * 1000){
-                this.$store.dispatch('showPrompt','数据采集开始时间和结束时间间隔不能大于1小时 ！');
+                this.$message.error('showPrompt','数据采集开始时间和结束时间间隔不能大于1小时 ！');
                 return;
             }
                 
