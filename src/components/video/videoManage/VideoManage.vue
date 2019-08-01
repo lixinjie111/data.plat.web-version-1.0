@@ -121,8 +121,8 @@ export default {
                 plateNo: '',
                 camId: '',
                 source:'',
-                startTime: [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()],
-                endTime: [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()]
+                startTime: [this.$dateUtil.GetDateStr(31), this.$dateUtil.getNowFormatDate()],
+                endTime: [this.$dateUtil.GetDateStr(31), this.$dateUtil.getNowFormatDate()]
             },
             selector: [],
             pageOption: {

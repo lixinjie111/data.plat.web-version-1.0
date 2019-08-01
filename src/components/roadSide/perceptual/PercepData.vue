@@ -191,7 +191,7 @@ export default {
                 cameraId:'',
                 // serialNum:'3402000000132000001601',
                 // serialNum:'3402000000132000001401',
-                serialNum:'',
+                serialNum:'3402000000132000003001',
                 deviceId:'',
                 startTime: this.$dateUtil.GetDateStr(7),
                 endTime: this.$dateUtil.getNowFormatDate()
@@ -233,12 +233,7 @@ export default {
         }
     },
     mounted(){
-        let _timeStart = new Date("2019-06-10 10:47:09").getTime();
-        // console.log(_timeStart);
-        let _videoTime = 773.560*1000;
-        let _timeEnd = _timeStart+_videoTime;
-        // console.log(_timeEnd);
-        // console.log(new Date(_timeEnd));
+        this.initData();
     },
     methods: {
         initPageOption() {

@@ -7,7 +7,7 @@
                     路侧摄像头视频数据
                     <el-page-header @back="$router.go(-1);" class="c-return-btn"></el-page-header>
                 </h3>
-                <div class="sl-percepDetail-container c-wrapper-20">
+                <div class="sl-percepDetail-container c-wrapper-20" v-loading="boxLoading">
                     <div class='sl-btn-box clearfix'>
                         <el-button class="sl-btn" type="warning" icon="el-icon-arrow-left" @click="reduceTime"></el-button>
                         <div class='time-input'>
@@ -66,13 +66,10 @@
                                         </el-popover>
                                     </template>
                                 </el-table-column>
-                                <el-table-column min-width="7%" label="操作">
-                                    <template slot-scope="scope">
-                                        <!-- <el-button class="el-button--small" type="primary" :loading="scope.row.loading" @click="showDetail(scope.row)">查看</el-button> -->
-                                        <!-- <el-button size="mini" type="primary" :loading="scope.row.loading">查看</el-button> -->
-                                        <el-button size="small" icon="el-icon-view" circle type="warning" plain :loading="scope.row.loading"></el-button>
+                                <!-- <el-table-column min-width="7%" label="操作">
+                                    <template slot-scope="scope"><el-button size="small" icon="el-icon-view" circle type="warning" plain :loading="scope.row.loading"></el-button>
                                     </template>
-                                </el-table-column>
+                                </el-table-column> -->
                             </el-table>
                         </div>
                         <div class='percep-con c-padding-20 c-detail-box clearfix'>
@@ -112,6 +109,7 @@ import TMDate from '@/common/utils/date.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap2.vue";
 import {findRoadMonitorCameraInfo,getVideoUrlInfo,findPerceptionRecordsInfo} from '@/api/roadSide';
+import { setTimeout } from 'timers';
 export default {
     name: 'PercepDetail',
     components: {
@@ -121,6 +119,7 @@ export default {
     data(){
         let _this = this;
         return {
+            boxLoading: true,
             loading: false,
             params: {
                 "serialNum": this.$route.params.serialNum, //设备序列号
@@ -217,7 +216,7 @@ export default {
                     if(newVal.length) {
                         this.setCurrentRow();
                     }else {
-                        this.tusvnOption.show = false;
+                        // this.tusvnOption.show = false;
                         this.tusvnOption.loading = false;
                     }
                 }
@@ -268,7 +267,9 @@ export default {
                     let _videoUrl = res.data.url;
                     this.playerOptions.sources[0].src = _videoUrl;
                 }
-            })
+            }).catch(err => {
+                this.boxLoading = false;
+            });
         },
         findPerceptionRecords() {
             this.loading = true;
@@ -281,8 +282,15 @@ export default {
                         item.loading = false;
                     });
                     this.dataList = res.data;
+
                 }
                 this.loading = false;
+                this.tusvnOption.show = true;
+                this.tusvnOption.loading = false;
+            }).catch(err => {
+                this.loading = false;
+                this.tusvnOption.show = true;
+                this.tusvnOption.loading = false;
             });
         },
         changeDate(time) {
@@ -374,6 +382,7 @@ export default {
             }
         },
         setProgressTime(obj) {
+            this.boxLoading = false;
             let _second = this.currentSecond*1000,
                 _curTime = this.startTimeTimestamp + Number(_second);
             this.curTime = this.$dateUtil.formatTime(_curTime);
