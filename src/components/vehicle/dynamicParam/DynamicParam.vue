@@ -204,12 +204,13 @@ export default {
             this.$refs.localDataPanel.init();
         },
 
-        lookClick(queryId){
+        lookClick(dataDetail){
+            console.log(dataDetail)
             this.panel.title = '查看';
             this.panel.type = 'look';
             this.panel.detailShow = true;
             this.panel.localDataShow = false;
-            this.$refs.detailPanel.init(queryId);
+            this.$refs.detailPanel.init(dataDetail);
         },
         panelBack(){
             this.panel.detailShow = false;

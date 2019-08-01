@@ -60,7 +60,7 @@ export const findPropByGroupId = params => { return axios.post(`${operPlatUrl}ve
 /**
  * 详情
  */
-export const getDetatilList = params => { return axios.post(`${operPlatUrl}dynamic/event/data/list`, params).then(res => res.data); };
+export const getDetatilList = params => { return axios.post(`${HTTPURL}dynamic/event/data/list`, params).then(res => res.data); };
 
 /**
  * 全集数据

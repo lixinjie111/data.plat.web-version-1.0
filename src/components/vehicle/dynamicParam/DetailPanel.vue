@@ -1,29 +1,40 @@
 <template>
-<div v-cloak>
-    <el-form :inline="true" :model="searchKey" ref='searchForm' size='small'>
-        <el-form-item label="数据ID" prop='dataId'>
-            <el-input v-model.trim="searchKey.dataId"></el-input>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick('searchKey')">查询</el-button>
-            <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
-        </el-form-item>
-    </el-form>
-    <el-table
-        :data="dataList" 
-        v-loading='loading'
-        stripe
-        border>
-        <el-table-column prop="timestamp" label="时间戳"></el-table-column>
-        <el-table-column prop="dataId" label="数据ID"></el-table-column>
-        <el-table-column prop="enName" label="英文名称"></el-table-column>
-        <el-table-column prop="chName" label="中文名称"></el-table-column>
-        <el-table-column prop="enName" label="数据值"></el-table-column>
-        <el-table-column label="时间">
-            <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp)}}</template>
-        </el-table-column>    
-    </el-table>
+<div class="c-view-dialog">
+    <div class="c-scroll-wrap">
+        <div class="c-scroll-inner">
+            <h3 class="c-title">
+                动态参数 > 动态详情
+                <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
+            </h3>
+            <div class="c-wrapper-20">
+                <el-form :inline="true" :model="searchKey" ref='searchForm' size='small'>
+                    <el-form-item label="数据ID" prop='dataId'>
+                        <el-input v-model.trim="searchKey.dataId"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick('searchKey')">查询</el-button>
+                        <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
+                    </el-form-item>
+                </el-form>
+                <el-table
+                    :data="dataList" 
+                    v-loading='loading'
+                    stripe
+                    border>
+                    <el-table-column prop="timestamp" label="时间戳"></el-table-column>
+                    <el-table-column prop="dataId" label="数据ID"></el-table-column>
+                    <el-table-column prop="enName" label="英文名称"></el-table-column>
+                    <el-table-column prop="chName" label="中文名称"></el-table-column>
+                    <el-table-column prop="enName" label="数据值"></el-table-column>
+                    <el-table-column label="时间">
+                        <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp)}}</template>
+                    </el-table-column>    
+                </el-table>
+            </div>
+        </div>
+    </div>
 </div>
+
 </template>
 <script>
 import Paging from '@/common/view/Paging.vue'
@@ -56,14 +67,11 @@ export default {
         }
     },
     methods: {
-        init(queryId,dataId){
-            if(queryId != undefined) this.searchKey.queryId = queryId;
-            if(dataId != undefined) this.searchKey.dataId = dataId;
-            // this.$refs.page.internalCurrentPage = this.currentPage;
+        init(dataDetail){
             this.pageOption.page = 1;
-            this.getDetatil();
+            this.getDetatil(dataDetail);
         },
-        getDetatil(){
+        getDetatil(dataDetail){
             let _this = this;
             this.dataList = [];
             this.loading = true;
@@ -72,7 +80,7 @@ export default {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 },
-                'queryId': this.searchKey.queryId,
+                'queryId': dataDetail.queryId,
                 'sId': this.searchKey.dataId,
             }).then(res => {
                 if(res.status == '200'){
