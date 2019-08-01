@@ -342,9 +342,8 @@ export default {
             this.$refs.dialogForm.validate((valid) => {
                 if (valid) {
                     this.submitloading = true;
-                    let protocal = localStorage.getItem('protocal');
                     let formParamsInfo = Object.assign(this.formParams,{
-                        'protocal':protocal,
+                        'protocal':this.formParams.protocal,
                         'startTime': this.formParams.startTime ? this.$dateUtil.dateToMs(this.formParams.startTime) : '',
                         'endTime': this.formParams.endTime ? this.$dateUtil.dateToMs(this.formParams.endTime) : ''
                     });

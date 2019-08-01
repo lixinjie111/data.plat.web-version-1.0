@@ -300,11 +300,9 @@ export default {
             this.initData();
         },
         backFn(type){
-            // console.log(type)
             if(type == 'add'){
                 this.initPaging();
                 this.initData();
-                // console.log('新增')
             }
             this.panel.show = false;
             this.dialogOption.show = false;
