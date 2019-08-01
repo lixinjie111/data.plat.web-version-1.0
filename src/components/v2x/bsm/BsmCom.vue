@@ -196,10 +196,6 @@ export default {
         }
     },
     methods: {
-        init(){
-            this.findBSMLists();
-            // this.initPaging();
-        },
         initPageOption() {
             this.dataList = [];
             this.pageOption.total = 0;
@@ -245,6 +241,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
+                    this.initPaging();
                     this.findBSMLists();
                 } else {
                     return false;
@@ -274,8 +271,8 @@ export default {
             return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         },
     },
-    created(){
-        this.init();
+    mounted(){
+        this.findBSMLists();
     },
     beforeDestroy(){
 

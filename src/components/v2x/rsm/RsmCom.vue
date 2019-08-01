@@ -179,9 +179,6 @@ export default {
         }
     },
     methods: {
-        init(){
-            this.findRsmPage();
-        },
         initPageOption() {
             this.dataList = [];
             this.pageOption.total = 0;
@@ -227,6 +224,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
+                    this.initPaging();
                     this.findRsmPage();
                 } else {
                     return false;
@@ -258,7 +256,7 @@ export default {
         }
     },
     mounted(){
-        this.init();
+        this.findRsmPage();
     }
 }
 </script>

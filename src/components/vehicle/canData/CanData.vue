@@ -158,10 +158,6 @@ export default {
         }
     },
     methods: {
-        init(){
-            this.getQueryList();
-            // this.initPaging();
-        },
         initPageOption() {
             this.dataList = [];
             this.pageOption.total = 0;
@@ -220,7 +216,7 @@ export default {
         },
     },
     mounted(){
-        this.init();
+        this.getQueryList();
     },
 }
 </script>

@@ -166,7 +166,6 @@ export default {
             this.dataList = [];
         },
         initPaging(){
-            this.loading = true;
             this.pageOption.page = 1;
             this.pageOption.total = 0;
             this.pageOption.size = 10;
@@ -220,6 +219,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoading = true;
+                    this.initPaging();
                     this.dynamicParamList();
                 } else {
                     return false;

@@ -27,7 +27,12 @@
                 <div class='carm-oragn-info c-mt-10'>
                     <el-form size="small" class="c-text-between">
                         <el-form-item>
-                            <el-select v-model="searchKey.provinceSelected" value-key='code' placeholder="请选择省" :loading="provinceLoading" @change="getCityTrees">
+                            <el-select 
+                                v-model="searchKey.provinceSelected" 
+                                value-key='code' 
+                                placeholder="请选择省" 
+                                :loading="provinceLoading" 
+                                @change="getCityTrees">
                                 <el-option
                                 v-for="item in provinceData"
                                 :key="item.code"
@@ -37,7 +42,11 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item>
-                            <el-select v-model="searchKey.municiSelected" value-key='code' placeholder="请选择市" @change="queryCountyRoadTrees">
+                            <el-select 
+                            v-model="searchKey.municiSelected" 
+                            value-key='code' 
+                            placeholder="请选择市" 
+                            @change="queryCountyRoadTrees">
                                 <el-option
                                 v-for="item in municipalData"
                                 :key="item.code"
@@ -57,9 +66,15 @@
                         :data='newData' 
                         :props="defaultProps" 
                         :load="loadNode" 
-                        lazy 
+                        lazy
+                        ref="tree"
+                        default-expand-all
+                        current-node-key="firstSerialNum"
                         @node-click="handleNodeClick" 
                         >
+                        <!-- show-checkbox
+                        node-key="code" -->
+                        <!-- @check-change="handleCheckChange" -->
                         <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
                             <i class="sl-video-icon" :class="data.icon" :id='data.id' v-if="data.icon"></i>
                             <span class="sl-play-text">{{ node.label }}</span>              
@@ -71,7 +86,7 @@
             <div class="c-map-video-wrapper c-flex-1">
                 <div class="c-video-wrapper">
                     <div class="c-video" id="cmsplayer"></div>
-                    <div class="right-mask" v-show='isMaskShow'></div>
+                    <div class="c-video-mask" v-show='isMaskShow'></div>
                 </div>
                 <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                     <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
@@ -144,16 +159,23 @@ export default {
             }),
             provinceData:[],//省市
             municipalData:[],//辖区
+
+            timer: null,
+
+            firstSerialNum: '',
+            // currentVideoOption: null
         }
     },
+    mounted(){
+        this.queryProvinceCityTrees();
+        this.wsRequest();
+        this.initMap();
+    },
     methods:{
-        init(){
-            this.queryProvinceCityTrees();
-            //1分钟刷一次实时状态
-            setInterval(()=>{
-                if(this.municiSelected != undefined && this.municiSelected != ''){
-                    this.computCamNum(this.municiSelected.code);
-                }
+        wsRequest(){
+            //5s刷一次实时状态
+            this.timer = setInterval(()=>{
+                this.computCamNum();
             },5000);
         },
         initMap(){
@@ -181,51 +203,47 @@ export default {
             this.infoWindow.open(this.distanceMap, e.target.getPosition());
         },
         queryProvinceCityTrees(){
-            if(this.searchKey.provinceSelected.code != '0'){
-                queryProvinceCityTree({
+            this.provinceLoading = true;
+            queryProvinceCityTree({
                 'type':'N'
-                }).then(res => {
-                    this.provinceLoading = true;
-                    if(res.status == '200') {
-                        this.provinceLoading = false;
-                        this.provinceData = res.data;
+            }).then(res => {
+                if(res.status == '200') {
+                    this.provinceData = res.data;
+                    if(this.provinceData.length) {
+                        this.searchKey.provinceSelected = this.provinceData[0];
+                        this.initCityDefault();
                     }
-                })
-            }else{
-                this.camDetail.camCode = '--';
-                this.camDetail.camId = '--';
-                this.camDetail.roadPointName = '--';
-                this.camDetail.lon = '--';
-                this.camDetail.lat = '--';
-                this.newData = [];
-                this.searchKey.municiSelected = '';
-                this.endPlay();
-                return false;
-            }
+                }
+                this.provinceLoading = false;
+            }).catch(err => {
+                this.provinceLoading = false;
+            });
         },
-        getCityTrees(){//获区市辖数据
-            this.newData = [];
-            this.searchKey.municiSelected = '';
-            this.endPlay();
+        initCityDefault() {
             this.municipalData = this.searchKey.provinceSelected.children;
-        },
-        queryCountyRoadTrees(){
-            let provinceSelCode = this.searchKey.provinceSelected.code;
-            let municipaSelCode = this.searchKey.municiSelected.code;
-            if(provinceSelCode != '0' && municipaSelCode != '0'){
-                queryCountyRoadTree({
-                    'cityCode':this.searchKey.municiSelected.code,
-                    'type':'N'
-                }).then(res => {
-                    if(res.status == '200') {
-                        this.newData = res.data;
-                    }
-                })
-            }else{
-                this.newData = []; 
-                this.endPlay();
-                return false;
+            if(this.municipalData.length) {
+                this.searchKey.municiSelected = this.municipalData[0];
+                this.queryCountyRoadTrees(this.searchKey.municiSelected);
             }
+        },
+        getCityTrees(item){//获区市辖数据
+            this.newData = [];
+            this.endPlay();
+            this.firstSerialNum = '';
+            this.searchKey.municiSelected = '';
+            this.municipalData = item.children;
+        },
+        queryCountyRoadTrees(item){
+            this.newData = []; 
+            this.endPlay();
+            queryCountyRoadTree({
+                'cityCode':item.code,
+                'type':'N'
+            }).then(res => {
+                if(res.status == '200') {
+                    this.newData = res.data;
+                }
+            })
             
         },
         loadNode(node, resolve) {//懒加载摄像头列表
@@ -263,16 +281,24 @@ export default {
                         for(var i=0;i<camDetail.length;i++){
                             var obj = {};
                             obj.label = camDetail[i].deviceId;
+                            obj.code = camDetail[i].serialNum;
                             obj.serialNum = camDetail[i].serialNum;
                             obj.rsPtName = camDetail[i].rsPtName;
                             obj.rsPtId = camDetail[i].rsPtId;
                             obj.ptLon = camDetail[i].ptLon;
                             obj.ptLat = camDetail[i].ptLat;
+                            obj.isOn = true;
                             obj.cameraRunStatus = camDetail[i].cameraRunStatus;
                             obj.icon = "sl-play-icon";
                             obj.leaf = true;
+                            if(!this.firstSerialNum) {
+                                this.firstSerialNum = camDetail[i].serialNum
+                            }
                             data.push(obj);
                         }
+                        
+                        // this.$refs.tree.setCheckedKeys([this.firstSerialNum]);
+
                         resolve(data);
                     }
                 })
@@ -281,17 +307,27 @@ export default {
                 resolve([]);
             }
         },
+        // handleCheckChange(data, checked, indeterminate) {
+        //     console.log("-----------------");
+        //     console.log(data);
+        //     console.log(checked);
+        //     console.log(indeterminate);
+        //     // this.handleNodeClick(data);
+        // },
         handleNodeClick(data){
             if(data.road){
                 this.roadName = data.label;
             }
             this.roadNewName = this.roadName;
             let camStatus = data.cameraRunStatus;
+            // console.log(camStatus);
             if(camStatus == 1){//在线
-                data.isOn = !data.isOn;
+                // console.log(data.isOn);
                 if(data.isOn) {
+                    data.isOn = false;
                     this.startPlay(data);
                 }else {
+                    data.isOn = true;
                     this.endPlay();
                     data.icon = "sl-play-icon";
                 }
@@ -336,6 +372,7 @@ export default {
             let camList = this.camInfo;
             let camLen = camList.length;
             let protocal = JSON.parse(localStorage.getItem('protocal'));
+            // this.currentVideoOption = camerData;
             startStreamRoad({
                 camId:camerData.serialNum,protocal:protocal
             }).then(res =>{
@@ -351,6 +388,7 @@ export default {
                     let videoUrl = res.data.rtmp;
                     this.embedFlash(videoUrl);
                     camerData.icon = "sl-pause-icon";
+                    // this.$refs.tree.setCheckedKeys([camerData.serialNum]);
                 }
             });
         },
@@ -366,11 +404,13 @@ export default {
             for(let i=0;i<nodeSelArray.length;i++){
                 nodeSelArray[i].classList.remove('pause');
             }
+            // if(this.currentVideoOption) {
+            //     this.currentVideoOption.isOn = true;
+            // }
             let protocal = JSON.parse(localStorage.getItem('protocal'));
             stopStream({
                 "camId":this.camDetail.camCode,"protocal":protocal
             }).then(res => {
-
             })
         },
         goRoadSide(){
@@ -388,27 +428,27 @@ export default {
         mapChangeMin(){
             this.changeSize = false;
         },
-        computCamNum(areaCode){
-            //查询总数。在线数，实时监控数
-            getCityCameraStatics({
-                cityCode: this.searchKey.municiSelected.code
-            }).then(res =>{
-                if(res.status == '200'){
-                    this.camStatusNums.camTotal = res.data.count;
-                    this.camStatusNums.monitNum = res.data.monitorCount;
-                    this.camStatusNums.onlineNum = res.data.onlineCount;
-                }
-            });
+        computCamNum(){
+            if(this.searchKey.municiSelected != undefined && this.searchKey.municiSelected != ''){
+                //查询总数。在线数，实时监控数
+                getCityCameraStatics({
+                    cityCode: this.searchKey.municiSelected.code
+                }).then(res =>{
+                    if(res.status == '200'){
+                        this.camStatusNums.camTotal = res.data.count;
+                        this.camStatusNums.monitNum = res.data.monitorCount;
+                        this.camStatusNums.onlineNum = res.data.onlineCount;
+                    }
+                });   
+            }else {
+                this.camStatusNums.camTotal = 0;
+                this.camStatusNums.monitNum = 0;
+                this.camStatusNums.onlineNum = 0;
+            }
         }
     },
-    watch:{
-        'searchKey.municiSelected'(newVal, oldVal){
-            this.computCamNum(newVal.code)
-        }
-    },
-    mounted(){
-        this.init();
-        this.initMap();
+    destroyed() {
+        clearInterval(this.timer);
     }
 }
 </script>
