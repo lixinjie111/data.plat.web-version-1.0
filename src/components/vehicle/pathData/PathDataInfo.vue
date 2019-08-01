@@ -410,7 +410,6 @@ import { error } from 'util';
         this.exportTime.endTime = this.data.originEndTime;
         //初始化选择项
         this.selectItem=0;
-
         pathDetailList({
           page: {
               'pageSize': 100,
@@ -423,10 +422,11 @@ import { error } from 'util';
           if(res.status == '200'){
             if(res.data.list.length) {
               this.addLine(res.data.list);
+              let _position = ConvertCoord.wgs84togcj02(res.data.list[0].gnss_LONG, res.data.list[1].gnss_LAT);
+              this.addRemoveMaker(_position);
             }
           }
         })
-
         //添加分页数据
         this.addPageData();
       },
@@ -513,7 +513,6 @@ import { error } from 'util';
     color: #D0D0D0;
   }
   .yk-table1 {
-    /* table-layout: fixed; */
     word-break: break-all;
     font-size: 14px;
     color: #777C7C;
