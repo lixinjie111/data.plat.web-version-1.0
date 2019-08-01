@@ -39,10 +39,10 @@
                     <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
                     <div class='c-map-btn c-map-btn-right' @click='mapChangeMin' v-else></div>
                     <div class="c-map-container" id='map-container'>
-                        <ul class="c-map-info clearfix c-icon-map-info">
+                        <!-- <ul class="c-map-info clearfix c-icon-map-info">
                             <li class='c-map-info-list speed'>路侧点名称:{{camDetail.roadName ? camDetail.roadName : ' -- '}}</li>
                             <li class='c-map-info-list lonlat'>经纬度:{{camDetail.lon ? camDetail.lon : ' -- '}},{{camDetail.lat ? camDetail.lat : ' -- '}}</li>
-                        </ul>
+                        </ul> -->
                     </div>
                 </div>
             </div>
@@ -72,18 +72,12 @@
                     endTime:'--',
                     videoPath:'',
                 },
-                
+                markerPoint:[]
                 
             }
         },
         methods:{
             init(){
-                this.distanceMap = new AMap.Map('map-container', {
-                    resizeEnable: true, //是否监控地图容器尺寸变化
-                    zoom: this.zoom, //初始化地图层级
-                    rotateEnable: true,
-                    mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
-                });
                 let videoInfo = JSON.parse(localStorage.getItem('videoInfo'));
                 this.camDetail.camId = videoInfo.camId;
                 this.camDetail.camCode = videoInfo.camCode;
@@ -94,6 +88,9 @@
                 this.camDetail.videoPath = videoInfo.destPath + '.mp4';
                 this.mapDetail(videoInfo.camCode);
             },
+            initMap(){
+                this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.defaultMapOption);
+            },
             backClick(){
                 this.$emit('backRoadManage');
             },
@@ -102,6 +99,28 @@
             },
             mapChangeMin(){
                 this.changeSize = false;
+            },
+            markerClick(e) {
+                this.infoWindow.setContent(e.target.content);
+                this.infoWindow.open(this.distanceMap, e.target.getPosition());
+            },
+            drawStartMarker() {
+                let _this = this;
+                console.log(this.markerPoint);
+                this.markerPoint.forEach((item, index) => {
+                    // let _position = ConvertCoord.wgs84togcj02(item.lon, item.lat);
+                    let _marker = new AMap.Marker({
+                        map: this.distanceMap,
+                        // position: new AMap.LngLat(_position[0], _position[1]),
+                        position: new AMap.LngLat(ptLon,ptLat)
+                    });
+                    _marker.content = `<div class="c-map-info-window">
+                    <p class="c-info-window-text">路侧点名称:${videoInfo.roadPointName}<p>
+                    <p class="c-info-window-text">经纬度:${ptLon},${ptLat}<p></div>`;
+                    _marker.on('click', this.markerClick);
+                    _marker.emit('click', {target: _marker});
+                    this.distanceMap.setFitView();
+                });
             },
             mapDetail(deviceId){
                 queryRoadCamCoordinate({  
@@ -122,13 +141,19 @@
                             this.camDetail.lat = ptLat;
                             let _position = ConvertCoord.wgs84togcj02(ptLon,ptLat);
                             this.distanceMap.setCenter(_position);
+                            this.markerPoint = this.camDetail;
+                            console.log(this.markerPoint);
+                            this.drawStartMarker();
                         }
                     }
                 })
-            }
+            },
+            
         },
         mounted(){
+            
             this.init();
+            this.initMap();
         }
     }
     </script>

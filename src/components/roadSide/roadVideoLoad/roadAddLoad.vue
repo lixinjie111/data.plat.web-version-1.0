@@ -325,7 +325,7 @@ export default {
             },1000)
         },
         submitFunc() {
-            let roadName = this.roadSelected.name;
+            let roadName = this.roadSelected.label;
             let protocal = this.camSelected.protocol;
             let pointName = this.camSelected.rsPtName;
             let camCode = this.camSelected.deviceId;

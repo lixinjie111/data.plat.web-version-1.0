@@ -65,7 +65,6 @@
                      <video-player id='video' class="c-video" 
                     ref="videoPlayer"
                     :options="playerOptions"
-                    controls
                     @ended="onPlayerEnded"
                 ></video-player>
                 <div class='video-mask' v-show='isMaskShow'></div>
@@ -222,6 +221,7 @@ export default {
             if(this.searchKey.vehicleId.vehicleId != ''){
                 this.isStart = true;
                 this.isMaskShow = false;
+                console.log(this.playerOptions.sources[0].src);
                 if(this.playerOptions.sources[0].src){
                     this.player.play();
                     //直播报活调用
@@ -236,6 +236,7 @@ export default {
                     },1000);
                     this.getTotalTime(this.monitStartTime);
                 }else{
+                    console.log('没视频')
                     startStream({
                             'camId':this.searchKey.serialNum,
                             'vehicleId':this.searchKey.vehicleId.vehicleId,
@@ -245,6 +246,7 @@ export default {
                                 //获取视频地址并赋值
                                 let videoUrl = res.data.rtmp;
                                 this.playerOptions.sources[0].src = videoUrl;
+                                console.log(this.playerOptions.sources[0].src);
                                 // this.player.load(videoUrl);
                                 //直播报活调用
                                 this.repeatFn();
@@ -328,7 +330,7 @@ export default {
                         }).catch(err => {
                             this.plateNoLoading = false;
                         });
-                   }
+                }
             }else {
                 this.plateNoList = this.allList;
             }
@@ -373,7 +375,7 @@ export default {
         searchPlateNo(query) {
             if (query !== '') {
                     this.plateNoList = this.allList.filter(item => {
-                      return item.plateNo.toLowerCase()
+                        return item.plateNo.toLowerCase()
                         .indexOf(query.toLowerCase()) > -1;
                     });
             } else {
@@ -383,7 +385,7 @@ export default {
         searchVehicleId(query) {
             if (query !== '') {
                     this.vehicleIdList = this.allList.filter(item => {
-                      return item.vehicleId.toLowerCase()
+                        return item.vehicleId.toLowerCase()
                         .indexOf(query.toLowerCase()) > -1;
                     });
             } else {
@@ -403,7 +405,7 @@ export default {
                         }).catch(err => {
                             this.vehicleIdLoading = false;
                         });
-                   }
+                    }
             }else {
                 this.vehicleIdList = this.allList;
             }

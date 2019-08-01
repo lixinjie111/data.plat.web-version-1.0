@@ -10,6 +10,7 @@
                     v-model="formParams.plateNo"
                     filterable
                     remote
+                    value-key="plateNo"
                     placeholder="请输入关键词"
                     @click.native="getPlateNoList"
                     :remote-method="searchPlateNo"
@@ -17,8 +18,7 @@
                     :loading="plateNoLoading">
                     <el-option
                         v-for="item in plateNoList"
-                        value-key='plateNo'
-                        :key="item.plateNo"
+                        :key="item.id"
                         :label="item.plateNo"
                         :value="item">
                     </el-option>
@@ -29,13 +29,14 @@
                     v-model="formParams.vehicleId"
                     filterable
                     remote
+                    value-key="vehicleId"
                     placeholder="请输入关键词"
                     :remote-method="searchVehicleId"
                     @change="handleSelectVehicleId"
                     :loading="vehicleIdLoading">
                     <el-option
                         v-for="item in vehicleIdList"
-                        :key="item.vehicleId"
+                        :key="item.id"
                         :label="item.vehicleId"
                         :value="item">
                     </el-option>
@@ -44,10 +45,11 @@
             <el-form-item label="摄像头编号" prop='camDeviceId'>
                 <el-select
                     v-model="formParams.camSerialNum"
+                    value-key="camSerialNum"
                     @change="handleSelectCamCode">
                     <el-option
-                        v-for="item in camCodeList"
-                        :key="item.value"
+                        v-for="(item,index) in camCodeList"
+                        :key="index"
                         :label="item.label"
                         :value="item">
                     </el-option>
@@ -202,7 +204,7 @@ export default {
                     queryPage({
                         "page":{
                             "pageIndex": 0,
-                            "pageSize": 500
+                            "pageSize": 1000
                         },
                         "plateNo": '',
                         "vehicleId": ''

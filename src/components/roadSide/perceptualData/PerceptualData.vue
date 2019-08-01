@@ -77,12 +77,11 @@
                     <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
                     <div class='c-map-btn c-map-btn-right' @click='mapChangeMin' v-else></div>
                     <div class="c-map-container" id='map-container'>
-
-                        <ul class="c-map-info clearfix">
+                        <!-- <ul class="c-map-info clearfix">
                             <li class='c-map-info-list speed'>摄像头编号:{{camDetail.camId ? camDetail.camId : ' -- '}}</li>
                             <li class='c-map-info-list angle'>道路名称:{{camDetail.roadNewName ? camDetail.roadNewName : ' -- '}}</li>
                             <li class='c-map-info-list lonlat'>经纬度:{{camDetail.lon ? camDetail.lon : ' -- '}},{{camDetail.lat ? camDetail.lat : ' -- '}}</li>
-                        </ul>
+                        </ul> -->
                     </div>
                 </div>
             </div>
@@ -138,18 +137,17 @@ export default {
                 onlineNum:0,
                 monitNum:0,
             },
+            markerPoint: [],
+            infoWindow: new AMap.InfoWindow({
+                offset: new AMap.Pixel(0, -33),
+                anchor: 'bottom-center'
+            }),
             provinceData:[],//省市
             municipalData:[],//辖区
         }
     },
     methods:{
         init(){
-            this.distanceMap = new AMap.Map('map-container', {
-                resizeEnable: true, //是否监控地图容器尺寸变化
-                zoom: this.zoom, //初始化地图层级
-                rotateEnable: true,
-                mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
-            });
             this.queryProvinceCityTrees();
             //1分钟刷一次实时状态
             setInterval(()=>{
@@ -157,6 +155,30 @@ export default {
                     this.computCamNum(this.municiSelected.code);
                 }
             },5000);
+        },
+        initMap(){
+            this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.defaultMapOption);
+        },
+        drawStartMarker() {
+            let _this = this;
+            this.markerPoint.forEach((item, index) => {
+                let _position = ConvertCoord.wgs84togcj02(item.ptLon, item.ptLat);
+                let _marker = new AMap.Marker({
+                    map: this.distanceMap,
+                    position: new AMap.LngLat(_position[0],_position[1]),
+                });
+                _marker.content = `<div class="c-map-info-window">
+                <p class="c-info-window-text">摄像头编号:${item.label}<p>
+                <p class="c-info-window-text">道路名称:${item.rsPtName}<p>
+                <p class="c-info-window-text">经纬度:${item.ptLon},${item.ptLat}<p></div>`;
+                _marker.on('click', this.markerClick);
+                _marker.emit('click', {target: _marker});
+                this.distanceMap.setFitView();
+            });
+        },
+        markerClick(e) {
+            this.infoWindow.setContent(e.target.content);
+            this.infoWindow.open(this.distanceMap, e.target.getPosition());
         },
         queryProvinceCityTrees(){
             if(this.searchKey.provinceSelected.code != '0'){
@@ -273,6 +295,10 @@ export default {
                     this.endPlay();
                     data.icon = "sl-play-icon";
                 }
+                this.markerPoint.push(data);
+                // let _position = ConvertCoord.wgs84togcj02(obj.ptLon, obj.ptLat);
+                // this.distanceMap.setCenter(_position);
+                this.drawStartMarker();
             }else {
                 if(camStatus == '0'){//未知
                     this.$message.error('未知摄像头!');
@@ -355,6 +381,7 @@ export default {
         },
         mapChangeMax(){
             this.changeSize = true;
+            // this.distanceMap.setCenter();
         },
         mapChangeMin(){
             this.changeSize = false;
@@ -379,6 +406,7 @@ export default {
     },
     mounted(){
         this.init();
+        this.initMap();
     }
 }
 </script>

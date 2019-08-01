@@ -103,7 +103,7 @@ export default {
         getDataList(list){
             let _this =this;
             _this.dataList =list;
-             var rowKey = "";
+            var rowKey = "";
             if( _this.dataList != null){
                 _this.dataList = _this.dataList.filter(function(item){
                     if(item.enName == "ROWKEY"){
@@ -118,7 +118,7 @@ export default {
                 //设置下一页的记录数
                 _this.pageOption.nextCount = 0;
                 if(rowKey != "" && this.pageOption.nextPageClick){
-                     _this.getRealTimeList(_this.pageOption.size,_this.pageOption.page + 1,rowKey,_this.getNextCount);
+                    _this.getRealTimeList(_this.pageOption.size,_this.pageOption.page + 1,rowKey,_this.getNextCount);
                 }
             }
         },
