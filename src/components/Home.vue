@@ -1,6 +1,6 @@
 <template>
     <div class="c-wrapper-20">
-        <div class="c-pos-relative">
+        <div class="c-pos-relative c-inline-block">
             <img class="index-logo" src="static/images/banner.png">
             <p class="index-text">智能网联汽车数据管理平台</p>
         </div>
