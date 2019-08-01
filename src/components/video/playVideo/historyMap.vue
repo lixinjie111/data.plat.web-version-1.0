@@ -17,7 +17,6 @@ export default {
     data(){
         return {
             getGpsTime:null,
-            zoom:11,
             markers:{
                 maskCar:null,
                 polyline:[]
@@ -34,13 +33,14 @@ export default {
     },
     methods: {
         initMap(){
-            this.distanceMap = new AMap.Map('map-container', {
-                rotateEnable: true,//地图旋转
-                resizeEnable: true, //是否监控地图容器尺寸变化
-                zoom:this.zoom, //初始化地图层级
-                center: [121.262939,31.245149], //初始化地图中心点
-                mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
-            });
+            this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.$parent.defaultMapOption);
+            // this.distanceMap = new AMap.Map('map-container', {
+            //     rotateEnable: true,//地图旋转
+            //     resizeEnable: true, //是否监控地图容器尺寸变化
+            //     zoom:this.zoom, //初始化地图层级
+            //     center: [121.262939,31.245149], //初始化地图中心点
+            //     mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
+            // });
             this.distanceMapLine();
         },
         getGps(gpsArr,newArr,curTime){

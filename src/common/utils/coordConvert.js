@@ -53,6 +53,8 @@ let ConvertCoord = {
      * @returns {*[]}
      */
     wgs84togcj02(lng, lat) {
+        lng = parseFloat(lng);
+        lat = parseFloat(lat);
         if (this.out_of_china(lng, lat)) {
             return [lng, lat]
         }
@@ -78,8 +80,6 @@ let ConvertCoord = {
      * @returns {*[]}
      */
     gcj02towgs84(lng, lat) {
-        lng = parseFloat(lng);
-        lat = parseFloat(lat);
         if (this.out_of_china(lng, lat)) {
             return [lng, lat]
         }

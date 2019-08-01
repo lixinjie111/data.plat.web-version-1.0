@@ -62,13 +62,12 @@
             <!-- 地图视频模块 -->
             <div class="c-map-video-wrapper">
                 <div class="c-video-wrapper">
-                    <video-player id='video' class="c-video" 
-                    ref="videoPlayer"
-                    :options="playerOptions"
-                    @ended="onPlayerEnded"
-                ></video-player>
-                <div class='video-mask' v-show='isMaskShow'></div>
-                    <video class="c-video"></video>
+                    <video-player class="c-video" 
+                        ref="videoPlayer"
+                        :options="playerOptions"
+                        @ended="onPlayerEnded"
+                    ></video-player>
+                    <div class='c-video-mask' v-show='isMaskShow'></div>
                 </div>
                 <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                     <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
@@ -219,10 +218,11 @@ export default {
         },
         realMonit(){
             if(this.searchKey.vehicleId.vehicleId != ''){
-                this.isStart = true;
-                this.isMaskShow = false;
+
                 console.log(this.playerOptions.sources[0].src);
                 if(this.playerOptions.sources[0].src){
+                    this.isStart = true;
+                    this.isMaskShow = false;
                     this.player.play();
                     //直播报活调用
                     this.repeatFn();
@@ -237,6 +237,8 @@ export default {
                     this.getTotalTime(this.monitStartTime);
                 }else{
                     console.log('没视频')
+                    this.isStart = false;
+                    this.isMaskShow = true;
                     startStream({
                             'camId':this.searchKey.serialNum,
                             'vehicleId':this.searchKey.vehicleId.vehicleId,

@@ -1,5 +1,5 @@
 <template>
-<div class="c-wrapper-20" v-show="isShow">
+<div class="c-wrapper-20">
     <el-tabs v-model="activeName">
         <el-tab-pane label="全集数据" name="first">
             <full-list ref='fullList' :title="panel.title" :type="panel.type" :data="panel.data"></full-list>
@@ -33,7 +33,6 @@ export default {
             activeName: 'first',
             dataList: [],
             groupList:[],
-            isShow:true,
             operPlatUrl:'',
             panel: {
                 title: '提示',
@@ -45,9 +44,11 @@ export default {
             }, 
         }
     },
+    mounted(){
+        this.init();
+    },
     methods: {
         init(){
-            this.isShow=true;
             this.operPlatUrl = window.config.operPlatUrl;
             this.$refs.fullList.initData();
             this.$refs.groupList.initData();
@@ -58,11 +59,9 @@ export default {
         cancelClick(){
             this.$refs.fullList.selector=[];
             this.$refs.groupList.selector=[];
-            this.isShow=false;
             this.$emit("init");
         },
         getPropertybyGroupIds(list,callback){
-            console.log(list);
             let ids =[];
             list.forEach(item => {
                 ids.push(item.id);
@@ -71,75 +70,21 @@ export default {
                 callback([]);
                 return;
             }
-            console.log(ids);
             findPropByGroupId({
                 'ids':ids
             }).then(res => {
-                if(res.status == '200'){
-                    console.log(res.data);
-                    callback(res.data);
-                }
+                // if(res.status == '200'){
+                    callback(res);
+                // }
             })
         },
         getLocalData(listGroupProperty){
             let list = [];
             TList.pushNoRepeat(list,this.$refs.fullList.selector);
-            TList.pushNoRepeat(list,listGroupProperty);
-            console.log(this.$refs.fullList.selector);
+            TList.pushNoRepeat(list,this.$refs.groupList.selector);
             this.isShow=false;
             this.$emit("loadData",list);
         }
-    },
-    mounted(){
     }
 }
 </script>
-<style scoped>
-.yk-b-30{
-    margin-top: 10px;
-    margin-bottom: 30px;
-}
-.yk-r-30{
-    margin-right: 30px;
-}
-.yk-bgcolor-white{
-    background: #fff;
-}
-.yk-min-300{
-    min-height: 300px;
-}
-.yk-b-border{
-    border-bottom: 1px dashed #d5e1e2;
-}
-.yk-t-10{
-    margin-top: 10px;
-}
-.yk-270{
-    width: 246px;
-    float: left;
-}
-.yk-input-200{
-    width: 168px;
-    display: inline-block;
-    vertical-align: top;
-    text-align: left;
-    float:left;
-    margin-left:5px;
-}
-.yk-label-65{
-    display: inline-block;
-    width: 65px;
-    text-align: right;
-    float:left;
-}
-.mt15{
-    margin-top:15px;
-}
-.changBtn{
-    cursor: pointer;
-}
-.on{
-    color:#00c1de;
-}
-</style>
-

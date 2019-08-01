@@ -139,7 +139,6 @@ export default {
             this.isTimeTipShow = false;
         },
         loadData(list,pageSize){
-            console.log(list);
             if(list != undefined){
                 if(pageSize != undefined){
                     this.pageOption.size=pageSize;
@@ -149,7 +148,6 @@ export default {
                 this.pageOption.page = 0;
                 this.pageOption.total = list.length;
                 TList.pushNoRepeat(this.dataList,list);
-                console.log(this.dataList);
                 this.dataList.sort(function(a,b){
                     return parseInt(a.sid) - parseInt(b.sid);
                 });
@@ -189,7 +187,7 @@ export default {
         
         addDataSet(){
             this.isAddData = true;
-            this.$refs.addDataPanel.init();
+            // this.$refs.addDataPanel.init();
         },
 
         initLocalDataPanelHeight(){
