@@ -4,7 +4,7 @@
             <img class="index-logo" src="static/images/banner.png">
             <p class="index-text">智能网联汽车数据管理平台</p>
         </div>
-        <ul class="index-footer">
+        <!-- <ul class="index-footer">
             <li class="index-footer-list" @click="clickFn('www');">
                 <img class="index-footer-icon" src="../assets/images/index/footer/www.png">
                 <span class="index-footer-title">启迪云控官网</span>
@@ -21,7 +21,7 @@
                 <img class="index-footer-icon" src="../assets/images/index/footer/ota.png">
                 <span class="index-footer-title">ota管理系统</span>
             </li>
-        </ul>
+        </ul> -->
     </div>
 </template>
 <script>
@@ -60,8 +60,8 @@ export default {
         left: 20px;
         right: 20px;
         top: 20px;
-        bottom: 80px;
-        // bottom: 20px;
+        // bottom: 80px;
+        bottom: 20px;
         background-color: #000;
     }
     .index-logo {
