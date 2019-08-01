@@ -1,6 +1,9 @@
 <template>
     <div class="c-wrapper-20">
-        <img class="index-logo" src="../assets/images/index/logo.png">
+        <div class="c-pos-relative">
+            <img class="index-logo" src="static/images/banner.png">
+            <p class="index-text">智能网联汽车数据管理平台</p>
+        </div>
         <ul class="index-footer">
             <li class="index-footer-list" @click="clickFn('www');">
                 <img class="index-footer-icon" src="../assets/images/index/footer/www.png">
@@ -55,6 +58,17 @@ export default {
     padding-bottom: 80px;
     .index-logo {
         max-width: 100%;
+    }
+    .index-text {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        @include layoutMode();
+        font-size: 36px;
+        color: #fff;
+        letter-spacing: 5px;
     }
     .index-footer {
         position: absolute;

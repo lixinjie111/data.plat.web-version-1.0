@@ -9,7 +9,7 @@
                                 <img class="yk-margin-left-30" src="static/images/login-logo.png">                                
                             </div>
                             <div class="yk-title">
-                                启迪智能网联汽车数据管理平台
+                                智能网联汽车数据管理平台
                             </div>
                         </div>
                         <div class="yk-form-group">
