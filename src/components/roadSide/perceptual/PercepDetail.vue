@@ -274,6 +274,7 @@ export default {
                 }
             }).catch(err => {
                 this.boxLoading = false;
+                this.tusvnOption.loading = false;
             });
         },
         findPerceptionRecords() {
@@ -495,11 +496,19 @@ export default {
             // setTimeout(() => {
                 console.log("初始化地图已完成-----------");
                 this.initMapFlag = true;
+
+                // "x":326297.1669125299,
+                //  "y":3462321.135051115,
+                //  "z":30.651420831899046,
+                //  "radius":30.905553118989463,
+                //  "pitch":-0.5303922863908559,
+                //  "yaw":-2.6312825799826953
+                // this.$refs.tusvnMap.updateCameraPosition(326297.1669125299,3462321.135051115,30.651420831899046,30.905553118989463,-0.5303922863908559,-2.6312825799826953);
                 if(this.cameraParam) {
 
                     // this.$refs.tusvnMap.updateCameraPosition(442481.5124901131,4427254.14590794,27.173398250989216,26.86058551360609,-0.6171498919343764,-0.43315502055389093);
-                   this.$refs.tusvnMap.updateCameraPosition(325994.544950895,3462549.120490024,26.547772446367873,23.382136948463224,0.5808973368959062,1.47249100492297);
-                    // this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
+                   // this.$refs.tusvnMap.updateCameraPosition(325994.544950895,3462549.120490024,26.547772446367873,23.382136948463224,0.5808973368959062,1.47249100492297);
+                    this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
                 }
                 // this.tusvnOption.show = true;
             // }, 3000);
