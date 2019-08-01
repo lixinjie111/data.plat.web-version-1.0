@@ -1,5 +1,5 @@
 <template>
-<div id='lists' v-cloak>
+<div v-cloak>
         <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
             <el-form-item label="SID" prop='sid'>
                 <el-input v-model.trim="searchKey.sid"></el-input>
@@ -15,7 +15,14 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="dataList" class='c-mt-10 c-mb-70' max-height="724" v-loading="loading" @selection-change="handleSelectionChange" stripe>
+        <el-table
+            :data="dataList" 
+            v-loading='loading'
+            stripe
+            border
+            class="c-mb-70"
+            max-height="724" 
+            @selection-change="handleSelectionChange">
             <el-table-column type="selection"></el-table-column>
             <el-table-column prop="sid" label="SID"></el-table-column>
             <el-table-column prop="name" label="英文名称"></el-table-column>

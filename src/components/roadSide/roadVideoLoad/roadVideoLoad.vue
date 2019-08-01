@@ -61,11 +61,12 @@
         </div>
 
         <el-table 
-        :data="dataList" 
-        v-loading='loading' 
-        stripe 
-        max-height="724" 
-        class='c-mb-70'>
+            :data="dataList" 
+            v-loading='loading' 
+            stripe  
+            border
+            class="c-mb-70"
+            max-height="724">
             <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
             <el-table-column prop="fileName" min-width="18%" label="文件名称"></el-table-column>
             <el-table-column prop="camCode" min-width="6%" label="摄像头编号"></el-table-column>

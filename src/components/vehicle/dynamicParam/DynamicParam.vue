@@ -31,7 +31,13 @@
                 <el-button size="mini" plain icon="el-icon-edit" @click="localClick">获取本地数据</el-button>
             </div>
             
-            <el-table :data="dataList" v-loading='loading' stripe max-height="724" class='c-mb-70'>
+            <el-table
+                :data="dataList" 
+                v-loading='loading'
+                stripe
+                border
+                class="c-mb-70"
+                max-height="724">
                 <el-table-column prop="eventName" min-width='8%' label="事件名称"></el-table-column>
                 <el-table-column prop="eventNo" min-width='23%' label="事件编号"></el-table-column>
                 <el-table-column prop="vehicleId" min-width='8%' label="车辆编号"></el-table-column>
@@ -52,10 +58,6 @@
                 </el-table-column>                
             </el-table>
         </div>
-        <div>
-            <local-data-panel title="获取本地数据" ref="localDataPanel" @localDataPanelBack="init" v-show="!panel.detailShow && panel.localDataShow" :type="panel.type" :data="panel.data"></local-data-panel>
-            <detail-panel ref="detailPanel" @detailPanelBack="panelBack" v-show="panel.detailShow && !panel.localDataShow" :title="panel.title" :type="panel.type" :data="panel.data"></detail-panel>
-        </div>
 
         <div class="c-page clearfix">
             <el-pagination
@@ -70,6 +72,10 @@
             </el-pagination>
         </div>
 
+        <!-- <div> -->
+        <local-data-panel title="获取本地数据" ref="localDataPanel" @localDataPanelBack="init" v-show="!panel.detailShow && panel.localDataShow" :type="panel.type" :data="panel.data"></local-data-panel>
+        <detail-panel ref="detailPanel" @detailPanelBack="panelBack" v-show="panel.detailShow && !panel.localDataShow" :title="panel.title" :type="panel.type" :data="panel.data"></detail-panel>
+        <!-- </div> -->
     </div>
 </template>
 <script>

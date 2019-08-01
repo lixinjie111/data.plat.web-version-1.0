@@ -5,6 +5,7 @@ class TDate {
     constructor(){
 
     }
+    // 时间戳转格式化日期
     static formatTime(value,type='yy-mm-dd hh:mm:ss'){
         let tDate = value ? new Date(value) : new Date();
         const year = tDate.getFullYear();
@@ -25,32 +26,12 @@ class TDate {
     static formatNum(value){
         return value < 10 ? '0' + value : value;
     }
-    static dateToMs (date) {//日期转时间戳
+    //日期转时间戳
+    static dateToMs (date) {
         let result = new Date(date).getTime();
         return result;
     }
-    static dateTimeFormatter (t) {
-        if (!t) return ''
-        t = new Date(t).getTime()
-        t = new Date(t)
-        var year = t.getFullYear()
-        var month = (t.getMonth() + 1)
-        month = formatNum(month)
-       
-        var date = t.getDate()
-        date = formatNum(date)
-       
-        var hour = t.getHours()
-        hour = formatNum(hour)
-       
-        var min = t.getMinutes()
-        min = formatNum(min)
-       
-        var se = t.getSeconds()
-        se = formatNum(se)
-       
-        return year + '-' + month + '-' + date + ' ' + hour + ':' + min + ':' + se
-    }
+    // 20190718105020 => 2019-07-18 10:50:20
     static formatTimeReal(time){
         var t = time.toString();
         var y = t.substring(0,4);

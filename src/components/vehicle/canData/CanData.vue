@@ -29,7 +29,13 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick('searchForm')">重置</el-button>
             </el-form-item>
         </el-form>
-        <el-table class='c-mt-10' max-height="724" :data="dataList" v-loading='loading' stripe>
+        <el-table
+            :data="dataList" 
+            v-loading='loading'
+            stripe
+            border
+            class="c-mb-70"
+            max-height="724">
             <el-table-column prop="vehicleId" label="车辆编号"></el-table-column>
             <el-table-column prop="dataId" label="数据编号"></el-table-column>
             <el-table-column prop="enName" label="英文名称"></el-table-column>

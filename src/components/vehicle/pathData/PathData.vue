@@ -25,11 +25,12 @@
           </el-form>
 
           <el-table 
-            :data="dataList" 
-            v-loading='loading' 
-            stripe 
-            max-height="724" 
-            class='c-mb-70'>
+              :data="dataList" 
+              v-loading='loading'
+              stripe
+              border
+              class="c-mb-70"
+              max-height="724">
               <el-table-column min-width="5%" type="index" label="序号" :index='indexMethod'></el-table-column>
               <el-table-column min-width="16%" prop="routeId" label="行程编号"></el-table-column>
               <el-table-column min-width="14%" label="行程开始时间">

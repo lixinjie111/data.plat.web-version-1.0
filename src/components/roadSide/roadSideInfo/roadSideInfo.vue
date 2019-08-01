@@ -34,7 +34,10 @@
 
             <div class="c-wrapper-20 c-detail-box">
                 <p class='c-title'>绑定设备列表</p>
-                <el-table :data='deviceList'>
+                <el-table
+                    :data='deviceList'  
+                    stripe  
+                    border>
                     <el-table-column label="序号" type="index"></el-table-column>
                     <el-table-column min-width="18%" prop="deviceId" label="设备类型"></el-table-column>
                     <el-table-column min-width="6%" prop="roadName" label="设备ID"></el-table-column>
