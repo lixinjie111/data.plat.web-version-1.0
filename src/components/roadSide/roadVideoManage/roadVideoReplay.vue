@@ -79,6 +79,9 @@
         methods:{
             init(){
                 let videoInfo = JSON.parse(localStorage.getItem('videoInfo'));
+                // this.camDetail = Object.assign({
+                //     videoPath: videoInfo.destPath + '.mp4'
+                // }, videoInfo, this.camDetail);
                 this.camDetail.camId = videoInfo.camId;
                 this.camDetail.camCode = videoInfo.camCode;
                 this.camDetail.roadName = videoInfo.roadName;
@@ -151,7 +154,6 @@
             
         },
         mounted(){
-            
             this.init();
             this.initMap();
         }

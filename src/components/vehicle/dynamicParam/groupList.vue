@@ -105,7 +105,9 @@ export default {
         handleSelectionChange(val) {
             this.selector = [];
             val.forEach(item => {
-                this.selector.push(item.id);
+                let obj = {};
+                obj.id = item.id;
+                this.selector.push(obj);
             });
         },
         changePageSize(value) {//每页显示条数变更

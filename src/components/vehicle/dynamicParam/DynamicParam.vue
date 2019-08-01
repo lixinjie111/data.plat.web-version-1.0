@@ -28,7 +28,7 @@
             </el-form>
 
             <div class="c-button-wrapper c-text-right">
-                <el-button size="mini" plain icon="el-icon-edit" @click="localClick();">获取本地数据</el-button>
+                <el-button size="mini" plain icon="el-icon-edit" @click="localClick">获取本地数据</el-button>
             </div>
             
             <el-table :data="dataList" v-loading='loading' stripe max-height="724" class='c-mb-70'>
@@ -55,6 +55,19 @@
         <div>
             <local-data-panel title="获取本地数据" ref="localDataPanel" @localDataPanelBack="init" v-show="!panel.detailShow && panel.localDataShow" :type="panel.type" :data="panel.data"></local-data-panel>
             <detail-panel ref="detailPanel" @detailPanelBack="panelBack" v-show="panel.detailShow && !panel.localDataShow" :title="panel.title" :type="panel.type" :data="panel.data"></detail-panel>
+        </div>
+
+        <div class="c-page clearfix">
+            <el-pagination
+                background
+                @current-change="changePageCurrent" 
+                :current-page="pageOption.page" 
+                :total="pageOption.total"
+                @size-change="changePageSize"
+                :page-sizes="[10,20,50,100,200]" 
+                :page-size="pageOption.size"
+                layout="total, sizes, prev, pager, next">
+            </el-pagination>
         </div>
 
     </div>

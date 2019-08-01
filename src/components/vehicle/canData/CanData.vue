@@ -1,20 +1,27 @@
 <template>
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
-        <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
+        <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
             <el-form-item label="车辆编号:" prop='vehicleId'>
                 <el-input v-model.trim="searchKey.vehicleId"></el-input>
             </el-form-item>
             <el-form-item label="英文名称:" prop='enName'>
                 <el-input v-model.trim="searchKey.enName"></el-input>
             </el-form-item>
-            <el-form-item label="时间" prop='time'>
+            <el-form-item label="开始时间" prop='startTime'>
                 <el-date-picker
-                    v-model.trim="searchKey.time"
-                    type="datetimerange"
-                    :picker-options="timeOption"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
+                    v-model.trim="searchKey.startTime"
+                    type="datetime"
+                    placeholder="开始时间"
+                    :picker-options="startTimeOption">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="结束时间" prop='endTime'>
+                <el-date-picker
+                    v-model.trim="searchKey.endTime"
+                    type="datetime"
+                    placeholder="结束时间"
+                    :picker-options="endTimeOption">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -28,102 +35,138 @@
             <el-table-column prop="enName" label="英文名称"></el-table-column>
             <el-table-column prop="chName" label="中文名称"></el-table-column>
             <el-table-column prop="dataValue" label="数据值"></el-table-column>
-            <el-table-column prop="time" label="时间"></el-table-column>
+            <el-table-column label="时间">
+                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
+            </el-table-column>
         </el-table>
-        <paging-pre-next ref="pagingPreNext" class="yk-paging" :page-index="pageOption.page" :next-count="pageOption.nextCount" @pagingEvent="pagingFn" @PageSizeEvent="pagingSizeFn"></paging-pre-next>
+
+        <div class="c-page clearfix">
+            <el-pagination
+                background
+                @current-change="changePageCurrent" 
+                :current-page="pageOption.page" 
+                :total="pageOption.total"
+                @size-change="changePageSize"
+                :page-sizes="[100]" 
+                :page-size="pageOption.size"
+                layout="total, sizes, prev, pager, next">
+            </el-pagination>
+        </div>
 
     </div>
 </template>
 <script>
 import TList from '@/common/utils/list.js'
-import DatePicker from 'vue2-datepicker'
-import PagingPreNext from '@/common/view/PagingPreNext.vue'
 import {queryList} from '@/api/vehicle';
 export default {
     name: 'BaseMessage',
     components: {
-        PagingPreNext,DatePicker,TList
+        TList
     },
     data(){
+        let _this = this,
+            _checkStartTime = (rule, value ,callback) => {
+            let _startTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null,//标准时间转为时间戳
+                _endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.endTime)) : null;//标准时间转为时间戳
+            if(_startTime){
+                if(_endTime) {
+                    if(_startTime > _endTime){
+                        callback(new Error('开始时间必须小于结束时间'));
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            }else {
+                callback();
+            }
+        },
+        _checkEndTime = (rule, value ,callback) => {
+            let _startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.startTime)) : null,//标准时间转为时间戳
+                _endTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null;//标准时间转为时间戳
+            if(_endTime){
+                if(_startTime) {
+                    if(_startTime > _endTime){
+                        callback(new Error('开始时间必须小于结束时间'));
+                    }else {
+                        callback();
+                    }
+                }else {
+                    callback();
+                }
+            }else {
+                callback();
+            }
+        };
         return {
-            isTimeTip:false,
-            isVehicleShow:false,
             loading:false,
             searchLoading:false,
             searchKey: {
-                vehicleId: '',
+                vehicleId: 'B21E-00-022',
                 enName: '',
-                time:'',
-                nextStartRowMap:new Map(),//下一页用到的rowkey数组
+                startTime: this.$dateUtil.GetDateStr(31),
+                endTime: this.$dateUtil.GetDateStr(2)
             },
             pageOption: {
                 page: 1,
                 size: 10,
-                total:0,
-                nextCount: 0,
-                nextPageClick:true//默认点击下一页
+                total: 0,
             },
             dataList: [],
-            current: {
-                top: 0
-            },
-            timeOption: {
+            startTimeOption: {
                 disabledDate: time => {
                     let _time = time.getTime(),
-                        _newTime = new Date().getTime();
-                    return _time > _newTime;
+                        _newTime = new Date().getTime(), 
+                        _endDateVal = _this.searchKey.endTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.endTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_endDateVal) {
+                        return _time > _endDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
                 }
-            },  
+            },
+            endTimeOption: {
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime(), 
+                        _startDateVal = _this.searchKey.startTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.startTime, "yy-mm-dd")+' 00:00:00') : null;
+                    if (_startDateVal) {
+                        return  _time < _startDateVal || _time > _newTime;
+                    }else {
+                        return _time > _newTime;
+                    }
+                }
+            }, 
+            rules:{
+                vehicleId:[
+                    { required: true, message: '车辆编号不能为空', trigger: 'blur' },
+                ],
+                startTime:[
+                    { required: true, message: "开始时间不能为空!", trigger: 'change' }
+                ],
+                endTime:[
+                    { required: true, message: "结束时间不能为空!", trigger: 'change' }
+                ],
+            },
         }
     },
     methods: {
         init(){
+            this.getQueryList();
             this.initPaging();
-            this.initSearch();
-            this.initData();
+        },
+        initPageOption() {
+            this.dataList = [];
+            this.pageOption.total = 0;
+            this.pageOption.page = 1;
         },
         initPaging(){
-            this.loading = true;
             this.pageOption.page = 1;
+            this.pageOption.total = 0;
             this.pageOption.size = 10;
-            this.pageOption.nextCount = 0;
-            this.pageOption.nextPageClick =true;
         },
-        initSearch(){
-            this.searchKey = {
-                nextStartRowMap:new Map()
-            };
-        },
-        initData(currentNextStartRow){//currentNextStartRow=null求第一页
-            this.getRealTimeList(this.pageOption.size,this.pageOption.page-1,currentNextStartRow,this.getDataList);
-        },
-        getNextCount(list){
-          list != null ?this.pageOption.nextCount = list.length : this.pageOption.nextCount = 0;
-        },
-        getDataList(list){
-            let _this =this;
-            _this.dataList =list;
-            var rowKey = "";
-            if( _this.dataList != null){
-                _this.dataList = _this.dataList.filter(function(item){
-                    if(item.enName == "ROWKEY"){
-                        rowKey= item.dataValue;//赋值当前页最后一条rowkey记录值
-                    }
-                    item.time = _this.$dateUtil.formatTime(item.time,'yy-mm-dd hh:mm:ss:ms');
-                    return item.enName != "ROWKEY";
-                });
-            }
-            if(_this.pageOption.nextPageClick) {//点击下一页查询
-                _this.searchKey.nextStartRowMap.set(_this.pageOption.page,rowKey);
-                //设置下一页的记录数
-                _this.pageOption.nextCount = 0;
-                if(rowKey != "" && this.pageOption.nextPageClick){
-                    _this.getRealTimeList(_this.pageOption.size,_this.pageOption.page + 1,rowKey,_this.getNextCount);
-                }
-            }
-        },
-        getRealTimeList(pageSize,pageIndex,currentNextStartRow,callback){
-            this.loading = true;
+        getQueryList(){
             queryList({
                 page: {
                     'pageSize': this.pageOption.size,
@@ -131,14 +174,16 @@ export default {
                 },
                 vehicleId:this.searchKey.vehicleId,
                 enName:this.searchKey.enName,
-                startTime:this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
-                endTime:this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '',
-                nextStartRow:currentNextStartRow == undefined ? null: currentNextStartRow
+                startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
+                endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
             }).then(res => {
                 if(res.status == '200'){
                     this.pageOption.total = res.data.list.length;
-                    callback(res.data.list); 
+                    this.dataList = res.data.list;
                 }
+                this.loading = false;
+                this.searchLoading = false;
+            }).catch(err => {
                 this.loading = false;
                 this.searchLoading = false;
             })
@@ -148,74 +193,25 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.initPaging();
-                    this.initData();
+                    this.getQueryList();
                 } else {
                     return false;
                 }
             });
         },
-        resetClick(searchForm){
-            this.$refs[searchForm].resetFields();
-            this.dataList=[];
-            this.isVehicleShow = false;
-            this.isTimeTip = false;
+        resetClick(){
+            this.getQueryList();
+            this.$refs.searchForm.resetFields();
         },
-        pagingFn(value){
-            var currentIndex = this.pageOption.index;
-            this.pageOption.page = value;
-
-            if(currentIndex < value){ //点击下一页
-                this.pageOption.nextPageClick=true;
-                if(value <= 1){//第一页
-                    this.initData();
-                }else{
-                    this.initData(this.searchKey.nextStartRowMap.get(currentIndex));
-                }
-            }
-            else if(currentIndex > value){ //点击上一页
-                this.pageOption.nextPageClick=false;
-                if(value <= 1){
-                    this.initData();
-                }else{
-                    this.initData(this.searchKey.nextStartRowMap.get(currentIndex-2));
-                }
-                this.pageOption.nextCount= 100;//点击上一页肯定下一页可用
-            }
-        },
-        pagingSizeFn(value){
-            this.pageOption.index =1;
+        changePageSize(value) {//每页显示条数变更
+            this.initPageOption();
             this.pageOption.size = value;
-            this.pageOption.total = 0;
-            this.pageOption.nextPageClick =true;//初始化
-            this.searchKey.nextStartRow =[];
-            this.initData();
+            this.getQueryList();
         },
-        validateSearch(o){
-            var validatePass=true;
-            var _this =this;
-            let vehicleIdTip = document.getElementById("vehicleIdTip");
-                let timeTip = document.getElementById("timeTip");
-                if(_this.searchKey.vehicleId != ""){
-                    _this.isVehicleShow = false;
-                }else{
-                    if(o == "isSearch"){
-                        _this.isVehicleShow = true;
-                    }
-                    validatePass=false;
-                }
-
-                if((_this.searchKey.startTime == null || _this.searchKey.startTime == "")
-                || (_this.searchKey.endTime == null || _this.searchKey.endTime == "")){
-                     if(o == "isSearch"){
-                         _this.isTimeTip = true;
-                     }
-                    validatePass=false;
-                }else{
-                    _this.isTimeTip = false;
-                }
-
-           return validatePass;
-        }
+        changePageCurrent(value) {//页码变更
+            this.pageOption.page = value;
+            this.getQueryList();
+        },
     },
     mounted(){
         this.init();
