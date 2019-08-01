@@ -91,8 +91,7 @@
                                         class="sl-tusvn-map"
                                         target-id="tusvnMap" 
                                         ref="tusvnMap" 
-                                        @mapcomplete="mapcomplete"
-                                        v-show="tusvnOption.show">
+                                        @mapcomplete="mapcomplete">
                                     </tusvn-map>
                                 </div>
                             </div>
@@ -174,8 +173,8 @@ export default {
                 }
             },
             tusvnOption: {
-                show: false,
-                loading: false
+                // show: false,
+                loading: true
             },
             // 阻止频繁加载数据
             stopFrequentLoad: {
@@ -238,8 +237,14 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     this.cameraParam = JSON.parse(res.data[0].cameraParam);
+                    // console.log(this.cameraParam);
+                    if(this.initMapFlag) {
+                        this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
+                    }
                 }
-            })
+            }).catch(err => {
+                this.tusvnOption.loading = false;
+            });
         },
         setCurrentRow() {
             let _curTimestamp = Number(this.$dateUtil.dateToMs(this.curTime))+Number(this.currentMillisecond);
@@ -274,7 +279,7 @@ export default {
         findPerceptionRecords() {
             this.loading = true;
             this.dataList = [];
-            this.tusvnOption.show = false;
+            // this.tusvnOption.show = false;
             this.tusvnOption.loading = true;
             findPerceptionRecordsInfo(this.perceptionData).then(res => {
                 if(res.status == '200'){
@@ -285,11 +290,11 @@ export default {
 
                 }
                 this.loading = false;
-                this.tusvnOption.show = true;
+                // this.tusvnOption.show = true;
                 this.tusvnOption.loading = false;
             }).catch(err => {
                 this.loading = false;
-                this.tusvnOption.show = true;
+                // this.tusvnOption.show = true;
                 this.tusvnOption.loading = false;
             });
         },
@@ -423,10 +428,10 @@ export default {
                 // console.log("进入列表-----------");
                 // console.log(row);
                 row.loading = true;
-                this.tusvnOption.show = false;
+                // this.tusvnOption.show = false;
                 this.tusvnOption.loading = true;
                 setTimeout(() => {
-                    this.tusvnOption.show = true;
+                    // this.tusvnOption.show = true;
                     this.tusvnOption.loading = false;
                     row.loading = false;
                     // this.$refs.tusvnMap.updateCameraPosition(442481.5124901131,4427254.14590794,27.173398250989216,26.86058551360609,-0.6171498919343764,-0.43315502055389093);
@@ -475,10 +480,10 @@ export default {
                 "timestamp": 1561015100278
             };
 
-            this.tusvnOption.show = false;
+            // this.tusvnOption.show = false;
             this.tusvnOption.loading = true;
             setTimeout(() => {
-                this.tusvnOption.show = true;
+                // this.tusvnOption.show = true;
                 this.tusvnOption.loading = false;
                 console.log("haha-----------------");
                 // this.$refs.tusvnMap.updateCameraPosition(442481.5124901131,4427254.14590794,27.173398250989216,26.86058551360609,-0.6171498919343764,-0.43315502055389093);
@@ -490,8 +495,13 @@ export default {
             // setTimeout(() => {
                 console.log("初始化地图已完成-----------");
                 this.initMapFlag = true;
-                // this.$refs.tusvnMap.updateCameraPosition(442481.5124901131,4427254.14590794,27.173398250989216,26.86058551360609,-0.6171498919343764,-0.43315502055389093);
-                this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
+                if(this.cameraParam) {
+
+                    // this.$refs.tusvnMap.updateCameraPosition(442481.5124901131,4427254.14590794,27.173398250989216,26.86058551360609,-0.6171498919343764,-0.43315502055389093);
+                   this.$refs.tusvnMap.updateCameraPosition(325994.544950895,3462549.120490024,26.547772446367873,23.382136948463224,0.5808973368959062,1.47249100492297);
+                    // this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
+                }
+                // this.tusvnOption.show = true;
             // }, 3000);
         }
     }
