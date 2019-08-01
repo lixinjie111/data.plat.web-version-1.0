@@ -90,7 +90,7 @@ export default {
             // let _option = Object.assign({},this.$parent.$parent.$parent.defaultMapOption,{
             //     mapStyle: 'light'
             // });
-            this.distanceMap = new AMap.Map('map-container-r',this.$parent.$parent.$parent.defaultMapOption);
+            this.distanceMap = new AMap.Map('map-container-r',this.$parent.$parent.$parent.$parent.defaultMapOption);
             // this.distanceMap.setZoom();
             this.distanceMap.addControl(_scale);
             this.distanceMap.addControl(_toolbar);

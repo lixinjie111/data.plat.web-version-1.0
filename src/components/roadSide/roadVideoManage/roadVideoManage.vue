@@ -360,8 +360,8 @@ export default {
             });
         },
         backFn(){
-           this.isReplayShow = false;
-           this.panel.show = false; 
+            this.isReplayShow = false;
+            this.panel.show = false; 
         }
     },
     mounted(){

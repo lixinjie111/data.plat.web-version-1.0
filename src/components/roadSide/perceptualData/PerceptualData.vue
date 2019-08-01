@@ -381,7 +381,9 @@ export default {
         },
         mapChangeMax(){
             this.changeSize = true;
-            // this.distanceMap.setCenter();
+            setTimeout(() => {
+                this.distanceMap.setFitView();
+            },300)
         },
         mapChangeMin(){
             this.changeSize = false;

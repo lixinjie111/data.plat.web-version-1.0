@@ -200,8 +200,8 @@ export default {
         init(){
             this.manageShow = true;
             this.playbackShow = false;
-            this.initPaging();
             this.initData();
+            this.initPaging();
         },
         initPaging(){
             this.pageOption.page = 1;
@@ -229,8 +229,8 @@ export default {
                 'stopEndTime': this.searchKey.endTime[1] ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : ''
             }).then(res => {
                 if(res.status == '200'){
-                    this.dataList = res.data.list || [];
-                    this.pageOption.total = res.data.totalCount || 0;
+                    this.dataList = res.data.list;
+                    this.pageOption.total = res.data.totalCount;
                 }
                 this.loading = false;
                 this.searchLoading = false;
@@ -246,6 +246,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
             if (valid) {
                     this.searchLoading = true;
+                    this.initPaging();
                     this.initData();
                 } else {
                     return false;
@@ -298,7 +299,13 @@ export default {
             this.pageOption.page = value;
             this.initData();
         },
-        backFn(){
+        backFn(type){
+            // console.log(type)
+            if(type == 'add'){
+                this.initPaging();
+                this.initData();
+                // console.log('新增')
+            }
             this.panel.show = false;
             this.dialogOption.show = false;
         }

@@ -354,7 +354,7 @@ export default {
                 'endTime':endTime
             }).then(res => {
                 if(res.status == '200'){
-                    this.$emit('backDownPage');
+                    this.$emit('backDownPage','add');
                 }
             })
         },

@@ -102,6 +102,7 @@ import { error } from 'util';
             polylinePath: [],
             markerEnd: null
         },
+        removeMarker:null,
         requestDataParams:{
           requestRowKey:null,
           loadMoreData:"下滑加载更多",
@@ -481,13 +482,25 @@ import { error } from 'util';
           this.distanceMap.add(this.markers.markerPolyline);
           this.distanceMap.setFitView();
       },
+      addRemoveMaker(point){
+        if(this.removeMarker) {
+          this.removeMarker.setPosition(point);
+        }else {
+          this.removeMarker = new AMap.Marker({
+              position: point,
+              icon:'static/images/map/blue-point.png',
+              offset: new AMap.Pixel(-11, -11)
+          });
+          this.distanceMap.add(this.removeMarker);
+        }
+      },
       selectRow(item, index) {
         let self = this;
         if (index ||index==0) {
           self.selectItem = index;
         }
-        let lng = item.gnss_LONG;
-        let lat = item.gnss_LAT;
+        let _position = ConvertCoord.wgs84togcj02(item.gnss_LONG, item.gnss_LAT);
+        this.addRemoveMaker(_position);
         // self.$refs.refMap.addNormalPoint(lng, lat, 'heighLightPoint_01', "PathDataLayer", 5, "#FF0000", "#FFFF00", 2);
       }
     },

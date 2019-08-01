@@ -290,9 +290,11 @@ export default {
         indexMethod(index){
             return index + this.pageOption.size * (this.pageOption.page-1) + 1;
         },
-        backFn(){
+        backFn(type){
+            if(type == 'add'){
+                this.init();
+            }
             this.dialogOption.show = false;
-            this.init();
         }
     },
     mounted(){

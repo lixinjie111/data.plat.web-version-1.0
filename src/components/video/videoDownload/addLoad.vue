@@ -212,8 +212,8 @@ export default {
                         if(res.status == '200'){
                             this.allList = res.data.list;
                             this.plateNoList = res.data.list;
-                            this.plateNoLoading = false;
                         }
+                        this.plateNoLoading = false;
                     }).catch(err => {
                         this.plateNoLoading = false;
                     });
@@ -269,7 +269,9 @@ export default {
                             this.vehicleIdList = _result;
                         }
                         this.vehicleIdLoading = false;
-                    })
+                    }).catch(err => {
+                        this.vehicleIdLoading = false;
+                    });
                 },1000);
             }
         },
@@ -348,8 +350,10 @@ export default {
                     });
                     historyDownloadTask(formParamsInfo).then(res => {
                         if(res.status == '200'){
-                            this.cancleFunc();
+                            this.cancleFunc('add');
                         }
+                        this.submitloading = false;
+                    }).catch(err => {
                         this.submitloading = false;
                     })
                 } else {
@@ -357,8 +361,8 @@ export default {
                 }
             });
         },
-        cancleFunc() {
-            this.$emit('backDownPage');
+        cancleFunc(type) {
+            this.$emit('backDownPage',type);
         }
     }
 }
