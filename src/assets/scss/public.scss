@@ -354,7 +354,8 @@ h3.c-title {
 // c-detail-lable-box
 .c-detail-lable-list {
 	position: relative;
-	font-size: 16px;
+	// font-size: 16px;
+	font-size: 14px;
 	line-height: 28px;
 	.c-detail-lable {
 		float: left;
@@ -379,7 +380,7 @@ h3.c-title {
 		}
 	}
 	&.el-form {
-		font-size: 16px;
+		// font-size: 16px;
 		.el-form-item {
 			float: none;
 			margin-bottom: 0;
@@ -387,7 +388,7 @@ h3.c-title {
 			min-width: 0;
 		}
 		.el-form-item__label {
-			font-size: 16px;
+			// font-size: 16px;
 		}
 		.c-pos-btn {
 			right: 0;
