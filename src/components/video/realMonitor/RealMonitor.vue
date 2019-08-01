@@ -54,15 +54,16 @@
                 <template v-if='searchKey.status=="3"'>未注册</template>
             </el-form-item>
             <el-form-item class="c-pos-btn">
-                <el-button type="warning" size="small" v-if="isStart" @click='endVideo'>结束监控</el-button>
-                <el-button type="warning" size="small" v-else :disabled="isDisabled ? true : false" @click='realMonit'>开始监控</el-button>
+                <el-button type="warning" v-if="isStart" @click='endVideo'>结束监控</el-button>
+                <el-button type="warning" v-else :disabled="isDisabled" @click='realMonit'>开始监控</el-button>
             </el-form-item>
             
         </el-form> 
             <!-- 地图视频模块 -->
             <div class="c-map-video-wrapper">
                 <div class="c-video-wrapper">
-                    <video-player class="c-video" 
+                    <video-player 
+                        class="c-video" 
                         ref="videoPlayer"
                         :options="playerOptions"
                         @ended="onPlayerEnded"
@@ -111,7 +112,7 @@ export default {
             totalTime:0,
             totalTimeformat:'',
             isStart:false,
-            isDisabled: false,
+            isDisabled: true,
             isMaskShow:true,
             allList: [],
             plateNoList: [],
@@ -144,7 +145,7 @@ export default {
                 fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
                 sources: [
                     {
-                        type: 'rtmp/mp4',
+                        // type: 'rtmp/mp4',
                         // type: 'rtmp/flv',
                         // type: 'rtmp',
                         src: ''
@@ -192,15 +193,16 @@ export default {
             }
             this.searchKey.status = item.status;
             this.searchKey.serialNum = item.serialNum;
-            this.isStart = false;
             if(this.searchKey.status != '1'){//摄像头状态为不在线时,开始监控按钮不可点击
                 this.isDisabled = true;
             }else{
                 this.isDisabled = false;
             };
+
             clearInterval(this.playTimer);
             clearTimeout(this.timer);
 
+            this.isStart = false;
             this.isMaskShow = true;
             this.totalTime = 0;
             this.totalTimeformat = '';
@@ -250,6 +252,10 @@ export default {
                                 this.repeatFn();
                                 this.monitStartTime = this.getCurTime();
 
+                                this.isStart = true;
+                                setTimeout(() => {
+                                    this.isMaskShow = false;
+                                }, 1000);
                                 //计算视频播放时长
                                 this.playTimer = setInterval(() => {
                                     this.totalTime ++ ;
@@ -431,8 +437,6 @@ export default {
             
             this.endVideo();
         },
-    },
-    mounted(){
     },
     beforeDestroy(){
         clearInterval(this.playTimer);
