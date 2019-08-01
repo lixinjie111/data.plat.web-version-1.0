@@ -48,10 +48,13 @@
         <div class="c-button-wrapper c-text-right">
             <el-button size="mini" plain icon="el-icon-download" @click="downClick">批量下载</el-button>
         </div>
-        <el-table stripe max-height="724"
-            :data="dataList"
-            v-loading="loading"
-            class='c-mb-70'
+        <el-table
+            :data="dataList" 
+            v-loading='loading'
+            stripe
+            border
+            class="c-mb-70"
+            max-height="724" 
             @selection-change="handleSelectionChange">
             <el-table-column type="selection"></el-table-column>
             <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>

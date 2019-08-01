@@ -59,12 +59,13 @@
                 <el-button size="mini" plain icon="el-icon-plus" @click="addTask">新建任务</el-button>
             </div>
             
-            <el-table 
-            :data="dataList" 
-            v-loading='loading' 
-            stripe 
-            max-height="724" 
-            class='c-mb-70'>
+            <el-table
+                :data="dataList" 
+                v-loading='loading'
+                stripe
+                border
+                class="c-mb-70"
+                max-height="724">
                 <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
                 <el-table-column min-width="18%" label="文件名称" prop="fileName"></el-table-column>
                 <el-table-column min-width="11%" label="车辆编号" prop="vehicleId"></el-table-column>

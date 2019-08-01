@@ -18,7 +18,7 @@
                     ></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="摄像头ID:" prop='cameraId'>
+            <el-form-item label="摄像头编号:" prop='cameraId'>
                 <el-select 
                     v-model="searchKey.cameraId"
                     filterable
@@ -89,7 +89,10 @@
         </el-form>
         <el-table 
             :data="showDataList"
-            v-loading="loading" 
+            v-loading="loading"  
+            border
+            class="c-mb-70"
+            max-height="724"
             stripe>
             <el-table-column min-width="5%" label="编号" type="index" :index="indexMethod"></el-table-column>
             <el-table-column min-width="20%" label="摄像头序列号" prop="serialNum"></el-table-column>

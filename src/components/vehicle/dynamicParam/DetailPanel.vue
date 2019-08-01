@@ -1,5 +1,5 @@
 <template>
-<div id='groups' v-cloak>
+<div v-cloak>
     <el-form :inline="true" :model="searchKey" ref='searchForm' size='small'>
         <el-form-item label="数据ID" prop='dataId'>
             <el-input v-model.trim="searchKey.dataId"></el-input>
@@ -9,7 +9,11 @@
             <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
         </el-form-item>
     </el-form>
-    <el-table :data="dataList" v-loading="loading" class='c-mt-10 c-mb-70' stripe>
+    <el-table
+        :data="dataList" 
+        v-loading='loading'
+        stripe
+        border>
         <el-table-column prop="timestamp" label="时间戳"></el-table-column>
         <el-table-column prop="dataId" label="数据ID"></el-table-column>
         <el-table-column prop="enName" label="英文名称"></el-table-column>
@@ -101,63 +105,3 @@ export default {
     }
 }
 </script>
-<style scoped>
-.yk-gap10{
-    background: #fff;
-    margin: 10px 0px;
-}
-
-.yk-cfg-box{
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-.yk-b-border{
-    border-bottom: 1px dashed #d5e1e2;
-    margin-bottom: 10px;
-}
-
-.yk-sub-box{
-    margin: 10px 0px;
-    position: relative;
-    background: #F7F9FA;
-}
-
-.yk-s-block{
-    display: inline-block;
-    vertical-align: top;
-    background: #fff;
-    height: 160px;
-    width: 22%;
-}
-.yk-s-block:hover{
-    border: 2px solid #00c1de;
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    -ms-border-radius: 3px;
-    -o-border-radius: 3px;
-}
-
-.yk-t-color{
-    background: #F7F9FA!important;
-}
-
-.yk-s-block .title{
-    text-align: left;
-    height: 36px;
-    line-height: 36px;
-    font-size: 16px;
-    color: #5F6E82;
-    padding-left: 10px;
-}
-.yk-s-block .body{
-    font-size: 42px;
-    color: #475669;
-    padding: 10px;
-}
-.yk-top150{
-    margin-top: 150px!important;
-}
-</style>
