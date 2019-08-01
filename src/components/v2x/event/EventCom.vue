@@ -120,14 +120,14 @@ export default {
                 }
             };
         return {
-            startTime:'',
-            endTime:'',
+            // startTime:'',
+            // endTime:'',
             loading:false,
             searchLoad:false,
             searchKey: {
                 hvid: '',
-                startTime: '',
-                endTime: ''
+                startTime: this.$dateUtil.GetDateStr(2),
+                endTime: this.$dateUtil.getNowFormatDate()
             },
             pageOption: {
                 page: 1,
@@ -175,10 +175,6 @@ export default {
     },
     methods: {
         init(){
-            let startTime = this.$dateUtil.GetDateStr(2);
-            let endTime = this.$dateUtil.getNowFormatDate();
-            this.searchKey.startTime = startTime;
-            this.searchKey.endTime = endTime;
             this.findEventList();
             // this.initPaging();
         },
@@ -216,9 +212,9 @@ export default {
             })
         },
         searchClick(){
-            this.searchLoad = true;
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
+                    this.searchLoad = true;
                     this.findEventList();
                 } else {
                     return false;

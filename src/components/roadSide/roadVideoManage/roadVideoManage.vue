@@ -115,7 +115,7 @@ export default {
             isReplayShow:false,
             manageShow:true,
             playbackShow:false,
-            startTime:'',
+            // startTime:'',
             endTime:'',
             searchLoading:false,
             loading:false,
@@ -132,8 +132,8 @@ export default {
                 roadName: '',
                 roadPointName: '',
                 source: '',
-                startTime:'',
-                endTime:''
+                startTime: [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()],
+                endTime: [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()]
             },
             selector: [],
             auth: {
@@ -209,10 +209,10 @@ export default {
                 taskStatus: this.searchKey.taskStatus,
                 roadPointName: this.searchKey.roadPointName,
                 protocal:protocal,
-                startBeginTime: this.$dateUtil.dateToMs(this.searchKey.startTime[0]) || '',
-                startEndTime: this.$dateUtil.dateToMs(this.searchKey.startTime[1]) || '',
-                stopBeginTime: this.$dateUtil.dateToMs(this.searchKey.endTime[0]) || '',
-                stopEndTime: this.$dateUtil.dateToMs(this.searchKey.endTime[1]) || ''
+                startBeginTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
+                startEndTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
+                stopBeginTime: this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
+                stopEndTime: this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : ''
             }).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;

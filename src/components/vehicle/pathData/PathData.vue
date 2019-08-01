@@ -90,7 +90,7 @@
         searchKey: {
           vehicleId: '',
           plateNo: '',
-          time:''
+          time:[this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()]
         },
         selector: {
           isAll: false,
@@ -324,9 +324,9 @@
         })
       },
       searchClick() {
-        this.searchLoading = true;
         this.$refs.searchForm.validate((valid) => {
             if (valid) {
+                this.searchLoading = true;
                 this.initPaging();
                 this.queryPathList();
             } else {

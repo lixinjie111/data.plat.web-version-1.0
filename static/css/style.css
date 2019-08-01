@@ -540,12 +540,12 @@ table thead {
 .pages .el-pagination .el-input__inner{
     width:90px !important;
 }
-.el-select-dropdown{
+/*.el-select-dropdown{
     width:90px !important;
     position: absolute !important;
     padding-left:10px !important;
     padding-right:10px !important;
-}
+}*/
 .pages .el-pagination .el-input__inner{
     width:100px !important;
 }

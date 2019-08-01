@@ -100,7 +100,7 @@ export default {
                 vehicleId: '',
                 eventName: '',
                 eventNo: '',
-                time:''
+                time:[this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()]
             },
             pageOption: {
                 page: 1,
@@ -182,8 +182,8 @@ export default {
                 'vehicleId': this.searchKey.vehicleId,
                 'eventName': this.searchKey.eventName,
                 'eventNo': this.searchKey.eventNo,
-                'startTime': this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
-                'endTime': this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
+                'startTime': this.searchKey.time[0] ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
+                'endTime': this.searchKey.time[1] ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
             }).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
@@ -216,9 +216,9 @@ export default {
             this.panel.localDataShow = false;
         },
         searchClick(){
-            this.searchLoading = true;
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
+                    this.searchLoading = true;
                     this.dynamicParamList();
                 } else {
                     return false;

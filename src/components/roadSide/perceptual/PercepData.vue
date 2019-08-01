@@ -44,9 +44,9 @@
                     <!-- :remote-method=""> -->
                     <el-option
                         v-for="item in serialNumList"
-                        :key="item.value"
-                        :label="item.value"
-                        :value="item.value"
+                        :key="item"
+                        :label="item"
+                        :value="item"
                     ></el-option>
                 </el-select>
             </el-form-item>
@@ -182,7 +182,7 @@ export default {
             loading: false,
             rsPtIdList:[],
             cameraIdList:[],
-            serialNumList:[],
+            serialNumList:['3402000000132000003001', '3402000000132000003101', '3402000000132000003201', '3402000000132000003301'],
             deviceIdList:[],
             inputFlag: true,
             requestData: {},
@@ -190,10 +190,11 @@ export default {
                 rsPtId:'',
                 cameraId:'',
                 // serialNum:'3402000000132000001601',
-                serialNum:'3402000000132000001401',
+                // serialNum:'3402000000132000001401',
+                serialNum:'',
                 deviceId:'',
-                startTime: new Date(),
-                endTime: new Date()
+                startTime: this.$dateUtil.GetDateStr(7),
+                endTime: this.$dateUtil.getNowFormatDate()
             },
             startTimeOption: {
                 disabledDate: time => {
