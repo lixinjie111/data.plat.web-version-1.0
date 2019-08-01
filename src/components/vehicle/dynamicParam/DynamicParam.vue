@@ -100,7 +100,7 @@ export default {
                 vehicleId: '',
                 eventName: '',
                 eventNo: '',
-                time:[this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()]
+                time:[]
             },
             pageOption: {
                 page: 1,

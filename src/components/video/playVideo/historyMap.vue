@@ -33,7 +33,7 @@ export default {
     },
     methods: {
         initMap(){
-            this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.$parent.defaultMapOption);
+            this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.$parent.$parent.defaultMapOption);
             // this.distanceMap = new AMap.Map('map-container', {
             //     rotateEnable: true,//地图旋转
             //     resizeEnable: true, //是否监控地图容器尺寸变化

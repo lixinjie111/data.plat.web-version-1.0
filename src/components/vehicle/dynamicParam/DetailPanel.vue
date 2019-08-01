@@ -80,7 +80,10 @@ export default {
                     this.pageOption.total = res.data.totalCount;
                 }
                 this.loading = false;
-            })
+            }).catch(err => {
+                this.loading = false;
+                this.searchLoading = false;
+            });
         },
         searchClick(){
             this.pageOption.page = 0;

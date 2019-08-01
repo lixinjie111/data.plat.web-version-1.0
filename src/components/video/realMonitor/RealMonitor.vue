@@ -218,8 +218,6 @@ export default {
         },
         realMonit(){
             if(this.searchKey.vehicleId.vehicleId != ''){
-
-                console.log(this.playerOptions.sources[0].src);
                 if(this.playerOptions.sources[0].src){
                     this.isStart = true;
                     this.isMaskShow = false;
@@ -236,7 +234,6 @@ export default {
                     },1000);
                     this.getTotalTime(this.monitStartTime);
                 }else{
-                    console.log('没视频')
                     this.isStart = false;
                     this.isMaskShow = true;
                     startStream({
@@ -248,7 +245,6 @@ export default {
                                 //获取视频地址并赋值
                                 let videoUrl = res.data.rtmp;
                                 this.playerOptions.sources[0].src = videoUrl;
-                                console.log(this.playerOptions.sources[0].src);
                                 // this.player.load(videoUrl);
                                 //直播报活调用
                                 this.repeatFn();
