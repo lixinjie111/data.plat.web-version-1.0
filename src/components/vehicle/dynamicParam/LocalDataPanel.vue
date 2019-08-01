@@ -33,14 +33,14 @@
                         <el-table-column prop="description" label="描述"></el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
-                                <el-button size='mini' type="primary" :loading="scope.row.loading" @click='deleteClick(scope.row)'>删除</el-button>
+                                <el-button size="small" icon="el-icon-delete" circle type="warning" plain @click="deleteClick(scope.row)"></el-button>
                             </template>
                         </el-table-column>
                     </el-table>
 
                     <div class="c-text-center c-mt-20">
                         <el-button type="warning" size="small" @click="okClick">确定</el-button>
-                        <el-button type="warning" size="small" plan @click="cancelClick">取消</el-button>
+                        <el-button type="warning" size="small" plain @click="cancelClick">取消</el-button>
                     </div>
                     
                 </div>

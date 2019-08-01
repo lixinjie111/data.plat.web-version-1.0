@@ -71,6 +71,7 @@ export default {
                 callback([]);
                 return;
             }
+            console.log(ids);
             findPropByGroupId({
                 'ids':ids
             }).then(res => {

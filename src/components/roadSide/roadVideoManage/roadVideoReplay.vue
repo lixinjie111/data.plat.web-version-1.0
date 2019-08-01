@@ -92,7 +92,7 @@
                 this.mapDetail(videoInfo.camCode);
             },
             initMap(){
-                this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.defaultMapOption);
+                this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.$parent.defaultMapOption);
             },
             backClick(){
                 this.$emit('backRoadManage');
@@ -111,15 +111,14 @@
                 let _this = this;
                 console.log(this.markerPoint);
                 this.markerPoint.forEach((item, index) => {
-                    // let _position = ConvertCoord.wgs84togcj02(item.lon, item.lat);
+                    let _position = ConvertCoord.wgs84togcj02(item.lon, item.lat);
                     let _marker = new AMap.Marker({
                         map: this.distanceMap,
-                        // position: new AMap.LngLat(_position[0], _position[1]),
-                        position: new AMap.LngLat(ptLon,ptLat)
+                        position: new AMap.LngLat(_position[0], _position[1]),
                     });
                     _marker.content = `<div class="c-map-info-window">
-                    <p class="c-info-window-text">路侧点名称:${videoInfo.roadPointName}<p>
-                    <p class="c-info-window-text">经纬度:${ptLon},${ptLat}<p></div>`;
+                    <p class="c-info-window-text">路侧点名称:${item.roadPoint}<p>
+                    <p class="c-info-window-text">经纬度:${item.lon},${item.lat}<p></div>`;
                     _marker.on('click', this.markerClick);
                     _marker.emit('click', {target: _marker});
                     this.distanceMap.setFitView();
@@ -144,7 +143,7 @@
                             this.camDetail.lat = ptLat;
                             let _position = ConvertCoord.wgs84togcj02(ptLon,ptLat);
                             this.distanceMap.setCenter(_position);
-                            this.markerPoint = this.camDetail;
+                            this.markerPoint.push(this.camDetail);
                             console.log(this.markerPoint);
                             this.drawStartMarker();
                         }
