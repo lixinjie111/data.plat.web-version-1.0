@@ -134,14 +134,14 @@ export default {
         return {
             loading:false,
             searchLoad:false,
-            startTime:'',
-            endTime:'',
+            // startTime:'',
+            // endTime:'',
             detailInfo:{},
             detailLayShow:false,
             searchKey: {
                 vehicleId: '',
-                startTime: '',
-                endTime: ''
+                startTime: this.$dateUtil.GetDateStr(1),
+                endTime: this.$dateUtil.getNowFormatDate()
             },
             pageOption: {
                 page: 1,
@@ -197,12 +197,8 @@ export default {
     },
     methods: {
         init(){
-            let startTime = this.$dateUtil.GetDateStr(1);
-            let endTime = this.$dateUtil.getNowFormatDate();
-            this.searchKey.startTime = startTime;
-            this.searchKey.endTime = endTime;
             this.findBSMLists();
-            this.initPaging();
+            // this.initPaging();
         },
         initPageOption() {
             this.dataList = [];
@@ -246,17 +242,9 @@ export default {
             })
         },
         searchClick(){
-            this.searchLoad = true;
-            let startTime = new Date(this.searchKey.startTime).getTime();
-            let endTime = new Date(this.searchKey.endTime).getTime();
-            if(this.getIsNan(startTime) == false && this.getIsNan(endTime) == false){
-                if(startTime > endTime){
-                    this.$message.error("结束时间不能小于开始时间！");
-                    return;
-                }
-            }
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
+                    this.searchLoad = true;
                     this.findBSMLists();
                 } else {
                     return false;

@@ -26,7 +26,8 @@
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
             </el-form-item>               
         </el-form>
-        <el-table:data="dataList" 
+        <el-table
+            :data="dataList" 
             v-loading='loading'
             stripe
             border
@@ -114,14 +115,14 @@ export default {
                 }
             };
         return {
-            startTime:'',
-            endTime:'',
+            // startTime:'',
+            // endTime:'',
             loading:false,
             searchLoad:false,
             searchKey: {
                 rsuId: '',
-                startTime: '',
-                endTime: '',
+                startTime: this.$dateUtil.GetDateStr(1),
+                endTime: this.$dateUtil.getNowFormatDate(),
                 rsuId: '',
             },
             pageOption: {
@@ -170,10 +171,6 @@ export default {
     },
     methods: {
         init(){
-            let startTime = this.$dateUtil.GetDateStr(1);
-            let endTime = this.$dateUtil.getNowFormatDate();
-            this.searchKey.startTime = startTime;
-            this.searchKey.endTime = endTime;
             this.findRsiPage();
             // this.initPaging();
         },
@@ -211,17 +208,9 @@ export default {
             });
         },
         searchClick(){
-            this.searchLoad = true;
-            let startTime = new Date(this.searchKey.startTime).getTime();
-            let endTime = new Date(this.searchKey.endTime).getTime();
-            if(this.getIsNan(startTime) == false && this.getIsNan(endTime) == false){
-                if(startTime > endTime){
-                    this.$message.error("结束时间不能小于开始时间！");
-                    return;
-                }
-            }
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
+                    this.searchLoad = true;
                     this.findRsiPage();
                 } else {
                     return false;
@@ -242,20 +231,6 @@ export default {
         changePageCurrent(value) {//页码变更
             this.pageOption.page = value;
             this.findRsiPage();
-        },
-        formatTime(value){
-            let tDate = value ? new Date(value) : new Date(); 
-            const year = tDate.getFullYear();
-            const month = this.formatNum(tDate.getMonth() + 1);
-            const day = this.formatNum(tDate.getDate());
-            const hour = this.formatNum(tDate.getHours());
-            const minutes = this.formatNum(tDate.getMinutes());
-            const seconds = this.formatNum(tDate.getSeconds());
-            const millisecond = this.formatNum(tDate.getMilliseconds());
-            return year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds + ':' + millisecond ;
-        },
-        formatNum(value){
-            return value < 10 ? '0' + value : value;
         },
         indexMethod(index){
             return index + this.pageOption.size * (this.pageOption.page-1) + 1;

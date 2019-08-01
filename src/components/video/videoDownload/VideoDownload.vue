@@ -134,8 +134,8 @@ export default {
                 vehicleId: '',
                 source: '',
                 taskStatus: '',
-                startTime:'',
-                endTime:''
+                startTime: [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()],
+                endTime: [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()]
             },
             selector: [],
             auth: {
@@ -223,10 +223,10 @@ export default {
                 'source':this.searchKey.source,
                 'plateNo':this.searchKey.plateNo,
                 'protocal':protocal,
-                'startBeginTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
-                'startEndTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
-                'stopBeginTime': this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
-                'stopEndTime': this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : ''
+                'startBeginTime': this.searchKey.startTime[0] ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
+                'startEndTime': this.searchKey.startTime[1] ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
+                'stopBeginTime': this.searchKey.endTime[0] ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
+                'stopEndTime': this.searchKey.endTime[1] ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : ''
             }).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list || [];
@@ -243,9 +243,9 @@ export default {
             return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         },
         searchClick(){
-            this.searchLoading = true;
             this.$refs.searchForm.validate((valid) => {
             if (valid) {
+                    this.searchLoading = true;
                     this.initData();
                 } else {
                     return false;

@@ -339,7 +339,7 @@ export default {
         submitFunc() {
             this.$refs.dialogForm.validate((valid) => {
                 if (valid) {
-                    this.loading = true;
+                    this.submitloading = true;
                     let protocal = localStorage.getItem('protocal');
                     let formParamsInfo = Object.assign(this.formParams,{
                         'protocal':protocal,
@@ -350,7 +350,7 @@ export default {
                         if(res.status == '200'){
                             this.cancleFunc();
                         }
-                        this.loading = false;
+                        this.submitloading = false;
                     })
                 } else {
                     return false;

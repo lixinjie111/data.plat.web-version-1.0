@@ -138,7 +138,7 @@ export default {
             loading:false,
             manageShow:true,
             playbackShow:false,
-            startTime:'',
+            // startTime:'',
             endTime:'',
             dialogOption: {
                 loading: false,
@@ -158,8 +158,8 @@ export default {
                 roadPointName: '',
                 source: '',
                 taskStatus: '',
-                startTime:'',
-                endTime:''
+                startTime:[this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()],
+                endTime:[this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()]
             },
             pageOption: {
                 page: 1,
