@@ -130,10 +130,10 @@
       viewTrackData(item) {
         this.panel.data = item;
         this.panel.show = true;
-        setTimeout(() => {
-          //初始化table和地图
-          this.$refs.refPathDataPanel.init(item);
-        }, 100);
+        // setTimeout(() => {
+        //   //初始化table和地图
+        //   this.$refs.refPathDataPanel.init(item);
+        // }, 100);
 
       },
       exportPathDataAlert() {

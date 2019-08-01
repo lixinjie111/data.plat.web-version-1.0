@@ -1,32 +1,48 @@
 <template>
-        <div class="yk-container">
-            <div class="yk-container">
-            <el-page-header @back="backClick" class="c-mt-30"></el-page-header>
-            <el-table class='c-mt-10' :data="dataList" max-height='724' stripe>
-                <el-table-column salign="center" label="参与者类型" prop="pctType"></el-table-column>
-                <el-table-column prop="sourceType" label="检测类型"></el-table-column>
-                <el-table-column prop="plateNo" label="车牌号"></el-table-column>
-                <el-table-column prop="vehicleClass" label="车辆类型"></el-table-column>
-                <el-table-column label="时间">
-                    <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
-                </el-table-column>
-                <el-table-column prop='longitude' label="经度"></el-table-column>
-                <el-table-column prop='latitude' label="纬度"></el-table-column>
-                <el-table-column prop='elevation' label="高程"></el-table-column>
-                <el-table-column prop='transmission' label="档位"></el-table-column>
-                <el-table-column prop='speed' label="速度"></el-table-column>
-                <el-table-column prop='heading' label="方向"></el-table-column>
-                <el-table-column prop='angle' label="方向盘转角"></el-table-column>
-                <el-table-column prop='lonAccel' label="纵向加速度"></el-table-column>
-                <el-table-column prop='latAccel' label="横向加速度"></el-table-column>
-                <el-table-column prop='vertAccel' label="垂直加速度"></el-table-column>
-                <el-table-column prop='yawRate' label="横摆加速度"></el-table-column>
-                <el-table-column prop='length' label="目标长"></el-table-column>
-                <el-table-column prop='width' label="目标宽"></el-table-column>
-                <el-table-column prop='height' label="目标高"></el-table-column>
-            </el-table>
+<div class="c-view-dialog" v-cloak>
+        <div class="c-scroll-wrap">
+            <div class="c-scroll-inner">
+                <h3 class="c-title">
+                    rsm详情
+                    <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
+                </h3>
+                <div class="c-wrapper-20">
+                    <el-table 
+                        :data="dataList" 
+                        stripe
+                        border
+                        max-height="724"
+                        >
+                        <el-table-column salign="center" label="参与者类型" prop="pctType"></el-table-column>
+                        <el-table-column prop="sourceType" label="检测类型"></el-table-column>
+                        <el-table-column prop="plateNo" label="车牌号"></el-table-column>
+                        <el-table-column prop="vehicleClass" label="车辆类型"></el-table-column>
+                        <el-table-column label="时间">
+                            <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
+                        </el-table-column>
+                        <el-table-column label="经度">
+                            <template slot-scope="scope">{{scope.row.longitude.toFixed(8)}}</template>
+                        </el-table-column>
+                        <el-table-column label="纬度">
+                            <template slot-scope="scope">{{scope.row.latitude.toFixed(8)}}</template>
+                        </el-table-column>
+                        <el-table-column prop='elevation' label="高程"></el-table-column>
+                        <el-table-column prop='transmission' label="档位"></el-table-column>
+                        <el-table-column prop='speed' label="速度"></el-table-column>
+                        <el-table-column prop='heading' label="方向"></el-table-column>
+                        <el-table-column prop='angle' label="方向盘转角"></el-table-column>
+                        <el-table-column prop='lonAccel' label="纵向加速度"></el-table-column>
+                        <el-table-column prop='latAccel' label="横向加速度"></el-table-column>
+                        <el-table-column prop='vertAccel' label="垂直加速度"></el-table-column>
+                        <el-table-column prop='yawRate' label="横摆加速度"></el-table-column>
+                        <el-table-column prop='length' label="目标长"></el-table-column>
+                        <el-table-column prop='width' label="目标宽"></el-table-column>
+                        <el-table-column prop='height' label="目标高"></el-table-column>
+                    </el-table>
+                </div>
+            </div>
         </div>
-      </div>
+</div>
 </template>
 <script>
     export default {

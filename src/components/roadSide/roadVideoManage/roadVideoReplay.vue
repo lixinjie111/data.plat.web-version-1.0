@@ -72,8 +72,11 @@
                     endTime:'--',
                     videoPath:'',
                 },
-                markerPoint:[]
-                
+                markerPoint:[],
+                infoWindow: new AMap.InfoWindow({
+                    offset: new AMap.Pixel(0, -33),
+                    anchor: 'bottom-center'
+                })
             }
         },
         methods:{
@@ -103,13 +106,8 @@
             mapChangeMin(){
                 this.changeSize = false;
             },
-            markerClick(e) {
-                this.infoWindow.setContent(e.target.content);
-                this.infoWindow.open(this.distanceMap, e.target.getPosition());
-            },
             drawStartMarker() {
                 let _this = this;
-                console.log(this.markerPoint);
                 this.markerPoint.forEach((item, index) => {
                     let _position = ConvertCoord.wgs84togcj02(item.lon, item.lat);
                     let _marker = new AMap.Marker({
@@ -123,6 +121,10 @@
                     _marker.emit('click', {target: _marker});
                     this.distanceMap.setFitView();
                 });
+            },
+            markerClick(e) {
+                this.infoWindow.setContent(e.target.content);
+                this.infoWindow.open(this.distanceMap, e.target.getPosition());
             },
             mapDetail(deviceId){
                 queryRoadCamCoordinate({  
@@ -144,7 +146,6 @@
                             let _position = ConvertCoord.wgs84togcj02(ptLon,ptLat);
                             this.distanceMap.setCenter(_position);
                             this.markerPoint.push(this.camDetail);
-                            console.log(this.markerPoint);
                             this.drawStartMarker();
                         }
                     }

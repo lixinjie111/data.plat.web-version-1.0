@@ -89,24 +89,28 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     this.deviceType =  res.data.type;
+                    this.historyStartTimes = this.$dateUtil.dateToMs(historyInfo.startTime);//以秒为时间单位
+                    this.historyEndTimes = this.$dateUtil.dateToMs(historyInfo.endTime);//以秒为时间单位
+                    this.getGps(this.vehicleId,this.historyStartTimes,this.historyEndTimes,this.deviceType);
                 }
             })
-            this.historyStartTimes = this.$dateUtil.dateToMs(historyInfo.startTime);//以秒为时间单位
-            this.historyEndTimes = this.$dateUtil.dateToMs(historyInfo.endTime);//以秒为时间单位
-            this.getGps(this.vehicleId,this.historyStartTimes,this.historyEndTimes,this.deviceType);
+            
         },
         getGps(vehicleId,startTime,endTime,deviceType){
+            console.log(deviceType);
             historyGpsInfo({
                 'vehicleId':vehicleId,'type':deviceType,'beginTime':startTime,'endTime':endTime
             }).then(res => {
                 if(res.status == '200'){
                     this.gpsArr = res.data;
+                    console.log(this.gpsArr);
                 }
             })
         },
         videoProcess(){
             let myVideo = document.getElementById('my-video');
             this.curTime = myVideo.currentTime;//获取视频实时时间
+            console.log(this.curTime);
             let i = 0;
             this.$refs.historyMap.getGps(this.gpsArr,'0',this.curTime);
             if(this.curTime > 0){
@@ -128,8 +132,10 @@ export default {
             let _this = this;
             this.$refs.myVideo.addEventListener('timeupdate',function(){
                 _this.curTime = _this.$refs.myVideo.currentTime;
+                console.log(_this.curTime);
                 if(_this.curTime > 0){
                     i = parseInt(_this.curTime);
+                    console.log(_this.gpsArr[i]);
                     _this.$refs.historyMap.getGps(_this.gpsArr[i],'0',_this.curTime,i);
                 };
             },false);

@@ -62,7 +62,7 @@
             <!-- 地图视频模块 -->
             <div class="c-map-video-wrapper">
                 <div class="c-video-wrapper">
-                     <video-player id='video' class="c-video" 
+                    <video-player id='video' class="c-video" 
                     ref="videoPlayer"
                     :options="playerOptions"
                     @ended="onPlayerEnded"

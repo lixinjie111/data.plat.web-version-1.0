@@ -36,9 +36,8 @@
                     <el-button class="c-pos-btn" type="warning" size="small" plain @click="exportTrailDataAlert">导出轨迹</el-button>
                 </div>
                 <div class="c-detail-box c-wrapper-20 c-padding-20">
-                    <div class="c-map-big-wrapper">
-                      <tusvn-map ref="refMap" targetId="pathDataMap" overlayContainerId="mec4" :isMasker='false'
-                                :isCircle='false' @MapInitComplete="mapComplete"></tusvn-map>
+                    <div class="c-map-big-wrapper" id='map-container' :class="isScaleMap ? 'c-map-on' : 'c-map-off'">
+                        <span class="c-map-scale-btn" :class="isScaleMap ? 'c-map-scale-off' : 'c-map-scale-on'" @click="isScaleMap = !isScaleMap"></span>
                     </div>
                 </div>
                 <div class="c-wrapper-20 c-padding-20 c-detail-box">
@@ -76,17 +75,16 @@
 </div>
 </template>
 <script>
-  import TusvnMap from "@/common/view/TusvnMap/TusvnMap.vue";
+  import ConvertCoord from'@/common/utils/coordConvert.js';
   import { setTimeout } from 'timers';
   import {pathDetailList,exportPathExcel} from '@/api/vehicle';
 import { error } from 'util';
   export default {
     props: ['data'],
-    components: {
-      TusvnMap
-    },
+    components: {},
     data() {
       return {
+        isScaleMap: false,
         dataList: [],
         selectItem: 0,
         panel:{
@@ -97,6 +95,12 @@ import { error } from 'util';
             loading: false,
             show: false,
             data: {}
+        },
+        markers: {
+            markerStart: null,
+            markerPolyline: null,
+            polylinePath: [],
+            markerEnd: null
         },
         requestDataParams:{
           requestRowKey:null,
@@ -115,6 +119,7 @@ import { error } from 'util';
       // setTimeout(() => {
       //   this.$refs.refMap.resize([1398, 315]);
       // }, 30);
+      this.initMap();
       let table = document.getElementsByClassName("tbody")[0];
 
       //注册键盘事件
@@ -161,9 +166,18 @@ import { error } from 'util';
       }
     },
     methods: {
-      mapComplete(){
-        this.$refs.refMap.addVectorLayer('PathDataLayer');
-        this.$refs.refMap.zoomTo(14);
+      initMap(){
+        let _scale = new AMap.Scale(),
+            _toolbar = new AMap.ToolBar({
+                liteStyle: true,
+                position: 'LT'
+            });
+        this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.$parent.defaultMapOption);
+
+        this.distanceMap.addControl(_scale);
+        this.distanceMap.addControl(_toolbar);
+
+        this.init();
       },
       addPageData() {
         pathDetailList({
@@ -192,7 +206,7 @@ import { error } from 'util';
               let data_convert = res.data.list;
               for (let i = 0; i < data_convert.length; i++) {
                 if (data_convert[i].gnss_LONG != "") {
-                  let st_gnss_LONG = (parseFloat(data_convert[i].gnss_LONG)).toString();
+                  let st_gnss_LONG = (data_convert[i].gnss_LONG).toString();
                   if (st_gnss_LONG.indexOf('.') != -1) {
                     data_convert[i].gnss_LONG = st_gnss_LONG.substring(0, st_gnss_LONG.indexOf('.') + 8);
                   } else {
@@ -201,7 +215,7 @@ import { error } from 'util';
                 }
 
                 if (data_convert[i].gnss_LAT != "") {
-                  let st_gnss_LAT = (parseFloat(data_convert[i].gnss_LAT)).toString();
+                  let st_gnss_LAT = (data_convert[i].gnss_LAT).toString();
                   if (st_gnss_LAT.indexOf('.') != -1) {
                     data_convert[i].gnss_LAT = st_gnss_LAT.substring(0, st_gnss_LAT.indexOf('.') + 8);
                   } else {
@@ -210,7 +224,7 @@ import { error } from 'util';
                 }
 
                 if (data_convert[i].gnss_HIGHT != "") {
-                  let st_gnss_HIGHT = (parseFloat(data_convert[i].gnss_HIGHT)).toString();
+                  let st_gnss_HIGHT = (data_convert[i].gnss_HIGHT).toString();
                   if (st_gnss_HIGHT.indexOf('.') != -1) {
                     if (st_gnss_HIGHT.charAt(st_gnss_HIGHT.indexOf('.') + 1) == '0') {
                       data_convert[i].gnss_HIGHT = st_gnss_HIGHT.substring(0, st_gnss_HIGHT.indexOf('.') + 1) + "1";
@@ -223,7 +237,7 @@ import { error } from 'util';
                 }
 
                 if (data_convert[i].gnss_SPD != "") {
-                  let st_gnss_SPD = (parseFloat(data_convert[i].gnss_SPD)).toString();
+                  let st_gnss_SPD = (data_convert[i].gnss_SPD).toString();
                   if (st_gnss_SPD.indexOf('.') != -1) {
                     if (st_gnss_SPD.charAt(st_gnss_SPD.indexOf('.') + 1) == '0') {
                       data_convert[i].gnss_SPD = st_gnss_SPD.substring(0, st_gnss_SPD.indexOf('.') + 1) + "1";
@@ -235,7 +249,7 @@ import { error } from 'util';
                   }
                 }
                 if (data_convert[i].gnss_HEAD != "") {
-                  let st_gnss_HEAD = (parseFloat(data_convert[i].gnss_HEAD)).toString();
+                  let st_gnss_HEAD = (data_convert[i].gnss_HEAD).toString();
                   if (st_gnss_HEAD.indexOf('.') != -1) {
                     if (st_gnss_HEAD.charAt(st_gnss_HEAD.indexOf('.') + 1) == '0') {
                       data_convert[i].gnss_HEAD = st_gnss_HEAD.substring(0, st_gnss_HEAD.indexOf('.') + 1) + "1";
@@ -379,7 +393,7 @@ import { error } from 'util';
       backClick() {
         this.$emit('PathDataInfoBack')
       },
-      init(item) {
+      init() {
         // this.$refs.refMap.resize([485, 315]);
         //清空图层
         // this.$refs.refMap.removeAllFeature("PathDataLayer");
@@ -391,8 +405,8 @@ import { error } from 'util';
         this.requestDataParams.requestRowKey=null;
         this.requestDataParams.loadMoreData="下滑加载更多";
         this.requestDataParams.pageIndex=1;
-        this.exportTime.startTime = item.originStartTime;
-        this.exportTime.endTime = item.originEndTime;
+        this.exportTime.startTime = this.data.originStartTime;
+        this.exportTime.endTime = this.data.originEndTime;
         //初始化选择项
         this.selectItem=0;
 
@@ -401,47 +415,80 @@ import { error } from 'util';
               'pageSize': 100,
               'pageIndex': 0
           }, 
-          'vehicleId': item.vehicleId,
-          'startTime': item.originStartTime,
-          'endTime': item.originEndTime,
+          'vehicleId': this.data.vehicleId,
+          'startTime': this.data.originStartTime,
+          'endTime': this.data.originEndTime,
         }).then(res => {
           if(res.status == '200'){
-            this.drawPath(res.data.list);
+            if(res.data.list.length) {
+              this.addLine(res.data.list);
+            }
           }
         })
 
         //添加分页数据
         this.addPageData();
       },
-      drawPath(dataArray) {
-        let start_lon = parseFloat(dataArray[0].gnss_LONG);
-        let start_lat = parseFloat(dataArray[0].gnss_LAT);
-        this.$refs.refMap.centerAt(start_lon, start_lat);
-        // this.$refs.refMap.resize([485,315]);
-
-        let lineArray = [];
-        for (let i = 0; i < dataArray.length; i++) {
-          lineArray.push([parseFloat(dataArray[i].gnss_LONG), parseFloat(dataArray[i].gnss_LAT)]);
-        }
-        // coordinates, id, color, lineCap, lineJoin, lineDash, lineDashOffset, miterLimit, width, layerId
-        this.$refs.refMap.addLineString(lineArray, 'pathData_01', '#093bbb', 'round', 'round', [5, 0], 0, 10, 5, "PathDataLayer");
-        const end_lon = parseFloat(dataArray[dataArray.length - 1].gnss_LONG);
-        const end_lat = parseFloat(dataArray[dataArray.length - 1].gnss_LAT);
-        //  添加起点
-        this.$refs.refMap.addImg(start_lon, start_lat, "start_01", "PathDataLayer", 'static/images/start.png', [63, 83], 0, null, null, [0, 0], 0.3);
-        //  添加终点
-        this.$refs.refMap.addImg(end_lon, end_lat, "end_01", "PathDataLayer", 'static/images/end.png', [63, 83], 0, null, null, [0, 0], 0.3);
-        //添加选中点
-        this.$refs.refMap.addNormalPoint(start_lon, start_lat, 'heighLightPoint_01', "PathDataLayer", 5, "#FF0000", "#FFFF00", 2);
+      addLine(pointList) {
+        this.markers.polylinePath = [];
+        pointList.forEach(item => {
+          let _position = ConvertCoord.wgs84togcj02(item.gnss_LONG, item.gnss_LAT);
+          this.markers.polylinePath.push(new AMap.LngLat(_position[0], _position[1]));
+        });
+        // console.log(pointList);
+        if(!this.markers.markerStart) {
+              this.drawStartMarker();
+          }else {
+              this.markers.markerStart.setPosition = this.markers.polylinePath[0];
+          }
+          if(!this.markers.markerEnd) {
+              this.drawEndMarker();
+          }else {
+              this.markers.markerEnd.setPosition = this.markers.polylinePath[this.markers.polylinePath.length-1];
+          }
+          if(!this.markers.markerPolyline) {
+              this.drawLine();
+          }
+      },
+      drawStartMarker() {
+          this.markers.markerStart = new AMap.Marker({
+              position: this.markers.polylinePath[0],
+              icon:'static/images/map/start-point.png',
+              offset: new AMap.Pixel(-10, -26)
+          });
+          this.distanceMap.add(this.markers.markerStart);
+      },
+      drawEndMarker() {
+          this.markers.markerEnd = new AMap.Marker({
+              position: this.markers.polylinePath[this.markers.polylinePath.length-1],
+              icon:'static/images/map/end-point.png',
+              offset: new AMap.Pixel(-10, -26)
+          });
+          this.distanceMap.add(this.markers.markerEnd);
+      },
+      drawLine() {
+          this.markers.markerPolyline = new AMap.Polyline({
+              path: this.markers.polylinePath,
+              strokeColor: "#03812e",     //绿色
+              // strokeColor: "#f59307",  //黄色
+              // strokeColor: "red",      //红色
+              strokeWeight: 2,
+              strokeStyle: "solid",
+              lineJoin: 'round',
+              lineCap: 'round',
+              zIndex: 50
+          });
+          this.distanceMap.add(this.markers.markerPolyline);
+          this.distanceMap.setFitView();
       },
       selectRow(item, index) {
         let self = this;
         if (index ||index==0) {
           self.selectItem = index;
         }
-        let lng = parseFloat(item.gnss_LONG);
-        let lat = parseFloat(item.gnss_LAT);
-        self.$refs.refMap.addNormalPoint(lng, lat, 'heighLightPoint_01', "PathDataLayer", 5, "#FF0000", "#FFFF00", 2);
+        let lng = item.gnss_LONG;
+        let lat = item.gnss_LAT;
+        // self.$refs.refMap.addNormalPoint(lng, lat, 'heighLightPoint_01', "PathDataLayer", 5, "#FF0000", "#FFFF00", 2);
       }
     },
   }
