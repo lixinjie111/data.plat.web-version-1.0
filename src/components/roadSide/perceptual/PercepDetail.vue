@@ -237,9 +237,9 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     this.cameraParam = JSON.parse(res.data[0].cameraParam);
-                    console.log("拿到摄像头角度");
+                    // console.log("拿到摄像头角度");
                     if(this.initMapFlag) {
-                        console.log("更新视图角度");
+                        // console.log("更新视图角度");
                         this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
                     }
                 }
