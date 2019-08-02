@@ -111,11 +111,12 @@ export default {
         },
         handleSelectionChange(val) {
             this.selector = [];
-            val.forEach(item => {
-                let obj = {};
-                obj.id = item.id;
-                this.selector.push(obj);
-            });
+            this.selector = val;
+            // val.forEach(item => {
+            //     let obj = {};
+            //     obj.id = item.id;
+            //     this.selector.push(obj);
+            // });
         },
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();

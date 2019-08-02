@@ -82,6 +82,7 @@ export default {
             let list = [];
             TList.pushNoRepeat(list,this.$refs.fullList.selector);
             TList.pushNoRepeat(list,this.$refs.groupList.selector);
+            console.log(list);
             this.isShow=false;
             this.$emit("loadData",list);
         }

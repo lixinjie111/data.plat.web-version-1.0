@@ -135,12 +135,14 @@ export default {
             this.initData();
         },
         handleSelectionChange(val) {
+            console.log(val);
             this.selector = [];
-            val.forEach(item => {
-                let obj = {};
-                obj.sid = item.sid;
-                this.selector.push(obj);
-            });
+            this.selector = val;
+            // val.forEach(item => {
+            //     let obj = {};
+            //     obj.sid = item.sid;
+            //     this.selector.push(obj);
+            // });
         },
        changePageSize(value) {//每页显示条数变更
             this.initPageOption();
