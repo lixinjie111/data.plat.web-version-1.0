@@ -91,6 +91,7 @@
                                         class="sl-tusvn-map"
                                         target-id="tusvnMap" 
                                         ref="tusvnMap" 
+                                        v-show="tusvnOption.show"
                                         @mapcomplete="mapcomplete">
                                     </tusvn-map>
                                 </div>
@@ -107,7 +108,8 @@ import TList from '@/common/utils/list.js'
 import TMDate from '@/common/utils/date.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap2.vue";
-import {findRoadMonitorCameraInfo,getVideoUrlInfo,findPerceptionRecordsInfo} from '@/api/roadSide';
+import { getMap } from '@/common/view/TusvnMap/tusvnMap.js';
+import { findRoadMonitorCameraInfo, getVideoUrlInfo, findPerceptionRecordsInfo } from '@/api/roadSide';
 import { setTimeout } from 'timers';
 export default {
     name: 'PercepDetail',
@@ -118,7 +120,7 @@ export default {
     data(){
         let _this = this;
         return {
-            boxLoading: false,
+            boxLoading: true,
             loading: false,
             params: {
                 "serialNum": this.$route.params.serialNum, //设备序列号
@@ -173,8 +175,8 @@ export default {
                 }
             },
             tusvnOption: {
-                // show: false,
-                loading: true
+                show: false,
+                loading: false
             },
             // 阻止频繁加载数据
             stopFrequentLoad: {
@@ -197,13 +199,11 @@ export default {
         initMapFlag: {
             handler(newVal, oldVal) {
                 if(newVal) {
+                    this.tusvnOption.show = true;
                     console.log("初始化地图已完成");
                     if(this.dataList.length) {
-                        console.log("列表加载在初始化地图之前");
+                        // console.log("列表加载在初始化地图之前");
                         this.setCurrentRow();
-                    // }else {
-                    //     console.log("列表加载在初始化地图之后-------测试数据");
-                    //     this.testDataFunc();
                     }
                 }
             }
@@ -215,7 +215,7 @@ export default {
                     if(newVal.length) {
                         this.setCurrentRow();
                     }else {
-                        // this.tusvnOption.show = false;
+                        this.tusvnOption.show = true;
                         this.tusvnOption.loading = false;
                     }
                 }
@@ -227,8 +227,8 @@ export default {
         this.durationTime = (this.endTimeTimestamp - this.startTimeTimestamp)/1000;
         this.durationSecond = this.durationTime.toFixed(3).split(".")[0];
         this.durationMilliSecond = this.durationTime.toFixed(3).split(".")[1];
-        // this.getVideoUrl();
-        // this.findRoadMonitorCamera();
+        this.getVideoUrl();
+        this.findRoadMonitorCamera();
     },
     methods: {
         findRoadMonitorCamera() {
@@ -237,8 +237,9 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     this.cameraParam = JSON.parse(res.data[0].cameraParam);
-                    // console.log(this.cameraParam);
+                    // console.log("拿到摄像头角度");
                     if(this.initMapFlag) {
+                        // console.log("更新视图角度");
                         this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
                     }
                 }
@@ -252,7 +253,6 @@ export default {
                 _index;
             this.dataList.forEach((item, index) => {
                 let _timeInterval = Math.abs(item.timestamp-_curTimestamp);
-                // console.log(index, item.timestamp, this.$dateUtil.formatTime(item.timestamp, 'yy-mm-dd hh:mm:ss:ms'), _timeInterval);
                 if(index == 0) {
                     _interval = _timeInterval;
                     _index = index;
@@ -263,7 +263,6 @@ export default {
                     }
                 }
             });
-            // console.log(_index, _interval);
             this.$refs.percepDetailTable.setCurrentRow(this.dataList[_index]);
         },
         getVideoUrl() {
@@ -280,7 +279,6 @@ export default {
         findPerceptionRecords() {
             this.loading = true;
             this.dataList = [];
-            // this.tusvnOption.show = false;
             this.tusvnOption.loading = true;
             findPerceptionRecordsInfo(this.perceptionData).then(res => {
                 if(res.status == '200'){
@@ -291,11 +289,9 @@ export default {
 
                 }
                 this.loading = false;
-                // this.tusvnOption.show = true;
                 this.tusvnOption.loading = false;
             }).catch(err => {
                 this.loading = false;
-                // this.tusvnOption.show = true;
                 this.tusvnOption.loading = false;
             });
         },
@@ -426,13 +422,9 @@ export default {
         },
         showDetail(row) {
             if(row) {
-                // console.log("进入列表-----------");
-                // console.log(row);
                 row.loading = true;
-                // this.tusvnOption.show = false;
                 this.tusvnOption.loading = true;
                 setTimeout(() => {
-                    // this.tusvnOption.show = true;
                     this.tusvnOption.loading = false;
                     row.loading = false;
                     // this.$refs.tusvnMap.updateCameraPosition(442481.5124901131,4427254.14590794,27.173398250989216,26.86058551360609,-0.6171498919343764,-0.43315502055389093);
@@ -493,25 +485,14 @@ export default {
             }, 500);
         },
         mapcomplete(row) {
-            // setTimeout(() => {
-                console.log("初始化地图已完成-----------");
-                this.initMapFlag = true;
-
-                // "x":326297.1669125299,
-                //  "y":3462321.135051115,
-                //  "z":30.651420831899046,
-                //  "radius":30.905553118989463,
-                //  "pitch":-0.5303922863908559,
-                //  "yaw":-2.6312825799826953
+            this.initMapFlag = true;
+            getMap(this.$refs.tusvnMap);
+            if(this.cameraParam) {
+                // this.$refs.tusvnMap.updateCameraPosition(442481.5124901131,4427254.14590794,27.173398250989216,26.86058551360609,-0.6171498919343764,-0.43315502055389093);
                 // this.$refs.tusvnMap.updateCameraPosition(326297.1669125299,3462321.135051115,30.651420831899046,30.905553118989463,-0.5303922863908559,-2.6312825799826953);
-                if(this.cameraParam) {
-
-                    // this.$refs.tusvnMap.updateCameraPosition(442481.5124901131,4427254.14590794,27.173398250989216,26.86058551360609,-0.6171498919343764,-0.43315502055389093);
-                   // this.$refs.tusvnMap.updateCameraPosition(325994.544950895,3462549.120490024,26.547772446367873,23.382136948463224,0.5808973368959062,1.47249100492297);
-                    this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
-                }
-                // this.tusvnOption.show = true;
-            // }, 3000);
+               // this.$refs.tusvnMap.updateCameraPosition(325994.544950895,3462549.120490024,26.547772446367873,23.382136948463224,0.5808973368959062,1.47249100492297);
+                this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
+            }
         }
     }
 }
