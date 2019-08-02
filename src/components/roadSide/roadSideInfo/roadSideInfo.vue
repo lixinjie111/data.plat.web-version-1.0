@@ -92,10 +92,6 @@ export default {
         },
         drawStartMarker() {
             let _this = this;
-<<<<<<< HEAD
-            // console.log(this.markerPoint)
-=======
->>>>>>> acfba76debb6fd88827f4638daaf2a62015c0f7b
             this.markerPoint.forEach((item, index) => {
                 let _position = ConvertCoord.wgs84togcj02(item.lon, item.lat);
                 let _marker = new AMap.Marker({
