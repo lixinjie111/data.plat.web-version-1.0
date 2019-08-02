@@ -4,12 +4,13 @@
 .c-map-info-window {
     color: $black;
     font-size:14px;
-    .amap-info-close {
-        right: 5px;
-    }
     .c-info-window-text {
         margin:10px 8px
     }
+}
+// 弹窗的关闭按钮
+.amap-info-close {
+    right: 5px !important;
 }
 //大地图
 .c-map-big-wrapper {
@@ -127,7 +128,7 @@
         box-sizing: border-box;
         background: rgba(0, 0, 0, .4);
         padding: 0 10px;
-        
+        white-space: nowrap;
     }
     &.c-icon-map-info {
         left: 10px;

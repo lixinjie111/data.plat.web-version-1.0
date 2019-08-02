@@ -246,7 +246,6 @@ export default {
             });
         },
         resetClick(){
-            this.initData();
             this.$refs.searchForm.resetFields();
         },
         cfgPanelFn(data){

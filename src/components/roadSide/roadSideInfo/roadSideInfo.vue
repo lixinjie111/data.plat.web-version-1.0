@@ -99,8 +99,9 @@ export default {
                     position: new AMap.LngLat(_position[0],_position[1]),
                 });
                 _marker.content = `<div class="c-map-info-window">
-                <p class="c-info-window-text">路侧点编号:${item.rsPtId}<p>
-                <p class="c-info-window-text">路侧点名称:${item.roadPointName}<p></div>`;
+                                    <p class="c-info-window-text">路侧点编号：${item.rsPtId}<p>
+                                    <p class="c-info-window-text">路侧点名称：${item.roadPointName}<p>
+                                </div>`;
                 _marker.on('click', this.markerClick);
                 _marker.emit('click', {target: _marker});
                 this.distanceMap.setFitView();
