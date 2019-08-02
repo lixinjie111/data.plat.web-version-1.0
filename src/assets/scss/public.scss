@@ -322,7 +322,12 @@ h3.c-title {
 .c-blue {
 	color: $blue !important;
 }
-
+.c-hover-underline {
+	&:hover {
+		cursor: pointer;
+		text-decoration: underline;
+	}
+}
 .c-pos-relative {
 	position: relative;
 }
@@ -354,12 +359,14 @@ h3.c-title {
 // c-detail-lable-box
 .c-detail-lable-list {
 	position: relative;
-	font-size: 16px;
+	// font-size: 16px;
+	font-size: 14px;
 	line-height: 28px;
 	.c-detail-lable {
 		float: left;
-		padding: 10px 0;
+		padding: 10px 20px 10px 0;
 		min-width: 20%;
+		box-sizing: border-box;
 		.name {
 			color: $fontGrayColor;
 		}
@@ -379,7 +386,7 @@ h3.c-title {
 		}
 	}
 	&.el-form {
-		font-size: 16px;
+		// font-size: 16px;
 		.el-form-item {
 			float: none;
 			margin-bottom: 0;
@@ -387,7 +394,7 @@ h3.c-title {
 			min-width: 0;
 		}
 		.el-form-item__label {
-			font-size: 16px;
+			// font-size: 16px;
 		}
 		.c-pos-btn {
 			right: 0;

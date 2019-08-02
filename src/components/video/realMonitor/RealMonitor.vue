@@ -76,7 +76,7 @@
                     <max-map ref='maxMap'></max-map>
                 </div>
             </div>
-            <div class="c-detail-lable-list clearfix c-mt-10 c-font-14">
+            <div class="c-detail-lable-list clearfix c-mt-10">
                 <p class="c-detail-lable">
                     <span class="name">开始时间：</span>
                     <span class="value">{{monitStartTime ? monitStartTime : '--'}}</span>
