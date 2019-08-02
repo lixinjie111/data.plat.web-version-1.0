@@ -416,6 +416,7 @@ export default {
             clearInterval(this.timer);
             this.isMaskShow = false;
             this.roadSideShow = true;
+            this.changeSize = false;
         },
         backClick(){
             this.wsRequest();
