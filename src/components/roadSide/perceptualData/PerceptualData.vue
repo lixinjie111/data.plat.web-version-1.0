@@ -99,7 +99,7 @@
                 
             </div>
         </div>
-        <road-side-info v-if='roadSideShow' :roadPointId='camDetail.roadPointId' :roadPointName='camDetail.roadPointName' @roadInfoBack='backClick'></road-side-info>
+        <road-side-info v-if='roadSideShow' :roadPointId='camDetail.roadPointId' :rsPtId='camDetail.rsPtId' :roadPointName='camDetail.roadPointName' @roadInfoBack='backClick'></road-side-info>
 </div>
 </template>
 <script>
@@ -124,7 +124,6 @@ export default {
             roadSideInfo:null,
             camInfo:'',
             roadPointName:'--',
-            zoom:11,
             camInfoNum:'',
             camDetail:{
                 camCode:'--',
@@ -134,6 +133,7 @@ export default {
                 lon:'--',
                 lat:'--',
                 roadPointId:'--',
+                rsPtId:'',
             },
             searchKey:{
                 provinceSelected:'',
@@ -328,7 +328,8 @@ export default {
                     this.endPlay();
                     data.icon = "sl-play-icon";
                 }
-                let roadCamInfo = Object.assign({},{roadName:this.roadName},data)
+                let roadCamInfo = Object.assign({},{roadName:this.roadName},data);
+                this.camDetail.rsPtId = roadCamInfo.rsPtId;
                 this.markerPoint.push(roadCamInfo);
                 // let _position = ConvertCoord.wgs84togcj02(obj.ptLon, obj.ptLat);
                 // this.distanceMap.setCenter(_position);

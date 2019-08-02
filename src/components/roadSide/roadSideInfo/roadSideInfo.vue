@@ -47,7 +47,7 @@ import vehicleInfoTag from '@/common/detail/vehicleInfoTag';
 import {queryRoadPointInfo} from '@/api/roadSide';
 import ConvertCoord from'@/common/utils/coordConvert.js';
 export default {
-    props:['roadPointId','roadPointName'],
+    props:['roadPointId','rsPtId','roadPointName'],
     components:{
         vehicleInfoTag
     },
@@ -69,6 +69,7 @@ export default {
         }
     },
     mounted(){
+        this.markerPoint = [];
         setTimeout(() => {
             this.initMap();
         }, 0);
@@ -91,7 +92,10 @@ export default {
         },
         drawStartMarker() {
             let _this = this;
+<<<<<<< HEAD
             // console.log(this.markerPoint)
+=======
+>>>>>>> acfba76debb6fd88827f4638daaf2a62015c0f7b
             this.markerPoint.forEach((item, index) => {
                 let _position = ConvertCoord.wgs84togcj02(item.lon, item.lat);
                 let _marker = new AMap.Marker({
@@ -99,7 +103,7 @@ export default {
                     position: new AMap.LngLat(_position[0],_position[1]),
                 });
                 _marker.content = `<div class="c-map-info-window">
-                <p class="c-info-window-text">路侧点编号:${item.rspRoadId}<p>
+                <p class="c-info-window-text">路侧点编号:${item.rsPtId}<p>
                 <p class="c-info-window-text">路侧点名称:${item.roadPointName}<p></div>`;
                 _marker.on('click', this.markerClick);
                 _marker.emit('click', {target: _marker});
@@ -121,7 +125,7 @@ export default {
                     this.camDetail.lon = res.data.lon;
                     this.camDetail.lat = res.data.lat;
                     let _position = ConvertCoord.wgs84togcj02(res.data.lon,res.data.lat);
-                    let roadPointInfo = Object.assign({},{roadPointName:this.roadPointName},res.data);
+                    let roadPointInfo = Object.assign({},{roadPointName:this.roadPointName},{rsPtId:this.rsPtId},res.data);
                     this.distanceMap.setCenter(_position);
                     this.markerPoint.push(roadPointInfo);
                     this.drawStartMarker();
