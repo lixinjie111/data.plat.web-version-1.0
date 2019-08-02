@@ -1,26 +1,8 @@
 <template>
 <div class="c-wrapper-20 c-padding-20 c-detail-box" v-cloak>
-        <!-- 信息模块 -->
-        <div class="c-detail-lable-list clearfix">
-            <p class="c-detail-lable">
-                <span class="name">摄像头编号:</span>
-                <span class="value">{{camDetail.camCode}}</span>
-            </p>
-            <p class="c-detail-lable">
-                <span class="name">摄像头序列号:</span>
-                <span class="value">{{camDetail.camId}}</span>
-            </p>
-            <p class="c-detail-lable">
-                <span class="name">道路名称:</span>
-                <span class="value">{{camDetail.roadNewName}}</span>
-            </p>
-            <p class="c-detail-lable">
-                <span class="name">路侧点: </span>
-                <span class="value" ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{camDetail.roadPointName}}</span>
-            </p>
-        </div>
+    
         <!-- 信息&&地图视频模块 -->
-        <div class="c-mt-20 c-flex">
+        <div class="c-flex">
             <!-- 地图视频模块 -->
             <div class="c-gray-box road-cam-box">
                 <div class='cam-title'>摄像头组织结构</div>
@@ -84,6 +66,25 @@
                 </div>
             </div>
             <div class="c-map-video-wrapper c-flex-1">
+                 <!-- 信息模块 -->
+                <div class="c-detail-lable-list clearfix c-pdl-10">
+                    <p class="c-detail-lable">
+                        <span class="name">摄像头编号:</span>
+                        <span class="value">{{camDetail.camCode}}</span>
+                    </p>
+                    <p class="c-detail-lable">
+                        <span class="name">摄像头序列号:</span>
+                        <span class="value">{{camDetail.camId}}</span>
+                    </p>
+                    <p class="c-detail-lable">
+                        <span class="name">道路名称:</span>
+                        <span class="value">{{camDetail.roadNewName}}</span>
+                    </p>
+                    <p class="c-detail-lable">
+                        <span class="name">路侧点: </span>
+                        <span class="value" ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{camDetail.roadPointName}}</span>
+                    </p>
+                </div>
                 <div class="c-video-wrapper">
                     <div class="c-video" id="cmsplayer"></div>
                     <div class="c-video-mask" v-show='isMaskShow'></div>
@@ -261,6 +262,7 @@ export default {
                         // obj.leaf = true;
                         data.push(obj);
                     }
+                    this.roadName = data[0].label;
                 } else {
                     data = [];
                 }
@@ -278,6 +280,7 @@ export default {
                             localStorage.setItem('protocal',protocal);
                         }
                         var camDetail = res.data;
+                        console.log()
                         for(var i=0;i<camDetail.length;i++){
                             var obj = {};
                             obj.label = camDetail[i].deviceId;
@@ -315,9 +318,10 @@ export default {
         //     // this.handleNodeClick(data);
         // },
         handleNodeClick(data){
-            if(data.road){
-                this.roadName = data.label;
-            }
+            // if(data.road){
+            //     this.roadName = data.label;
+            // }
+            console.log(data);
             this.roadNewName = this.roadName;
             let camStatus = data.cameraRunStatus;
             // console.log(camStatus);

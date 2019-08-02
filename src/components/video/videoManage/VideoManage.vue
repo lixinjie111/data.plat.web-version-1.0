@@ -174,8 +174,8 @@ export default {
                 type: 'warning'
             }).then(() => {
                 
-                axios.get(window.config.downloadUrl+item.fileName, {}).then();
-                // window.location.href=window.config.downloadUrl+item.fileName;
+                // axios.get(window.config.downloadUrl+item.fileName, {}).then();
+                window.location.href = window.config.downloadUrl+item.fileName;
                 // window.location.href="http://172.17.1.13:9091/dataPlatApp/cam/download/"+item.fileName;
             }).catch(() => {
                 this.$message.info('已取消导出');          

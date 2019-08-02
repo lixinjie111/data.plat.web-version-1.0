@@ -16,7 +16,7 @@
             <div class="c-wrapper-20 c-detail-box c-padding-20">
                 <div class="c-map-big-wrapper" id='map-container-r' :class="isScaleMap ? 'c-map-on' : 'c-map-off'">
                     <span class="c-map-scale-btn" :class="isScaleMap ? 'c-map-scale-off' : 'c-map-scale-on'" @click="isScaleMap = !isScaleMap"></span>
-                    <ul class="c-map-view-info">
+                    <!-- <ul class="c-map-view-info">
                         <li class="list">
                             <span class="name">道路名称</span>
                             <em class="value">{{roadPointName ? roadPointName : ' -- '}}</em>
@@ -25,7 +25,7 @@
                             <span class="name">经纬度</span>
                             <em class="value">{{camDetail.lon ? camDetail.lon : ' -- '}},{{camDetail.lat ? camDetail.lat : ' -- '}}</em>
                         </li>
-                    </ul>
+                    </ul> -->
                 </div>
             </div>
 
@@ -70,8 +70,11 @@ export default {
                 roadName:'',
                 lat:'',
                 lon:'',
-            }
-            
+            },
+            infoWindow: new AMap.InfoWindow({
+                offset: new AMap.Pixel(0, -33),
+                anchor: 'bottom-center'
+            })
         }
     },
     mounted(){
@@ -94,6 +97,27 @@ export default {
             // this.distanceMap.setZoom();
             this.distanceMap.addControl(_scale);
             this.distanceMap.addControl(_toolbar);
+        },
+        drawStartMarker() {
+            let _this = this;
+            this.markerPoint.forEach((item, index) => {
+                let _position = ConvertCoord.wgs84togcj02(item.ptLon, item.ptLat);
+                let _marker = new AMap.Marker({
+                    map: this.distanceMap,
+                    position: new AMap.LngLat(_position[0],_position[1]),
+                });
+                _marker.content = `<div class="c-map-info-window">
+                <p class="c-info-window-text">摄像头编号:${item.label}<p>
+                <p class="c-info-window-text">道路名称:${item.rsPtName}<p>
+                <p class="c-info-window-text">经纬度:${item.ptLon},${item.ptLat}<p></div>`;
+                _marker.on('click', this.markerClick);
+                _marker.emit('click', {target: _marker});
+                this.distanceMap.setFitView();
+            });
+        },
+        markerClick(e) {
+            this.infoWindow.setContent(e.target.content);
+            this.infoWindow.open(this.distanceMap, e.target.getPosition());
         },
         backClick(){
             this.$emit('roadInfoBack');

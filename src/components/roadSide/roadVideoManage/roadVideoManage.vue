@@ -270,7 +270,7 @@ export default {
                     window.navigator.msSaveBlob(res.data, decodeURI(res.headers['content-disposition'].split('filename=')[1]))
                 } else {
                     let blob = res.data
-
+                    console.log(res.data);
                     // console.log('res.data ----------- ' + JSON.stringify(res))
 
                     let a = document.createElement('a');
@@ -278,6 +278,7 @@ export default {
                     a.style.display = 'none'
 
                     // let a = document.getElementById('exportLog')
+
                     let url = window.URL.createObjectURL(blob)
 
                     let filename = decodeURI(res.headers['content-disposition'].split('filename=')[1])
@@ -354,7 +355,8 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                axios.get(window.config.downloadUrl+item.fileName, {}).then();
+                window.location.href = window.config.downloadUrl + item.fileName;
+                // axios.get(window.config.downloadUrl+item.fileName, {}).then();
             }).catch(() => {
                 this.$message.info('已取消导出');          
             });

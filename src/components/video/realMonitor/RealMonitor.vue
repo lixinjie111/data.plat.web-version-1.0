@@ -44,7 +44,7 @@
             <el-form-item label="摄像头方向: " prop="position" class="c-detail-lable">
                 {{searchKey.position ? searchKey.position : '--'}}
             </el-form-item>
-             <el-form-item label="摄像头编号: " prop="serialNum" class="c-detail-lable">
+            <el-form-item label="摄像头编号: " prop="serialNum" class="c-detail-lable">
                 {{searchKey.serialNum ? searchKey.serialNum : '--'}}
             </el-form-item>
             <el-form-item label="摄像头状态: " prop="status" class="c-detail-lable">

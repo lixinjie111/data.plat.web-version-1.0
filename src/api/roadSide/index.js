@@ -53,7 +53,7 @@ export const queryRoadPointInfo = params => { return axios.post(`${HTTPURL}road/
 /**
  * 批量下载
  */
-export const downLoadZipFile = params => { return axios.post(`${HTTPURL}cam/downLoadZipFile`,params).then(res => res.data); };
+export const downLoadZipFile = params => { return axios.post(`${HTTPURL}cam/downLoadZipFile`,params).then(res => res); };
 
  /**
  * 删除视频
