@@ -266,7 +266,7 @@ export default {
                     // let a = document.getElementById('exportLog')
                     var binaryData = [];
                     binaryData.push(res.data);
-                    let url = window.URL.createObjectURL(new Blob(binaryData,{type: "application/zip"}))
+                    let url = window.URL.createObjectURL(new Blob(blob,{type: "application/zip"}))
                     // let url = window.URL.createObjectURL(blob);
 
                     let filename = decodeURI(res.headers['content-disposition'].split('filename=')[1])
