@@ -12,26 +12,19 @@ import _ from 'lodash';
 
 export default {
     name:"Tusvn3DMap2",
-    props:["targetId"],
+    props:["targetId","background","navMode","minX","minY","minZ","maxX","maxY","maxZ","z"],
     data(){
         return {
             mapoption:{
                 doc: this.targetId,
-                background:"black",
-                navMode: Pt.earthControls   //earthControls  OrbitControls
+                background:this.background == undefined? "black":this.background,
+                navMode: this.navMode == undefined? Pt.EarthControls:Pt.OrbitControls   //    Pt.EarthControls  Pt.OrbitControls
             }
             ,viewer:null
             ,scene:null
-            // ,viewVector1:{x:287406.0,y:3463772,z:50}
-            // ,viewVector2:{x:287707.0,y:3463835.0,z:80.0}
-            //科技园
-            ,viewVector1:{x:442350.475567611,y:4427186.352713934,z:50}
-            ,viewVector2:{x:442637.284474562,y:4427363.359317946,z:80.0}
+            ,viewVector1:{x:this.minX,y:this.minY,z:this.minZ}
+            ,viewVector2:{x:this.maxX,y:this.maxY,z:this.maxZ}
 
-
-            //上海
-            // ,viewVector1:{x:325694.8329,y:3462004.5056,z:50}
-            // ,viewVector2:{x:326765.6277,y:3462754.6978,z:80.0}
 
             ,shps:{}
             ,models:{}
@@ -39,7 +32,9 @@ export default {
             }
 
             ,modelPersonArr:[]
-            ,cacheModelNum:400
+            ,cacheModelNum:200
+            ,interval:1
+            ,count:0
 
             // ,websocketUrl:"ws://10.0.1.57:9999/ws"
             // ,websocketUrl:"ws://192.168.1.132:9998/ws"
@@ -55,23 +50,24 @@ export default {
             ,vehicleIds:'B21E-00-017,B21E-00-018,B21E-00-019,B21E-00-020,B21E-00-021,B21E-00-022,B21E-00-023,B21E-00-024'
             ,defualtRadius:100
             ,defualtPitch:-0.8
-            ,defualtZ:12.816
+            ,defualtZ:this.z==undefined?12.816:this.z
             ,rcuId:"2046A1037E1F"
 
-            ,matStdObjects : new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0 } )
-            ,person : new THREE.MeshStandardMaterial( { color: 0xC4B17A, roughness: 1, metalness: 0 } )
+            ,matStdObjects : new THREE.MeshStandardMaterial( { color: 0x7337E3, roughness: 1, metalness: 0, opacity: 0.7, transparent: true } )
+            ,person : new THREE.MeshStandardMaterial( { color: 0xC4B17A, roughness: 1, metalness: 0, opacity: 0.7, transparent: true } )
             ,fontface:"宋体"
             ,fontSize:60
 
             ,pitch:0
             ,yaw:0
-            ,roll:Math.PI*(65/90)
+            ,roll:Math.PI*(10/90)
             // ,lastUtmPosition: null
             // ,nowUtmPosition: null
             // ,utmposition: null
 
             ,sourceProject:"EPSG:4326"
-            ,destinatePorject:"+proj=utm +zone=50 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+            // ,destinatePorject:"+proj=utm +zone=50 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//北京
+            ,destinatePorject:"+proj=utm +zone=51 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"//上海
         }
     },
     watch:{
@@ -80,95 +76,12 @@ export default {
         initMap:function(){
             this.viewer = dl.init(this.mapoption);
             this.scene = dl.scene;
-            //添加数据
-            // this.addShape("intersection","./static/map3d/suzhou_CityRoad_utm51/Intersection.shp",dl.styles.intersection.color)
-            // this.addShape("Crosswalk","./static/map3d/suzhou_CityRoad_utm51/Crosswalk.shp",dl.styles.crosswalk.color)
-            // this.addShape("lane_marking","./static/map3d/suzhou_CityRoad_utm51/Lane_marking.shp",dl.styles.lane_marking.color)
-            // this.addShape("lane_arrow","./static/map3d/suzhou_CityRoad_utm51/Direction_arrow.shp",dl.styles.lane_arrow.color)
-            // this.addShape("lane_boundary","./static/map3d/suzhou_CityRoad_utm51/Lane_boundary.shp",dl.styles.lane_boundary.color)
 
-            // this.addShape("Crosswalk2","./static/map3d/kjy/UTM/crosswalk.shp","#999999")
-            // this.addShape("lane2","./static/map3d/kjy/UTM/lane.shp",dl.styles.lane_boundary.color)
-            // this.addShape("roadline2","./static/map3d/kjy/UTM/roadline.shp",dl.styles.lane_boundary.color)
-          //科技园
-          this.addShape("Crosswalk2","./static/map3d/newUTMData/crosswalk.shp","#999999")
-          this.addShape("lane2","./static/map3d/newUTMData/lane.shp",dl.styles.lane_boundary.color)
-          this.addShape("roadline2","./static/map3d/newUTMData/roadline.shp",dl.styles.lane_boundary.color)
-
-            //上海
-            // this.addShape("intersection","./static/map3d/dilu_zc/clip/Intersection.shp",dl.styles.intersection.color)
-            // this.addShape("Crosswalk","./static/map3d/dilu_zc/clip/Crosswalk.shp",dl.styles.crosswalk.color)
-            // // this.addShape("lane_marking","./static/map3d/20190531_utm51/clip/Lane_marking.shp",dl.styles.lane_marking.color)
-            // this.addShape("lane_arrow","./static/map3d/dilu_zc/clip/Direction_arrow.shp",dl.styles.lane_arrow.color)
-            // this.addShape("lane_boundary","./static/map3d/dilu_zc/clip/Lane_boundary.shp",dl.styles.lane_boundary.color)
-
-          // this.addShape("1","./static/map3d/kjy/UTM/1.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("2","./static/map3d/kjy/UTM/2.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("3","./static/map3d/kjy/UTM/3.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("4","./static/map3d/kjy/UTM/4.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("5","./static/map3d/kjy/UTM/5.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("6","./static/map3d/kjy/UTM/6.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("7","./static/map3d/kjy/UTM/7.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("8","./static/map3d/kjy/UTM/8.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("9","./static/map3d/kjy/UTM/9.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("10","./static/map3d/kjy/UTM/10.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("11","./static/map3d/kjy/UTM/11.shp",dl.styles.lane_boundary.color)
-          //   this.addShape("12","./static/map3d/kjy/UTM/12.shp",dl.styles.lane_boundary.color)
-
-
-            // this.addShape("lane_marking","./static/map3d/suzhou_CityRoad_utm51/Lane_marking.shp",dl.styles.lane_marking.color)
-            // this.addShape("lane_arrow","./static/map3d/suzhou_CityRoad_utm51/Direction_arrow.shp",dl.styles.lane_arrow.color)
-
-            //初始化视锥体
             this.initView(this.viewVector1.x,this.viewVector1.y,this.viewVector1.z,this.viewVector2.x,this.viewVector2.y,this.viewVector2.z);
 
-            // this.updateCameraPosition(442455.99844902,4427229.863377506,58.45029574064428,147.4909535804191,-0.6650238516042308,-0.8020833333333345);
-            //添加模型
-            // this.addModel("car","./static/map3d/map_photo/car.3DS",0,0,12.816);
-
-            //矮路灯
-            this.addModel("lamppost_01","./static/map3d/models/lamppost_01.3ds",442496.96,4427294.44,16);
-            this.models["lamppost_01"].setHeading(30);
-            this.models["lamppost_01"].setUpdate(true);
-
-            //障碍物
-            // this.addModel("traffic_cone","./static/map3d/models/traffic_cone.3ds",442492.797,4427280.995,16);
-            // this.models["traffic_cone"].setHeading(30);
-            // this.models["traffic_cone"].setUpdate(true);
-
-            //大路灯
-            this.addModel("street_lamp_two","./static/map3d/models/street_lamp_two.3ds",442501.99,4427272.65,16);
-            this.models["street_lamp_two"].setHeading(30);
-            this.models["street_lamp_two"].setUpdate(true);
-            //红绿灯
-            this.addModel("traffic_light","./static/map3d/models/traffic_light.3ds",442533.95,4427306.77,16);
-            this.models["traffic_light"].setHeading(30);
-            this.models["traffic_light"].setUpdate(true);
-
-            //标识牌
-            this.addModel("traffic_sign_stop","./static/map3d/models/traffic_sign_stop.3ds",442529.62,4427323.70,16);
-            this.models["traffic_sign_stop"].setHeading(120);
-            this.models["traffic_sign_stop"].setUpdate(true);
-
-            //女人
-            this.addModel("Girl walking N090814","./static/map3d/models/Girl walking N090814.3DS",442529.62,4427325.70,16);
-            this.models["Girl walking N090814"].setHeading(120);
-            this.models["Girl walking N090814"].setUpdate(true);
-            //男人
-            this.addModel("Man N151016.3DS","./static/map3d/models/Man N151016.3DS",442531.62,4427325.70,16);
-            this.models["Man N151016.3DS"].setHeading(120);
-            this.models["Man N151016.3DS"].setUpdate(true);
-
             //初始化websocket连接
-            // this.initWebsocket(this.websocketUrl);
-            // setInterval(()=>{
-            //    let camera =  dl.viewer.scene.view;
-            //    console.log(camera);
-            // },1000);
-
+            this.initWebsocket(this.websocketUrl);
             setTimeout(()=>{
-                // 442454.32658246456,4427227.8078830885, 37.73509248844059, 0.0000028926452461693342,-0.5081018518518544,-0.7385192219746066
-                // 442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606
                 //科技园
                 // this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
                 //科技园 小图
@@ -177,20 +90,49 @@ export default {
                 //上海
                 // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
 
+                //上海自采 裁剪  全局
+                // this.updateCameraPosition(326181.72659014474,3462354.6747002415,737.3642832288795,741.5052736914325,-1.5707963267948966,-0.05266622778143515);
+
             },500);
-
-
-
+        },
+        /**
+         *获取相机参数
+         */
+        getCamera:function(){
+          let obj = {
+                   x:this.viewer.scene.view.position.x,
+                   y:this.viewer.scene.view.position.y,
+                   z:this.viewer.scene.view.position.z,
+                   radius:this.viewer.scene.view.radius,
+                   pitch:this.viewer.scene.view._pitch,
+                   yaw:this.viewer.scene.view.yaw
+               };
+               return obj;
         },
         initView:function(x1,y1,z1,x2,y2,z2){
             let bbox = new THREE.Box3(new THREE.Vector3(x1,y1,z1), new THREE.Vector3(x2,y2,z2));
             dl.initView(bbox,this.viewer);
         },
-        addShape:function(name,url,color){
+        /**
+         * name:矢量数据的名字 可选
+         * url:矢量数据的url路径 必须
+         * color:矢量数据的颜色类型，默认是 #fff，数据接受多种类型，比如 "rgb(255, 0, 0)"、"hsl(0, 100%, 50%)"、'#ff0000' 可选
+         * width:矢量数据如果是线类型，该参数会起作用，默认是 1.0 可选
+         * size:矢量数据如果是点类型，该参数会起作用，默认是 6.0 可选
+         * visible:是否可见，默认是 true， 可选
+         * map:纹理的url，默认是 null 可选
+         * proj:数据的坐标系，默认是 和点云坐标系一致 可选
+         */
+        addShape:function(name,url,color,width,size,visible,map,proj){
             let shp = new dl.Shape({
                 url: url,
                 name: name,
-                color: color
+                color: color==undefined?"#fff":color,
+                width: width==undefined?1.0:width,
+                size: size==undefined?6.0:size,
+                visible: visible==undefined?true:visible,
+                map: map==undefined?null:map,
+                proj: proj
             });
             this.scene.add(shp);
 
@@ -202,8 +144,10 @@ export default {
             model.position.y = y;
             model.position.z = z;
             this.scene.add(model);
-
             this.models[name]=model;
+        },
+        getModel:function(id){
+          return this.models[id];
         },
         updateModelPostion:function(modelId,x,y,z,heading){
             let model = this.models[modelId];
@@ -218,7 +162,7 @@ export default {
         updateCameraPosition:function(x,y,z,radius,pitch,yaw){
             dl.moveTo({
                 position: [x,y, z],
-                radius: radius,
+                radius: 0.001,
                 yaw: yaw,
                 pitch: pitch,
                 viewer:this.viewer
@@ -277,13 +221,6 @@ export default {
                 this.deviceModels[deviceid]={cars:[],persons:[],texts:[]};
                 for(let m = 0;m<this.cacheModelNum;m++)
                 {
-
-                    //圆球
-                    // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
-                    // var model = new THREE.Mesh( geoSphere, matStdObjects );
-                    // model.position.set( 0, 0, 0 );
-                    // model.castShadow = true;
-                    // model.receiveShadow = true;
                     // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
                     //车
                     var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
@@ -347,14 +284,6 @@ export default {
                     this.deviceModels[deviceid]={cars:[],persons:[],texts:[]};
                     for(let m = 0;m<this.cacheModelNum;m++)
                     {
-
-                        //圆球
-                        // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
-                        // var model = new THREE.Mesh( geoSphere, matStdObjects );
-                        // model.position.set( 0, 0, 0 );
-                        // model.castShadow = true;
-                        // model.receiveShadow = true;
-                        // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
                         //车
                         var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
                         var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
@@ -440,9 +369,18 @@ export default {
                 }
             }
         },
+        setInterval:function(interval)
+        {
+            this.interval = interval;
+            this.count = 0;
+        },
         onMessage:function(data){
             this.models={};
-
+            this.count++;
+            if((this.count%this.interval)!=0)
+            {
+                return;
+            }
             let rsuDatas = JSON.parse(data.data);
             var deviceid = null;
             if(rsuDatas.result.length>0)
@@ -455,14 +393,6 @@ export default {
                     this.deviceModels[deviceid]={cars:[],persons:[],texts:[]};
                     for(let m = 0;m<this.cacheModelNum;m++)
                     {
-
-                        //圆球
-                        // var geoSphere = new THREE.SphereBufferGeometry( 0.8, 15, 15 );
-                        // var model = new THREE.Mesh( geoSphere, matStdObjects );
-                        // model.position.set( 0, 0, 0 );
-                        // model.castShadow = true;
-                        // model.receiveShadow = true;
-                        // 0019D1AA0424  0019EAFA0104  0019EAFA0102  0018EAFA0332
                         //车
                         var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
                         var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
@@ -505,11 +435,20 @@ export default {
                         car.position.x = 0;
                         car.position.y = 0;
                         car.position.z = 0;
+                    }
 
+                    for(let p=0;p<this.deviceModels[deviceid].persons.length;p++)
+                    {
                         let person = this.deviceModels[deviceid].persons[p];
                         person.position.x = 0;
                         person.position.y = 0;
                         person.position.z = 0;
+                    }
+
+                    for(let p=0;p<this.deviceModels[deviceid].texts.length;p++){
+                        var text1 = this.deviceModels[deviceid].texts[p];
+                        text1.setPositon([0,0,0]);
+                        text1.update();
                     }
                 }
 
@@ -517,7 +456,6 @@ export default {
             for(let i = 0;i<rsuDatas.result.length;i++)
             {
                 let d = rsuDatas.result[i];
-                // // console.log(rsuDatas[i]);
                 let dUTM = proj4(this.sourceProject,this.destinatePorject,[d.target.longitude,d.target.latitude]);
 
                 if(d.target.type==0||d.target.type==1||d.target.type==3)
@@ -541,6 +479,8 @@ export default {
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+4;
 
+                        mdl.rotation.set( this.pitch,this.yaw,Math.PI*(d.heading/180.0) );
+
                         let text = this.deviceModels[deviceid].texts[i];
                         text.setText(d.target.uuid.substr(0,8));
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+6]);
@@ -550,6 +490,44 @@ export default {
         },
         onClose:function(data){
             console.log("结束连接");
+        },
+        reset3DMap:function(){
+            for(var key in this.deviceModels){
+                for(let p=0;p<this.deviceModels[key].cars.length;p++)
+                {
+                    let car = this.deviceModels[key].cars[p];
+                    car.position.x = 0;
+                    car.position.y = 0;
+                    car.position.z = 0;
+                }
+
+                for(let p=0;p<this.deviceModels[key].persons.length;p++)
+                {
+                    let person = this.deviceModels[key].persons[p];
+                    person.position.x = 0;
+                    person.position.y = 0;
+                    person.position.z = 0;
+                }
+
+                for(let p=0;p<this.deviceModels[key].texts.length;p++){
+                    var text1 = this.deviceModels[key].texts[p];
+                    text1.setPositon([0,0,0]);
+                    text1.update();
+                }
+        　　}
+            if ('WebSocket' in window) {
+                if(window.WebSocket){
+                    if(this.hostWebsocket!=null)
+                    {
+                        if(this.hostWebsocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
+                            this.hostWebsocket.close();
+                        }
+                    }
+                    this.hostWebsocket=null;
+                }
+             }else{
+                 console.log("该浏览器不支持websocket");
+             }
         },
         changeRcuId:function(url,rcuid)
         {
@@ -575,10 +553,6 @@ export default {
              }
         },
         onOpen:function(){
-            console.log("建立连接");
-            // 2046A1035893
-            // var hostVehicle = '{"action":"rcu","data":{"rcuId":"2046A1037E1F"},"token":"fpx"}';
-            // var hostVehicleMsg = JSON.stringify(hostVehicle);
             var hostVehicle = '{"action":"RCUPer","devId":"'+this.rcuId+'"}';
             this.sendMsg(hostVehicle);
         },
