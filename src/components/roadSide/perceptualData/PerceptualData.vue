@@ -82,7 +82,8 @@
                     </p>
                     <p class="c-detail-lable">
                         <span class="name">路侧点: </span>
-                        <span class="value c-blue c-hover-underline" ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{camDetail.roadPointName}}</span>
+                        <span class="value" v-if="!camDetail.roadPointName || camDetail.roadPointName == '--'">{{camDetail.roadPointName}}</span>
+                        <span class="value c-blue c-hover-underline" v-else ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{camDetail.roadPointName}}</span>
                     </p>
                 </div>
                 <div class="c-video-wrapper">
@@ -189,9 +190,10 @@ export default {
                     position: new AMap.LngLat(_position[0],_position[1]),
                 });
                 _marker.content = `<div class="c-map-info-window">
-                <p class="c-info-window-text">摄像头编号:${item.label}<p>
-                <p class="c-info-window-text">道路名称:${item.roadName}<p>
-                <p class="c-info-window-text">经纬度:${item.ptLon},${item.ptLat}<p></div>`;
+                                    <p class="c-info-window-text">摄像头编号：${item.label}<p>
+                                    <p class="c-info-window-text">道路名称：${item.roadName}<p>
+                                    <p class="c-info-window-text">经纬度：${item.ptLon},${item.ptLat}<p>
+                                </div>`;
                 _marker.on('click', this.markerClick);
                 _marker.emit('click', {target: _marker});
                 this.distanceMap.setFitView();
