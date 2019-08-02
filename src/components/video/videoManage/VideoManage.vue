@@ -196,10 +196,10 @@ export default {
                 'source':this.searchKey.source,
                 'camCode':this.searchKey.camId,
                 'protocal': JSON.parse(localStorage.getItem('protocal')) || '',
-                'startBeginTime':this.searchKey.startTime[0] ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
-                'startEndTime':this.searchKey.startTime[1] ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
-                'stopBeginTime':this.searchKey.endTime[0] ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
-                'stopEndTime':this.searchKey.endTime[1] ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : ''
+                'startBeginTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
+                'startEndTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
+                'stopBeginTime':this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
+                'stopEndTime':this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : ''
             }).then(res => {
                 if(res.status == '200'){
                     res.data.list.forEach(item => {

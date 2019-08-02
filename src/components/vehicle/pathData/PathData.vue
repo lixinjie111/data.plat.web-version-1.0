@@ -254,8 +254,8 @@
             },
             'vehicleId':this.searchKey.vehicleId,
             'plateNo':this.searchKey.plateNo,
-            'startTime':this.searchKey.time[0] ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
-            'endTime':this.searchKey.time[1] ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
+            'startTime':this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
+            'endTime':this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
         }).then(res => {
           if(res.status == '200'){
               //转换开始时间、结束时间、行驶时长

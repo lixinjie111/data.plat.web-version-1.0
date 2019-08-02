@@ -49,16 +49,19 @@
                         :props="defaultProps" 
                         :load="loadNode" 
                         lazy
+                        node-key="code"
                         ref="tree"
                         default-expand-all
-                        current-node-key="firstSerialNum"
+                        highlight-current
+                        current-node-key="se"
+                        :default-expanded-keys="firstSerialNum"
                         @node-click="handleNodeClick" 
                         >
                         <!-- show-checkbox
                         node-key="code" -->
                         <!-- @check-change="handleCheckChange" -->
                         <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
-                            <i class="sl-video-icon" :class="data.icon" :id='data.id' v-if="data.icon"></i>
+                            <i class="sl-video-icon" :class="data.icon" :id='data.label' v-if="data.icon"></i>
                             <span class="sl-play-text">{{ node.label }}</span>              
                         </span>
                     </el-tree>
@@ -66,7 +69,7 @@
                 </div>
             </div>
             <div class="c-map-video-wrapper c-flex-1">
-                 <!-- 信息模块 -->
+                <!-- 信息模块 -->
                 <div class="c-detail-lable-list clearfix c-pdl-10">
                     <p class="c-detail-lable">
                         <span class="name">摄像头编号:</span>
@@ -140,6 +143,7 @@ export default {
                 municiSelected:'',
             },
             defaultProps: {
+                code:'code',
                 children: 'children',
                 label: 'label',
                 node:'',
@@ -160,7 +164,7 @@ export default {
 
             timer: null,
 
-            firstSerialNum: '',
+            firstSerialNum: []
             // currentVideoOption: null
         }
     },
@@ -278,6 +282,7 @@ export default {
                             localStorage.setItem('protocal',protocal);
                         }
                         var camDetail = res.data;
+                        
                         for(var i=0;i<camDetail.length;i++){
                             var obj = {};
                             obj.label = camDetail[i].deviceId;
@@ -291,15 +296,18 @@ export default {
                             obj.cameraRunStatus = camDetail[i].cameraRunStatus;
                             obj.icon = "sl-play-icon";
                             obj.leaf = true;
-                            if(!this.firstSerialNum) {
-                                this.firstSerialNum = camDetail[i].serialNum
-                            }
+                            obj.code = camDetail[i].serialNum;
                             data.push(obj);
+                            if(!this.firstSerialNum) {
+                                this.firstSerialNum.push(camDetail[i].serialNum);
+                            }
                         }
                         
-                        // this.$refs.tree.setCheckedKeys([this.firstSerialNum]);
 
                         resolve(data);
+
+                        this.$refs.tree.setCheckedKeys(this.firstSerialNum);
+                        // this.$refs.tree.setCheckedKeys([1]);
                     }
                 })
             }

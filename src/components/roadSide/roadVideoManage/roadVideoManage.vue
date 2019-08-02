@@ -271,19 +271,18 @@ export default {
                     window.navigator.msSaveBlob(res.data, decodeURI(res.headers['content-disposition'].split('filename=')[1]))
                 } else {
                     let blob = res.data;
-                    // console.log('res.data ----------- ' + JSON.stringify(res))
 
                     let a = document.createElement('a');
                     a.setAttribute('id','exportLog');
                     a.style.display = 'none'
-
-                    // let a = document.getElementById('exportLog')
+                    
                     var binaryData = [];
                     binaryData.push(res.data);
                     let url = window.URL.createObjectURL(new Blob(binaryData,{type: "application/zip"}))
                     // let url = window.URL.createObjectURL(blob);
 
                     let filename = decodeURI(res.headers['content-disposition'].split('filename=')[1])
+                
                     // let filename = 'car_' + (new Date()).getTime() + '.txt';
                     // let filename = 'filename.txt';
 
@@ -293,6 +292,7 @@ export default {
                     a.download = filename
                     a.dispatchEvent(evt) // 对firefox的兼容
                     a.click()
+                    console.log("url:" + url);
                     window.URL.revokeObjectURL(url)
                 }
             }
