@@ -23,7 +23,7 @@
                     
                         <div class="yk-search-block">
                             <span class="yk-btn yk-btn-gap" @click="searchClick">查询</span>
-                            <span class="yk-btn" @click="resetClick();">重置</span>
+                            <span class="yk-btn" @click="resetClick">重置</span>
                         </div>  
                         <div class="yk-table-box" id="idTable" :style="'height:' + current.height + 'px;'">
                             <table class="yk-table">

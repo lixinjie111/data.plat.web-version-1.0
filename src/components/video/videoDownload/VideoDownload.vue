@@ -51,7 +51,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick('searchKey')">查询</el-button>
+                    <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick">查询</el-button>
                     <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
                 </el-form-item>
             </el-form>
@@ -254,7 +254,6 @@ export default {
             });
         },
         resetClick(){
-            this.initData();
             this.$refs.searchForm.resetFields();
         },
         cfgPanelFn(data){
