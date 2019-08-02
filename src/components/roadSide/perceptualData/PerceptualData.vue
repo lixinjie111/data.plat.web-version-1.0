@@ -82,7 +82,7 @@
                     </p>
                     <p class="c-detail-lable">
                         <span class="name">路侧点: </span>
-                        <span class="value" ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{camDetail.roadPointName}}</span>
+                        <span class="value c-blue c-hover-underline" ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{camDetail.roadPointName}}</span>
                     </p>
                 </div>
                 <div class="c-video-wrapper">

@@ -189,10 +189,10 @@ export default {
             searchKey: {
                 rsPtId:'',
                 cameraId:'',
-                serialNum:'',
+                // serialNum:'',
                 // serialNum:'3402000000132000001601',
                 // serialNum:'3402000000132000001401',
-                // serialNum:'3402000000132000003001',
+                serialNum:'3402000000132000003001',
                 deviceId:'',
                 startTime: this.$dateUtil.GetDateStr(7),
                 endTime: this.$dateUtil.getNowFormatDate()
