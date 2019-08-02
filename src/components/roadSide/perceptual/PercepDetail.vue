@@ -118,7 +118,7 @@ export default {
     data(){
         let _this = this;
         return {
-            boxLoading: true,
+            boxLoading: false,
             loading: false,
             params: {
                 "serialNum": this.$route.params.serialNum, //设备序列号
@@ -227,8 +227,8 @@ export default {
         this.durationTime = (this.endTimeTimestamp - this.startTimeTimestamp)/1000;
         this.durationSecond = this.durationTime.toFixed(3).split(".")[0];
         this.durationMilliSecond = this.durationTime.toFixed(3).split(".")[1];
-        this.getVideoUrl();
-        this.findRoadMonitorCamera();
+        // this.getVideoUrl();
+        // this.findRoadMonitorCamera();
     },
     methods: {
         findRoadMonitorCamera() {

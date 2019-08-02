@@ -39,10 +39,10 @@
                     stripe  
                     border>
                     <el-table-column label="序号" type="index"></el-table-column>
-                    <el-table-column min-width="18%" prop="deviceId" label="设备类型"></el-table-column>
-                    <el-table-column min-width="6%" prop="roadName" label="设备ID"></el-table-column>
-                    <el-table-column min-width="16%" prop="serialNum" label="设备序列号"></el-table-column>
-                    <el-table-column min-width="10%" prop="direction" label="朝向"></el-table-column>
+                    <el-table-column min-width="25%" prop="deviceType" label="设备类型"></el-table-column>
+                    <el-table-column min-width="25%" prop="roadName" label="设备编号"></el-table-column>
+                    <el-table-column min-width="25%" prop="serialNum" label="设备序列号"></el-table-column>
+                    <el-table-column min-width="25%" prop="direction" label="朝向"></el-table-column>
                 </el-table>
             </div>
         </div>

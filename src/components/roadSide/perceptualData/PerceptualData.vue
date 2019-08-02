@@ -174,6 +174,7 @@ export default {
     methods:{
         wsRequest(){
             //5s刷一次实时状态
+            clearInterval(this.timer);
             this.timer = setInterval(()=>{
                 this.computCamNum();
             },5000);
@@ -414,9 +415,11 @@ export default {
             })
         },
         goRoadSide(){
+            clearInterval(this.timer);
             this.roadSideShow = true;
         },
         backClick(){
+            this.wsRequest();
             this.roadSideShow = false;
         },
         mapChangeMax(){
