@@ -1,7 +1,7 @@
 <template>
 <div v-cloak>
         <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
-            <el-form-item label="SID" prop='sid'>
+            <el-form-item label="CAN数据编号" prop='sid'>
                 <el-input v-model.trim="searchKey.sid"></el-input>
             </el-form-item>
             <el-form-item label="英文名称" prop='enName'>
@@ -24,7 +24,7 @@
             max-height="724" 
             @selection-change="handleSelectionChange">
             <el-table-column type="selection"></el-table-column>
-            <el-table-column prop="sid" label="SID"></el-table-column>
+            <el-table-column prop="sid" label="CAN数据编号"></el-table-column>
             <el-table-column prop="name" label="英文名称"></el-table-column>
             <el-table-column prop="longidentifier" label="中文名称"></el-table-column>
             <el-table-column prop="datType" label="类型"></el-table-column>

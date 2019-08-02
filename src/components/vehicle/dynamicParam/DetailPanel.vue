@@ -8,7 +8,7 @@
             </h3>
             <div class="c-wrapper-20">
                 <el-form :inline="true" :model="searchKey" ref='searchForm' size='small'>
-                    <el-form-item label="数据ID" prop='dataId'>
+                    <el-form-item label="数据编号" prop='dataId'>
                         <el-input v-model.trim="searchKey.dataId"></el-input>
                     </el-form-item>
                     <el-form-item>
@@ -22,7 +22,7 @@
                     stripe
                     border>
                     <el-table-column prop="timestamp" label="时间戳"></el-table-column>
-                    <el-table-column prop="dataId" label="数据ID"></el-table-column>
+                    <el-table-column prop="dataId" label="数据编号"></el-table-column>
                     <el-table-column prop="enName" label="英文名称"></el-table-column>
                     <el-table-column prop="chName" label="中文名称"></el-table-column>
                     <el-table-column prop="enName" label="数据值"></el-table-column>

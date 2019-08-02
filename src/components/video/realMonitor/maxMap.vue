@@ -74,7 +74,7 @@
                     if(!this.markers.maskCar) {
                       this.markers.maskCar = new AMap.Marker({
                         position:  _position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
-                        angle: res.data.courseAngle,
+                        angle: -res.data.courseAngle,
                         icon:'static/images/vehicle/car-white.png',
                       });
                       this.distanceMap.add(this.markers.maskCar);

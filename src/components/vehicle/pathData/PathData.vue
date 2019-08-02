@@ -150,7 +150,7 @@
         let tittle = [
           {
             key: "routeId",
-            name: "行程ID",
+            name: "行程编号",
             sort:1
           },
           {
@@ -165,7 +165,7 @@
           },
           {
             key: "vehicleId",
-            name: "车辆ID",
+            name: "车辆编号",
             sort:4
           },
           {

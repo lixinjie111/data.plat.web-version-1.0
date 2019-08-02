@@ -30,7 +30,7 @@
                                 <thead>
                                 <tr>                        
                                     <th scope="col">时间戳</th>                       
-                                    <th scope="col">数据ID</th>
+                                    <th scope="col">数据编号</th>
                                     <th scope="col">英文名称</th>
                                     <th scope="col">中文名称</th>
                                     <th scope="col">数据值</th>

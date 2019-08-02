@@ -30,7 +30,7 @@
                         v-loading='loading'
                         stripe
                         border>
-                        <el-table-column prop="sid" label="SID"></el-table-column>
+                        <el-table-column prop="sid" label="CAN数据编号"></el-table-column>
                         <el-table-column prop="name" label="英文名称"></el-table-column>
                         <el-table-column prop="longidentifier" label="中文名称"></el-table-column>
                         <el-table-column prop="datType" label="类型"></el-table-column>

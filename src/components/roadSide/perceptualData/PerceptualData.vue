@@ -88,18 +88,15 @@
                 <div class="c-video-wrapper">
                     <div class="c-video" id="cmsplayer"></div>
                     <div class="c-video-mask" v-show='isMaskShow'></div>
-                </div>
-                <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
-                    <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
-                    <div class='c-map-btn c-map-btn-right' @click='mapChangeMin' v-else></div>
-                    <div class="c-map-container" id='map-container'>
-                        <!-- <ul class="c-map-info clearfix">
-                            <li class='c-map-info-list speed'>摄像头编号:{{camDetail.camId ? camDetail.camId : ' -- '}}</li>
-                            <li class='c-map-info-list angle'>道路名称:{{camDetail.roadNewName ? camDetail.roadNewName : ' -- '}}</li>
-                            <li class='c-map-info-list lonlat'>经纬度:{{camDetail.lon ? camDetail.lon : ' -- '}},{{camDetail.lat ? camDetail.lat : ' -- '}}</li>
-                        </ul> -->
+
+                    <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
+                        <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
+                        <div class='c-map-btn c-map-btn-right' @click='mapChangeMin' v-else></div>
+                        <div class="c-map-container" id='map-container'></div>
                     </div>
+                    
                 </div>
+                
             </div>
         </div>
         <road-side-info v-if='roadSideShow' :roadPointId='camDetail.roadPointId' :roadPointName='camDetail.roadPointName' @roadInfoBack='backClick'></road-side-info>
@@ -193,7 +190,7 @@ export default {
                 });
                 _marker.content = `<div class="c-map-info-window">
                 <p class="c-info-window-text">摄像头编号:${item.label}<p>
-                <p class="c-info-window-text">道路名称:${item.rsPtName}<p>
+                <p class="c-info-window-text">道路名称:${item.roadName}<p>
                 <p class="c-info-window-text">经纬度:${item.ptLon},${item.ptLat}<p></div>`;
                 _marker.on('click', this.markerClick);
                 _marker.emit('click', {target: _marker});
@@ -281,7 +278,6 @@ export default {
                             localStorage.setItem('protocal',protocal);
                         }
                         var camDetail = res.data;
-                        console.log()
                         for(var i=0;i<camDetail.length;i++){
                             var obj = {};
                             obj.label = camDetail[i].deviceId;
@@ -319,10 +315,6 @@ export default {
         //     // this.handleNodeClick(data);
         // },
         handleNodeClick(data){
-            // if(data.road){
-            //     this.roadName = data.label;
-            // }
-            console.log(data);
             this.roadNewName = this.roadName;
             let camStatus = data.cameraRunStatus;
             // console.log(camStatus);
@@ -336,7 +328,8 @@ export default {
                     this.endPlay();
                     data.icon = "sl-play-icon";
                 }
-                this.markerPoint.push(data);
+                let roadCamInfo = Object.assign({},{roadName:this.roadName},data)
+                this.markerPoint.push(roadCamInfo);
                 // let _position = ConvertCoord.wgs84togcj02(obj.ptLon, obj.ptLat);
                 // this.distanceMap.setCenter(_position);
                 this.drawStartMarker();
@@ -420,10 +413,12 @@ export default {
         },
         goRoadSide(){
             clearInterval(this.timer);
+            this.isMaskShow = false;
             this.roadSideShow = true;
         },
         backClick(){
             this.wsRequest();
+            // this.isMaskShow = true;
             this.roadSideShow = false;
         },
         mapChangeMax(){
@@ -529,6 +524,9 @@ export default {
             width:55%;
         }
     }
+}
+.video-js.vjs-ended .vjs-big-play-button, .video-js.vjs-paused .vjs-big-play-button, .vjs-paused.vjs-has-started.vjs-custom-skin>.video-js .vjs-big-play-button{
+    display:none;
 }
 </style>
 

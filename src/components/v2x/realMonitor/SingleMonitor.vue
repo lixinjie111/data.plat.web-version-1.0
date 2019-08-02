@@ -26,7 +26,7 @@
           <li>
             <div class="msg-left">
               <img src="static/images/vehicle/ico-self.png">
-              自车ID：
+              自车编号：
             </div>
             <div class="msg-right">
               {{selfCar.vid}}
@@ -84,7 +84,7 @@
           <li>
             <div class="msg-left">
               <img src="static/images/vehicle/ico-other.png">
-              远车ID：
+              远车编号：
             </div>
             <div class="msg-right">{{ remoteCar.vid }}</div>
           </li>

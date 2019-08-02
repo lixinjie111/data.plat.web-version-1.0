@@ -96,6 +96,7 @@
 <script>
 import MaxMap from './maxMap.vue';
 import {queryCamList,startStream,queryDeviceType,sendStreamHeart} from '@/api/video';
+const isProduction = process.env.NODE_ENV === 'production'
 export default {
     name: 'RealMonitor',
     components: {
@@ -135,7 +136,8 @@ export default {
                 sourceOrder: true,
                 flash: {
                   // swf: '../../../../static/media/video-js.swf'
-                    swf: '/static/media/video-js.swf'
+                    // swf: '/static/media/video-js.swf'       
+                    swf: isProduction ? '/dataManage/static/media/video-js.swf' : './static/media/video-js.swf'
                 },
                 muted: true, // 默认情况下将会消除任何音频。
                 loop: false, // 导致视频一结束就重新开始。

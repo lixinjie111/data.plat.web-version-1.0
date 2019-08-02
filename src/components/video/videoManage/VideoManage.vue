@@ -152,10 +152,6 @@ export default {
         }
     },
     methods: {
-        init(){
-            // this.initPaging();
-            this.initData();
-        },
         initPageOption() {
             this.dataList = [];
             this.pageOption.total = 0;
@@ -234,7 +230,6 @@ export default {
             this.initData();
         },
         resetClick(){
-            this.initData();
             this.$refs.searchForm.resetFields();
         },
         vehiclePanelFn(e){
@@ -261,8 +256,7 @@ export default {
                 if ('msSaveBlob' in navigator) { // 对IE和Edge的兼容
                     window.navigator.msSaveBlob(res.data, decodeURI(res.headers['content-disposition'].split('filename=')[1]))
                 } else {
-                    let blob = res.data
-
+                    let blob = res.data;
                     // console.log('res.data ----------- ' + JSON.stringify(res))
 
                     let a = document.createElement('a');
@@ -270,7 +264,10 @@ export default {
                     a.style.display = 'none'
 
                     // let a = document.getElementById('exportLog')
-                    let url = window.URL.createObjectURL(blob)
+                    var binaryData = [];
+                    binaryData.push(res.data);
+                    let url = window.URL.createObjectURL(new Blob(binaryData,{type: "application/zip"}))
+                    // let url = window.URL.createObjectURL(blob);
 
                     let filename = decodeURI(res.headers['content-disposition'].split('filename=')[1])
                     // let filename = 'car_' + (new Date()).getTime() + '.txt';
@@ -344,7 +341,7 @@ export default {
         }
     },
     mounted(){
-        this.init();
+        this.initData();
     },
     beforeDestroy(){
 

@@ -156,7 +156,7 @@ export default {
                     { required: true, message: '车牌号不能为空', trigger: 'change' }
                 ],
                 vehicleId:[
-                    { required: true, message: '车辆ID不能为空', trigger: 'change' }
+                    { required: true, message: '车辆编号不能为空', trigger: 'change' }
                 ],
                 camDeviceId:[
                     { required: true, message: '摄像头编号不能为空', trigger: 'change' }

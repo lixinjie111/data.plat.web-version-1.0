@@ -16,16 +16,6 @@
             <div class="c-wrapper-20 c-detail-box c-padding-20">
                 <div class="c-map-big-wrapper" id='map-container-r' :class="isScaleMap ? 'c-map-on' : 'c-map-off'">
                     <span class="c-map-scale-btn" :class="isScaleMap ? 'c-map-scale-off' : 'c-map-scale-on'" @click="isScaleMap = !isScaleMap"></span>
-                    <!-- <ul class="c-map-view-info">
-                        <li class="list">
-                            <span class="name">道路名称</span>
-                            <em class="value">{{roadPointName ? roadPointName : ' -- '}}</em>
-                        </li>
-                        <li class="list">
-                            <span class="name">经纬度</span>
-                            <em class="value">{{camDetail.lon ? camDetail.lon : ' -- '}},{{camDetail.lat ? camDetail.lat : ' -- '}}</em>
-                        </li>
-                    </ul> -->
                 </div>
             </div>
 
@@ -39,8 +29,8 @@
                     stripe  
                     border>
                     <el-table-column label="序号" type="index"></el-table-column>
-                    <el-table-column min-width="25%" prop="deviceType" label="设备类型"></el-table-column>
-                    <el-table-column min-width="25%" prop="roadName" label="设备编号"></el-table-column>
+                    <el-table-column min-width="25%" prop="deviceTypeName" label="设备类型"></el-table-column>
+                    <el-table-column min-width="25%" prop="deviceId" label="设备编号"></el-table-column>
                     <el-table-column min-width="25%" prop="serialNum" label="设备序列号"></el-table-column>
                     <el-table-column min-width="25%" prop="direction" label="朝向"></el-table-column>
                 </el-table>
@@ -65,6 +55,7 @@ export default {
         return{
             infoTagData:[],
             deviceList:[],
+            markerPoint:[],
             isScaleMap: false,
             camDetail:{
                 roadName:'',
@@ -100,16 +91,16 @@ export default {
         },
         drawStartMarker() {
             let _this = this;
+            console.log(this.markerPoint)
             this.markerPoint.forEach((item, index) => {
-                let _position = ConvertCoord.wgs84togcj02(item.ptLon, item.ptLat);
+                let _position = ConvertCoord.wgs84togcj02(item.lon, item.lat);
                 let _marker = new AMap.Marker({
                     map: this.distanceMap,
                     position: new AMap.LngLat(_position[0],_position[1]),
                 });
                 _marker.content = `<div class="c-map-info-window">
-                <p class="c-info-window-text">摄像头编号:${item.label}<p>
-                <p class="c-info-window-text">道路名称:${item.rsPtName}<p>
-                <p class="c-info-window-text">经纬度:${item.ptLon},${item.ptLat}<p></div>`;
+                <p class="c-info-window-text">路侧点编号:${item.rspRoadId}<p>
+                <p class="c-info-window-text">路侧点名称:${item.roadPointName}<p></div>`;
                 _marker.on('click', this.markerClick);
                 _marker.emit('click', {target: _marker});
                 this.distanceMap.setFitView();
@@ -130,12 +121,15 @@ export default {
                     this.camDetail.lon = res.data.lon;
                     this.camDetail.lat = res.data.lat;
                     let _position = ConvertCoord.wgs84togcj02(res.data.lon,res.data.lat);
+                    let roadPointInfo = Object.assign({},{roadPointName:this.roadPointName},res.data);
                     this.distanceMap.setCenter(_position);
+                    this.markerPoint.push(roadPointInfo);
+                    this.drawStartMarker();
                     this.infoTagData = [
                         {
                             title:"",
                             list:[{
-                                        name:"道路ID",
+                                        name:"道路编号",
                                         value:res.data.rspRoadId,
                                     },
                                     {

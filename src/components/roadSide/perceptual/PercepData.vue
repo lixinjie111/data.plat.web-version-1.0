@@ -50,7 +50,7 @@
                     ></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="感知设备ID:" prop='deviceId'> 
+            <el-form-item label="感知设备编号:" prop='deviceId'> 
                 <el-select 
                     v-model="searchKey.deviceId"
                     filterable
