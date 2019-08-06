@@ -41,29 +41,29 @@
                     </div>
                 </div>
                 <div class="c-wrapper-20 c-padding-20 c-detail-box">
-                  <table class="yk-table1">
+                  <table class="path-table">
                     <thead>
                     <tr>
                       <th style='width:5%;'>序号</th>
-                      <th style='width:15%;'>时间</th>
-                      <th style='width:12%;'>经度</th>
-                      <th style='width:12%;'>纬度</th>
-                      <th style='width:12%;'>速度(km/h)</th>
-                      <th style='width:12%;'>航向角</th>
-                      <th>高程(m)</th>
+                      <th style='width:20%;'>时间</th>
+                      <th style='width:20%;'>经度</th>
+                      <th style='width:20%;'>纬度</th>
+                      <th style='width:15%;'>速度(km/h)</th>
+                      <th style='width:10%;'>航向角</th>
+                      <th style='width:10%;'>高程(m)</th>
                     </tr>
                     </thead>
                     <tbody class="tbody">
-                    <tr class="yk-table-body mouse-cursor" :class="index==selectItem?'table-row-color1':'table-row-color2'"
+                    <tr class="mouse-cursor" :class="index==selectItem?'table-row-color1':''"
                         v-for='(item,index) in dataList' :key="index"
                         @click.stop="selectRow(item,index);">
                       <td style='width:5%;'>{{ index+1 }}</td>
-                      <td style='width:15.2%;'>{{$dateUtil.formatTime(item.timestamp,'yy-mm-dd hh:mm:ss:ms')}}</td>
-                      <td style='width:12%;'>{{item.gnss_LONG}}</td>
-                      <td style='width:12.2%;'>{{item.gnss_LAT}}</td>
-                      <td style='width:12.2%;'>{{item.gnss_SPD}}</td>
-                      <td style='width:12%;'>{{item.gnss_HEAD}}</td>
-                      <td>{{item.gnss_HIGHT}}</td>
+                      <td style='width:20%;'>{{$dateUtil.formatTime(item.timestamp,'yy-mm-dd hh:mm:ss:ms')}}</td>
+                      <td style='width:20%;'>{{item.gnss_LONG}}</td>
+                      <td style='width:20%;'>{{item.gnss_LAT}}</td>
+                      <td style='width:15%;'>{{item.gnss_SPD}}</td>
+                      <td style='width:10%;'>{{item.gnss_HEAD}}</td>
+                      <td style='width:10%;'>{{item.gnss_HIGHT}}</td>
                     </tr>
                     </tbody>
                   </table>
@@ -512,200 +512,60 @@ import { error } from 'util';
     font-size: 15px;
     color: #D0D0D0;
   }
-  .yk-table1 {
+  .path-table {
+    position: relative;
     word-break: break-all;
     font-size: 14px;
     color: #777C7C;
     border-collapse: collapse;
-    border-radius: 5px;
-    width: fill-available;
-    width: -webkit-fill-available;
-    width: -moz-fill-available;
-    width: -o-fill-available;
-    border: 2px solid #f59307;
-    border-radius: 5px;
-    position: relative;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    -o-border-radius: 5px;
+    border-radius: 5px;    
+    border: 1px solid #ebeef5;
+    border-top: none;
   }
 
-  .yk-table1:hover {
-    border: 2px solid #f59307;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    -o-border-radius: 5px;
-  }
-
-  .yk-table1 thead, .yk-table1 tr {
+  .path-table thead, .path-table tr {
+    text-align: center;
     display: table;
     width: 100%;
     table-layout: fixed;
   }
 
-  .yk-table1 thead {
+  .path-table thead {
     width: 100%;
   }
 
-  .yk-table1 thead tr {
-    background: #F5F8FC;
-    height: 40px;
-    text-align: left;
+  .path-table thead tr {
+    background: #e6e6e6;
+    height: 48px;
+    color: #000;
+    font-weight: 400;
   }
 
-  .yk-table1 tbody {
+  .path-table tbody {
     display: block;
-    height: 250px;
+    height: 246px;
     overflow-y: scroll;
     overflow-x: hidden;
   }
 
-  .yk-table1 tbody tr {
+  .path-table tbody tr {
     height: 40px;
-    border-bottom: 1px solid #E0E6ED;
-    text-align: left;
+    border: none;
   }
 
-  .yk-table1 th, .yk-table1 td {
-    padding-left: 5px;
-    padding-right: 5px;
+  .path-table th, .path-table td {
+    padding: 0 5px;
+  }
+  .path-table td {
+    border-top: 1px solid #ebeef5;
+    border-right: 1px solid #ebeef5;
   }
 
   .table-row-color1 {
-    background-color: #f59307;
-  }
-
-  .table-row-color2 {
-    background-color: white;
-  }
-
-  .map-div {
-    width: 98%;
-    height: 315px;
-    border: 2px solid #f59307;
-    box-sizing: border-box;
-    display: inline-block;
-    margin-left:20px;
+    background-color: #fff0db;
   }
 
   .mouse-cursor:hover {
     cursor: pointer;
-  }
-
-  .table-div {
-    width:98%;
-    overflow: hidden;
-    height: 300px;
-    display: inline-block;
-    margin-left:20px;
-  }
-
-  .yk-title {
-    text-align: left;
-    height: 30px;
-    line-height: 30px;
-    font-size: 16px;
-    margin-bottom: 5px;
-    font-weight: 500;
-  }
-
-  .yk-tab ul {
-    height: 36px;
-    line-height: 36px;
-  }
-
-  .yk-tab ul li {
-    list-style: none;
-    display: inline-block;
-    width: 120px;
-    border-right: 1px solid #ccc;
-  }
-
-  .yk-tab ul li:last-child {
-    border-right: 0px;
-  }
-
-  .yk-tab ul li span {
-    height: 36px;
-    line-height: 36px;
-    cursor: pointer;
-  }
-
-  .yk-gap20 {
-    margin-right: 20px;
-    font-size: 14px;
-  }
-
-  .yk-gap20 label {
-    font-weight: 500;
-    width: 120px;
-    display: inline-block;
-    text-align: right;
-  }
-
-  .yk-gap20 span {
-    width: 200px;
-    display: inline-block;
-  }
-
-  .yk-first {
-    margin: 10px 0px;
-    padding: 20px 10px;
-    background: #fff;
-    border-top: 3px solid #2DCA93;
-    font-size: 14px;
-  }
-
-  .yk-first table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    text-align: center;
-  }
-
-  .yk-first table th {
-    background: #F7F9FA;
-  }
-
-  .yk-first table tr, th, td {
-    border: 1px solid rgb(225, 231, 231);
-    border-spacing: 0px;
-  }
-
-  .yk-second {
-    margin: 10px 10px;
-    background: #fff;
-    font-size: 14px;
-  }
-
-  .yk-s-block .title {
-    font-size: 16px;
-    margin: 15px 10px 10px 10px;
-  }
-
-  .yk-s-block .body {
-    font-size: 14px;
-    margin: 0px 10px;
-  }
-
-  .yk-c-block .yk-img {
-    height: 100px;
-    display: inline-block;
-    vertical-align: top;
-    margin: 10px;
-  }
-
-  .yk-c-block .yk-sub-ul {
-    display: inline-block;
-    vertical-align: top;
-    margin-top: 8px;
-    margin-right: 10px;
-  }
-
-  .yk-c-block .yk-sub-ul li {
-    margin: 5px;
   }
 </style>
