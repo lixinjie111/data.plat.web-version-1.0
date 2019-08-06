@@ -1,10 +1,10 @@
 <template>
-<div class="c-wrapper-20 c-padding-20 c-detail-box" v-cloak>
+<div class="c-wrapper-20" v-cloak>
     
         <!-- 信息&&地图视频模块 -->
         <div class="c-flex">
             <!-- 地图视频模块 -->
-            <div class="c-gray-box road-cam-box">
+            <div class="c-gray-box road-cam-box c-mr-10">
                 <div class='cam-title'>摄像头组织结构</div>
                 <div class='carm-oragn-info c-mt-10'>
                     <el-form size="small" class="c-text-between">
@@ -70,7 +70,7 @@
             </div>
             <div class="c-map-video-wrapper c-flex-1">
                 <!-- 信息模块 -->
-                <div class="c-detail-lable-list clearfix c-pdl-10">
+                <div class="c-detail-lable-list clearfix c-pdl-10 c-detail-box">
                     <p class="c-detail-lable">
                         <span class="name">摄像头编号:</span>
                         <span class="value">{{camDetail.camCode}}</span>
@@ -89,7 +89,7 @@
                         <span class="value c-blue c-hover-underline" v-else ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{camDetail.roadPointName}}</span>
                     </p>
                 </div>
-                <div class="c-video-wrapper">
+                <div class="c-video-wrapper c-mt-10">
                     <div class="c-video" id="cmsplayer"></div>
                     <div class="c-video-mask" v-show='isMaskShow'></div>
 
@@ -473,6 +473,7 @@ export default {
     padding:10px;
     box-sizing: border-box;
     line-height: 20px;
+    border: 10px solid #fff;
     .cam-title{
         font-size:14px;
         text-align: left;
