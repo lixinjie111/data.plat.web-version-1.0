@@ -9,7 +9,7 @@
             <el-dropdown trigger="hover">
                 <span class="el-dropdown-link userinfo-inner">
                     <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
-                    <em class="name c-vertical-middle">{{userName}}</em>
+                    <em class="name c-vertical-middle">{{loginInfo.userNo}}</em>
                 </span>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item divided>版本v1.0</el-dropdown-item>
@@ -18,41 +18,46 @@
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
+        <dialog-reset-password v-if="dialogResetPasswordFlag" @cancleFunc="cancleFunc"></dialog-reset-password>
     </div>
 </template>
 <script>
 
 import SessionUtils from '@/store/session.js'
-// import PasswordPop from '../login/passwordPop/passwordPop';
+import { requestLogout } from '@/api/login/index'
+import DialogResetPassword from "./components/resetPassword.vue";
 export default {
-    components:{
-        // PasswordPop
+    components: {
+        DialogResetPassword
     },
     data(){
         return {
+            loginInfo: JSON.parse(SessionUtils.getItem('login')),
             name: 'Header',
             isSubMenu: false,
             userName:'',
-            passwordShow:false
+            passwordShow:false,
+            dialogResetPasswordFlag: false,
         }
     },
     methods: {
         logoutClick(){
-            
-            this.$router.push('/login');
-            
-            SessionUtils.deleteItem('login');
+            requestLogout({
+                token: this.loginInfo.token
+            }).then(res => {
+                if(res.status == '200'){
+                    this.$router.push('/login');
+                    this.$store.dispatch('logout');
+                    SessionUtils.deleteItem('login');
+                }
+            });
         },
         resetPassword(){ 
-            this.$router.push({path:'/passWord'});
+            this.dialogResetPasswordFlag = true;
         },
-    },
-   
-    created(){
-        let loginInfo = sessionStorage.getItem('login');
-        if(loginInfo){
-            this.userName = JSON.parse(loginInfo).loginName;
-        }
+        cancleFunc() {
+            this.dialogResetPasswordFlag = false;
+        },
     }
 }
 </script>

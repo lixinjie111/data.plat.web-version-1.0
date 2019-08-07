@@ -24,6 +24,7 @@
 
 <script>
 import { requestPasswd } from "@/api/login"
+import SessionUtils from '@/store/session.js'
 // import { removeAuthInfo } from '@/cookie/index';
 export default {
     name: "resetPassword",
@@ -71,12 +72,12 @@ export default {
             visible: true,
             submitloading: false,
             formParams: {
-                id: this.$store.state.user.id,
-                userNo: this.$store.state.user.name,
+                id: JSON.parse(SessionUtils.getItem('login')).id,
+                userNo: JSON.parse(SessionUtils.getItem('login')).userNo,
                 password:'',
                 newpassword:'',
                 confirmpassword:'',
-                platform:this.$store.state.platform 
+                platform: "20000"
             },
             rules:{
                 password:[
@@ -90,6 +91,9 @@ export default {
                 ]
             }
         }
+    },
+    mounted(){
+        console.log(this.formParams);
     },
     methods: {
         submitFunc() {
@@ -109,15 +113,6 @@ export default {
                         this.submitloading = false;
                     });
 
-                    // setTimeout(() => {            // 接口调用
-                    //     this.submitloading = false;
-                    //     // this.$emit("cancleFunc");
-                    //     this.$message.success("修改密码成功");
-                    //     this.$router.push({
-                    //         path: '/login'
-                    //     });
-                    // }, 2000);
-
                 } else {
                     return false;
                 }
@@ -126,9 +121,6 @@ export default {
         cancleFunc() {
             this.$emit("cancleFunc");
         }
-    },
-    mounted(){
-        console.log(this.$store.state.user);
     }
 }
 </script>
