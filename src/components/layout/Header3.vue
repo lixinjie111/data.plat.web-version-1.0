@@ -2,67 +2,61 @@
     <div id="header">
         <div class="logo">
             <img src="static/images/logo.png" class="logo-img"/>
-            <!-- <em class="name">数据管理平台</em> -->
+            <!-- <em class="name">运营管理平台</em> -->
         </div>
+
         <div class="userinfo">
             <el-dropdown trigger="hover">
                 <span class="el-dropdown-link userinfo-inner">
                     <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
-                    <em class="name c-vertical-middle">{{$store.state.user.name}}</em>
+                    <em class="name c-vertical-middle">{{userName}}</em>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item divided>版本v1.1</el-dropdown-item>
+                    <el-dropdown-item divided>版本v1.0</el-dropdown-item>
                     <el-dropdown-item divided @click.native="resetPassword">修改密码</el-dropdown-item>
-                    <el-dropdown-item divided @click.native="logoutClick">登出</el-dropdown-item>
+                    <el-dropdown-item divided @click.native="logoutClick">退出</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
-        <dialog-reset-password v-if="dialogResetPasswordFlag" @cancleFunc="cancleFunc"></dialog-reset-password>
     </div>
 </template>
 <script>
-import {requestLogout} from '@/api/login'
+
 import SessionUtils from '@/store/session.js'
-import DialogResetPassword from "./components/resetPassword.vue";
+// import PasswordPop from '../login/passwordPop/passwordPop';
 export default {
-    components: {
-        DialogResetPassword
+    components:{
+        // PasswordPop
     },
     data(){
         return {
             name: 'Header',
-            dialogResetPasswordFlag: false,
+            isSubMenu: false,
+            userName:'',
+            passwordShow:false
         }
     },
     methods: {
         logoutClick(){
-            let token = SessionUtils.getItem('login').token;
-            requestLogout({
-                token:token
-            }).then(res => {
-                if(res.status == '200'){
-                    this.$router.push('/login');
-                    this.$store.dispatch('logout');
-                    SessionUtils.deleteItem('login');
-                }
-            });
+            
+            this.$router.push('/login');
+            
+            SessionUtils.deleteItem('login');
         },
         resetPassword(){ 
-            this.dialogResetPasswordFlag = true;
-        },
-        cancleFunc() {
-            this.dialogResetPasswordFlag = false;
+            this.$router.push({path:'/passWord'});
         },
     },
    
-    
-    mounted(){
-    },
-    beforeDestroy(){
-
-    },
+    created(){
+        let loginInfo = sessionStorage.getItem('login');
+        if(loginInfo){
+            this.userName = JSON.parse(loginInfo).loginName;
+        }
+    }
 }
 </script>
+
 <style lang="scss" scoped>
 @import "@/assets/scss/theme.scss";
 #header {
