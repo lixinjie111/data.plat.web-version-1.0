@@ -14,6 +14,7 @@
             <el-form-item label="重复密码:" prop='confirmpassword'>
                 <el-input v-model.trim="formParams.confirmpassword"></el-input>
             </el-form-item>
+            <el-form-item>强度要求：8-20位，至少包含大写字母、小写字母、数字</el-form-item> 
         </el-form>
         <div class="c-text-center">
             <el-button type="warning" size="small" @click="submitFunc" :loading="submitloading">确定</el-button>
