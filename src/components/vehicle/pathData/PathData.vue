@@ -4,10 +4,42 @@
       <div v-if="!panel.show">
           <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
               <el-form-item label="车辆编号" prop='vehicleId'>
-                  <el-input v-model.trim="searchKey.vehicleId"></el-input>
+                  <el-select
+                    v-model.trim="searchKey.vehicleId"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsVehicleRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                    :loading="rsVehicleOption.loading">
+                    <el-option
+                        v-for="item in rsVehicleOption.filterOption"
+                        :key="item.vehicleId"
+                        :label="item.vehicleId"
+                        :value="item.vehicleId">
+                    </el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="车牌号" prop='plateNo'>
-                  <el-input v-model.trim="searchKey.plateNo"></el-input>
+                  <el-select
+                    v-model.trim="searchKey.plateNo"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsPlateNoRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
+                    :loading="rsPlateNoOption.loading">
+                    <el-option
+                        v-for="item in rsPlateNoOption.filterOption"
+                        :key="item.plateNo"
+                        :label="item.plateNo"
+                        :value="item.plateNo">
+                    </el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="创建时间" prop='time'>
                   <el-date-picker
@@ -72,6 +104,7 @@
 </template>
 <script>
   import {queryPathList,exportExcel} from '@/api/vehicle';
+  import {requestqueryVehicleList} from '@/api/search';
   import AlertPanel from '@/common/view/Alert.vue'
   import TList from '@/common/utils/list.js'
   import PathDataInfo from '@/components/vehicle/pathData/PathDataInfo.vue'
@@ -90,7 +123,7 @@
         searchKey: {
           vehicleId: '',
           plateNo: '',
-          time:[this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()]
+          time:[]
         },
         selector: {
           isAll: false,
@@ -101,6 +134,20 @@
             size: 10,
             total: 0,
             page: 1     //从1开始
+        },
+        rsVehicleOption: {
+            loading: false,
+            timer: null,
+            filterOption: [],
+            defaultOption: [],
+            defaultFlag: false
+        },
+        rsPlateNoOption: {
+            loading: false,
+            timer: null,
+            filterOption: [],
+            defaultOption: [],
+            defaultFlag: false
         },
         panel: {
           title: '提示',
@@ -115,7 +162,8 @@
                     _newTime = new Date().getTime();
                 return _time > _newTime;
             }
-        },   
+        },  
+        searchUrl: requestqueryVehicleList 
       }
     },
     methods: {
@@ -336,6 +384,26 @@
       },
       resetClick() {
         this.$refs.searchForm.resetFields();
+        this.rsVehicleOption.filterOption = [];
+        this.rsPlateNoOption.filterOption = [];
+      },
+      rsVehicleRemoteMethod(query) {
+          this.$searchFilter.publicRemoteMethod({
+              query: query,
+              searchOption: this.rsVehicleOption,
+              searchObj: this.searchKey,
+              key: 'vehicleId',
+              request: this.searchUrl
+          });
+      },
+      rsPlateNoRemoteMethod(query) {
+          this.$searchFilter.publicRemoteMethod({
+              query: query,
+              searchOption: this.rsPlateNoOption,
+              searchObj: this.searchKey,
+              key: 'plateNo',
+              request: this.searchUrl
+          });
       },
       changePageSize(value) {//每页显示条数变更
           this.initPageOption();
@@ -351,6 +419,7 @@
       }
     },
     mounted() {
+      this.searchKey.time = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
       this.init();
     },
   }

@@ -73,16 +73,14 @@ export default {
             findPropByGroupId({
                 'ids':ids
             }).then(res => {
-                // if(res.status == '200'){
+                this.$refs.groupList.selector = res;
                     callback(res);
-                // }
             })
         },
         getLocalData(listGroupProperty){
             let list = [];
             TList.pushNoRepeat(list,this.$refs.fullList.selector);
             TList.pushNoRepeat(list,this.$refs.groupList.selector);
-            console.log(list);
             this.isShow=false;
             this.$emit("loadData",list);
         }

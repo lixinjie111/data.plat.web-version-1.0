@@ -4,7 +4,23 @@
         <div v-show='infoIsShow'>
             <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
                 <el-form-item label="RSU编号" prop='rsuId'>
-                    <el-input v-model="searchKey.rsuId"></el-input>
+                    <el-select
+                        v-model.trim="searchKey.rsuId"
+                        filterable
+                        remote
+                        reserve-keyword
+                        placeholder="请输入关键词"
+                        :remote-method="rsRsuIdRemoteMethod"
+                        @focus="$searchFilter.remoteMethodClick(rsRsuIdOption, searchKey, 'rsuId', searchUrl)"
+                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsuId')"
+                        :loading="rsRsuIdOption.loading">
+                        <el-option
+                            v-for="item in rsRsuIdOption.filterOption"
+                            :key="item.rsuId"
+                            :label="item.rsuId"
+                            :value="item.rsuId">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="开始时间" prop='startTime'>
                     <el-date-picker
@@ -72,6 +88,7 @@
 </template>
 <script>
 import {findRsmPage} from '@/api/v2x';
+import {requestqueryRSUList} from '@/api/search';
 import RsmDetail from '@/components/v2x/rsm/RsmDetail.vue'
 export default {
     name: 'BsmCom',
@@ -123,8 +140,8 @@ export default {
             searchLoad:false,
             searchKey: {
                 rsuId: '',
-                startTime: this.$dateUtil.GetDateStr(1),
-                endTime: this.$dateUtil.getNowFormatDate()
+                startTime: '',
+                endTime: ''
             },
             pageOption: {
                 page: 1,
@@ -175,7 +192,15 @@ export default {
                         return _time > _newTime;
                     }
                 }
-            }
+            },
+            rsRsuIdOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestqueryRSUList 
         }
     },
     methods: {
@@ -233,6 +258,16 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
+            this.rsRsuIdOption.filterOption = [];
+        },
+        rsRsuIdRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsRsuIdOption,
+                searchObj: this.searchKey,
+                key: 'rsuId',
+                request: this.searchUrl
+            });
         },
         getIsNan(val){
             return typeof(val) == 'number' && window.isNaN(val);
@@ -255,6 +290,8 @@ export default {
         }
     },
     mounted(){
+        this.searchKey.startTime = this.$dateUtil.GetDateStr(1);
+        this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
         this.findRsmPage();
     }
 }

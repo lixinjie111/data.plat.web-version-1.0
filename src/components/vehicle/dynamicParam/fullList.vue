@@ -134,7 +134,6 @@ export default {
             this.$refs.searchForm.resetFields();
         },
         handleSelectionChange(val) {
-            console.log(val);
             this.selector = [];
             this.selector = val;
             // val.forEach(item => {

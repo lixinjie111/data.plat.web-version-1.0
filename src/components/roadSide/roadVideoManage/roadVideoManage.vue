@@ -4,13 +4,64 @@
     <div v-show="!panel.show">
         <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
             <el-form-item label="摄像头编号" prop='camCode'>
-                <el-input v-model.trim="searchKey.camCode"></el-input>
+                <el-select
+                    v-model.trim="searchKey.camCode"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsCamCodeRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'camCode', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'camCode')"
+                    :loading="rsCamCodeOption.loading">
+                    <el-option
+                        v-for="item in rsCamCodeOption.filterOption"
+                        :key="item.deviceId"
+                        :label="item.deviceId"
+                        :value="item.deviceId">
+                    </el-option>
+                </el-select>
             </el-form-item>
-            <el-form-item label="道路名称" prop='roadName'>
-                <el-input v-model.trim="searchKey.roadName"></el-input>
+            <el-form-item label="道路名称" prop='rspRoadName'>
+                <el-select
+                    v-model.trim="searchKey.rspRoadName"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsRoadNameRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsRoadNameOption, searchKey, 'rspRoadName', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'rspRoadName')"
+                    :loading="rsRoadNameOption.loading">
+                    <el-option
+                        v-for="item in rsRoadNameOption.filterOption"
+                        :key="item.rspRoadName"
+                        :label="item.rspRoadName"
+                        :value="item.rspRoadName">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="路侧点名称" prop='roadPointName'>
-                <el-input v-model.trim="searchKey.roadPointName"></el-input>
+                <!-- <el-input v-model.trim="searchKey.roadPointName"></el-input> -->
+                <el-form-item label="路侧点名称" prop='rsPtName'>
+                    <el-select
+                        v-model.trim="searchKey.rsPtName"
+                        filterable
+                        remote
+                        reserve-keyword
+                        placeholder="请输入关键词"
+                        :remote-method="rsPointNameRemoteMethod"
+                        @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', searchUrl)"
+                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsPtName')"
+                        :loading="rsPointNameOption.loading">
+                        <el-option
+                            v-for="item in rsPointNameOption.filterOption"
+                            :key="item.rsPtName"
+                            :label="item.rsPtName"
+                            :value="item.rsPtName">
+                        </el-option>
+                    </el-select>
+            </el-form-item>
             </el-form-item>
             <el-form-item label="视频来源" prop='source'>
                 <el-select v-model="searchKey.source">
@@ -101,6 +152,7 @@
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local';
 import RoadVideoReplay from './roadVideoReplay.vue';
+import {requestRSCamList,requestqueryRoadList,requestqueryRoadPointList} from '@/api/search';
 import {queryRoadVideoList,downLoadZipFile,removeVideo} from '@/api/roadSide'
 import axios from 'axios'
 export default {
@@ -129,11 +181,11 @@ export default {
             searchKey: {
                 fileName: '',
                 camCode: '',
-                roadName: '',
-                roadPointName: '',
+                rspRoadName: '',
+                rsPtName: '',
                 source: '',
-                startTime: [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()],
-                endTime: [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()]
+                startTime: [],
+                endTime: []
             },
             selector: [],
             auth: {
@@ -173,7 +225,31 @@ export default {
                         _newTime = new Date().getTime();
                     return _time > _newTime;
                 }
-            }
+            },
+            rsCamCodeOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            rsRoadNameOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            rsPointNameOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestRSCamList,
+            roadNameUrl:requestqueryRoadList,
+            roadPointUrl:requestqueryRoadPointList
         }
     },
     methods: {
@@ -204,10 +280,10 @@ export default {
                 },
                 camCode: this.searchKey.camCode,
                 fileName: this.searchKey.fileName,
-                roadName: this.searchKey.roadName,
+                roadName: this.searchKey.rspRoadName,
                 source: this.searchKey.source,
                 taskStatus: this.searchKey.taskStatus,
-                roadPointName: this.searchKey.roadPointName,
+                roadPointName: this.searchKey.rsPtName,
                 protocal:protocal,
                 startBeginTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
                 startEndTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
@@ -247,6 +323,36 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
+            this.rsCamCodeOption.defaultOption = [];
+            this.rsRoadNameOption.defaultOption = [];
+            this.rsRoadNameOption.defaultOption = [];
+        },
+        rsRoadNameRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsRoadNameOption,
+                searchObj: this.searchKey,
+                key: 'rspRoadName',
+                request: this.roadNameUrl
+            });
+        },
+        rsCamCodeRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsCamCodeOption,
+                searchObj: this.searchKey,
+                key: 'camCode',
+                request: this.searchUrl
+            });
+        },
+        rsPointNameRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsPointNameOption,
+                searchObj: this.searchKey,
+                key: 'rsPtName',
+                request: this.roadPointUrl
+            });
         },
         cfgPanelFn(data){
             this.panel.show = false;
@@ -263,7 +369,6 @@ export default {
                 this.$message.error('请选择要下载的文件!');
             }
         },
-
         downloadFile(res){
             if (res.data) {
                 if ('msSaveBlob' in navigator) { // 对IE和Edge的兼容
@@ -277,11 +382,10 @@ export default {
                     
                     var binaryData = [];
                     binaryData.push(res.data);
-                    let url = window.URL.createObjectURL(new Blob(binaryData,{type: "application/zip"}))
+                    let url = window.URL.createObjectURL(new Blob(binaryData),{type: "application/zip"});
                     // let url = window.URL.createObjectURL(blob);
 
                     let filename = decodeURI(res.headers['content-disposition'].split('filename=')[1])
-                
                     // let filename = 'car_' + (new Date()).getTime() + '.txt';
                     // let filename = 'filename.txt';
 
@@ -291,7 +395,6 @@ export default {
                     a.download = filename
                     a.dispatchEvent(evt) // 对firefox的兼容
                     a.click()
-                    console.log("url:" + url);
                     window.URL.revokeObjectURL(url)
                 }
             }
@@ -368,6 +471,8 @@ export default {
         }
     },
     mounted(){
+        this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
+        this.searchKey.endTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
         this.init();
     },
     beforeDestroy(){

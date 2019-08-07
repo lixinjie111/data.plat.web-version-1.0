@@ -2,8 +2,24 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
-            <el-form-item label="自车Id" prop='hvid'>
-                <el-input v-model="searchKey.hvid"></el-input>
+            <el-form-item label="自车编号" prop='vehicleId'>
+                <el-select
+                    v-model.trim="searchKey.vehicleId"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsVehicleRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                    :loading="rsVehicleOption.loading">
+                    <el-option
+                        v-for="item in rsVehicleOption.filterOption"
+                        :key="item.vehicleId"
+                        :label="item.vehicleId"
+                        :value="item.vehicleId">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="开始时间" prop='startTime'>
                 <el-date-picker
@@ -78,6 +94,7 @@
     </div>
 </template>
 <script>
+import {requestqueryVehicleList} from '@/api/search';
 import {findEventList} from '@/api/v2x';
 export default {
     name: 'EventCom',
@@ -125,9 +142,9 @@ export default {
             loading:false,
             searchLoad:false,
             searchKey: {
-                hvid: '',
-                startTime: this.$dateUtil.GetDateStr(2),
-                endTime: this.$dateUtil.getNowFormatDate()
+                vehicleId: '',
+                startTime: '',
+                endTime: ''
             },
             pageOption: {
                 page: 1,
@@ -170,7 +187,15 @@ export default {
                         return _time > _newTime;
                     }
                 }
-            }
+            },
+            rsVehicleOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestqueryVehicleList
         }
     },
     methods: {
@@ -192,7 +217,7 @@ export default {
                     "pageSize": this.pageOption.size,
                     "pageIndex": this.pageOption.page-1
                 },
-                hvid : this.searchKey.hvid,
+                hvid : this.searchKey.vehicleId,
                 startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
                 endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
             }).then(res => {
@@ -220,6 +245,16 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
+            this.rsVehicleOption.filterOption = [];
+        },
+        rsVehicleRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsVehicleOption,
+                searchObj: this.searchKey,
+                key: 'vehicleId',
+                request: this.searchUrl
+            });
         },
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();
@@ -235,6 +270,8 @@ export default {
         }
     },
     mounted(){
+        this.searchKey.startTime = this.$dateUtil.GetDateStr(2);
+        this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
         this.findEventList();
     },
 }

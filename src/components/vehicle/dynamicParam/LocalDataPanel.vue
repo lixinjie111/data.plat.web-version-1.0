@@ -9,7 +9,23 @@
                 <div v-show="isShow && !isAddData" class="c-wrapper-20">
                     <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
                         <el-form-item label="车辆编号" prop='vehicleId'>
-                            <el-input v-model.trim="searchKey.vehicleId"></el-input>
+                            <el-select
+                                v-model.trim="searchKey.vehicleId"
+                                filterable
+                                remote
+                                reserve-keyword
+                                placeholder="请输入关键词"
+                                :remote-method="rsVehicleRemoteMethod"
+                                @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
+                                @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                                :loading="rsVehicleOption.loading">
+                                <el-option
+                                    v-for="item in rsVehicleOption.filterOption"
+                                    :key="item.vehicleId"
+                                    :label="item.vehicleId"
+                                    :value="item.vehicleId">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                         <el-form-item label="数据采集时间" prop='time'>
                         <el-date-picker
@@ -58,6 +74,7 @@
 import {submitForm} from '@/api/vehicle';
 import AddDataPanel from './AddDataPanel.vue'
 import TList from '@/common/utils/list.js'
+import {requestqueryVehicleList} from '@/api/search';
 export default {
     props: ['title','type','data'],
     components: {
@@ -128,7 +145,15 @@ export default {
                         _newTime = new Date().getTime();
                     return _time > _newTime;
                 }
-            }  
+            },
+            rsVehicleOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            }, 
+            searchUrl: requestqueryVehicleList  
         }
     },
     methods: {
@@ -194,6 +219,15 @@ export default {
             let boxHeight = document.body.clientHeight;
             this.current.top = document.getElementById('localDataTable').offsetTop;
             this.current.height = boxHeight - this.current.top - 55 - 100 - 40;
+        },
+        rsVehicleRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsVehicleOption,
+                searchObj: this.searchKey,
+                key: 'vehicleId',
+                request: this.searchUrl
+            });
         },
         okClick(){
             if(this.dataList.length == 0) {

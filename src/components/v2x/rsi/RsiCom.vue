@@ -3,7 +3,22 @@
     <div class="c-wrapper-20" v-cloak>
         <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
             <el-form-item label="RSU编号" prop='rsuId'>
-                <el-input v-model="searchKey.rsuId"></el-input>
+                <el-select
+                        v-model.trim="searchKey.rsuId"
+                        filterable
+                        remote
+                        reserve-keyword
+                        placeholder="请输入关键词"
+                        :remote-method="rsRsuIdRemoteMethod"
+                        @focus="$searchFilter.remoteMethodClick(rsRsuIdOption, searchKey, 'rsuId', searchUrl)"
+                        :loading="rsRsuIdOption.loading">
+                        <el-option
+                            v-for="item in rsRsuIdOption.filterOption"
+                            :key="item.rsuId"
+                            :label="item.rsuId"
+                            :value="item.rsuId">
+                        </el-option>
+                    </el-select>
             </el-form-item>
             <el-form-item label="开始时间" prop='startTime'>
                 <el-date-picker
@@ -34,7 +49,7 @@
             class="c-mb-70"
             max-height="724">
             <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
-            <el-table-column prop="msgCnt" label="消息编号" min-width="8%"></el-table-column>
+            <el-table-column prop="msgID" label="消息编号" min-width="8%"></el-table-column>
             <el-table-column prop="rsuId" label="RSU编号" min-width="8%"></el-table-column>
             <el-table-column label="时间" min-width="14%">
                 <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
@@ -74,6 +89,7 @@
 </template>
 <script>
 import {findRsiPage} from '@/api/v2x';
+import {requestqueryRSUList} from '@/api/search';
 export default {
     name: 'RsiCom',
     components: {
@@ -120,9 +136,8 @@ export default {
             loading:false,
             searchLoad:false,
             searchKey: {
-                rsuId: '',
-                startTime: this.$dateUtil.GetDateStr(1),
-                endTime: this.$dateUtil.getNowFormatDate(),
+                startTime: '',
+                endTime: '',
                 rsuId: '',
             },
             pageOption: {
@@ -167,6 +182,14 @@ export default {
                     }
                 }
             },  
+            rsRsuIdOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestqueryRSUList 
         }
     },
     methods: {
@@ -216,6 +239,16 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
+            this.rsRsuIdOption.filterOption = [];
+        },
+        rsRsuIdRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsRsuIdOption,
+                searchObj: this.searchKey,
+                key: 'rsuId',
+                request: this.searchUrl
+            });
         },
         getIsNan(val){
             return typeof(val) == 'number' && window.isNaN(val);
@@ -234,6 +267,8 @@ export default {
         }
     },
     mounted(){
+        this.searchKey.startTime = this.$dateUtil.GetDateStr(1);
+        this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
         this.findRsiPage();
     },
 }

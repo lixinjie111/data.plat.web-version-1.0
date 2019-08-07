@@ -66,8 +66,8 @@ export default {
             this.dataList = [];
             this.pageOption.total = 0;
             this.pageOption.page = 1;
-         },
-         init(){
+        },
+        init(){
             this.operPlatUrl = window.config.operPlatUrl;
             this.initPaging();
             this.initData();

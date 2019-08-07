@@ -6,8 +6,8 @@
                 <p class="title" v-if="item.title">{{item.title}}</p>
                 <div v-for="(subItem,subIndex) in item.list" :key="subIndex" class="inner-list">
                     <span class="sub-title">{{subItem.name}}</span>
-                    <em class="desc">{{subItem.value || '--'}}</em>
-                </div>
+                    <em class="desc">{{subItem.value !== '' ? subItem.value : '---'}}</em>
+                </div> 
             </li>         
         </ul>
     </div>
@@ -21,6 +21,8 @@ export default {
     },
     data() {
         return {}
+    },
+    mounted(){
     }
 }
 </script>

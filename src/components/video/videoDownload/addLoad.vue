@@ -12,13 +12,13 @@
                     remote
                     value-key="plateNo"
                     placeholder="请输入关键词"
-                    @click.native="getPlateNoList"
-                    :remote-method="searchPlateNo"
-                    @change="handleSelectPlateNo"
-                    :loading="plateNoLoading">
+                    :remote-method="remoteMethod1"
+                    @focus="getPlateNoList"
+                    @change="plateNoSelect"
+                    :loading="fuzzySearchOption1.loading">
                     <el-option
-                        v-for="item in plateNoList"
-                        :key="item.id"
+                        v-for="item in fuzzySearchOption1.filterOption"
+                        :key="item.plateNo"
                         :label="item.plateNo"
                         :value="item">
                     </el-option>
@@ -32,11 +32,11 @@
                     value-key="vehicleId"
                     placeholder="请输入关键词"
                     :remote-method="searchVehicleId"
-                    @change="handleSelectVehicleId"
-                    :loading="vehicleIdLoading">
+                    @change="vehicleIdSelect"
+                    :loading="fuzzySearchOption2.loading">
                     <el-option
-                        v-for="item in vehicleIdList"
-                        :key="item.id"
+                        v-for="item in fuzzySearchOption2.filterOption"
+                        :key="item.vehicleId"
                         :label="item.vehicleId"
                         :value="item">
                     </el-option>
@@ -84,6 +84,7 @@
 
 <script>
 import {queryPage,findByDeviceList,historyDownloadTask} from '@/api/video';
+import {requestqueryVehicleList} from '@/api/search'; 
 export default {
     name: 'AddLoad',
     data () {
@@ -131,7 +132,6 @@ export default {
                 {name:'车牌号',val:'0'},
                 {name:'车辆编号',val:'1'},
             ],
-
             formParams: {
                 plateNo: '',
                 vehicleId: '',
@@ -192,35 +192,94 @@ export default {
                     }
                 }
             },
-            
+            fuzzySearchOption1: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption:[]
+            },
+            fuzzySearchOption2: {
+                loading: false,
+                timer: null,
+                filterOption: []
+            },
         }
     },
     methods: {
-        getPlateNoList(){
-            if(!this.formParams.plateNo) {    
-                if(!this.allList.length) {
-                    this.plateNoLoading = true;
-                    this.plateNoList = [];
-                    queryPage({
-                        "page":{
-                            "pageIndex": 0,
-                            "pageSize": 1000
-                        },
-                        "plateNo": '',
+        remoteMethod1(query) {
+            if (query !== '') {
+                clearTimeout(this.fuzzySearchOption1.timer);
+                this.fuzzySearchOption1.timer = setTimeout(() => {
+                    requestqueryVehicleList({
+                        "plateNo": query,
                         "vehicleId": ''
                     }).then(res => {
                         if(res.status == '200'){
-                            this.allList = res.data.list;
-                            this.plateNoList = res.data.list;
+                            //接口请求后执行的操作 
+                            this.fuzzySearchOption1.loading = false;
+                            this.fuzzySearchOption1.filterOption = res.data.filter(item => {
+                            return item.plateNo.toLowerCase()
+                                .indexOf(query.toLowerCase()) > -1;
+                            });
                         }
-                        this.plateNoLoading = false;
                     }).catch(err => {
-                        this.plateNoLoading = false;
+                        this.fuzzySearchOption1.loading = false;
                     });
-                }
-            }else {
-                this.plateNoList = this.allList;
+                }, 500);
+            } else {
+                this.fuzzySearchOption1.filterOption = [];
             }
+        },
+        remoteMethod2(query) {
+            if (query !== '') {
+                this.fuzzySearchOption2.loading = true;
+                clearTimeout(this.fuzzySearchOption2.timer);
+                this.fuzzySearchOption2.timer = setTimeout(() => {
+                    requestqueryVehicleList({
+                        "plateNo": '',
+                        "vehicleId": query
+                    }).then(res => {
+                        if(res.status == '200'){
+                            //接口请求后执行的操作 
+                            this.fuzzySearchOption2.loading = false;
+                            this.fuzzySearchOption2.filterOption = res.data.filter(item => {
+                                return item.vehicleId.toLowerCase()
+                                .indexOf(query.toLowerCase()) > -1;
+                            });
+                        }
+                    }).catch(err => {
+                        this.fuzzySearchOption2.loading = false;
+                    });
+                }, 500);
+            } else {
+                this.fuzzySearchOption2.filterOption = [];
+            }
+        },
+        plateNoSelect(val) {
+            this.fuzzySearchOption2.filterOption = [];
+            this.fuzzySearchOption2.filterOption.push(val);
+            this.formParams.plateNo = val;
+            this.getVehicleBindCamInfo();
+        },
+        //@change="deviceIdSelect"
+        vehicleIdSelect(val) {
+            this.fuzzySearchOption1.filterOption = [];
+            this.fuzzySearchOption1.filterOption.push(val);
+            this.formParams.vehicleId = val;
+        },
+        getPlateNoList(){
+            this.fuzzySearchOption1.loading = true;
+            requestqueryVehicleList({
+                "plateNo": '',
+                "vehicleId": ''
+            }).then(res => {
+                if(res.status == '200'){
+                    this.fuzzySearchOption1.filterOption = res.data;
+                }
+                this.fuzzySearchOption1.loading = false;
+            }).catch(err => {
+                this.fuzzySearchOption1.loading = false;
+            });
         },
         searchPlateNo(query) {
             if (query !== '') {
@@ -250,11 +309,7 @@ export default {
                 clearTimeout(this.vehicleIdTimer);
                 this.vehicleIdTimer = setTimeout(() => {
                     this.vehicleIdList = [];
-                    queryPage({
-                        "page":{
-                            "pageIndex": 0,
-                            "pageSize": 500
-                        },
+                    requestqueryVehicleList({
                         "plateNo": '',
                         "vehicleId": query
                     }).then(res => {
@@ -288,7 +343,7 @@ export default {
             this.getVehicleBindCamInfo();
         },
         handleSelectCamCode(item) {
-            this.formParams.camSerialNum = item.serialNum;
+            this.formParams.camSerialNum = item.deviceId;
             this.formParams.camDeviceId = item.deviceId;
             this.formParams.camDirection = item.toward;
             this.formParams.protocal = item.protocal;
@@ -300,6 +355,7 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     res.data.forEach((item, index) => {
+                        console.log(item);
                         if(item.type == "M"){
                             let _towards = "";
                             switch (item.toward){
@@ -325,13 +381,14 @@ export default {
                                 }
                             }
                             let _item = {
-                                value: item.serialNum,
-                                label: item.serialNum,
+                                value: item.deviceId,
+                                label: item.deviceId,
                                 serialNum: item.serialNum,
                                 deviceId: item.deviceId,
                                 toward: _towards,
                                 protocal:item.protocol
                             }
+                            console.log(_item);
                             this.camCodeList.push(_item);
                         }
                     });
@@ -343,6 +400,8 @@ export default {
                 if (valid) {
                     this.submitloading = true;
                     let formParamsInfo = Object.assign(this.formParams,{
+                        'plateNo':this.formParams.plateNo.plateNo,
+                        'vehicleId':this.formParams.vehicleId.vehicleId,
                         'protocal':this.formParams.protocal,
                         'startTime': this.formParams.startTime ? this.$dateUtil.dateToMs(this.formParams.startTime) : '',
                         'endTime': this.formParams.endTime ? this.$dateUtil.dateToMs(this.formParams.endTime) : ''

@@ -3,11 +3,43 @@
 <div>
     <div class="c-wrapper-20" v-cloak v-show="!panel.show">
         <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
-            <el-form-item label="车辆编号" prop="VehicleId">
-                <el-input v-model.trim="searchKey.VehicleId"></el-input>
+            <el-form-item label="车辆编号" prop="vehicleId">
+                <el-select
+                    v-model.trim="searchKey.vehicleId"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsVehicleRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                    :loading="rsVehicleOption.loading">
+                    <el-option
+                        v-for="item in rsVehicleOption.filterOption"
+                        :key="item.vehicleId"
+                        :label="item.vehicleId"
+                        :value="item.vehicleId">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="车牌号" prop="plateNo">
-                <el-input v-model.trim="searchKey.plateNo"></el-input>
+                <el-select
+                    v-model.trim="searchKey.plateNo"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsPlateNoRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
+                    :loading="rsPlateNoOption.loading">
+                    <el-option
+                        v-for="item in rsPlateNoOption.filterOption"
+                        :key="item.plateNo"
+                        :label="item.plateNo"
+                        :value="item.plateNo">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="摄像头编号" prop='camId'>
                 <el-input v-model.trim="searchKey.camId"></el-input>
@@ -97,6 +129,7 @@
 </template>
 <script>
 import TList from '@/common/utils/list.js'
+import {requestqueryVehicleList} from '@/api/search';
 import PlayBack from '@/components/video/playVideo/playback.vue'
 import {queryVideoList,downLoadZipFile,removeVideo} from '@/api/video'
 import axios from 'axios'
@@ -117,12 +150,12 @@ export default {
             ],
             searchKey: {
                 fileName: '',
-                VehicleId: '',
+                vehicleId: '',
                 plateNo: '',
                 camId: '',
                 source:'',
-                startTime: [this.$dateUtil.GetDateStr(31), this.$dateUtil.getNowFormatDate()],
-                endTime: [this.$dateUtil.GetDateStr(31), this.$dateUtil.getNowFormatDate()]
+                startTime: [],
+                endTime: []
             },
             selector: [],
             pageOption: {
@@ -149,6 +182,21 @@ export default {
                     return _time > _newTime;
                 }
             },
+            rsVehicleOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            rsPlateNoOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestqueryVehicleList 
         }
     },
     methods: {
@@ -231,6 +279,26 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
+            this.rsVehicleOption.filterOption = [];
+            this.rsPlateNoOption.filterOption = [];
+        },
+        rsVehicleRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsVehicleOption,
+                searchObj: this.searchKey,
+                key: 'vehicleId',
+                request: this.searchUrl
+            });
+        },
+        rsPlateNoRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsPlateNoOption,
+                searchObj: this.searchKey,
+                key: 'plateNo',
+                request: this.searchUrl
+            });
         },
         vehiclePanelFn(e){
             this.panel.show = false;
@@ -341,6 +409,8 @@ export default {
         }
     },
     mounted(){
+        this.searchKey.startTime = [this.$dateUtil.GetDateStr(31), this.$dateUtil.getNowFormatDate()];
+        this.searchKey.endTime = [this.$dateUtil.GetDateStr(31), this.$dateUtil.getNowFormatDate()];
         this.initData();
     },
     beforeDestroy(){

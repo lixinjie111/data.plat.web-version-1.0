@@ -4,7 +4,23 @@
         <div v-show="!panel.show" class="yk-container c-mt-10">
             <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
                 <el-form-item label="车辆编号" prop='vehicleId'>
-                    <el-input v-model="searchKey.vehicleId"></el-input>
+                    <el-select
+                        v-model.trim="searchKey.vehicleId"
+                        filterable
+                        remote
+                        reserve-keyword
+                        placeholder="请输入关键词"
+                        :remote-method="rsVehicleRemoteMethod"
+                        @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
+                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                        :loading="rsVehicleOption.loading">
+                        <el-option
+                            v-for="item in rsVehicleOption.filterOption"
+                            :key="item.vehicleId"
+                            :label="item.vehicleId"
+                            :value="item.vehicleId">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="开始时间" prop='startTime'>
                     <el-date-picker
@@ -89,6 +105,7 @@
 import Paging from '@/common/view/Paging.vue'
 import BsmDetail from '@/components/v2x/bsm/BsmDetail.vue'
 import {findBSMList} from '@/api/v2x';
+import {requestqueryVehicleList} from '@/api/search';
 export default {
     name: 'BsmCom',
     components: {
@@ -140,8 +157,8 @@ export default {
             detailLayShow:false,
             searchKey: {
                 vehicleId: '',
-                startTime: this.$dateUtil.GetDateStr(1),
-                endTime: this.$dateUtil.getNowFormatDate()
+                startTime: '',
+                endTime: ''
             },
             pageOption: {
                 page: 1,
@@ -193,6 +210,14 @@ export default {
                 }
 
             },
+            rsVehicleOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestqueryVehicleList 
         }
     },
     methods: {
@@ -250,6 +275,16 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
+            this.rsVehicleOption.filterOption = [];
+        },
+        rsVehicleRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsVehicleOption,
+                searchObj: this.searchKey,
+                key: 'vehicleId',
+                request: this.searchUrl
+            });
         },
         getIsNan(val){
             return typeof(val) == 'number' && window.isNaN(val);
@@ -272,6 +307,8 @@ export default {
         },
     },
     mounted(){
+        this.searchKey.startTime = this.$dateUtil.GetDateStr(1);
+        this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
         this.findBSMLists();
     },
     beforeDestroy(){

@@ -4,13 +4,61 @@
     <div v-show="!panel.show">
         <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
             <el-form-item label="摄像头编号" prop='camCode'>
-                <el-input v-model.trim="searchKey.camCode"></el-input>
+                <el-select
+                    v-model.trim="searchKey.camCode"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsCamCodeRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'camCode', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'camCode')" 
+                    :loading="rsCamCodeOption.loading">
+                    <el-option
+                        v-for="item in rsCamCodeOption.filterOption"
+                        :key="item.deviceId"
+                        :label="item.deviceId"
+                        :value="item.deviceId">
+                    </el-option>
+                </el-select>
             </el-form-item>
-            <el-form-item label="道路名称" prop='roadName'>
-                <el-input v-model.trim="searchKey.roadName"></el-input>
+            <el-form-item label="道路名称" prop='rspRoadName'>
+                <el-select
+                    v-model.trim="searchKey.rspRoadName"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsRoadNameRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsRoadNameOption, searchKey, 'rspRoadName', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'rspRoadName')" 
+                    :loading="rsRoadNameOption.loading">
+                    <el-option
+                        v-for="item in rsRoadNameOption.filterOption"
+                        :key="item.rspRoadName"
+                        :label="item.rspRoadName"
+                        :value="item.rspRoadName">
+                    </el-option>
+                </el-select>
             </el-form-item>
-            <el-form-item label="路侧点名称" prop='roadPointName'>
-                <el-input v-model.trim="searchKey.roadPointName"></el-input>
+            <el-form-item label="路侧点名称" prop='rsPtName'>
+                <el-select
+                    v-model.trim="searchKey.rsPtName"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsPointNameRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsPtName')" 
+                    :loading="rsPointNameOption.loading">
+                    <el-option
+                        v-for="item in rsPointNameOption.filterOption"
+                        :key="item.rsPtName"
+                        :label="item.rsPtName"
+                        :value="item.rsPtName">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="视频来源" prop='source'>
                 <el-select v-model="searchKey.source">
@@ -125,6 +173,7 @@
 </template>
 <script>
 import Addload from './roadAddLoad.vue'
+import {requestRSCamList,requestqueryRoadList,requestqueryRoadPointList} from '@/api/search';
 import {queryRoadTaskList,redoVideoTask} from '@/api/roadSide'
 export default {
     name: 'VideoDownload',
@@ -154,12 +203,12 @@ export default {
             searchKey: {
                 fileName: '',
                 camCode: '',
-                roadName: '',
-                roadPointName: '',
+                rspRoadName: '',
+                rsPtName: '',
                 source: '',
                 taskStatus: '',
-                startTime:[this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()],
-                endTime:[this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()]
+                startTime:[],
+                endTime:[]
             },
             pageOption: {
                 page: 1,
@@ -194,7 +243,31 @@ export default {
                         _newTime = new Date().getTime();
                     return _time > _newTime;
                 }
-            }
+            },
+            rsCamCodeOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            rsRoadNameOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            rsPointNameOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestRSCamList,
+            roadNameUrl:requestqueryRoadList,
+            roadPointUrl:requestqueryRoadPointList
         }
     },
     methods: {
@@ -224,8 +297,8 @@ export default {
                 },
                 'fileName':this.searchKey.fileName,
                 'camCode':this.searchKey.camCode,
-                'roadName':this.searchKey.roadName,
-                'roadPointName':this.searchKey.roadPointName,
+                'roadName':this.searchKey.rspRoadName,
+                'roadPointName':this.searchKey.rsPtName,
                 'source':this.searchKey.source,
                 'taskStatus':this.searchKey.taskStatus,
                 'startBeginTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
@@ -258,6 +331,35 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
+            this.rsCamCodeOption.defaultOption = [];
+            this.rsRoadNameOption.defaultOption = [];
+        },
+        rsCamCodeRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsCamCodeOption,
+                searchObj: this.searchKey,
+                key: 'camCode',
+                request: this.searchUrl
+            });
+        },
+        rsRoadNameRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsRoadNameOption,
+                searchObj: this.searchKey,
+                key: 'rspRoadName',
+                request: this.roadNameUrl
+            });
+        },
+        rsPointNameRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsPointNameOption,
+                searchObj: this.searchKey,
+                key: 'rsPtName',
+                request: this.roadPointUrl
+            });
         },
         addTask(item){
             this.dialogOption.show = true;
@@ -297,6 +399,8 @@ export default {
         }
     },
     mounted(){
+        this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
+        this.searchKey.endTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
         this.init();
     },
     beforeDestroy(){

@@ -19,6 +19,9 @@ Vue.prototype.$echarts = echarts
 Vue.prototype.$api = Api;
 Vue.prototype.$dateUtil = TDate;
 
+// 模糊查询封装
+import SearchFilter from '@/assets/js/module/searchFilter.js'
+Vue.prototype.$searchFilter = SearchFilter;
 
 //全局静态文件引入
 import '@/assets/scss/reset.scss';

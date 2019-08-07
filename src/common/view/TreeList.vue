@@ -73,15 +73,23 @@ export default {
             menuList: [],
         }
     },
+    watch: {
+        $route: {
+            handler(newVal, oldVal) {
+                this.initUI(newVal,this.menuList);
+            },
+            // 深度观察监听
+            deep: true
+        }
+    },
     methods: {
         initUI(item,list){
             for(let i=0;i<list.length;i++){
                 const temp = list[i];
-                const bool = item.id == temp.id;
+                const bool = item.path == temp.path;
                 temp.css = bool ? 'yk-tree-li-selected' : 'yk-tree-li';
-                
                 if(!bool){
-                    if(temp.children && temp.children.length > 0){                        
+                    if(temp.children && temp.children.length > 0){                   
                         this.initUI(item,temp.children);
                     }
                 }
@@ -233,6 +241,9 @@ export default {
         color: #F49308!important;
         border-right: 3px solid #F49308;
         
+    }
+    .yk-tree-li-selected .icon-home{
+        background-image:url(../../assets/icon/home-on.png);
     }
     .yk-tree-sub{
         background: #101113;

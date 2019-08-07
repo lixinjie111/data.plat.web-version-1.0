@@ -7,10 +7,42 @@
                     <el-input v-model.trim="searchKey.camCode"></el-input>
                 </el-form-item>
                 <el-form-item label="车牌号" prop='plateNo'>
-                    <el-input v-model.trim="searchKey.plateNo"></el-input>
+                    <el-select
+                        v-model.trim="searchKey.plateNo"
+                        filterable
+                        remote
+                        reserve-keyword
+                        placeholder="请输入关键词"
+                        :remote-method="rsPlateNoRemoteMethod"
+                        @focus="$searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo', searchUrl)"
+                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
+                        :loading="rsPlateNoOption.loading">
+                        <el-option
+                            v-for="item in rsPlateNoOption.filterOption"
+                            :key="item.plateNo"
+                            :label="item.plateNo"
+                            :value="item.plateNo">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="车辆编号" prop='vehicleId'>
-                    <el-input v-model.trim="searchKey.vehicleId"></el-input>
+                    <el-select
+                        v-model.trim="searchKey.vehicleId"
+                        filterable
+                        remote
+                        reserve-keyword
+                        placeholder="请输入关键词"
+                        :remote-method="rsVehicleRemoteMethod"
+                        @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
+                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                        :loading="rsVehicleOption.loading">
+                        <el-option
+                            v-for="item in rsVehicleOption.filterOption"
+                            :key="item.vehicleId"
+                            :label="item.vehicleId"
+                            :value="item.vehicleId">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="视频来源" prop='source'>
                     <el-select v-model="searchKey.source">
@@ -86,7 +118,7 @@
                 </el-table-column>
                 <el-table-column min-width="5%" label="操作">
                     <template slot-scope="scope">
-                        <el-button size="small" icon="el-icon-download" circle type="warning" v-if="scope.row.taskStatus == 0 || scope.row.taskStatus == 3" plain :loading="scope.row.downLoading" @click="reloadClick(scope.row)"></el-button>
+                        <el-button size="small" icon="el-icon-download" circle type="warning" v-if="scope.row.taskStatus == 3" plain :loading="scope.row.downLoading" @click="reloadClick(scope.row)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -110,6 +142,7 @@
 
 import Addload from './AddLoad.vue'
 import {queryTaskList,redoVideoTask} from '@/api/video'
+import {requestqueryVehicleList} from '@/api/search';
 export default {
     name: 'VideoDownload',
     components: {
@@ -134,8 +167,8 @@ export default {
                 vehicleId: '',
                 source: '',
                 taskStatus: '',
-                startTime: [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()],
-                endTime: [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()]
+                startTime: [],
+                endTime: []
             },
             selector: [],
             auth: {
@@ -176,7 +209,22 @@ export default {
                         _newTime = new Date().getTime();
                     return _time > _newTime;
                 }
-            }
+            },
+            rsVehicleOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            rsPlateNoOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestqueryVehicleList 
         }
     },
     methods: {
@@ -222,6 +270,7 @@ export default {
                 'vehicleId':this.searchKey.vehicleId,
                 'source':this.searchKey.source,
                 'plateNo':this.searchKey.plateNo,
+                'taskStatus':this.searchKey.taskStatus,
                 'protocal':protocal,
                 'startBeginTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
                 'startEndTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
@@ -230,6 +279,7 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
+                    // console.log(res.data.list);
                     this.pageOption.total = res.data.totalCount;
                 }
                 this.loading = false;
@@ -255,6 +305,26 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
+            this.rsVehicleOption.filterOption = [];
+            this.rsPlateNoOption.filterOption = [];
+        },
+        rsVehicleRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsVehicleOption,
+                searchObj: this.searchKey,
+                key: 'vehicleId',
+                request: this.searchUrl
+            });
+        },
+        rsPlateNoRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsPlateNoOption,
+                searchObj: this.searchKey,
+                key: 'plateNo',
+                request: this.searchUrl
+            });
         },
         cfgPanelFn(data){
             this.panel.show = false;
@@ -308,6 +378,8 @@ export default {
         }
     },
     mounted(){
+        this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
+        this.searchKey.endTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
         this.init();
     },
     beforeDestroy(){

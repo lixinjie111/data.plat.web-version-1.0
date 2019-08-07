@@ -4,7 +4,23 @@
         <div v-show="!panel.detailShow && !panel.localDataShow">
             <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
                 <el-form-item label="车辆编号" prop='vehicleId'>
-                    <el-input v-model.trim="searchKey.vehicleId"></el-input>
+                    <el-select
+                        v-model.trim="searchKey.vehicleId"
+                        filterable
+                        remote
+                        reserve-keyword
+                        placeholder="请输入关键词"
+                        :remote-method="rsVehicleRemoteMethod"
+                        @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
+                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                        :loading="rsVehicleOption.loading">
+                        <el-option
+                            v-for="item in rsVehicleOption.filterOption"
+                            :key="item.vehicleId"
+                            :label="item.vehicleId"
+                            :value="item.vehicleId">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="事件名称" prop='eventName'>
                     <el-input v-model.trim="searchKey.eventName"></el-input>
@@ -83,6 +99,7 @@ import TList from '@/common/utils/list.js'
 import DatePicker from 'vue2-datepicker'
 import LocalDataPanel from '@/components/vehicle/dynamicParam/LocalDataPanel.vue'
 import DetailPanel from './DetailPanel.vue'
+import {requestqueryVehicleList} from '@/api/search';
 import {dynamicParamList} from '@/api/vehicle';
 export default {
     name: 'BaseMessage',
@@ -127,7 +144,15 @@ export default {
                         _newTime = new Date().getTime();
                     return _time > _newTime;
                 }
-            },   
+            },
+            rsVehicleOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestqueryVehicleList  
         }
     },
     methods: {
@@ -228,8 +253,7 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            // this.loading = false;
-            // this.searchLoading = false;
+            this.rsVehicleOption.filterOption = [];
         },
         cfgPanelFn(data){
             this.panel.show = false;
@@ -243,6 +267,15 @@ export default {
         changePageCurrent(value) {//页码变更
             this.pageOption.page = value;
             this.dynamicParamList();
+        },
+        rsVehicleRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsVehicleOption,
+                searchObj: this.searchKey,
+                key: 'vehicleId',
+                request: this.searchUrl
+            });
         },
     },
     mounted(){

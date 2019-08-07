@@ -1,7 +1,8 @@
 <template>
     <!-- 系统管理 -->
-    <div class="yk-container">
-        系统管理
+    <div>
+        <h3 class="c-title">{{ current.menu }}</h3>
+        <router-view></router-view> 
     </div>
 </template>
 <script>

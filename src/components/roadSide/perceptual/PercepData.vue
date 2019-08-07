@@ -2,20 +2,23 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
-            <el-form-item label="路侧基本点:" prop='rsPtId'>
-                <el-select 
-                    v-model="searchKey.rsPtId"
+            <el-form-item label="路侧点名称:" prop='rsPtId'>
+                <el-select
+                    v-model.trim="searchKey.rsPtName"
                     filterable
                     remote
                     reserve-keyword
-                    placeholder="请输入关键词">
-                    <!-- :remote-method=""> -->
+                    placeholder="请输入关键词"
+                    :remote-method="rsPointNameRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsPtName')" 
+                    :loading="rsPointNameOption.loading">
                     <el-option
-                        v-for="item in rsPtIdList"
-                        :key="item.value"
-                        :label="item.value"
-                        :value="item.value"
-                    ></el-option>
+                        v-for="item in rsPointNameOption.filterOption"
+                        :key="item.rsPtName"
+                        :label="item.rsPtName"
+                        :value="item.rsPtName">
+                    </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="摄像头编号:" prop='cameraId'>
@@ -24,13 +27,18 @@
                     filterable
                     remote
                     reserve-keyword
-                    placeholder="请输入关键词">
+                    placeholder="请输入关键词"
+                    :remote-method="rsCamCodeRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'cameraId', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'cameraId')" 
+                    :loading="rsCamCodeOption.loading"
+                    >
                     <!-- :remote-method=""> -->
                     <el-option
-                        v-for="item in cameraIdList"
-                        :key="item.value"
-                        :label="item.value"
-                        :value="item.value"
+                        v-for="item in rsCamCodeOption.filterOption"
+                        :key="item.deviceId"
+                        :label="item.deviceId"
+                        :value="item.deviceId"
                     ></el-option>
                 </el-select>
             </el-form-item>
@@ -40,29 +48,18 @@
                     filterable
                     remote
                     reserve-keyword
-                    placeholder="请输入关键词">
+                    placeholder="请输入关键词"
+                    :remote-method="rsSerialNumRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'serialNum', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'serialNum')" 
+                    :loading="rsCamCodeOption.loading"
+                    >
                     <!-- :remote-method=""> -->
                     <el-option
-                        v-for="item in serialNumList"
-                        :key="item"
-                        :label="item"
-                        :value="item"
-                    ></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="感知设备编号:" prop='deviceId'> 
-                <el-select 
-                    v-model="searchKey.deviceId"
-                    filterable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词">
-                    <!-- :remote-method=""> -->
-                    <el-option
-                        v-for="item in deviceIdList"
-                        :key="item.value"
-                        :label="item.value"
-                        :value="item.value"
+                        v-for="item in rsSerialNumOption.filterOption"
+                        :key="item.serialNum"
+                        :label="item.serialNum"
+                        :value="item.serialNum"
                     ></el-option>
                 </el-select>
             </el-form-item>
@@ -128,6 +125,7 @@
 import {findVideoRecords,findRoadMonitorCameraInfo} from '@/api/roadSide';
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
+import {requestRSCamList,requestqueryRoadPointList} from '@/api/search';
 export default {
     name: 'VideoManage',
     components: {
@@ -188,14 +186,15 @@ export default {
             requestData: {},
             searchKey: {
                 rsPtId:'',
+                rsPtName:'',
                 cameraId:'',
                 // serialNum:'',
                 // serialNum:'3402000000132000001601',
                 // serialNum:'3402000000132000001401',
-                serialNum:'3402000000132000003001',
+                serialNum:'',
                 deviceId:'',
-                startTime: this.$dateUtil.GetDateStr(7),
-                endTime: this.$dateUtil.getNowFormatDate()
+                startTime:'' ,
+                endTime: ''
             },
             startTimeOption: {
                 disabledDate: time => {
@@ -230,10 +229,36 @@ export default {
                 cfgShow: false,
             },
             dataList: [],
-            showDataList: []
+            showDataList: [],
+            rsCamCodeOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            rsSerialNumOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            rsPointNameOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestRSCamList,
+            roadPointUrl:requestqueryRoadPointList
         }
     },
     mounted(){
+        this.searchKey.serialNum = '3402000000132000003001';
+        this.searchKey.startTime = this.$dateUtil.GetDateStr(7);
+        this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
         this.initData();
     },
     methods: {
@@ -319,7 +344,35 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-        }
+            this.rsCamCodeOption.defaultOption = [];
+        },
+        rsCamCodeRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsCamCodeOption,
+                searchObj: this.searchKey,
+                key: 'cameraId',
+                request: this.searchUrl
+            });
+        },
+        rsSerialNumRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsCamCodeOption,
+                searchObj: this.searchKey,
+                key: 'serialNum',
+                request: this.searchUrl
+            });
+        },
+        rsPointNameRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsPointNameOption,
+                searchObj: this.searchKey,
+                key: 'rsPtName',
+                request: this.roadPointUrl
+            });
+        },
     }
 }
 </script>

@@ -3,7 +3,23 @@
     <div class="c-wrapper-20" v-cloak>
         <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
             <el-form-item label="车辆编号:" prop='vehicleId'>
-                <el-input v-model.trim="searchKey.vehicleId"></el-input>
+                <el-select
+                    v-model.trim="searchKey.vehicleId"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsVehicleRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                    :loading="rsVehicleOption.loading">
+                    <el-option
+                        v-for="item in rsVehicleOption.filterOption"
+                        :key="item.vehicleId"
+                        :label="item.vehicleId"
+                        :value="item.vehicleId">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="英文名称:" prop='enName'>
                 <el-input v-model.trim="searchKey.enName"></el-input>
@@ -64,6 +80,7 @@
 <script>
 import TList from '@/common/utils/list.js'
 import {queryList} from '@/api/vehicle';
+import {requestqueryVehicleList} from '@/api/search';
 export default {
     name: 'BaseMessage',
     components: {
@@ -109,10 +126,10 @@ export default {
             loading:false,
             searchLoading:false,
             searchKey: {
-                vehicleId: 'B21E-00-022',
+                vehicleId: '',
                 enName: '',
-                startTime: this.$dateUtil.GetDateStr(31),
-                endTime: this.$dateUtil.GetDateStr(2)
+                startTime: '',
+                endTime: ''
             },
             pageOption: {
                 page: 1,
@@ -155,6 +172,14 @@ export default {
                     { required: true, message: "结束时间不能为空!", trigger: 'change' }
                 ],
             },
+            rsVehicleOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestqueryVehicleList
         }
     },
     methods: {
@@ -203,6 +228,8 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
+            this.searchKey = '';
+            this.rsVehicleOption.filterOption = [];
         },
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();
@@ -213,8 +240,20 @@ export default {
             this.pageOption.page = value;
             this.getQueryList();
         },
+        rsVehicleRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsVehicleOption,
+                searchObj: this.searchKey,
+                key: 'vehicleId',
+                request: this.searchUrl
+            });
+        },
     },
     mounted(){
+        this.searchKey.vehicleId = 'B21E-00-022';
+        this.searchKey.startTime = this.$dateUtil.GetDateStr(31);
+        this.searchKey.endTime = this.$dateUtil.GetDateStr(2);
         this.getQueryList();
     },
 }
