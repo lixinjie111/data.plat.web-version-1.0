@@ -147,11 +147,11 @@
 </div>
 </template>
 <script>
-import TList from '@/common/utils/list.js'
+import TList from '@/common/utils/list.js';
 import VueDatepickerLocal from 'vue-datepicker-local';
 import RoadVideoReplay from './roadVideoReplay.vue';
 import {requestqueryRoadList,requestRSCamList} from '@/api/search';
-import {queryRoadVideoList,downLoadZipFile,removeVideo} from '@/api/roadSide'
+import {queryRoadVideoList,removeVideo} from '@/api/roadSide';
 import axios from 'axios'
 export default {
     name: 'VideoDownload',
@@ -356,13 +356,20 @@ export default {
             this.panel.cfgShow = false;
         },
         downClick(item){
-            if(this.selector.length > 0) {
-                downLoadZipFile({
-                    'fileIds':this.selector
+            if (this.selector.length > 0) {
+                axios({
+                    url: `${window.config.url}cam/downLoadZipFile`,
+                    method: 'post',
+                    responseType: 'blob',
+                    data: {
+                        'fileIds': this.selector
+                    }
                 }).then(res => {
                     this.downloadFile(res);
-                })
-            }else{
+                }).catch(err => {
+                    console.log('err', err);
+            });
+            } else {
                 this.$message.error('请选择要下载的文件!');
             }
         },
@@ -372,27 +379,18 @@ export default {
                     window.navigator.msSaveBlob(res.data, decodeURI(res.headers['content-disposition'].split('filename=')[1]))
                 } else {
                     let blob = res.data;
-
                     let a = document.createElement('a');
                     a.setAttribute('id','exportLog');
-                    a.style.display = 'none'
-                    
-                    var binaryData = [];
-                    binaryData.push(res.data);
-                    let url = window.URL.createObjectURL(new Blob(binaryData),{type: "application/zip"});
-                    // let url = window.URL.createObjectURL(blob);
-
-                    let filename = decodeURI(res.headers['content-disposition'].split('filename=')[1])
-                    // let filename = 'car_' + (new Date()).getTime() + '.txt';
-                    // let filename = 'filename.txt';
-
+                    a.style.display = 'none';
+                    let url = window.URL.createObjectURL(new Blob([res.data]),{type: "application/zip"});
+                    let filename = decodeURI(res.headers['content-disposition'].split('filename=')[1]);
                     var evt = document.createEvent('HTMLEvents') // 对firefox的兼容
                     evt.initEvent('click', false, false) // 对firefox的兼容
-                    a.href = url
-                    a.download = filename
-                    a.dispatchEvent(evt) // 对firefox的兼容
-                    a.click()
-                    window.URL.revokeObjectURL(url)
+                    a.href = url;
+                    a.download = filename;
+                    a.dispatchEvent(evt); // 对firefox的兼容
+                    a.click();
+                    window.URL.revokeObjectURL(url);
                 }
             }
         },
