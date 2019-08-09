@@ -259,7 +259,8 @@ export default {
     mapInitComplete(e){
       let _this = this;
        //测试用
-      this.$refs.tusvnMap.addWms("Provice","http://113.208.118.62:8080/geoserver/shanghai_qcc/wms","shanghai_qcc:province_polygon","",1,true,null);
+      //this.$refs.tusvnMap.addWms("Provice","http://113.208.118.62:8080/geoserver/shanghai_qcc/wms","shanghai_qcc:province_polygon","",1,true,null);
+      this.$refs.tusvnMap.addWms("Provice",window.config.dlWmsUrl+"geoserver/shanghai_qcc/wms","shanghai_qcc:province_polygon","",1,true,null);
       this.$refs.tusvnMap.addVectorLayer("vectorLayer_01");//文字层
       this.$refs.tusvnMap.addVectorLayer("vectorLayer_02");//车牌层
       // 车辆所在的层
