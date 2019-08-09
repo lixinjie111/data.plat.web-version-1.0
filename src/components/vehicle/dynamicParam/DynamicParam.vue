@@ -16,9 +16,9 @@
                         :loading="rsVehicleOption.loading">
                         <el-option
                             v-for="item in rsVehicleOption.filterOption"
-                            :key="item.vehicleId"
-                            :label="item.vehicleId"
-                            :value="item.vehicleId">
+                            :key="item"
+                            :label="item"
+                            :value="item">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -229,7 +229,6 @@ export default {
         },
 
         lookClick(dataDetail){
-            console.log(dataDetail)
             this.panel.title = '查看';
             this.panel.type = 'look';
             this.panel.detailShow = true;

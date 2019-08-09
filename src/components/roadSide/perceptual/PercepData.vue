@@ -2,7 +2,7 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
-            <el-form-item label="路侧点名称:" prop='rsPtId'>
+            <el-form-item label="路侧点名称:" prop='rsPtName'>
                 <el-select
                     v-model.trim="searchKey.rsPtName"
                     filterable
@@ -10,35 +10,35 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsPointNameRemoteMethod"
-                    @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', searchUrl)"
+                    @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', roadUrl)"
                     @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsPtName')" 
                     :loading="rsPointNameOption.loading">
                     <el-option
                         v-for="item in rsPointNameOption.filterOption"
-                        :key="item.rsPtName"
-                        :label="item.rsPtName"
-                        :value="item.rsPtName">
+                        :key="item"
+                        :label="item"
+                        :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="摄像头编号:" prop='cameraId'>
+            <el-form-item label="摄像头编号:" prop='deviceId'>
                 <el-select 
-                    v-model="searchKey.cameraId"
+                    v-model="searchKey.deviceId"
                     filterable
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsCamCodeRemoteMethod"
-                    @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'cameraId', searchUrl)"
-                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'cameraId')" 
+                    @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'deviceId', cameraUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')" 
                     :loading="rsCamCodeOption.loading"
                     >
                     <!-- :remote-method=""> -->
                     <el-option
                         v-for="item in rsCamCodeOption.filterOption"
-                        :key="item.deviceId"
-                        :label="item.deviceId"
-                        :value="item.deviceId"
+                        :key="item"
+                        :label="item"
+                        :value="item"
                     ></el-option>
                 </el-select>
             </el-form-item>
@@ -50,16 +50,16 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsSerialNumRemoteMethod"
-                    @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'serialNum', searchUrl)"
+                    @focus="$searchFilter.remoteMethodClick(rsSerialNumOption, searchKey, 'serialNum', cameraUrl)"
                     @blur="$searchFilter.remoteMethodBlur(searchKey, 'serialNum')" 
                     :loading="rsCamCodeOption.loading"
                     >
                     <!-- :remote-method=""> -->
                     <el-option
                         v-for="item in rsSerialNumOption.filterOption"
-                        :key="item.serialNum"
-                        :label="item.serialNum"
-                        :value="item.serialNum"
+                        :key="item"
+                        :label="item"
+                        :value="item"
                     ></el-option>
                 </el-select>
             </el-form-item>
@@ -125,7 +125,7 @@
 import {findVideoRecords,findRoadMonitorCameraInfo} from '@/api/roadSide';
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
-import {requestRSCamList,requestqueryRoadPointList} from '@/api/search';
+import {requestqueryRoadList,requestRSCamList} from '@/api/search';
 export default {
     name: 'VideoManage',
     components: {
@@ -251,8 +251,8 @@ export default {
                 defaultOption: [],
                 defaultFlag: false
             },
-            searchUrl: requestRSCamList,
-            roadPointUrl:requestqueryRoadPointList
+            cameraUrl: requestRSCamList,
+            roadUrl:requestqueryRoadList
         }
     },
     mounted(){
@@ -345,23 +345,25 @@ export default {
         resetClick(){
             this.$refs.searchForm.resetFields();
             this.rsCamCodeOption.defaultOption = [];
+            this.rsSerialNumOption.defaultOption = [];
+            this.rsPointNameOption.defaultOption = [];
         },
         rsCamCodeRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsCamCodeOption,
                 searchObj: this.searchKey,
-                key: 'cameraId',
-                request: this.searchUrl
+                key: 'deviceId',
+                request: this.cameraUrl
             });
         },
         rsSerialNumRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({
                 query: query,
-                searchOption: this.rsCamCodeOption,
+                searchOption: this.rsSerialNumOption,
                 searchObj: this.searchKey,
                 key: 'serialNum',
-                request: this.searchUrl
+                request: this.cameraUrl
             });
         },
         rsPointNameRemoteMethod(query) {
@@ -370,7 +372,7 @@ export default {
                 searchOption: this.rsPointNameOption,
                 searchObj: this.searchKey,
                 key: 'rsPtName',
-                request: this.roadPointUrl
+                request: this.roadUrl
             });
         },
     }

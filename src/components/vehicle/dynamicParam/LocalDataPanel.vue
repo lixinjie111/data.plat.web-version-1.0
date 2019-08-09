@@ -21,9 +21,9 @@
                                 :loading="rsVehicleOption.loading">
                                 <el-option
                                     v-for="item in rsVehicleOption.filterOption"
-                                    :key="item.vehicleId"
-                                    :label="item.vehicleId"
-                                    :value="item.vehicleId">
+                                    :key="item"
+                                    :label="item"
+                                    :value="item">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -248,8 +248,8 @@ export default {
             });
             submitForm({
                 vehicleId: this.searchKey.vehicleId,
-                startTime:this.$dateUtil.dateToMs(this.searchKey.startTime),
-                endTime:this.$dateUtil.dateToMs(this.searchKey.endTime),
+                startTime:this.$dateUtil.dateToMs(this.searchKey.time[0]),
+                endTime:this.$dateUtil.dateToMs(this.searchKey.time[1]),
                 eventTime:new Date().getTime(),
                 eventName:'云端查询',
                 sIds:sIds.join(',')

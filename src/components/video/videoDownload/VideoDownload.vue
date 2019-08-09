@@ -4,7 +4,24 @@
         <div v-show="!panel.show">
             <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
                 <el-form-item label="摄像头编号" prop='camCode'>
-                    <el-input v-model.trim="searchKey.camCode"></el-input>
+                    <!-- <el-input v-model.trim="searchKey.camCode"></el-input> -->
+                    <el-select
+                        v-model.trim="searchKey.deviceId"
+                        filterable
+                        remote
+                        reserve-keyword
+                        placeholder="请输入关键词"
+                        :remote-method="rsCamRemoteMethod"
+                        @focus="$searchFilter.remoteMethodClick(rsCamOption, searchKey, 'deviceId', cameraUrl)"
+                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
+                        :loading="rsCamOption.loading">
+                        <el-option
+                            v-for="item in rsCamOption.filterOption"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="车牌号" prop='plateNo'>
                     <el-select
@@ -19,9 +36,9 @@
                         :loading="rsPlateNoOption.loading">
                         <el-option
                             v-for="item in rsPlateNoOption.filterOption"
-                            :key="item.plateNo"
-                            :label="item.plateNo"
-                            :value="item.plateNo">
+                            :key="item"
+                            :label="item"
+                            :value="item">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -38,9 +55,9 @@
                         :loading="rsVehicleOption.loading">
                         <el-option
                             v-for="item in rsVehicleOption.filterOption"
-                            :key="item.vehicleId"
-                            :label="item.vehicleId"
-                            :value="item.vehicleId">
+                            :key="item"
+                            :label="item"
+                            :value="item">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -142,7 +159,7 @@
 
 import Addload from './AddLoad.vue'
 import {queryTaskList,redoVideoTask} from '@/api/video'
-import {requestqueryVehicleList} from '@/api/search';
+import {requestqueryVehicleList,requestFindCamList} from '@/api/search';
 export default {
     name: 'VideoDownload',
     components: {
@@ -162,7 +179,7 @@ export default {
             playbackShow:false,
             searchKey: {
                 fileName: '',
-                camCode: '',
+                deviceId: '',
                 plateNo: '',
                 vehicleId: '',
                 source: '',
@@ -224,7 +241,15 @@ export default {
                 defaultOption: [],
                 defaultFlag: false
             },
-            searchUrl: requestqueryVehicleList 
+            rsCamOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestqueryVehicleList,
+            cameraUrl:requestFindCamList,
         }
     },
     methods: {
@@ -266,7 +291,7 @@ export default {
                     'pageIndex': this.pageOption.page-1
                 },
                 'fileName':this.searchKey.fileName,
-                'camCode':this.searchKey.camCode,
+                'camCode':this.searchKey.deviceId,
                 'vehicleId':this.searchKey.vehicleId,
                 'source':this.searchKey.source,
                 'plateNo':this.searchKey.plateNo,
@@ -307,6 +332,7 @@ export default {
             this.$refs.searchForm.resetFields();
             this.rsVehicleOption.filterOption = [];
             this.rsPlateNoOption.filterOption = [];
+            this.rsCamOption.filterOption = [];
         },
         rsVehicleRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({
@@ -324,6 +350,15 @@ export default {
                 searchObj: this.searchKey,
                 key: 'plateNo',
                 request: this.searchUrl
+            });
+        },
+        rsCamRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsCamOption,
+                searchObj: this.searchKey,
+                key: 'deviceId',
+                request: this.cameraUrl
             });
         },
         cfgPanelFn(data){
@@ -370,6 +405,8 @@ export default {
         },
         backFn(type){
             if(type == 'add'){
+                this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
+                this.searchKey.endTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
                 this.initPaging();
                 this.initData();
             }

@@ -50,10 +50,6 @@ export const queryRoadVideoList = params => { return axios.post(`${HTTPURL}road/
  */
 export const queryRoadPointInfo = params => { return axios.post(`${HTTPURL}road/queryRoadPointInfo`, params).then(res => res.data); };
 
-/**
- * 批量下载
- */
-export const downLoadZipFile = params => { return axios.post(`${HTTPURL}cam/downLoadZipFile`,params).then(res => res); };
 
  /**
  * 删除视频

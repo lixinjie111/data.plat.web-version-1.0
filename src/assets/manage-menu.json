@@ -46,8 +46,6 @@
             { "id": 43, "name": "高速公路", "path": "/highway", "isCheck": false,"css": "yk-tree-li"}
             
         ]
-    },
-    {
-        "id": 5, "name": "系统设置", "path": "/system", "isCheck": false,"css": "yk-tree-li", "ico" : "cog","iconClass":"icon-system"
-    } 
+    }
+    
 ]

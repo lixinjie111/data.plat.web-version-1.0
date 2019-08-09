@@ -53,7 +53,6 @@ const rsm = resolve => require(['@/components/v2x/rsm/RsmCom.vue'], resolve)
 const rsmDetail = resolve => require(['@/components/v2x/rsm/RsmDetail.vue'], resolve)
 const rsi = resolve => require(['@/components/v2x/rsi/RsiCom.vue'], resolve)
 
-
 Vue.use(Router)
 
 export default new Router({
@@ -93,7 +92,7 @@ export default new Router({
           name: 'SysManage',         
           component: SysManage,   
           children:[]  
-        },        
+        },           
         {
           path: '/vehicleVideo',     // 车载视频
           name: 'VehicleVideo',
