@@ -4,7 +4,7 @@
     <div class="login-card">
         <div class="login-header">
             <img class="login-logo" src="static/images/login-logo.png">        
-            <div class="login-title">智能网联汽车监控管理平台</div>
+            <div class="login-title">智能网联汽车数据管理平台</div>
         </div>
         <div class="login-item-box">
             <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="right" label-width="76px" class="login-form">
