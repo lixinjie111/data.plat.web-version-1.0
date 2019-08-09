@@ -11,6 +11,7 @@
                     placeholder="请输入关键词"
                     :remote-method="remoteMethod1"
                     value-key="plateNo"
+                    @focus="selectPlateNoList"
                     @change="plateNoSelect"
                     :loading="fuzzySearchOption1.loading">
                     <el-option
@@ -31,6 +32,7 @@
                     placeholder="请输入关键词"
                     :remote-method="remoteMethod2"
                     value-key="vehicleId"
+                    @focus="selectVehicleIdList"
                     @change="vehicleIdSelect"
                     :loading="fuzzySearchOption2.loading">
                     <el-option
@@ -221,7 +223,7 @@ export default {
             
             this.playerOptions.sources[0].src = '';
             queryDeviceType({//获取设备id
-            'vehicleId':this.searchKey.vehicleId
+                'vehicleId':this.searchKey.vehicleId
             }).then(res => {
                 if(res.status == '200'){
                     this.deviceType =  res.data.type;
@@ -367,6 +369,26 @@ export default {
             }
             return _totalTime;
         },
+        selectPlateNoList(){
+            if(this.searchKey.plateNo == ''){
+                this.fuzzySearchOption1.loading = true;
+                clearTimeout(this.fuzzySearchOption1.timer);
+                this.fuzzySearchOption1.timer = setTimeout(() => {
+                    requestqueryVehicleCamList({
+                        'field':'plateNo',
+                        'value':''
+                    }).then(res => {
+                            if(res.status == '200'){
+                                //接口请求后执行的操作 
+                                this.fuzzySearchOption1.filterOption = res.data;
+                            }
+                            this.fuzzySearchOption1.loading = false;
+                        }).catch(err => {
+                            this.fuzzySearchOption1.loading = false;
+                        });
+                }, 500);
+            }
+        },
         remoteMethod1(query) {
             if (query !== '') {
                 this.fuzzySearchOption1.loading = true;
@@ -392,6 +414,28 @@ export default {
             } else {
                 this.fuzzySearchOption1.filterOption = [];
             }
+        },
+        selectVehicleIdList(){
+            if(this.searchKey.vehicleId == ''){
+                this.fuzzySearchOption2.loading = true;
+                clearTimeout(this.fuzzySearchOption2.timer);
+                this.fuzzySearchOption2.timer = setTimeout(() => {
+                    requestqueryVehicleCamList({
+                        'field':'vehicleId',
+                        'value':''
+                    }).then(res => {
+                        if(res.status == '200'){
+                            //接口请求后执行的操作 
+                            this.fuzzySearchOption2.loading = false;
+                            this.fuzzySearchOption2.filterOption = res.data;
+                        }
+                        this.fuzzySearchOption2.loading = false;
+                    }).catch(err => {
+                        this.fuzzySearchOption2.loading = false;
+                    });
+
+                }, 500); 
+            } 
         },
         remoteMethod2(query) {
             if (query !== '') {

@@ -229,7 +229,6 @@ export default {
         },
 
         lookClick(dataDetail){
-            console.log(dataDetail)
             this.panel.title = '查看';
             this.panel.type = 'look';
             this.panel.detailShow = true;
