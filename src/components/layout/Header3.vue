@@ -36,7 +36,6 @@ export default {
             name: 'Header',
             isSubMenu: false,
             userName:'',
-            passwordShow:false,
             dialogResetPasswordFlag: false,
         }
     },

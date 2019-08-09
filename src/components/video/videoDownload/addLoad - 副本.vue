@@ -13,11 +13,12 @@
                     value-key="plateNo"
                     placeholder="请输入关键词"
                     :remote-method="remoteMethod1"
+                    @focus="getPlateNoList"
                     @change="plateNoSelect"
                     :loading="fuzzySearchOption1.loading">
                     <el-option
-                        v-for="(item,index) in fuzzySearchOption1.filterOption"
-                        :key="item.serialNum+index"
+                        v-for="item in fuzzySearchOption1.filterOption"
+                        :key="item.plateNo"
                         :label="item.plateNo"
                         :value="item">
                     </el-option>
@@ -30,12 +31,12 @@
                     remote
                     value-key="vehicleId"
                     placeholder="请输入关键词"
-                    :remote-method="remoteMethod2"
+                    :remote-method="searchVehicleId"
                     @change="vehicleIdSelect"
                     :loading="fuzzySearchOption2.loading">
                     <el-option
-                        v-for="(item,index) in fuzzySearchOption2.filterOption"
-                        :key="item.vehicleId+index"
+                        v-for="item in fuzzySearchOption2.filterOption"
+                        :key="item.vehicleId"
                         :label="item.vehicleId"
                         :value="item">
                     </el-option>
@@ -83,7 +84,7 @@
 
 <script>
 import {queryPage,findByDeviceList,historyDownloadTask} from '@/api/video';
-import {requestqueryVehicleCamList} from '@/api/search'; 
+import {requestqueryVehicleList} from '@/api/search'; 
 export default {
     name: 'AddLoad',
     data () {
@@ -194,7 +195,8 @@ export default {
             fuzzySearchOption1: {
                 loading: false,
                 timer: null,
-                filterOption: []
+                filterOption: [],
+                defaultOption:[]
             },
             fuzzySearchOption2: {
                 loading: false,
@@ -208,9 +210,9 @@ export default {
             if (query !== '') {
                 clearTimeout(this.fuzzySearchOption1.timer);
                 this.fuzzySearchOption1.timer = setTimeout(() => {
-                    requestqueryVehicleCamList({
-                        'field':'plateNo',
-                        'value':query
+                    requestqueryVehicleList({
+                        "plateNo": query,
+                        "vehicleId": ''
                     }).then(res => {
                         if(res.status == '200'){
                             //接口请求后执行的操作 
@@ -220,7 +222,6 @@ export default {
                                 .indexOf(query.toLowerCase()) > -1;
                             });
                         }
-                        this.fuzzySearchOption1.loading = false;
                     }).catch(err => {
                         this.fuzzySearchOption1.loading = false;
                     });
@@ -234,19 +235,18 @@ export default {
                 this.fuzzySearchOption2.loading = true;
                 clearTimeout(this.fuzzySearchOption2.timer);
                 this.fuzzySearchOption2.timer = setTimeout(() => {
-                    requestqueryVehicleCamList({
-                        'field':'vehicleId',
-                        'value':query
+                    requestqueryVehicleList({
+                        "plateNo": '',
+                        "vehicleId": query
                     }).then(res => {
                         if(res.status == '200'){
                             //接口请求后执行的操作 
                             this.fuzzySearchOption2.loading = false;
                             this.fuzzySearchOption2.filterOption = res.data.filter(item => {
-                            return item.vehicleId.toLowerCase()
+                                return item.vehicleId.toLowerCase()
                                 .indexOf(query.toLowerCase()) > -1;
                             });
                         }
-                        this.fuzzySearchOption2.loading = false;
                     }).catch(err => {
                         this.fuzzySearchOption2.loading = false;
                     });
@@ -258,23 +258,14 @@ export default {
         plateNoSelect(val) {
             this.fuzzySearchOption2.filterOption = [];
             this.fuzzySearchOption2.filterOption.push(val);
-            this.formParams.plateNo = val.plateNo;
-            this.formParams.vehicleId = val.vehicleId;
-            this.formParams.position = val.towardText;
-            this.formParams.serialNum = val.serialNum;
-            this.formParams.status = val.statusText;
+            this.formParams.plateNo = val;
             this.getVehicleBindCamInfo();
         },
         //@change="deviceIdSelect"
         vehicleIdSelect(val) {
             this.fuzzySearchOption1.filterOption = [];
             this.fuzzySearchOption1.filterOption.push(val);
-            this.formParams.plateNo = val.plateNo;
-            this.formParams.vehicleId = val.vehicleId;
-            this.formParams.position = val.towardText;
-            this.formParams.serialNum = val.serialNum;
-            this.formParams.status = val.statusText;
-            this.getVehicleBindCamInfo();
+            this.formParams.vehicleId = val;
         },
         getPlateNoList(){
             this.fuzzySearchOption1.loading = true;
@@ -407,8 +398,8 @@ export default {
                 if (valid) {
                     this.submitloading = true;
                     let formParamsInfo = Object.assign(this.formParams,{
-                        'plateNo':this.formParams.plateNo,
-                        'vehicleId':this.formParams.vehicleId,
+                        'plateNo':this.formParams.plateNo.plateNo,
+                        'vehicleId':this.formParams.vehicleId.vehicleId,
                         'protocal':this.formParams.protocal,
                         'startTime': this.formParams.startTime ? this.$dateUtil.dateToMs(this.formParams.startTime) : '',
                         'endTime': this.formParams.endTime ? this.$dateUtil.dateToMs(this.formParams.endTime) : ''

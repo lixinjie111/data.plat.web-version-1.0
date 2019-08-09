@@ -46,12 +46,6 @@ export const historyGpsInfo = params => { return axios.post(`${HTTPURL}vehicle/h
  */
 export const queryVideoList = params => { return axios.post(`${HTTPURL}cam/queryVideoList`, params).then(res => res.data); };
 /**
- * 批量下载
- */
-export const downLoadZipFile = params => { return axios.post(`${HTTPURL}cam/downLoadZipFile`, params,{
-    responseType: 'blob'
-  }).then(res => res.data); };
-/**
  * 删除文件
  */
 export const removeVideo = params => { return axios.post(`${HTTPURL}cam/removeVideo`, params).then(res => res.data); };

@@ -37,12 +37,10 @@
 
 </template>
 <script>
-import Paging from '@/common/view/Paging.vue'
 import {getDetatilList} from '@/api/vehicle';
 export default {
     props: ['title','type','data'],
     components: {
-        Paging,
     },
     data(){
         return {

@@ -53,7 +53,8 @@ const rsm = resolve => require(['@/components/v2x/rsm/RsmCom.vue'], resolve)
 const rsmDetail = resolve => require(['@/components/v2x/rsm/RsmDetail.vue'], resolve)
 const rsi = resolve => require(['@/components/v2x/rsi/RsiCom.vue'], resolve)
 
-
+// 日志菜单
+const Logs = resolve => require(['@/components/system/logs/index'], resolve)
 Vue.use(Router)
 
 export default new Router({
@@ -92,8 +93,14 @@ export default new Router({
           path: '/system',    // 系统设置
           name: 'SysManage',         
           component: SysManage,   
-          children:[]  
-        },        
+          children:[
+              {
+                "name": "Logs",
+                "path": "/logs",
+                "component": Logs
+            }
+          ]  
+        },           
         {
           path: '/vehicleVideo',     // 车载视频
           name: 'VehicleVideo',

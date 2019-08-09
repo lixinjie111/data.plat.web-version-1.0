@@ -15,9 +15,9 @@
                     :loading="rsVehicleOption.loading">
                     <el-option
                         v-for="item in rsVehicleOption.filterOption"
-                        :key="item.vehicleId"
-                        :label="item.vehicleId"
-                        :value="item.vehicleId">
+                        :key="item"
+                        :label="item"
+                        :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
