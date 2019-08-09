@@ -13,12 +13,11 @@
                     value-key="plateNo"
                     placeholder="请输入关键词"
                     :remote-method="remoteMethod1"
-                    @focus="getPlateNoList"
                     @change="plateNoSelect"
                     :loading="fuzzySearchOption1.loading">
                     <el-option
-                        v-for="item in fuzzySearchOption1.filterOption"
-                        :key="item.plateNo"
+                        v-for="(item,index) in fuzzySearchOption1.filterOption"
+                        :key="item.serialNum+index"
                         :label="item.plateNo"
                         :value="item">
                     </el-option>
@@ -31,12 +30,12 @@
                     remote
                     value-key="vehicleId"
                     placeholder="请输入关键词"
-                    :remote-method="searchVehicleId"
+                    :remote-method="remoteMethod2"
                     @change="vehicleIdSelect"
                     :loading="fuzzySearchOption2.loading">
                     <el-option
-                        v-for="item in fuzzySearchOption2.filterOption"
-                        :key="item.vehicleId"
+                        v-for="(item,index) in fuzzySearchOption2.filterOption"
+                        :key="item.vehicleId+index"
                         :label="item.vehicleId"
                         :value="item">
                     </el-option>
@@ -84,7 +83,7 @@
 
 <script>
 import {queryPage,findByDeviceList,historyDownloadTask} from '@/api/video';
-import {requestqueryVehicleList} from '@/api/search'; 
+import {requestqueryVehicleCamList} from '@/api/search'; 
 export default {
     name: 'AddLoad',
     data () {
@@ -195,8 +194,7 @@ export default {
             fuzzySearchOption1: {
                 loading: false,
                 timer: null,
-                filterOption: [],
-                defaultOption:[]
+                filterOption: []
             },
             fuzzySearchOption2: {
                 loading: false,
@@ -210,9 +208,9 @@ export default {
             if (query !== '') {
                 clearTimeout(this.fuzzySearchOption1.timer);
                 this.fuzzySearchOption1.timer = setTimeout(() => {
-                    requestqueryVehicleList({
-                        "plateNo": query,
-                        "vehicleId": ''
+                    requestqueryVehicleCamList({
+                        'field':'plateNo',
+                        'value':query
                     }).then(res => {
                         if(res.status == '200'){
                             //接口请求后执行的操作 
@@ -222,6 +220,7 @@ export default {
                                 .indexOf(query.toLowerCase()) > -1;
                             });
                         }
+                        this.fuzzySearchOption1.loading = false;
                     }).catch(err => {
                         this.fuzzySearchOption1.loading = false;
                     });
@@ -235,18 +234,19 @@ export default {
                 this.fuzzySearchOption2.loading = true;
                 clearTimeout(this.fuzzySearchOption2.timer);
                 this.fuzzySearchOption2.timer = setTimeout(() => {
-                    requestqueryVehicleList({
-                        "plateNo": '',
-                        "vehicleId": query
+                    requestqueryVehicleCamList({
+                        'field':'vehicleId',
+                        'value':query
                     }).then(res => {
                         if(res.status == '200'){
                             //接口请求后执行的操作 
                             this.fuzzySearchOption2.loading = false;
                             this.fuzzySearchOption2.filterOption = res.data.filter(item => {
-                                return item.vehicleId.toLowerCase()
+                            return item.vehicleId.toLowerCase()
                                 .indexOf(query.toLowerCase()) > -1;
                             });
                         }
+                        this.fuzzySearchOption2.loading = false;
                     }).catch(err => {
                         this.fuzzySearchOption2.loading = false;
                     });
@@ -258,14 +258,23 @@ export default {
         plateNoSelect(val) {
             this.fuzzySearchOption2.filterOption = [];
             this.fuzzySearchOption2.filterOption.push(val);
-            this.formParams.plateNo = val;
+            this.formParams.plateNo = val.plateNo;
+            this.formParams.vehicleId = val.vehicleId;
+            this.formParams.position = val.towardText;
+            this.formParams.serialNum = val.serialNum;
+            this.formParams.status = val.statusText;
             this.getVehicleBindCamInfo();
         },
         //@change="deviceIdSelect"
         vehicleIdSelect(val) {
             this.fuzzySearchOption1.filterOption = [];
             this.fuzzySearchOption1.filterOption.push(val);
-            this.formParams.vehicleId = val;
+            this.formParams.plateNo = val.plateNo;
+            this.formParams.vehicleId = val.vehicleId;
+            this.formParams.position = val.towardText;
+            this.formParams.serialNum = val.serialNum;
+            this.formParams.status = val.statusText;
+            this.getVehicleBindCamInfo();
         },
         getPlateNoList(){
             this.fuzzySearchOption1.loading = true;
@@ -343,7 +352,7 @@ export default {
             this.getVehicleBindCamInfo();
         },
         handleSelectCamCode(item) {
-            this.formParams.camSerialNum = item.deviceId;
+            this.formParams.camSerialNum = item.serialNum;
             this.formParams.camDeviceId = item.deviceId;
             this.formParams.camDirection = item.toward;
             this.formParams.protocal = item.protocal;
@@ -355,7 +364,6 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     res.data.forEach((item, index) => {
-                        console.log(item);
                         if(item.type == "M"){
                             let _towards = "";
                             switch (item.toward){
@@ -381,14 +389,13 @@ export default {
                                 }
                             }
                             let _item = {
-                                value: item.deviceId,
-                                label: item.deviceId,
+                                value: item.serialNum,
+                                label: item.serialNum,
                                 serialNum: item.serialNum,
                                 deviceId: item.deviceId,
                                 toward: _towards,
                                 protocal:item.protocol
                             }
-                            console.log(_item);
                             this.camCodeList.push(_item);
                         }
                     });
@@ -400,8 +407,8 @@ export default {
                 if (valid) {
                     this.submitloading = true;
                     let formParamsInfo = Object.assign(this.formParams,{
-                        'plateNo':this.formParams.plateNo.plateNo,
-                        'vehicleId':this.formParams.vehicleId.vehicleId,
+                        'plateNo':this.formParams.plateNo,
+                        'vehicleId':this.formParams.vehicleId,
                         'protocal':this.formParams.protocal,
                         'startTime': this.formParams.startTime ? this.$dateUtil.dateToMs(this.formParams.startTime) : '',
                         'endTime': this.formParams.endTime ? this.$dateUtil.dateToMs(this.formParams.endTime) : ''

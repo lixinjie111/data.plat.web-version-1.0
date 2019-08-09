@@ -16,9 +16,9 @@
                         :loading="rsRsuIdOption.loading">
                         <el-option
                             v-for="item in rsRsuIdOption.filterOption"
-                            :key="item.rsuId"
-                            :label="item.rsuId"
-                            :value="item.rsuId">
+                            :key="item"
+                            :label="item"
+                            :value="item">
                         </el-option>
                     </el-select>
                 </el-form-item>

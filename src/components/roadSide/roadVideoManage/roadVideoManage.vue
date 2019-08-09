@@ -3,22 +3,22 @@
 <div class="c-wrapper-20" v-cloak>
     <div v-show="!panel.show">
         <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
-            <el-form-item label="摄像头编号" prop='camCode'>
+            <el-form-item label="摄像头编号" prop='deviceId'>
                 <el-select
-                    v-model.trim="searchKey.camCode"
+                    v-model.trim="searchKey.deviceId"
                     filterable
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsCamCodeRemoteMethod"
-                    @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'camCode', searchUrl)"
-                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'camCode')"
+                    @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'deviceId', cameraUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
                     :loading="rsCamCodeOption.loading">
                     <el-option
                         v-for="item in rsCamCodeOption.filterOption"
-                        :key="item.deviceId"
-                        :label="item.deviceId"
-                        :value="item.deviceId">
+                        :key="item"
+                        :label="item"
+                        :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -30,18 +30,17 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsRoadNameRemoteMethod"
-                    @focus="$searchFilter.remoteMethodClick(rsRoadNameOption, searchKey, 'rspRoadName', searchUrl)"
+                    @focus="$searchFilter.remoteMethodClick(rsRoadNameOption, searchKey, 'rspRoadName', roadUrl)"
                     @blur="$searchFilter.remoteMethodBlur(searchKey, 'rspRoadName')"
                     :loading="rsRoadNameOption.loading">
                     <el-option
                         v-for="item in rsRoadNameOption.filterOption"
-                        :key="item.rspRoadName"
-                        :label="item.rspRoadName"
-                        :value="item.rspRoadName">
+                        :key="item"
+                        :label="item"
+                        :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="路侧点名称" prop='roadPointName'>
                 <!-- <el-input v-model.trim="searchKey.roadPointName"></el-input> -->
                 <el-form-item label="路侧点名称" prop='rsPtName'>
                     <el-select
@@ -51,17 +50,16 @@
                         reserve-keyword
                         placeholder="请输入关键词"
                         :remote-method="rsPointNameRemoteMethod"
-                        @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', searchUrl)"
+                        @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', roadUrl)"
                         @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsPtName')"
                         :loading="rsPointNameOption.loading">
                         <el-option
                             v-for="item in rsPointNameOption.filterOption"
-                            :key="item.rsPtName"
-                            :label="item.rsPtName"
-                            :value="item.rsPtName">
+                            :key="item"
+                            :label="item"
+                            :value="item">
                         </el-option>
                     </el-select>
-            </el-form-item>
             </el-form-item>
             <el-form-item label="视频来源" prop='source'>
                 <el-select v-model="searchKey.source">
@@ -152,7 +150,7 @@
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local';
 import RoadVideoReplay from './roadVideoReplay.vue';
-import {requestRSCamList,requestqueryRoadList,requestqueryRoadPointList} from '@/api/search';
+import {requestqueryRoadList,requestRSCamList} from '@/api/search';
 import {queryRoadVideoList,downLoadZipFile,removeVideo} from '@/api/roadSide'
 import axios from 'axios'
 export default {
@@ -180,7 +178,7 @@ export default {
             ],
             searchKey: {
                 fileName: '',
-                camCode: '',
+                deviceId: '',
                 rspRoadName: '',
                 rsPtName: '',
                 source: '',
@@ -247,9 +245,8 @@ export default {
                 defaultOption: [],
                 defaultFlag: false
             },
-            searchUrl: requestRSCamList,
-            roadNameUrl:requestqueryRoadList,
-            roadPointUrl:requestqueryRoadPointList
+            cameraUrl: requestRSCamList,
+            roadUrl:requestqueryRoadList
         }
     },
     methods: {
@@ -278,7 +275,7 @@ export default {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 },
-                camCode: this.searchKey.camCode,
+                camCode: this.searchKey.deviceId,
                 fileName: this.searchKey.fileName,
                 roadName: this.searchKey.rspRoadName,
                 source: this.searchKey.source,
@@ -333,7 +330,7 @@ export default {
                 searchOption: this.rsRoadNameOption,
                 searchObj: this.searchKey,
                 key: 'rspRoadName',
-                request: this.roadNameUrl
+                request: this.roadUrl
             });
         },
         rsCamCodeRemoteMethod(query) {
@@ -341,8 +338,8 @@ export default {
                 query: query,
                 searchOption: this.rsCamCodeOption,
                 searchObj: this.searchKey,
-                key: 'camCode',
-                request: this.searchUrl
+                key: 'deviceId',
+                request: this.cameraUrl
             });
         },
         rsPointNameRemoteMethod(query) {
@@ -351,7 +348,7 @@ export default {
                 searchOption: this.rsPointNameOption,
                 searchObj: this.searchKey,
                 key: 'rsPtName',
-                request: this.roadPointUrl
+                request: this.roadUrl
             });
         },
         cfgPanelFn(data){

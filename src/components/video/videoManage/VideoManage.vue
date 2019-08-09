@@ -16,9 +16,9 @@
                     :loading="rsVehicleOption.loading">
                     <el-option
                         v-for="item in rsVehicleOption.filterOption"
-                        :key="item.vehicleId"
-                        :label="item.vehicleId"
-                        :value="item.vehicleId">
+                        :key="item"
+                        :label="item"
+                        :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -35,14 +35,30 @@
                     :loading="rsPlateNoOption.loading">
                     <el-option
                         v-for="item in rsPlateNoOption.filterOption"
-                        :key="item.plateNo"
-                        :label="item.plateNo"
-                        :value="item.plateNo">
+                        :key="item"
+                        :label="item"
+                        :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="摄像头编号" prop='camId'>
-                <el-input v-model.trim="searchKey.camId"></el-input>
+            <el-form-item label="摄像头编号" prop='deviceId'>
+                <el-select
+                    v-model.trim="searchKey.deviceId"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsCamRemoteMethod"
+                    @focus="$searchFilter.remoteMethodClick(rsCamOption, searchKey, 'deviceId', cameraUrl)"
+                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
+                    :loading="rsCamOption.loading">
+                    <el-option
+                        v-for="item in rsCamOption.filterOption"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="视频来源" prop='source'>
                 <el-select v-model="searchKey.source">
@@ -129,7 +145,7 @@
 </template>
 <script>
 import TList from '@/common/utils/list.js'
-import {requestqueryVehicleList} from '@/api/search';
+import {requestqueryVehicleList,requestFindCamList} from '@/api/search';
 import PlayBack from '@/components/video/playVideo/playback.vue'
 import {queryVideoList,downLoadZipFile,removeVideo} from '@/api/video'
 import axios from 'axios'
@@ -152,7 +168,7 @@ export default {
                 fileName: '',
                 vehicleId: '',
                 plateNo: '',
-                camId: '',
+                deviceId: '',
                 source:'',
                 startTime: [],
                 endTime: []
@@ -196,7 +212,15 @@ export default {
                 defaultOption: [],
                 defaultFlag: false
             },
-            searchUrl: requestqueryVehicleList 
+            rsCamOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
+            searchUrl: requestqueryVehicleList,
+            cameraUrl:requestFindCamList,
         }
     },
     methods: {
@@ -242,7 +266,7 @@ export default {
                 'vehicleId':this.searchKey.VehicleId,
                 'plateNo':this.searchKey.plateNo,
                 'source':this.searchKey.source,
-                'camCode':this.searchKey.camId,
+                'camId':this.searchKey.deviceId,
                 'protocal': JSON.parse(localStorage.getItem('protocal')) || '',
                 'startBeginTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
                 'startEndTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
@@ -281,6 +305,7 @@ export default {
             this.$refs.searchForm.resetFields();
             this.rsVehicleOption.filterOption = [];
             this.rsPlateNoOption.filterOption = [];
+            this.rsCamOption.filterOption = [];
         },
         rsVehicleRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({
@@ -298,6 +323,15 @@ export default {
                 searchObj: this.searchKey,
                 key: 'plateNo',
                 request: this.searchUrl
+            });
+        },
+        rsCamRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsCamOption,
+                searchObj: this.searchKey,
+                key: 'deviceId',
+                request: this.cameraUrl
             });
         },
         vehiclePanelFn(e){
