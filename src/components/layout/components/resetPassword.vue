@@ -95,7 +95,6 @@ export default {
         }
     },
     mounted(){
-        console.log(this.formParams);
     },
     methods: {
         submitFunc() {

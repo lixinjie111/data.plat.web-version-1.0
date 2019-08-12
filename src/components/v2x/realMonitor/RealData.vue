@@ -80,7 +80,6 @@ export default {
       this.type=2;//省市监控
       if(vidOrPlateNo == undefined){
         var extent = this.$refs.tusvnMap.getCurrentExtent();
-        console.log(extent)
         msg = '{\"type\":2,\"mapRange\":{"\minLon\":'+ extent[0] +',\"maxLon\":'+ extent[2] +',\"minLat\":'+ extent[1] +',\"maxLat\":'+ extent[3]+'}}';
       }else{
         this.vidOrPlateNo = vidOrPlateNo;
@@ -113,7 +112,6 @@ export default {
     onmessage(mesasge){
       let _this=this;
       var json = JSON.parse(mesasge.data);
-      console.log(json);
       switch(json.type){
         case 1:{//全国数据
           _this.onLineVehicleTotal = json.data.onLineVehicleTotal;
@@ -136,10 +134,10 @@ export default {
 
     },
     onclose(data){
-      console.log("结束连接");
+      // console.log("结束连接");
     },
     onopen(data){
-      console.log("建立连接,,,,,,");
+      // console.log("建立连接,,,,,,");
      var msg = '{\"type\":1}';//建立连接时默认全国监控
      this.sendMsg(msg);
     },
@@ -148,7 +146,7 @@ export default {
         if(window.WebSocket){
             if(_this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
                 _this.webSocket.send(msg); //send()发送消息
-                console.log("已发送消息:"+ msg);
+                // console.log("已发送消息:"+ msg);
             }
         }else{
             return;

@@ -102,7 +102,6 @@ export default {
       this.isClickOn = true;
     },
     rowDblClick(item){
-      console.log(item);
       this.hide();
       this.$parent.removeAllCar();
       this.showCar=false;

@@ -224,7 +224,6 @@ export default {
                             this.$refs.maxMap.getGps(this.searchKey.vehicleId,(new Date()).getTime());
                         }
                     },1000);
-                    console.log('开始');
                     this.getTotalTime(this.monitStartTime);
                 }else{
                     this.isStart = false;

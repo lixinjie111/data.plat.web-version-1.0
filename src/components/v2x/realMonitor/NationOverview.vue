@@ -144,7 +144,6 @@ export default {
         let tempCity = this.mapCityInfoList.find(function(value){
           return value.city == cityJson[i].city;
         });
-        console.log(tempCity);
         if(tempCity != undefined){
           cityJson[i].onLineVehicleCount = tempCity.onLineVehicleCount;
           cityJson[i].eventCount = tempCity.eventCount;
