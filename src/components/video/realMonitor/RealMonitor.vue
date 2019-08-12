@@ -213,17 +213,18 @@ export default {
                 if(this.playerOptions.sources[0].src){
                     this.isStart = true;
                     this.isMaskShow = false;
-                    this.player.play();
+                    // this.player.play();
                     //直播报活调用
                     this.repeatFn();
                     //计算视频播放时长
                     this.playTimer = setInterval(() => {
                         this.totalTime ++ ;
                         this.totalTimeformat = this.formatSeconds(this.totalTime);
-                        if(this.deviceType == '-1'){
-                            this.$refs.maxMap.getGps(this.searchKey.vehicleId,(new Date()).getTime(),this.deviceType);
+                        if(this.deviceType != '-1'){
+                            this.$refs.maxMap.getGps(this.searchKey.vehicleId,(new Date()).getTime());
                         }
                     },1000);
+                    console.log('开始');
                     this.getTotalTime(this.monitStartTime);
                 }else{
                     this.isStart = false;
@@ -251,7 +252,8 @@ export default {
                                     this.totalTime ++ ;
                                     this.totalTimeformat = this.formatSeconds(this.totalTime);
                                     if(this.deviceType != '-1'){
-                                        this.$refs.maxMap.getGps(this.searchKey.vehicleId,(new Date()).getTime(),this.deviceType);
+
+                                        this.$refs.maxMap.getGps(this.searchKey.vehicleId,(new Date()).getTime());
                                     }
                                 },1000);
                                 this.getTotalTime(this.monitStartTime);
@@ -411,7 +413,6 @@ export default {
                     }).catch(err => {
                         this.fuzzySearchOption2.loading = false;
                     });
-
                 }, 500); 
             } 
         },

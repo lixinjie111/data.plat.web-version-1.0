@@ -41,18 +41,9 @@
           this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.$parent.defaultMapOption);
           // this.distanceMap.setZoom();
       },
-      // initMap(){
-
-      //   this.distanceMap = new AMap.Map('map-container', {
-      //       resizeEnable: true, //是否监控地图容器尺寸变化
-      //       zoom: this.zoom, //初始化地图层级
-      //       rotateEnable: true,
-      //       mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
-      //   });
-      // },
-      getGps(vehicleId, time, deviceType) {
+      getGps(vehicleId, time) {
           gpsInfo({
-            'vehicleId': vehicleId, 'type': deviceType, 'time': time,
+            'vehicleId': vehicleId, 'time': time,
             }).then(res => {
               if(res.status == '200'){
                     let _this = this;
