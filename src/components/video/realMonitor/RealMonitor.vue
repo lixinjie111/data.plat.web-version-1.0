@@ -158,7 +158,7 @@ export default {
                 sources: [
                     {
                         // type: 'rtmp/mp4',
-                        // type: 'rtmp/flv',
+                        type: 'rtmp/flv',
                         // type: 'rtmp',
                         src: ''
                     }
@@ -235,7 +235,7 @@ export default {
                 if(this.playerOptions.sources[0].src){
                     this.isStart = true;
                     this.isMaskShow = false;
-                    // this.player.play();
+                    this.player.play();
                     //直播报活调用
                     this.repeatFn();
                     //计算视频播放时长
