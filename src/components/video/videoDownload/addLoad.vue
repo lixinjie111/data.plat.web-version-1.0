@@ -1,6 +1,7 @@
 <template>
 <el-dialog 
         title="新建任务" 
+        :close-on-click-modal='false'
         :visible.sync="visible"
         :before-close="cancleFunc"
         width="30%">

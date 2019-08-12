@@ -1,6 +1,7 @@
 <template>
     <el-dialog 
         title="修改密码" 
+        :close-on-click-modal='false'
         :visible.sync="visible"
         :before-close="cancleFunc"
         width="30%">

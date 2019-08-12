@@ -189,6 +189,12 @@ export default {
             this.pageData = this.pageData.slice(start,end);    
         },
         deleteClick(item){
+            this.$confirm('确认删除此条数据？')
+            .then(_ => {
+                this.deleteDone(item);
+            })
+        },
+        deleteDone(item){
             this.dataList.splice(this.dataList.indexOf(item),1);
             this.pageOption.size = 10;
             this.pageOption.page = 0;
