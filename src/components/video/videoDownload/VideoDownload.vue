@@ -119,7 +119,7 @@
                 <el-table-column min-width="18%" label="文件名称" prop="fileName"></el-table-column>
                 <el-table-column min-width="11%" label="车辆编号" prop="vehicleId"></el-table-column>
                 <el-table-column min-width="11%" label="车牌号" prop="plateNo"></el-table-column>
-                <el-table-column min-width="9%" label="摄像头编号" prop="camId"></el-table-column>
+                <el-table-column min-width="14%" label="摄像头编号" prop="camId"></el-table-column>
                 <el-table-column min-width="12%" label="开始时间" prop="startTime"></el-table-column>
                 <el-table-column min-width="12%" label="结束时间" prop="endTime"></el-table-column>
                 <el-table-column min-width="8%" label="视频来源">
