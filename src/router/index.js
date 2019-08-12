@@ -45,7 +45,6 @@ const DynamicParam = resolve => require(['@/components/vehicle/dynamicParam/Dyna
 
 //v2x
 const v2xManage = resolve => require(['@/components/v2x/v2x.vue'], resolve)
-const v2x = resolve => require(['@/components/v2x/realMonitor/main.vue'], resolve)
 const bsm = resolve => require(['@/components/v2x/bsm/BsmCom.vue'], resolve)
 const bsmDetail = resolve => require(['@/components/v2x/bsm/BsmDetail.vue'], resolve)
 const event = resolve => require(['@/components/v2x/event/EventCom.vue'], resolve)
@@ -62,7 +61,8 @@ export default new Router({
   routes: [    
     {
       path: '/',
-      component: Login
+      name: 'index',
+      redirect: 'login'
     },
     {
       path: '/login',
@@ -80,16 +80,25 @@ export default new Router({
         {
           path: '/home',    // 首页
           name: 'home',
+          meta: {
+              requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+          },
           component: Home
         },      
         {
           path: '/refresh',    // 重新加载当前路由
           name: 'refresh',
+          meta: {
+              requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+          },
           component: Refresh
         },        
         {
           path: '/system',    // 系统设置
-          name: 'SysManage',         
+          name: 'SysManage',  
+          meta: {
+              requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+          },       
           component: SysManage,   
           children:[]  
         },           
@@ -101,21 +110,33 @@ export default new Router({
             {
               path: '/realMonitor',    // 实时监控
               name: 'RealMonitor',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: RealMonitor
             },
             {
               path: '/playback',    // 历史监控
               name: 'PlayBack',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: PlayBack
             },
             {
               path: '/videoManage',    // 视频管理
               name: 'VideoManage',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: VideoManage,
             },
             {
               path: '/videoDownload',    // 视频下载
               name: 'VideoDownload',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: VideoDownload
             },
           ]
@@ -128,16 +149,25 @@ export default new Router({
             {
               path: '/pathData',    // 轨迹数据
               name: 'PathData',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: PathData,
             },            
             {
               path: '/canData',    // CAN数据
               name: 'CanData',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: CanData,
             },            
             {
               path: '/dynamicParam',    // 动态参数
               name: 'DynamicParam',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: DynamicParam,
             },            
           ]
@@ -150,31 +180,49 @@ export default new Router({
             {
               path: '/perceptualData',    // 实时监控
               name: 'perceptualData',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: PerceptualData,
             },    
             {
               path: '/roadSideInfo',    // 路侧数据
               name: 'RoadSideInfo',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: RoadSideInfo,
             },        
             {
               path: '/roadVideoManage',    // 路侧视频管理
               name: 'RoadVideoManage',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: RoadVideoManage,
             },            
             {
               path: '/roadVideoReplay',    // 路侧视频回放
               name: 'RoadVideoReplay',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: RoadVideoReplay,
             },            
             {
               path: '/roadVideoLoad',    // 路侧视频下载
               name: 'RoadVideoLoad',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: RoadVideoLoad,
             },            
             {
               path: '/roadAddLoad',    // 新建路侧视频下载
               name: 'RoadAddLoad',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: RoadVideoLoad,
             },            
             // {
@@ -185,11 +233,17 @@ export default new Router({
             {
               path: '/percepData',    // 感知数据
               name: 'PercepData',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: PercepData,
             },
             {
               path: '/percepDetail/:serialNum/:startTime/:endTime',    // 感知数据详情
               name: 'PercepDetail',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: PercepDetail,
             },
           ]
@@ -199,39 +253,52 @@ export default new Router({
          name:'V2xmanage',
          component:v2xManage,
          children:[
-          // {
-          //   path:'/v2x',  //实时预警
-          //   name:'v2x',
-          //   component:v2x
-          // },
           {
             path:'/bsm',  //bsm数据
             name:'bsm',
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            },
             component:bsm
           },
           {
             path:'/bsmdetail', //bsm数据明细
             name:'BsmDetail',
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            },
             component:bsmDetail
           },
           {
             path:'/event',  //event数据
             name:'event',
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            },
             component:event
           },
           {
             path:'/rsm',  //rsm数据
             name:'rsm',
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            },
             component:rsm
           },
           {
             path:'/rsi',  //rsi数据
             name:'rsi',
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            },
             component:rsi
           },
           {
             path:'/rsmDetail',  //rsm数据明细
             name:'rsmDetail',
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            },
             component:rsmDetail
           }
          ]
@@ -244,16 +311,25 @@ export default new Router({
             {
               path: '/weatherData',    // 天气数据
               name: 'weatherData',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: WeatherData,
             },            
             {
               path: '/trafficNotice',    // 交通公告
               name: 'trafficNotice',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: TrafficNotice,
             },            
             {
               path: '/highway',    // 高速公路
               name: 'highway',
+              meta: {
+                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+              },
               component: Highway,
             },
           ]
