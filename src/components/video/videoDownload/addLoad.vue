@@ -13,6 +13,7 @@
                     remote
                     value-key="plateNo"
                     placeholder="请输入关键词"
+                    @focus="getPlateNoList"
                     :remote-method="remoteMethod1"
                     @change="plateNoSelect"
                     :loading="fuzzySearchOption1.loading">
@@ -278,18 +279,22 @@ export default {
             this.getVehicleBindCamInfo();
         },
         getPlateNoList(){
-            this.fuzzySearchOption1.loading = true;
-            requestqueryVehicleList({
-                "plateNo": '',
-                "vehicleId": ''
-            }).then(res => {
-                if(res.status == '200'){
-                    this.fuzzySearchOption1.filterOption = res.data;
-                }
-                this.fuzzySearchOption1.loading = false;
-            }).catch(err => {
-                this.fuzzySearchOption1.loading = false;
-            });
+            clearTimeout(this.fuzzySearchOption1.timer);
+            this.fuzzySearchOption1.timer = setTimeout(() => {
+                requestqueryVehicleCamList({
+                    'field':'plateNo',
+                    'value':''
+                }).then(res => {
+                    if(res.status == '200'){
+                        //接口请求后执行的操作 
+                        this.fuzzySearchOption1.loading = false;
+                        this.fuzzySearchOption1.filterOption = res.data;
+                    }
+                    this.fuzzySearchOption1.loading = false;
+                }).catch(err => {
+                    this.fuzzySearchOption1.loading = false;
+                });
+            }, 500);
         },
         searchPlateNo(query) {
             if (query !== '') {
@@ -366,35 +371,12 @@ export default {
                 if(res.status == '200'){
                     res.data.forEach((item, index) => {
                         if(item.type == "M"){
-                            let _towards = "";
-                            switch (item.toward){
-                                case "0":{
-                                    _towards = "前向";
-                                    break;
-                                }
-                                case "1":{
-                                    _towards = "后向";
-                                    break;
-                                }
-                                case "2":{
-                                    _towards = "侧向";
-                                    break;
-                                }
-                                case "3":{
-                                    _towards = "环视";
-                                    break;
-                                }
-                                case "4":{
-                                    _towards = "车内";
-                                    break;
-                                }
-                            }
                             let _item = {
                                 value: item.serialNum,
                                 label: item.serialNum,
                                 serialNum: item.serialNum,
                                 deviceId: item.deviceId,
-                                toward: _towards,
+                                toward: item.towardText,
                                 protocal:item.protocol
                             }
                             this.camCodeList.push(_item);

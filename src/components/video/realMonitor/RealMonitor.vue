@@ -181,28 +181,6 @@ export default {
     },
     methods: {
         getPlateNo(item){//根据车牌号查询vehicleID、序列号、朝向、状态
-            // switch (item.position){
-            //     case '0':
-            //         this.searchKey.position = "前向";
-            //         break;
-                
-            //     case '1':
-            //         this.searchKey.position = "后向";
-            //         break;
-                
-            //     case "2":
-            //         this.searchKey.position = "侧向";
-            //         break;
-                
-            //     case "3":
-            //         this.searchKey.position = "环视";
-            //         break;
-                
-            //     case "4":
-            //         this.searchKey.position = "车内";
-            //         break;
-                
-            // }
             this.searchKey.status = item.statusText;
             this.searchKey.serialNum = item.serialNum;
             if(this.searchKey.status != '在线'){//摄像头状态为不在线时,开始监控按钮不可点击
