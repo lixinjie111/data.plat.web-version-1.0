@@ -109,7 +109,7 @@
 import ConvertCoord from'@/common/utils/coordConvert.js';
 import RoadSideInfo from "../roadSideInfo/roadSideInfo.vue";
 import { setInterval, clearInterval, setTimeout } from 'timers';
-import {queryRoadRegionTree,queryProvinceCityTree,queryCountyRoadTree,queryRoadCamList,startStreamRoad,getCityCameraStatics,stopStream} from '@/api/roadSide'
+import {queryRoadRegionTree,queryCountyRoadTree,queryRoadCamList,startStreamRoad,getCityCameraStatics,stopStream} from '@/api/roadSide'
 export default {
     name:'PerceptualData',
     components:{
@@ -127,10 +127,8 @@ export default {
             provinceOptions:[],
             cityOptions:[],
             regionList:[],
-            roadSideInfo:null,
             camInfo:'',
             roadPointName:'--',
-            camInfoNum:'',
             camDetail:{
                 camCode:'--',
                 camId:'--',
@@ -156,7 +154,10 @@ export default {
                 onlineNum:0,
                 monitNum:0,
             },
-            markerPoint: [],
+            markerOption: {
+                markers: [],
+                point: []
+            },
             infoWindow: new AMap.InfoWindow({
                 offset: new AMap.Pixel(0, -33),
                 anchor: 'bottom-center'
@@ -165,15 +166,10 @@ export default {
             municipalData:[],//辖区
             defaultArr:['N-NJ-0006','N-NJ-0005','N-NJ-0004'],
             timer: null,
-
-            firstSerialNum: []
-            // currentVideoOption: null
         }
     },
     mounted(){
         this.getSideTree();//获取树结构数据
-
-        // this.queryProvinceCityTrees();
         this.wsRequest();
         this.initMap();
     },
@@ -190,9 +186,9 @@ export default {
         },
         drawStartMarker() {
             let _this = this;
-            console.log('masker',this.markerPoint);
-            this.markerPoint.forEach((item, index) => {
-                console.log('item',item,index);
+            this.distanceMap.remove(this.markerOption.markers);
+            this.markerOption.markers = [];
+            this.markerOption.point.forEach((item, index) => {
                 let _position = ConvertCoord.wgs84togcj02(item.ptLon, item.ptLat);
                 let _marker = new AMap.Marker({
                     map: this.distanceMap,
@@ -205,12 +201,9 @@ export default {
                                 </div>`;
                 _marker.on('click', this.markerClick);
                 _marker.emit('click', {target: _marker});
+                this.markerOption.markers.push(_marker);
                 this.distanceMap.setFitView();
             });
-        },
-        removeMarkers(){
-            this.markerPoint = [];
-            this.distanceMap.remove(this.markerPoint);
         },
         markerClick(e) {
             this.infoWindow.setContent(e.target.content);
@@ -225,7 +218,6 @@ export default {
                         var obj = {};
                         obj.label = item.name;
                         obj.code = item.code;
-                        console.log(item);
                         this.provinceOptions.push(obj);
                     })
                 }
@@ -270,14 +262,10 @@ export default {
             })
         },
         loadNode(node,resolve){
-            console.log(node.data.code);
             //懒加载路
             if(node.level == 1){
                 var children = [];
-                console.log(this.regionList);
                 this.regionList.forEach(item => {
-                    console.log(item);
-                    console.log(node.data.code);
                     if(item.code == node.data.code){
                         var list = item.dataList;
                         list.forEach( e => {
@@ -289,7 +277,6 @@ export default {
                         })
                     }
                 })
-                console.log(children);
                 resolve(children);
                 return;
             }
@@ -305,13 +292,11 @@ export default {
                             localStorage.setItem('protocal',protocal);
                         }
                         var camDetail = res.data;
-                        console.log(camDetail);
                         var children = [];
                         if(camDetail.length > 0){
                             //默认选中样式
                             camDetail.forEach(item => {
                                 var obj = {};
-                                console.log(item);
                                 obj.label = item.deviceId;
                                 obj.code = item.deviceId;
                                 obj.serialNum = item.serialNum;
@@ -328,13 +313,12 @@ export default {
                                 children.push(obj);
                             })
                         }
-                        console.log(children);
                         resolve(children);
                         this.$refs.tree.setCurrentKey(this.defaultArr[2]);
                         let protocal = JSON.parse(localStorage.getItem('protocal'));
                         //默认打开摄像头编号为N-NJ-0004的视频
                         startStreamRoad({
-                            camId:camDetail[2].serialNum,protocal:protocal
+                            camId:"3402000000132000003001",protocal:protocal
                         }).then(res =>{
                             if(res.status == '200') {
                                 var camerData = res.data;
@@ -349,38 +333,21 @@ export default {
                                 this.isMaskShow = false;
                                 let videoUrl = res.data.rtmp;
                                 this.embedFlash(videoUrl);
-
-                                var _position = ConvertCoord.wgs84togcj02(children[2].ptLon,children[2].ptLat);
-                                var _marker = new AMap.Marker({
-                                    map: this.distanceMap,
-                                    position: new AMap.LngLat(_position[0],_position[1]),
-                                });
-                                _marker.content = `<div class="c-map-info-window">
-                                                    <p class="c-info-window-text">摄像头编号：${children[2].label}<p>
-                                                    <p class="c-info-window-text">道路名称：${children[2].roadName}<p>
-                                                    <p class="c-info-window-text">经纬度：${children[2].ptLon},${children[2].ptLat}<p>
-                                                </div>`;
-                                _marker.on('click', this.markerClick);
-                                _marker.emit('click', {target: _marker});
-                                this.distanceMap.setFitView();
-                                        // camerData.icon = "sl-pause-icon";
-                                    }
-                                });
+                                this.markerOption.point.push(children[2]);
+                                this.drawStartMarker();
+                            }
+                        });
                         return;
                     }
                 })
             }
         },
         handleNodeClick(data){
-            console.log(data);
             this.roadNewName = this.roadName;
-            this.markerPoint = [];
+            this.markerOption.point = [];
             let camStatus = data.cameraRunStatus;
             this.changeSize = false;
-            this.removeMarkers();
-            // console.log(camStatus);
             if(camStatus == 1){//在线
-                // console.log(data.isOn);
                 if(data.isOn) {
                     data.isOn = false;
                     this.startPlay(data);
@@ -391,10 +358,7 @@ export default {
                 }
                 let roadCamInfo = Object.assign({},{roadName:this.roadName},data);
                 this.camDetail.rsPtId = roadCamInfo.rsPtId;
-                this.markerPoint.push(roadCamInfo);
-                console.log('456645',this.markerPoint);
-                // let _position = ConvertCoord.wgs84togcj02(obj.ptLon, obj.ptLat);
-                // this.distanceMap.setCenter(_position);
+                this.markerOption.point.push(roadCamInfo);
                 this.drawStartMarker();
             }else {
                 if(camStatus == '0'){//未知
@@ -433,7 +397,6 @@ export default {
             let camList = this.camInfo;
             let camLen = camList.length;
             let protocal = JSON.parse(localStorage.getItem('protocal'));
-            // this.currentVideoOption = camerData;
             startStreamRoad({
                 camId:camerData.serialNum,protocal:protocal
             }).then(res =>{
@@ -449,7 +412,6 @@ export default {
                     let videoUrl = res.data.rtmp;
                     this.embedFlash(videoUrl);
                     camerData.icon = "sl-pause-icon";
-                    // this.$refs.tree.setCheckedKeys([camerData.serialNum]);
                 }
             });
         },
@@ -465,9 +427,6 @@ export default {
             for(let i=0;i<nodeSelArray.length;i++){
                 nodeSelArray[i].classList.remove('pause');
             }
-            // if(this.currentVideoOption) {
-            //     this.currentVideoOption.isOn = true;
-            // }
             let protocal = JSON.parse(localStorage.getItem('protocal'));
             stopStream({
                 "camId":this.camDetail.camCode,"protocal":protocal
@@ -483,7 +442,6 @@ export default {
         getCityTrees(item){//获区市辖数据
             this.newData = [];
             this.endPlay();
-            this.firstSerialNum = '';
             this.searchKey.municiSelected = '';
             this.municipalData = item.children;
         },
@@ -496,14 +454,12 @@ export default {
             }).then(res => {
                 if(res.status == '200') {
                     this.treeData = res.data;
-                    console.log(this.treeData);
                 }
             })
             
         },
         backClick(){
             this.wsRequest();
-            // this.isMaskShow = true;
             this.roadSideShow = false;
         },
         mapChangeMax(){
