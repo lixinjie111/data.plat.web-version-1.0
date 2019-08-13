@@ -4,7 +4,7 @@
         <div class="c-scroll-wrap">
             <div class="c-scroll-inner">
                 <h3 class="c-title">
-                    路侧摄像头视频数据
+                    感知数据<i class='el-icon-arrow-right'></i>路侧摄像头视频数据
                     <el-page-header @back="$router.go(-1);" class="c-return-btn"></el-page-header>
                 </h3>
                 <div class="sl-percepDetail-container c-wrapper-20" v-loading="boxLoading">

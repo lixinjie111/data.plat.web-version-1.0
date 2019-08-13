@@ -4,17 +4,11 @@ import {HTTPURL,operPlatUrl} from '../requestUrl';
 /**
  * 实时监控
  */
-
- /**
- * 左侧树形菜单 省
+/**
+ * 左侧树结构
  */
-export const queryProvinceCityTree = params => { return axios.post(`${HTTPURL}road/queryProvinceCityTree`, params).then(res => res.data); };
-
- /**
- * 左侧树形菜单 区路
- */
-export const queryCountyRoadTree = params => { return axios.post(`${HTTPURL}road/queryCountyRoadTree`, params).then(res => res.data); };
- /**
+export const queryRoadRegionTree = params => { return axios.post(`${HTTPURL}road/queryRoadRegionTree`, params).then(res => res.data); };
+/**
  * 左侧树形菜单
  */
 export const queryRoadCamList = params => { return axios.post(`${HTTPURL}road/queryRoadCamList`, params).then(res => res.data); };

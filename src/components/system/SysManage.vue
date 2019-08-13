@@ -32,23 +32,14 @@ export default {
 
     },
     beforeRouteEnter (to, from, next) {
-      
-        let url = to.path;
-        
         next( vm => {            
-            vm.$router.push(url);
-            vm.current.menu = Utils.setBreadCrumbs(url);            
+            vm.current.menu = Utils.setBreadCrumbs(to.path);
         })
-        
     },
     beforeRouteUpdate(to, from, next){
-        
-        next( vm => {
-            vm.$router.push(to.path);
-        })
-
+        next();
         this.current.menu = Utils.setBreadCrumbs(to.path);
-        
+
     }
 }
 </script>

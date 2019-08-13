@@ -10,13 +10,13 @@
                     <el-form size="small" class="c-text-between">
                         <el-form-item>
                             <el-select 
-                                v-model="searchKey.provinceSelected" 
+                                v-model="searchKey.provinceValue" 
                                 value-key='code' 
                                 placeholder="请选择省" 
                                 :loading="provinceLoading" 
                                 @change="getCityTrees">
                                 <el-option
-                                v-for="item in provinceData"
+                                v-for="item in provinceOptions"
                                 :key="item.code"
                                 :label="item.label"
                                 :value="item">
@@ -25,12 +25,12 @@
                         </el-form-item>
                         <el-form-item>
                             <el-select 
-                            v-model="searchKey.municiSelected" 
+                            v-model="searchKey.cityValue" 
                             value-key='code' 
                             placeholder="请选择市" 
                             @change="queryCountyRoadTrees">
                                 <el-option
-                                v-for="item in municipalData"
+                                v-for="item in cityOptions"
                                 :key="item.code"
                                 :label="item.label"
                                 :value="item">
@@ -45,16 +45,15 @@
                     </div>
                     <el-tree
                         class="c-padding-10 carm-oragn-sels"
-                        :data='newData' 
+                        :data='treeData' 
                         :props="defaultProps" 
-                        :load="loadNode" 
+                        :load="loadNode"
                         lazy
                         node-key="code"
                         ref="tree"
                         default-expand-all
                         highlight-current
-                        current-node-key="se"
-                        :default-expanded-keys="firstSerialNum"
+                        :default-expanded-keys="defaultArr"
                         @node-click="handleNodeClick" 
                         >
                         <!-- show-checkbox
@@ -81,7 +80,7 @@
                     </p>
                     <p class="c-detail-lable">
                         <span class="name">道路名称:</span>
-                        <span class="value">{{camDetail.roadNewName}}</span>
+                        <span class="value">{{camDetail.roadName}}</span>
                     </p>
                     <p class="c-detail-lable">
                         <span class="name">路侧点: </span>
@@ -110,7 +109,7 @@
 import ConvertCoord from'@/common/utils/coordConvert.js';
 import RoadSideInfo from "../roadSideInfo/roadSideInfo.vue";
 import { setInterval, clearInterval, setTimeout } from 'timers';
-import {queryProvinceCityTree,queryCountyRoadTree,queryRoadCamList,startStreamRoad,getCityCameraStatics,stopStream} from '@/api/roadSide'
+import {queryRoadRegionTree,queryCountyRoadTree,queryRoadCamList,startStreamRoad,getCityCameraStatics,stopStream} from '@/api/roadSide'
 export default {
     name:'PerceptualData',
     components:{
@@ -122,17 +121,18 @@ export default {
             provinceLoading:false,
             changeSize:false,
             isMaskShow:false,
-            newData:[],
-            provinceData:[],
-            municipalData:[],
-            roadSideInfo:null,
+            isFirst:true,//第一次展开
+            treeData:[],
+            treeList:[],
+            provinceOptions:[],
+            cityOptions:[],
+            regionList:[],
             camInfo:'',
             roadPointName:'--',
-            camInfoNum:'',
             camDetail:{
                 camCode:'--',
                 camId:'--',
-                roadNewName:'--',
+                roadName:'--',
                 roadPointName:'--',
                 lon:'--',
                 lat:'--',
@@ -140,14 +140,13 @@ export default {
                 rsPtId:'',
             },
             searchKey:{
-                provinceSelected:'',
-                municiSelected:'',
+                provinceValue:'',
+                cityValue:'',
             },
             defaultProps: {
                 code:'code',
                 children: 'children',
                 label: 'label',
-                node:'',
                 isLeaf: 'leaf'
             },
             camStatusNums:{
@@ -155,22 +154,22 @@ export default {
                 onlineNum:0,
                 monitNum:0,
             },
-            markerPoint: [],
+            markerOption: {
+                markers: [],
+                point: []
+            },
             infoWindow: new AMap.InfoWindow({
                 offset: new AMap.Pixel(0, -33),
                 anchor: 'bottom-center'
             }),
             provinceData:[],//省市
             municipalData:[],//辖区
-
+            defaultArr:['N-NJ-0006','N-NJ-0005','N-NJ-0004'],
             timer: null,
-
-            firstSerialNum: []
-            // currentVideoOption: null
         }
     },
     mounted(){
-        this.queryProvinceCityTrees();
+        this.getSideTree();//获取树结构数据
         this.wsRequest();
         this.initMap();
     },
@@ -187,7 +186,9 @@ export default {
         },
         drawStartMarker() {
             let _this = this;
-            this.markerPoint.forEach((item, index) => {
+            this.distanceMap.remove(this.markerOption.markers);
+            this.markerOption.markers = [];
+            this.markerOption.point.forEach((item, index) => {
                 let _position = ConvertCoord.wgs84togcj02(item.ptLon, item.ptLat);
                 let _marker = new AMap.Marker({
                     map: this.distanceMap,
@@ -200,6 +201,7 @@ export default {
                                 </div>`;
                 _marker.on('click', this.markerClick);
                 _marker.emit('click', {target: _marker});
+                this.markerOption.markers.push(_marker);
                 this.distanceMap.setFitView();
             });
         },
@@ -207,129 +209,145 @@ export default {
             this.infoWindow.setContent(e.target.content);
             this.infoWindow.open(this.distanceMap, e.target.getPosition());
         },
-        queryProvinceCityTrees(){
-            this.provinceLoading = true;
-            queryProvinceCityTree({
-                'type':'N'
-            }).then(res => {
-                if(res.status == '200') {
-                    this.provinceData = res.data;
-                    if(this.provinceData.length) {
-                        this.searchKey.provinceSelected = this.provinceData[0];
-                        this.initCityDefault();
-                    }
+        getSideTree(){
+            queryRoadRegionTree().then(res => {
+                this.treeList = res.data;
+                this.provinceOptions = [];
+                if(this.treeList.length > 0){
+                    this.treeList.forEach(item => {
+                        var obj = {};
+                        obj.label = item.name;
+                        obj.code = item.code;
+                        this.provinceOptions.push(obj);
+                    })
                 }
-                this.provinceLoading = false;
-            }).catch(err => {
-                this.provinceLoading = false;
-            });
-        },
-        initCityDefault() {
-            this.municipalData = this.searchKey.provinceSelected.children;
-            if(this.municipalData.length) {
-                this.searchKey.municiSelected = this.municipalData[0];
-                this.queryCountyRoadTrees(this.searchKey.municiSelected);
-            }
-        },
-        getCityTrees(item){//获区市辖数据
-            this.newData = [];
-            this.endPlay();
-            this.firstSerialNum = '';
-            this.searchKey.municiSelected = '';
-            this.municipalData = item.children;
-        },
-        queryCountyRoadTrees(item){
-            this.newData = []; 
-            this.endPlay();
-            queryCountyRoadTree({
-                'cityCode':item.code,
-                'type':'N'
-            }).then(res => {
-                if(res.status == '200') {
-                    this.newData = res.data;
+                if(this.isFirst){
+                    var provinceCode = this.provinceOptions[0].code;
+                    this.searchKey.provinceValue = this.provinceOptions[0];
+                    this.getCitys(provinceCode);
+                    var cityCode = this.cityOptions[0].code;
+                    this.searchKey.cityValue = this.cityOptions[0];
+                    this.getRegion(cityCode);
                 }
             })
-            
         },
-        loadNode(node, resolve) {//懒加载摄像头列表
-            var hasChild = true;
-            if(node.level == 1) {
-                let data = [];
-                if (hasChild) {
-                    var areaArray = this.newData[0].children;
-                    for(var i=0;i<areaArray.length;i++){
+        getCitys(code){
+            this.searchKey.cityValue = '';
+            this.cityOptions = [];
+            this.treeList.forEach(item => {
+                if(item.code == code){
+                    var cityList = item.dataList;
+                    cityList.forEach(e => {
                         var obj = {};
-                        obj.label = areaArray[i].label;
-                        obj.code = areaArray[i].code;
-                        obj.road = true;
-                        // obj.isLeaf = 'leaf';
-                        // obj.leaf = true;
-                        data.push(obj);
-                    }
-                    this.roadName = data[0].label;
-                } else {
-                    data = [];
+                        obj.label = e.name;
+                        obj.code = e.code;
+                        this.cityOptions.push(obj);
+                    })
                 }
-                resolve(data);
+            })
+        },
+        getRegion(code){
+            this.treeList.forEach( item => {
+                var cityList = item.dataList;
+                if(cityList[0].code == code){
+                    this.regionList = cityList[0].dataList;
+                    this.regionList.forEach( e => {
+                        var obj = {};
+                        obj.label = e.name;
+                        obj.code = e.code;
+                        obj.type = 1;
+                        this.treeData.push(obj);
+                    })
+                }
+            })
+        },
+        loadNode(node,resolve){
+            //懒加载路
+            if(node.level == 1){
+                var children = [];
+                this.regionList.forEach(item => {
+                    if(item.code == node.data.code){
+                        var list = item.dataList;
+                        list.forEach( e => {
+                            var obj = {};
+                            obj.label = e.name;
+                            obj.code = e.code;
+                            obj.type = 2;
+                            children.push(obj);
+                        })
+                    }
+                })
+                resolve(children);
+                return;
             }
-            if(node.level == 2) {
-                let data = [];
+            if (node.level > 2) return resolve([]);
+            if(node.level == 2){
                 queryRoadCamList({
                     roadCode:node.data.code
                 }).then(res => {
                     if(res.status == '200') {
-                        var roadCode = this.newData[0].children;
+                        // var roadCode = this.newData[0].children;
                         if(res.data.length) {
                             var protocal = JSON.stringify(res.data[0].protocol);
                             localStorage.setItem('protocal',protocal);
                         }
                         var camDetail = res.data;
-                        
-                        for(var i=0;i<camDetail.length;i++){
-                            var obj = {};
-                            obj.label = camDetail[i].deviceId;
-                            obj.code = camDetail[i].serialNum;
-                            obj.serialNum = camDetail[i].serialNum;
-                            obj.rsPtName = camDetail[i].rsPtName;
-                            obj.rsPtId = camDetail[i].rsPtId;
-                            obj.ptLon = camDetail[i].ptLon;
-                            obj.ptLat = camDetail[i].ptLat;
-                            obj.isOn = true;
-                            obj.cameraRunStatus = camDetail[i].cameraRunStatus;
-                            obj.icon = "sl-play-icon";
-                            obj.leaf = true;
-                            obj.code = camDetail[i].serialNum;
-                            data.push(obj);
-                            if(!this.firstSerialNum) {
-                                this.firstSerialNum.push(camDetail[i].serialNum);
-                            }
+                        var children = [];
+                        if(camDetail.length > 0){
+                            //默认选中样式
+                            camDetail.forEach(item => {
+                                var obj = {};
+                                obj.label = item.deviceId;
+                                obj.code = item.deviceId;
+                                obj.serialNum = item.serialNum;
+                                obj.roadName = item.rspRoadName;
+                                obj.rsPtName = item.rsPtName;
+                                obj.rsPtId = item.rsPtId;
+                                obj.ptLon = item.ptLon;
+                                obj.ptLat = item.ptLat;
+                                obj.isOn = true;
+                                obj.cameraRunStatus = item.cameraRunStatus;
+                                obj.icon = "sl-pause-icon";
+                                obj.type = 3;
+                                obj.leaf = true;
+                                children.push(obj);
+                            })
                         }
-                        
-
-                        resolve(data);
-
-                        this.$refs.tree.setCheckedKeys(this.firstSerialNum);
-                        // this.$refs.tree.setCheckedKeys([1]);
+                        resolve(children);
+                        this.$refs.tree.setCurrentKey(this.defaultArr[2]);
+                        let protocal = JSON.parse(localStorage.getItem('protocal'));
+                        //默认打开摄像头编号为N-NJ-0004的视频
+                        startStreamRoad({
+                            camId:"3402000000132000003001",protocal:protocal
+                        }).then(res =>{
+                            if(res.status == '200') {
+                                var camerData = res.data;
+                                this.camDetail.camId = children[2].serialNum;
+                                this.camDetail.camCode = children[2].label;
+                                this.camDetail.roadName = children[2].roadName;
+                                this.camDetail.roadPointName = children[2].rsPtName;
+                                this.camDetail.roadPointId = children[2].rsPtId;
+                                this.camDetail.rsPtId = children[2].rsPtId;
+                                this.camDetail.lon = Number(children[2].ptLon).toFixed(8);
+                                this.camDetail.lat = Number(children[2].ptLat).toFixed(8);
+                                this.isMaskShow = false;
+                                let videoUrl = res.data.rtmp;
+                                this.embedFlash(videoUrl);
+                                this.markerOption.point.push(children[2]);
+                                this.drawStartMarker();
+                            }
+                        });
+                        return;
                     }
                 })
             }
-            if(node.level == 3) {
-                resolve([]);
-            }
         },
-        // handleCheckChange(data, checked, indeterminate) {
-        //     console.log("-----------------");
-        //     console.log(data);
-        //     console.log(checked);
-        //     console.log(indeterminate);
-        //     // this.handleNodeClick(data);
-        // },
         handleNodeClick(data){
             this.roadNewName = this.roadName;
+            this.markerOption.point = [];
             let camStatus = data.cameraRunStatus;
-            // console.log(camStatus);
+            this.changeSize = false;
             if(camStatus == 1){//在线
-                // console.log(data.isOn);
                 if(data.isOn) {
                     data.isOn = false;
                     this.startPlay(data);
@@ -340,9 +358,7 @@ export default {
                 }
                 let roadCamInfo = Object.assign({},{roadName:this.roadName},data);
                 this.camDetail.rsPtId = roadCamInfo.rsPtId;
-                this.markerPoint.push(roadCamInfo);
-                // let _position = ConvertCoord.wgs84togcj02(obj.ptLon, obj.ptLat);
-                // this.distanceMap.setCenter(_position);
+                this.markerOption.point.push(roadCamInfo);
                 this.drawStartMarker();
             }else {
                 if(camStatus == '0'){//未知
@@ -381,7 +397,6 @@ export default {
             let camList = this.camInfo;
             let camLen = camList.length;
             let protocal = JSON.parse(localStorage.getItem('protocal'));
-            // this.currentVideoOption = camerData;
             startStreamRoad({
                 camId:camerData.serialNum,protocal:protocal
             }).then(res =>{
@@ -397,7 +412,6 @@ export default {
                     let videoUrl = res.data.rtmp;
                     this.embedFlash(videoUrl);
                     camerData.icon = "sl-pause-icon";
-                    // this.$refs.tree.setCheckedKeys([camerData.serialNum]);
                 }
             });
         },
@@ -413,9 +427,6 @@ export default {
             for(let i=0;i<nodeSelArray.length;i++){
                 nodeSelArray[i].classList.remove('pause');
             }
-            // if(this.currentVideoOption) {
-            //     this.currentVideoOption.isOn = true;
-            // }
             let protocal = JSON.parse(localStorage.getItem('protocal'));
             stopStream({
                 "camId":this.camDetail.camCode,"protocal":protocal
@@ -428,9 +439,27 @@ export default {
             this.roadSideShow = true;
             this.changeSize = false;
         },
+        getCityTrees(item){//获区市辖数据
+            this.newData = [];
+            this.endPlay();
+            this.searchKey.municiSelected = '';
+            this.municipalData = item.children;
+        },
+        queryCountyRoadTrees(item){
+            this.newData = []; 
+            this.endPlay();
+            queryCountyRoadTree({
+                'cityCode':item.code,
+                'type':'N'
+            }).then(res => {
+                if(res.status == '200') {
+                    this.treeData = res.data;
+                }
+            })
+            
+        },
         backClick(){
             this.wsRequest();
-            // this.isMaskShow = true;
             this.roadSideShow = false;
         },
         mapChangeMax(){

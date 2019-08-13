@@ -3,7 +3,7 @@
         <div class="c-scroll-wrap">
             <div class="c-scroll-inner">
                 <h3 class="c-title">
-                    rsm详情
+                    rsm数据<i class='el-icon-arrow-right'></i>rsm详情
                     <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
                 </h3>
                 <div class="c-wrapper-20">

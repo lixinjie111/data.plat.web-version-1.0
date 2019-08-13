@@ -28,20 +28,12 @@ export default {
 
     },
     beforeRouteEnter (to, from, next) {
-        
         next( vm => {            
-            vm.$router.push(to.path);
             vm.current.menu = Utils.setBreadCrumbs(to.path);
         })
-        
     },
     beforeRouteUpdate(to, from, next){
-        
-        next( vm => {
-            vm.$router.push(to.path);
-            // vm.current.menu = Utils.getMenuCnName(to.path);   
-        })
-
+        next();
         this.current.menu = Utils.setBreadCrumbs(to.path);
 
     }
