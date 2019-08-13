@@ -7,13 +7,15 @@
             border
             max-height="724">
             <el-table-column label="序号" type="index" :index='indexMethod'></el-table-column>
-            <el-table-column min-width="25%" label="版本号" prop="versionNum"></el-table-column>
+                        <el-table-column min-width="25%" label="版本号" prop="versionNum">
+                <template slot-scope="scope">{{scope.row.versionNum}}（build{{scope.row.powerChange[0].title.split('-').join('')}}）</template>
+            </el-table-column>
             <el-table-column min-width="75%" label="功能变更">
                 <template slot-scope="scope">
                     <div class="logs-list c-text-left" v-for="(item, index) in scope.row.powerChange" :key="index">
                         <p class="logs-title">{{index+1}}. {{item.title}}</p>
-                        <ul class="logs-list-inner">
-                            <li class="logs-text" v-for="(subItem, subIndex) in item.list" :key="subIndex">{{subIndex+1}}) {{subItem}}</li>
+                        <ul class="logs-list-inner clearfix">
+                            <li class="logs-text" v-for="(subItem, subIndex) in item.list" :key="subIndex">{{subIndex+1}}) {{subItem}}；</li>
                         </ul>
                     </div>
                 </template>
@@ -76,11 +78,21 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+@import "@/assets/scss/theme.scss";
 .logs-list {
-    padding: 10px 50px;
-    line-height: 30px;
+    padding: 5px 20px;
+    line-height: 24px;
+    .logs-title {
+        color: $red;
+    }
     .logs-list-inner {
         padding-left: 15px;
+        .logs-text {
+            width: 25%;
+            float: left;
+            box-sizing: border-box;
+            padding-right: 10px;
+        }
     }
 }
 </style>

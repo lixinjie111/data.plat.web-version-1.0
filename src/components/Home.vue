@@ -12,7 +12,7 @@
                     <a class="index-footer-list" href="javascript:;" @click="clickFn(item)" v-for="item in linkData">{{item.title}}</a>
                 </div>
                 <div class="index-footer-right">
-                    <span>版本信息：V1.1-build20190718</span>
+                    <span>版本信息：{{logs[0].versionNum}}（build{{logs[0].powerChange[0].title.split('-').join('')}}）</span>
                     <a href="javascript:;" class="index-blue-color" @click="$router.push('/logs')">更新日志</a>
                 </div>
             </div>
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import Logs from "../../static/logs/logs"
 export default {
     name: 'Home',
     data () {
@@ -37,7 +38,8 @@ export default {
             }, {
                 title: "监控管理平台",
                 link: "http://120.133.21.14:9093/dataMonitor/#/dataMonitor"
-            }]      
+            }],
+            logs: Logs      
         }
     },
     methods: {
