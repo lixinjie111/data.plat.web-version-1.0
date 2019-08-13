@@ -3,7 +3,7 @@
       <div class="c-scroll-wrap">
           <div class="c-scroll-inner">
               <h3 class="c-title">
-                  bsm详情
+                  bsm数据<i class='el-icon-arrow-right'></i>bsm详情
                   <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
               </h3>
               <div class='c-wrapper-20 vehicle-detail'>

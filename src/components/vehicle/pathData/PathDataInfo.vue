@@ -3,7 +3,7 @@
         <div class="c-scroll-wrap">
             <div class="c-scroll-inner">
                 <h3 class="c-title">
-                    轨迹数据 > 查看轨迹
+                    轨迹数据<i class="el-icon-arrow-right"></i>查看轨迹
                     <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
                 </h3>
                 <!-- 信息模块 -->

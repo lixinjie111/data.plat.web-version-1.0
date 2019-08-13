@@ -295,7 +295,7 @@ export default {
                     'pageIndex': this.pageOption.page-1
                 },
                 'fileName':this.searchKey.fileName,
-                'camCode':this.searchKey.deviceId,
+                'camCode':this.searchKey.camCode,
                 'roadName':this.searchKey.rspRoadName,
                 'roadPointName':this.searchKey.rsPtName,
                 'source':this.searchKey.source,

@@ -3,7 +3,7 @@
     <div class="c-scroll-wrap">
         <div class="c-scroll-inner">
             <h3 class="c-title">
-                动态参数 > 动态详情
+                动态参数<i class='el-icon-arrow-right'></i>动态详情
                 <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
             </h3>
             <div class="c-wrapper-20">

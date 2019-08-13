@@ -116,17 +116,17 @@ class Utils{
     static setBreadCrumbs(url){
         let tMenu = Utils.getMenuCnName(url);   
         let str = '';
-        if(tMenu.name){
-            str = tMenu.name;
-        }
+        // if(tMenu.name){
+        //     str = tMenu.name;
+        // }
         if(tMenu.child){
-            str = str + ' > ' + tMenu.child;
+            str = tMenu.child;
             // str = str + ' / ' + tMenu.child;
         }
-        if(tMenu.grandChild){
-            str = str + ' > ' +tMenu.grandChild;
-            // str = str + ' / ' +tMenu.grandChild;
-        }
+        // if(tMenu.grandChild){
+        //     str = str + ' > ' +tMenu.grandChild;
+        //     // str = str + ' / ' +tMenu.grandChild;
+        // }
         return str;
     }
 
