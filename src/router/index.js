@@ -71,12 +71,9 @@ export default new Router({
     },
     {
       path: '/main',
-      component: Main,      
+      component: Main,   
+      redirect: 'home',   
       children: [
-        {
-          path: '',
-          component: Home,
-        },
         {
           path: '/home',    // 首页
           name: 'home',

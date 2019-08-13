@@ -4,7 +4,10 @@ import {HTTPURL,operPlatUrl} from '../requestUrl';
 /**
  * 实时监控
  */
-
+/**
+ * 左侧树结构
+ */
+export const queryRoadRegionTree = params => { return axios.post(`${HTTPURL}road/queryRoadRegionTree`, params).then(res => res.data); };
  /**
  * 左侧树形菜单 省
  */

@@ -3,7 +3,7 @@
         <div class="c-scroll-wrap">
             <div class="c-scroll-inner">
                 <h3 class="c-title">
-                    {{title}}
+                    动态参数<i class='el-icon-arrow-right'></i>{{title}}
                     <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
                 </h3>
                 <div v-show="isShow && !isAddData" class="c-wrapper-20">
