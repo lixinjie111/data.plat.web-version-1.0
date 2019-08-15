@@ -542,6 +542,7 @@ export default {
         },
         searchClick(){
             var rsCamOptions = this.rsCamCodeOption.filterOption;
+            this.markerOption.point = [];
             if(rsCamOptions.length > 0){
                 //过滤匹配默认选中数据
                 rsCamOptions.forEach(item => {
@@ -576,6 +577,7 @@ export default {
                 this.treeData = [];
                 this.defaultArr = [];
             }
+            this.drawStartMarker();
         }
     },
     destroyed() {
