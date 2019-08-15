@@ -2,10 +2,12 @@
 <div class="c-view-dialog">
     <div class="c-scroll-wrap">
         <div class="c-scroll-inner">
-            <h3 class="c-title">
-                动态参数<i class='el-icon-arrow-right'></i>动态详情
-                <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
-            </h3>
+            <div class="c-title-fixed">
+                <h3 class="c-title">
+                    动态参数<i class='el-icon-arrow-right'></i>动态详情
+                    <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
+                </h3>
+            </div>
             <div class="c-wrapper-20">
                 <el-form :inline="true" :model="searchKey" ref='searchForm' size='small'>
                     <el-form-item label="数据编号" prop='dataId'>

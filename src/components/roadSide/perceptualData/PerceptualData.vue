@@ -7,7 +7,30 @@
             <div class="c-gray-box road-cam-box c-mr-10">
                 <div class='cam-title'>摄像头组织结构</div>
                 <div class='carm-oragn-info c-mt-10'>
-                    <el-form size="small" class="c-text-between">
+                    <el-form :model="searchKey" size="small" class="c-text-between">
+                        <el-form-item>
+                            <el-select
+                                v-model.trim="searchKey.deviceId"
+                                filterable
+                                remote
+                                reserve-keyword
+                                value-key="deviceId"
+                                placeholder="请输入关键词"
+                                :remote-method="rsCamCodeRemoteMethod"
+                                @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey,'deviceId', cameraUrl)"
+                                @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
+                                :loading="rsCamCodeOption.loading">
+                                <el-option
+                                    v-for="item in rsCamCodeOption.filterOption"
+                                    :key="item.deviceId"
+                                    :label="item.deviceId"
+                                    :value="item.deviceId">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-button type="warning" icon="el-icon-search" @click="searchClick" size='small'>查询</el-button>
+                    </el-form>
+                    <el-form :model="searchKey" size="small" class="c-text-between c-mt-10">
                         <el-form-item>
                             <el-select 
                                 v-model="searchKey.provinceValue" 
@@ -56,9 +79,6 @@
                         :default-expanded-keys="defaultArr"
                         @node-click="handleNodeClick" 
                         >
-                        <!-- show-checkbox
-                        node-key="code" -->
-                        <!-- @check-change="handleCheckChange" -->
                         <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
                             <i class="sl-video-icon" :class="data.icon" :id='data.label' v-if="data.icon"></i>
                             <span class="sl-play-text">{{ node.label }}</span>              
@@ -91,7 +111,6 @@
                 <div class="c-video-wrapper c-mt-10">
                     <div class="c-video" id="cmsplayer"></div>
                     <div class="c-video-mask" v-show='isMaskShow'></div>
-
                     <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                         <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
                         <div class='c-map-btn c-map-btn-right' @click='mapChangeMin' v-else></div>
@@ -109,6 +128,7 @@
 import ConvertCoord from'@/common/utils/coordConvert.js';
 import RoadSideInfo from "../roadSideInfo/roadSideInfo.vue";
 import { setInterval, clearInterval, setTimeout } from 'timers';
+import { queryRoadCamListSearch } from '@/api/search';
 import {queryRoadRegionTree,queryCountyRoadTree,queryRoadCamList,startStreamRoad,getCityCameraStatics,stopStream} from '@/api/roadSide'
 export default {
     name:'PerceptualData',
@@ -117,6 +137,7 @@ export default {
     },
     data(){
         return{
+            currentVideoNode:'N-NJ-0004',
             roadSideShow:false,
             provinceLoading:false,
             changeSize:false,
@@ -142,6 +163,7 @@ export default {
             searchKey:{
                 provinceValue:'',
                 cityValue:'',
+                deviceId:''
             },
             defaultProps: {
                 code:'code',
@@ -154,6 +176,13 @@ export default {
                 onlineNum:0,
                 monitNum:0,
             },
+            rsCamCodeOption: {
+                loading: false,
+                timer: null,
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false
+            },
             markerOption: {
                 markers: [],
                 point: []
@@ -162,10 +191,10 @@ export default {
                 offset: new AMap.Pixel(0, -33),
                 anchor: 'bottom-center'
             }),
-            provinceData:[],//省市
-            municipalData:[],//辖区
-            defaultArr:['N-NJ-0006','N-NJ-0005','N-NJ-0004'],
+            defaultArr:['N-NJ-0004'],
+            defaultSerialNum:'3402000000132000003001',
             timer: null,
+            cameraUrl: queryRoadCamListSearch,
         }
     },
     mounted(){
@@ -180,6 +209,15 @@ export default {
             this.timer = setInterval(()=>{
                 this.computCamNum();
             },5000);
+        },
+        rsCamCodeRemoteMethod(query) {
+            this.$searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsCamCodeOption,
+                searchObj: this.searchKey,
+                key: 'deviceId',
+                request: this.cameraUrl
+            });
         },
         initMap(){
             this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.defaultMapOption);
@@ -256,6 +294,7 @@ export default {
                         obj.label = e.name;
                         obj.code = e.code;
                         obj.type = 1;
+                        this.treeData = [];
                         this.treeData.push(obj);
                     })
                 }
@@ -286,7 +325,6 @@ export default {
                     roadCode:node.data.code
                 }).then(res => {
                     if(res.status == '200') {
-                        // var roadCode = this.newData[0].children;
                         if(res.data.length) {
                             var protocal = JSON.stringify(res.data[0].protocol);
                             localStorage.setItem('protocal',protocal);
@@ -314,61 +352,77 @@ export default {
                             })
                         }
                         resolve(children);
-                        this.$refs.tree.setCurrentKey(this.defaultArr[2]);
+                        this.$refs.tree.setCurrentKey(this.defaultArr[0]);
                         let protocal = JSON.parse(localStorage.getItem('protocal'));
                         //默认打开摄像头编号为N-NJ-0004的视频
-                        startStreamRoad({
-                            camId:"3402000000132000003001",protocal:protocal
-                        }).then(res =>{
-                            if(res.status == '200') {
-                                var camerData = res.data;
-                                this.camDetail.camId = children[2].serialNum;
-                                this.camDetail.camCode = children[2].label;
-                                this.camDetail.roadName = children[2].roadName;
-                                this.camDetail.roadPointName = children[2].rsPtName;
-                                this.camDetail.roadPointId = children[2].rsPtId;
-                                this.camDetail.rsPtId = children[2].rsPtId;
-                                this.camDetail.lon = Number(children[2].ptLon).toFixed(8);
-                                this.camDetail.lat = Number(children[2].ptLat).toFixed(8);
-                                this.isMaskShow = false;
-                                let videoUrl = res.data.rtmp;
-                                this.embedFlash(videoUrl);
-                                this.markerOption.point.push(children[2]);
-                                this.drawStartMarker();
-                            }
-                        });
+                        if(this.defaultArr.length > 0){
+                            startStreamRoad({
+                                camId:this.defaultSerialNum,protocal:protocal
+                            }).then(res =>{
+                                if(res.status == '200') {
+                                    children.forEach((item,i) => {
+                                        if(item.serialNum == this.defaultSerialNum){
+                                            var camerData = res.data;
+                                            this.camDetail.camId = children[i].serialNum;
+                                            this.camDetail.camCode = children[i].label;
+                                            this.camDetail.roadName = children[i].roadName;
+                                            this.camDetail.roadPointName = children[i].rsPtName;
+                                            this.camDetail.roadPointId = children[i].rsPtId;
+                                            this.camDetail.rsPtId = children[i].rsPtId;
+                                            this.camDetail.lon = Number(children[i].ptLon).toFixed(8);
+                                            this.camDetail.lat = Number(children[i].ptLat).toFixed(8);
+                                            this.isMaskShow = false;
+                                            let videoUrl = res.data.rtmp;
+                                            this.embedFlash(videoUrl);
+                                            this.markerOption.point.push(children[i]);
+                                            this.drawStartMarker();
+                                        }
+                                    })
+                                    
+                                }
+                            });
+                        }else{
+                            return false;
+                        }
+                        
                         return;
                     }
                 })
             }
         },
         handleNodeClick(data){
-            this.roadNewName = this.roadName;
             this.markerOption.point = [];
             let camStatus = data.cameraRunStatus;
             this.changeSize = false;
-            if(camStatus == 1){//在线
-                if(data.isOn) {
-                    data.isOn = false;
-                    this.startPlay(data);
-                }else {
-                    data.isOn = true;
-                    this.endPlay();
-                    data.icon = "sl-play-icon";
-                }
-                let roadCamInfo = Object.assign({},{roadName:this.roadName},data);
-                this.camDetail.rsPtId = roadCamInfo.rsPtId;
-                this.markerOption.point.push(roadCamInfo);
-                this.drawStartMarker();
-            }else {
-                if(camStatus == '0'){//未知
-                    this.$message.error('未知摄像头!');
-                }else if(camStatus == '2'){//离线
-                    this.$message.error('摄像头为离线状态!');
-                }else if(camStatus == '3'){//未注册
-                    this.$message.error('摄像头未注册!');
-                }
+            if(this.currentVideoNode == data.code){
+                data.isOn = true;
                 this.endPlay();
+                data.icon = "sl-play-icon";
+            }else{
+                if(camStatus == 1){//在线
+                    if(data.isOn) {
+                        data.isOn = false;
+                        this.startPlay(data);
+                    }else {
+                        data.isOn = true;
+                        this.endPlay();
+                        data.icon = "sl-play-icon";
+                    }
+                    let roadCamInfo = Object.assign({},{roadName:this.roadName},data);
+                    this.camDetail.rsPtId = roadCamInfo.rsPtId;
+                    this.markerOption.point.push(roadCamInfo);
+                    this.drawStartMarker();
+                }else {
+                    if(camStatus == '0'){//未知
+                        this.$message.error('未知摄像头!');
+                    }else if(camStatus == '2'){//离线
+                        this.$message.error('摄像头为离线状态!');
+                    }else if(camStatus == '3'){//未注册
+                        this.$message.error('摄像头未注册!');
+                    }
+                    this.endPlay();
+                }
+                this.currentVideoNode = data.code;
             }
         },
         embedFlash(rtmpSource){//部署用此段
@@ -403,7 +457,6 @@ export default {
                 if(res.status == '200') {
                     this.camDetail.camId = camerData.serialNum;
                     this.camDetail.camCode = camerData.label;
-                    this.camDetail.roadNewName = this.roadName;
                     this.camDetail.roadPointName = camerData.rsPtName;
                     this.camDetail.roadPointId = camerData.rsPtId;
                     this.camDetail.lon = Number(camerData.ptLon).toFixed(8);
@@ -419,7 +472,6 @@ export default {
             this.isMaskShow = true;
             this.camId = '--';
             this.camCode = '--';
-            this.roadNewName = '--';
             this.roadPointName = '--';
             this.roadPointId = '--';
             let nodeSel = document.querySelectorAll('.el-tree-node .el-tree-node__content .el-tree-node__expand-icon');
@@ -429,7 +481,7 @@ export default {
             }
             let protocal = JSON.parse(localStorage.getItem('protocal'));
             stopStream({
-                "camId":this.camDetail.camCode,"protocal":protocal
+                "camId":this.currentVideoNode,"protocal":protocal
             }).then(res => {
             })
         },
@@ -442,8 +494,8 @@ export default {
         getCityTrees(item){//获区市辖数据
             this.newData = [];
             this.endPlay();
-            this.searchKey.municiSelected = '';
-            this.municipalData = item.children;
+            this.searchKey.cityValue = '';
+            this.cityOptions = item.children;
         },
         queryCountyRoadTrees(item){
             this.newData = []; 
@@ -456,7 +508,6 @@ export default {
                     this.treeData = res.data;
                 }
             })
-            
         },
         backClick(){
             this.wsRequest();
@@ -472,10 +523,10 @@ export default {
             this.changeSize = false;
         },
         computCamNum(){
-            if(this.searchKey.municiSelected != undefined && this.searchKey.municiSelected != ''){
+            if(this.searchKey.cityValue != undefined && this.searchKey.cityValue != ''){
                 //查询总数。在线数，实时监控数
                 getCityCameraStatics({
-                    cityCode: this.searchKey.municiSelected.code
+                    cityCode: this.searchKey.cityValue.code
                 }).then(res =>{
                     if(res.status == '200'){
                         this.camStatusNums.camTotal = res.data.count;
@@ -487,6 +538,43 @@ export default {
                 this.camStatusNums.camTotal = 0;
                 this.camStatusNums.monitNum = 0;
                 this.camStatusNums.onlineNum = 0;
+            }
+        },
+        searchClick(){
+            var rsCamOptions = this.rsCamCodeOption.filterOption;
+            if(rsCamOptions.length > 0){
+                //过滤匹配默认选中数据
+                rsCamOptions.forEach(item => {
+                    if(item.deviceId == this.searchKey.deviceId){
+                        this.provinceOptions.forEach(e => {
+                            if(e.code == item.rspDistcodeProvince){
+                                let obj = {};
+                                obj.label = e.label;
+                                obj.code = item.rspDistcodeProvince;
+                                this.provinceOptions = [];
+                                this.provinceOptions.push(obj);
+                            }
+                        })
+                        this.cityOptions.forEach(a => {
+                            if(a.code == item.rspDistcodeCity){
+                                let obj = {};
+                                obj.label = a.label;
+                                obj.code = item.rspDistcodeCity;
+                                this.cityOptions = [];
+                                this.cityOptions.push(obj);
+                                this.getRegion(item.rspDistcodeCity);
+                                this.defaultArr = [];
+                                this.defaultArr.push(this.searchKey.deviceId);
+                            }
+                        })
+                        this.defaultSerialNum = item.serialNum;
+                    }
+                })
+            }else{
+                this.provinceOptions = [];
+                this.cityOptions = [];
+                this.treeData = [];
+                this.defaultArr = [];
             }
         }
     },
@@ -532,7 +620,7 @@ export default {
 .carm-oragn-sels {
     &.el-tree{
         position: absolute;
-        top: 106px;
+        top: 156px;
         left: 10px;
         right: 10px;
         bottom: 0;

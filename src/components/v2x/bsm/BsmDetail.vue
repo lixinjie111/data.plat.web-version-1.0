@@ -2,10 +2,12 @@
   <div class="c-view-dialog">
       <div class="c-scroll-wrap">
           <div class="c-scroll-inner">
-              <h3 class="c-title">
-                  bsm数据<i class='el-icon-arrow-right'></i>bsm详情
-                  <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
-              </h3>
+              <div class="c-title-fixed">
+                <h3 class="c-title">
+                    bsm数据<i class='el-icon-arrow-right'></i>bsm详情
+                    <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
+                </h3>
+              </div>
               <div class='c-wrapper-20 vehicle-detail'>
                   <ul><li>车辆编号: {{infoTagData.vehicleId ? infoTagData.vehicleId : '--'}}</li><li>车牌号: {{infoTagData.plateNo ? infoTagData.plateNo : '--'}}</li><li>GPS时间: {{$dateUtil.formatTime(infoTagData.gpstime)}}</li></ul>
               </div>

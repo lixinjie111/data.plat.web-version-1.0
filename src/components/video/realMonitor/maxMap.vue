@@ -37,7 +37,6 @@
     },
     methods: {
       initMap(){
-
           this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.$parent.defaultMapOption);
           // this.distanceMap.setZoom();
       },

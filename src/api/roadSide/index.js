@@ -66,7 +66,15 @@ export const redoVideoTask = params => { return axios.post(`${HTTPURL}cam/redoVi
  * 新建下载任务
  */
 export const roadDownloadTask = params => { return axios.post(`${HTTPURL}road/roadDownloadTask`, params).then(res => res.data); };
+/**
+ * 左侧树形菜单 省
+ */
+export const queryProvinceCityTree = params => { return axios.post(`${HTTPURL}road/queryProvinceCityTree`, params).then(res => res.data); };
 
+ /**
+ * 左侧树形菜单 区路
+ */
+export const queryCountyRoadTree = params => { return axios.post(`${HTTPURL}road/queryCountyRoadTree`, params).then(res => res.data); };
 /**
  * 感知数据
  */

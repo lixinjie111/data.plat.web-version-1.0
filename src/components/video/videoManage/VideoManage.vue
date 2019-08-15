@@ -1,8 +1,7 @@
 <template>
     <!-- 基本信息 -->
-<div>
-    <div class="c-wrapper-20" v-cloak v-show="!panel.show">
-        <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
+    <div class="c-wrapper-20">
+            <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
             <el-form-item label="车辆编号" prop="vehicleId">
                 <el-select
                     v-model.trim="searchKey.vehicleId"
@@ -139,9 +138,8 @@
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
         </div>
+        <play-back v-if='isPlaybackShow' @backVideoManage='backFn'></play-back>
     </div>
-    <play-back v-if='isPlaybackShow' @backVideoManage='backFn'></play-back>
-</div>
 </template>
 <script>
 import TList from '@/common/utils/list.js';

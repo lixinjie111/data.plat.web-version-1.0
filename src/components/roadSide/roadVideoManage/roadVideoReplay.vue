@@ -1,7 +1,9 @@
 <template>
     <!-- 基本信息 -->
     <div class="c-view-dialog" v-cloak>
-        <h3 class="c-title c-border-bottom">视频管理<i class='el-icon-arrow-right'></i>回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></h3>
+        <div class="c-title-fixed">
+            <h3 class="c-title c-border-bottom">视频管理<i class='el-icon-arrow-right'></i>回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></h3>
+        </div>
         <div class="c-detail-box c-wrapper-20 c-padding-20">
             <div class="c-detail-lable-list clearfix">
                 <p class="c-detail-lable">

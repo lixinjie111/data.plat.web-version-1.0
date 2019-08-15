@@ -2,10 +2,12 @@
 <div class="c-view-dialog" v-cloak>
         <div class="c-scroll-wrap">
             <div class="c-scroll-inner">
-                <h3 class="c-title">
-                    轨迹数据<i class="el-icon-arrow-right"></i>查看轨迹
-                    <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
-                </h3>
+              <div class="c-title-fixed">
+                  <h3 class="c-title">
+                      轨迹数据<i class="el-icon-arrow-right"></i>查看轨迹
+                      <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
+                  </h3>
+              </div>
                 <!-- 信息模块 -->
                 <div class="c-detail-lable-list clearfix c-detail-box c-wrapper-20 c-padding-20">
                     
@@ -117,9 +119,6 @@ import { error } from 'util';
     },
     mounted() {
       let self = this;
-      // setTimeout(() => {
-      //   this.$refs.refMap.resize([1398, 315]);
-      // }, 30);
       this.initMap();
       let table = document.getElementsByClassName("tbody")[0];
 
@@ -162,7 +161,7 @@ import { error } from 'util';
       table.onscroll=function () {
         if (table.scrollTop + table.clientHeight+1 >= table.scrollHeight) {
           if (self.requestDataParams.isBottom==false)
-           self.addPageData();
+            self.addPageData();
         }
       }
     },

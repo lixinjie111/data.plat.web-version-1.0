@@ -60,17 +60,7 @@
             bottom: 0;
             width: 100%;
             height: 100%;
-            // background-color: $black;
             background-color: transparent;
-        }
-        .c-video-mask{
-            position:absolute;
-            top:0;
-            left:0;
-            bottom:0;
-            right:0;
-            z-index:50;
-            background-color: #000;
         }
     }
     .c-map-wrapper {
@@ -82,6 +72,26 @@
         z-index:100;
         background-color: $mapBgColor;
         transition: width .3s ease-out;
+    }
+    .c-video-mask{
+        position:absolute;
+        top:0;
+        left:0;
+        bottom:0;
+        right:0;
+        z-index:11;
+        background-color: #000;
+        @include layoutMode(both);
+        font-size: 18px;
+        color: #fff;
+        [class^="el-icon"],
+        [class*=" el-icon"] {
+            font-size: 50px;
+            font-weight: normal;
+        }
+        .el-icon-video-play {
+            cursor: pointer;
+        }
     }
 
 }
@@ -235,4 +245,17 @@
         left: 0;
         background-image: url('../images/map/right-bar.png')
     }
+}
+
+// 3d地图
+.c-tusvn-map-box {
+    position: relative;
+    background-color: $black;
+}
+.c-tusvn-map {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
 }
