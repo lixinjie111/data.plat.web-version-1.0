@@ -1,5 +1,5 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+// import Vue from 'vue'
+// import Router from 'vue-router'
 
 // 登录
 const Login = resolve => require(['@/components/Login.vue'], resolve)
@@ -52,9 +52,9 @@ const rsm = resolve => require(['@/components/v2x/rsm/RsmCom.vue'], resolve)
 const rsmDetail = resolve => require(['@/components/v2x/rsm/RsmDetail.vue'], resolve)
 const rsi = resolve => require(['@/components/v2x/rsi/RsiCom.vue'], resolve)
 
-Vue.use(Router)
+// Vue.use(Router)
 
-export default new Router({
+export default new VueRouter({
   // mode: 'history',
   // base: '/dataManage',    // 发布的项目目录，如果发布的目录为根目录不需要设置这个属性
   // mode: 'hash',

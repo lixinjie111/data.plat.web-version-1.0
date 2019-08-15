@@ -1,21 +1,21 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
+// import Vue from 'vue'
 import App from './App'
 import router from './router'
 // import '@/assets/css/video-js.css';
 import store from './store/index'
-import echarts from 'echarts'
+// import echarts from 'echarts'
 import Api from './api/index.js';
 import TDate from './common/utils/date.js'
 //element-ui
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-Vue.use(ElementUI);
+// import ElementUI from 'element-ui';
+// import 'element-ui/lib/theme-chalk/index.css';
+// Vue.use(ElementUI);
 
 import TFormValidate from './common/utils/formValidate'
 Vue.config.productionTip = false
-Vue.prototype.$echarts = echarts
+// Vue.prototype.$echarts = echarts
 Vue.prototype.$api = Api;
 Vue.prototype.$dateUtil = TDate;
 
@@ -29,7 +29,7 @@ import '@/assets/scss/public.scss';
 import '@/assets/scss/map.scss';
 import '@/assets/scss/element-ui-reset.scss';    
 import '@/assets/icon-font/iconfont.css';
-import '@/assets/icon-font/iconfont.js';
+// import '@/assets/icon-font/iconfont.js';
 
 //导入video.js
 import VideoPlayer  from 'vue-video-player'
@@ -39,16 +39,16 @@ import 'videojs-flash'
 Vue.use(VideoPlayer);
 
 //高德地图
-import VueAMap from "vue-amap";
-Vue.use(VueAMap);
+// import VueAMap from "vue-amap";
+// Vue.use(VueAMap);
 
-VueAMap.initAMapApiLoader({
-  key: "8bf04484a44d846096c9ab84730e88b8",
-  plugin: [
-    "AMap.ElasticMarker"
-  ],
-  uiVersion: "1.0"
-});
+// VueAMap.initAMapApiLoader({
+//   key: "8bf04484a44d846096c9ab84730e88b8",
+//   plugin: [
+//     "AMap.ElasticMarker"
+//   ],
+//   uiVersion: "1.0"
+// });
 
 /* eslint-disable no-new */
 // Vue.filter('toFixed',function (value,num) {
