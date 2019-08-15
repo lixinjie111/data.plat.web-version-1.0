@@ -2,10 +2,12 @@
     <div class="c-view-dialog">
         <div class="c-scroll-wrap">
             <div class="c-scroll-inner">
-                <h3 class="c-title">
-                    动态参数<i class='el-icon-arrow-right'></i>{{title}}
-                    <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
-                </h3>
+                <div class="c-title-fixed">
+                    <h3 class="c-title">
+                        动态参数<i class='el-icon-arrow-right'></i>{{title}}
+                        <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
+                    </h3>
+                </div>
                 <div v-show="isShow && !isAddData" class="c-wrapper-20">
                     <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
                         <el-form-item label="车辆编号" prop='vehicleId'>
@@ -218,7 +220,6 @@ export default {
         
         addDataSet(){
             this.isAddData = true;
-            // this.$refs.addDataPanel.init();
         },
 
         initLocalDataPanelHeight(){
@@ -274,54 +275,4 @@ export default {
     }
 }
 </script>
-<style scoped>
-.yk-b-10{
-    margin-bottom: 10px;
-}
-.yk-b-30{
-    margin-bottom: 30px;
-}
-.yk-r-30{
-    margin-right: 30px;
-}
-.yk-20{
-    height: 20px;
-}
-.yk-24{
-    height: 24px;
-    width: 171px;
-}
-.yk-list{
-    margin-top:5px;
-    padding: 5px 10px;
-    height: 120px;
-    overflow-y: auto;
-}
-.yk-270{
-    width: 320px;
-    float: left;
-}
-.yk-input-200{
-    width: 168px;
-    display: inline-block;
-    vertical-align: top;
-    text-align: left;
-}
-.yk-label-65{
-    display: inline-block;
-    width: 65px;
-    text-align: right;
-    float:left;
-}
-
-.yk-gap{
-    margin: 10px 0px 10px 0px;
-    background: #ccd;
-}
-
-.yk-panel-box{
-    position: relative; 
-    overflow-y: auto;
-}
-</style>
 

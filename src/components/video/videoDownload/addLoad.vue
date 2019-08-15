@@ -43,14 +43,14 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="摄像头编号" prop='camDeviceId'>
+            <el-form-item label="摄像头编号" prop='camSerialNum'>
                 <el-select
                     v-model="formParams.camSerialNum"
                     value-key="camSerialNum"
                     @change="handleSelectCamCode">
                     <el-option
                         v-for="(item,index) in camCodeList"
-                        :key="index"
+                        :key="item.label+index"
                         :label="item.label"
                         :value="item">
                     </el-option>
@@ -279,6 +279,7 @@ export default {
             this.getVehicleBindCamInfo();
         },
         getPlateNoList(){
+            this.formParams.camSerialNum = '';
             clearTimeout(this.fuzzySearchOption1.timer);
             this.fuzzySearchOption1.timer = setTimeout(() => {
                 requestqueryVehicleCamList({
@@ -306,18 +307,6 @@ export default {
                 this.plateNoList = this.allList;
             }
         },
-        handleSelectPlateNo(item) {
-            this.vehicleIdList = [{
-                plateNo: item.plateNo,
-                vehicleId: item.vehicleId
-            }];
-            this.formParams.plateNo = item.plateNo;
-            this.formParams.vehicleId = item.vehicleId;
-            this.formParams.camSerialNum = '';
-            this.formParams.camDeviceId = '';
-            this.formParams.camDirection = '';
-            this.getVehicleBindCamInfo();
-        },
         searchVehicleId(query) {
             if (query !== '') {
                 this.vehicleIdLoading = true;
@@ -344,18 +333,6 @@ export default {
                     });
                 },1000);
             }
-        },
-        handleSelectVehicleId(item) {
-            this.plateNoList = [{
-                plateNo: item.plateNo,
-                vehicleId: item.vehicleId
-            }];
-            this.formParams.plateNo = item.plateNo;
-            this.formParams.vehicleId = item.vehicleId;
-            this.formParams.camSerialNum = '';
-            this.formParams.camDeviceId = '';
-            this.formParams.camDirection = '';
-            this.getVehicleBindCamInfo();
         },
         handleSelectCamCode(item) {
             this.formParams.camSerialNum = item.serialNum;

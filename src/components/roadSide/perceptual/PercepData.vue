@@ -92,6 +92,8 @@
             max-height="724"
             stripe>
             <el-table-column label="编号" type="index" :index="indexMethod"></el-table-column>
+            <el-table-column min-width="17%" label="路侧点名称" prop="rsPtName"></el-table-column>
+            <el-table-column min-width="17%" label="摄像头编号" prop="deviceId"></el-table-column>
             <el-table-column min-width="17%" label="摄像头序列号" prop="serialNum"></el-table-column>
             <el-table-column min-width="45%" label="文件名称" prop="fileName"></el-table-column>
             <el-table-column min-width="15%" label="开始时间">
@@ -277,9 +279,10 @@ export default {
             this.deviceIdList = [];
         },
         initData(){
-            // this.initPaging();
             this.loading = true;
             findVideoRecords({
+                'rsPtName':this.searchKey.rsPtName,
+                'deviceId':this.searchKey.deviceId,
                 'serialNum':  this.searchKey.serialNum,
                 'startTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
                 'endTime':  this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''

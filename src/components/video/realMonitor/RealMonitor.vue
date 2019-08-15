@@ -46,8 +46,8 @@
             <el-form-item label="摄像头方向: " prop="position" class="c-detail-lable">
                 {{searchKey.position ? searchKey.position : '--'}}
             </el-form-item>
-            <el-form-item label="摄像头编号: " prop="serialNum" class="c-detail-lable">
-                {{searchKey.serialNum ? searchKey.serialNum : '--'}}
+            <el-form-item label="摄像头编号: " prop="deviceId" class="c-detail-lable">
+                {{searchKey.deviceId ? searchKey.deviceId : '--'}}
             </el-form-item>
             <el-form-item label="摄像头状态: " prop="status" class="c-detail-lable">
                 {{searchKey.status ? searchKey.status : '--'}}
@@ -127,6 +127,7 @@ export default {
                 serialNum:'',
                 position:'',
                 status:'',
+                deviceId:''
             },
             fuzzySearchOption1: {
                 loading: false,
@@ -449,6 +450,7 @@ export default {
             this.searchKey.vehicleId = val.vehicleId;
             this.searchKey.position = val.towardText;
             this.searchKey.serialNum = val.serialNum;
+            this.searchKey.deviceId = val.deviceId;
             this.searchKey.status = val.statusText;
             this.totalTime = 0;
             this.totalTimeformat = '';
@@ -464,6 +466,7 @@ export default {
             this.searchKey.vehicleId = val.vehicleId;
             this.searchKey.position = val.towardText;
             this.searchKey.serialNum = val.serialNum;
+            this.searchKey.deviceId = val.deviceId;
             this.searchKey.status = val.statusText;
             this.getPlateNo(val);
             this.resetVideoMap(val);
@@ -485,23 +488,6 @@ export default {
     },
 }
 </script>
-<style scoped lang="scss"> 
-.monit-detail {
-    ul{
-        overflow: hidden;
-        margin-bottom:10px;
-        line-height: 24px;
-        li{
-            float: left;
-            width: 20%;
-            margin-top:10px;
-            span{
-                color:#666;
-            }
-        }
-    }
-}
-</style>
 <style>
 .sl-real-momitor-video .vjs-text-track-display,
 .sl-real-momitor-video .video-js .vjs-big-play-button,

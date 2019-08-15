@@ -88,15 +88,11 @@
             </el-pagination>
         </div>
 
-        <!-- <div> -->
         <local-data-panel title="获取本地数据" ref="localDataPanel" @localDataPanelBack="init" v-show="!panel.detailShow && panel.localDataShow" :type="panel.type" :data="panel.data"></local-data-panel>
         <detail-panel ref="detailPanel" @detailPanelBack="panelBack" v-show="panel.detailShow && !panel.localDataShow" :title="panel.title" :type="panel.type" :data="panel.data"></detail-panel>
-        <!-- </div> -->
     </div>
 </template>
 <script>
-import TList from '@/common/utils/list.js'
-import DatePicker from 'vue2-datepicker'
 import LocalDataPanel from '@/components/vehicle/dynamicParam/LocalDataPanel.vue'
 import DetailPanel from './DetailPanel.vue'
 import {requestqueryVehicleList} from '@/api/search';
@@ -104,7 +100,7 @@ import {dynamicParamList} from '@/api/vehicle';
 export default {
     name: 'BaseMessage',
     components: {
-        LocalDataPanel,DatePicker,DetailPanel
+        LocalDataPanel,DetailPanel
     },
     data(){
         let _this = this;
@@ -286,6 +282,3 @@ export default {
     },
 }
 </script>
-<style>
-#bread-crumb li{ display:inline}
-</style>

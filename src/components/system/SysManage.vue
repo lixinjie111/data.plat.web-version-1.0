@@ -1,7 +1,9 @@
 <template>
     <!-- 系统管理 -->
     <div>
-        <h3 class="c-title">{{ current.menu }}</h3>
+        <div class="c-title-fixed">
+            <h3 class="c-title">{{ current.menu }}</h3>
+        </div>
         <router-view></router-view> 
     </div>
 </template>

@@ -39,8 +39,6 @@ export default {
                 type: '',
                 msg: '',
                 data:'',
-                show: false,
-                cfgShow: true,
             }, 
         }
     },

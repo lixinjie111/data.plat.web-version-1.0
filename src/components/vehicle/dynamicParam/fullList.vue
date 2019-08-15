@@ -45,14 +45,11 @@
 </div>   
 </template>
 <script>
-import TList from '@/common/utils/list.js'
 import {findVehicleProperty} from '@/api/vehicle';
 export default {
     name:'FullList',
     props: ['title','type','data'],
-     components: {
-        TList
-    },
+     components: {},
     data () {
         return {
             searchLoading:false,
@@ -77,12 +74,12 @@ export default {
         }
     },
     methods: {
-         initPageOption() {
+        initPageOption() {
             this.dataList = [];
             this.pageOption.total = 0;
             this.pageOption.page = 1;
-         },
-         init(){
+        },
+        init(){
             this.operPlatUrl = window.config.operPlatUrl;
             this.initPaging();
             this.initData();         
@@ -136,21 +133,16 @@ export default {
         handleSelectionChange(val) {
             this.selector = [];
             this.selector = val;
-            // val.forEach(item => {
-            //     let obj = {};
-            //     obj.sid = item.sid;
-            //     this.selector.push(obj);
-            // });
         },
-       changePageSize(value) {//每页显示条数变更
-            this.initPageOption();
-            this.pageOption.size = value;
-            this.initData();
-        },
-        changePageCurrent(value) {//页码变更
-            this.pageOption.page = value;
-            this.initData();
-        },
+        changePageSize(value) {//每页显示条数变更
+                this.initPageOption();
+                this.pageOption.size = value;
+                this.initData();
+            },
+            changePageCurrent(value) {//页码变更
+                this.pageOption.page = value;
+                this.initData();
+            },
     },
 }
 </script>

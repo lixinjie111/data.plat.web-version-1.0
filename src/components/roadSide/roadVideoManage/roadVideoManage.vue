@@ -1,147 +1,143 @@
 <template>
 <!-- 基本信息 -->
 <div class="c-wrapper-20" v-cloak>
-    <div v-show="!panel.show">
-        <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
-            <el-form-item label="摄像头编号" prop='deviceId'>
-                <el-select
-                    v-model.trim="searchKey.deviceId"
-                    filterable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词"
-                    :remote-method="rsCamCodeRemoteMethod"
-                    @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'deviceId', cameraUrl)"
-                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
-                    :loading="rsCamCodeOption.loading">
-                    <el-option
-                        v-for="item in rsCamCodeOption.filterOption"
-                        :key="item"
-                        :label="item"
-                        :value="item">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="道路名称" prop='rspRoadName'>
-                <el-select
-                    v-model.trim="searchKey.rspRoadName"
-                    filterable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词"
-                    :remote-method="rsRoadNameRemoteMethod"
-                    @focus="$searchFilter.remoteMethodClick(rsRoadNameOption, searchKey, 'rspRoadName', roadUrl)"
-                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'rspRoadName')"
-                    :loading="rsRoadNameOption.loading">
-                    <el-option
-                        v-for="item in rsRoadNameOption.filterOption"
-                        :key="item"
-                        :label="item"
-                        :value="item">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-                <!-- <el-input v-model.trim="searchKey.roadPointName"></el-input> -->
-                <el-form-item label="路侧点名称" prop='rsPtName'>
-                    <el-select
-                        v-model.trim="searchKey.rsPtName"
-                        filterable
-                        remote
-                        reserve-keyword
-                        placeholder="请输入关键词"
-                        :remote-method="rsPointNameRemoteMethod"
-                        @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', roadUrl)"
-                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsPtName')"
-                        :loading="rsPointNameOption.loading">
-                        <el-option
-                            v-for="item in rsPointNameOption.filterOption"
-                            :key="item"
-                            :label="item"
-                            :value="item">
-                        </el-option>
-                    </el-select>
-            </el-form-item>
-            <el-form-item label="视频来源" prop='source'>
-                <el-select v-model="searchKey.source">
-                    <el-option
-                        v-for="item in sourceList"
-                        :key="item.val"
-                        :label="item.name"
-                        :value="item.val"
-                    ></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="开始时间" prop='startTime'>
-                <el-date-picker
-                    v-model.trim="searchKey.startTime"
-                    type="datetimerange"
-                    :picker-options="timeOption"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
-                </el-date-picker>
-            </el-form-item>
-            <el-form-item label="结束时间" prop='endTime'>
-                <el-date-picker
-                    v-model.trim="searchKey.endTime"
-                    type="datetimerange"
-                    :picker-options="timeOption"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
-                </el-date-picker>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="warning" icon="el-icon-search" @click="searchClick" :loading="searchLoading">查询</el-button>
-                <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
-            </el-form-item>
-        </el-form>
+    <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
+        <el-form-item label="摄像头编号" prop='deviceId'>
+            <el-select
+                v-model.trim="searchKey.deviceId"
+                filterable
+                remote
+                reserve-keyword
+                placeholder="请输入关键词"
+                :remote-method="rsCamCodeRemoteMethod"
+                @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'deviceId', cameraUrl)"
+                @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
+                :loading="rsCamCodeOption.loading">
+                <el-option
+                    v-for="item in rsCamCodeOption.filterOption"
+                    :key="item"
+                    :label="item"
+                    :value="item">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="道路名称" prop='rspRoadName'>
+            <el-select
+                v-model.trim="searchKey.rspRoadName"
+                filterable
+                remote
+                reserve-keyword
+                placeholder="请输入关键词"
+                :remote-method="rsRoadNameRemoteMethod"
+                @focus="$searchFilter.remoteMethodClick(rsRoadNameOption, searchKey, 'rspRoadName', roadUrl)"
+                @blur="$searchFilter.remoteMethodBlur(searchKey, 'rspRoadName')"
+                :loading="rsRoadNameOption.loading">
+                <el-option
+                    v-for="item in rsRoadNameOption.filterOption"
+                    :key="item"
+                    :label="item"
+                    :value="item">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="路侧点名称" prop='rsPtName'>
+            <el-select
+                v-model.trim="searchKey.rsPtName"
+                filterable
+                remote
+                reserve-keyword
+                placeholder="请输入关键词"
+                :remote-method="rsPointNameRemoteMethod"
+                @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', roadUrl)"
+                @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsPtName')"
+                :loading="rsPointNameOption.loading">
+                <el-option
+                    v-for="item in rsPointNameOption.filterOption"
+                    :key="item"
+                    :label="item"
+                    :value="item">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="视频来源" prop='source'>
+            <el-select v-model="searchKey.source">
+                <el-option
+                    v-for="item in sourceList"
+                    :key="item.val"
+                    :label="item.name"
+                    :value="item.val"
+                ></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="开始时间" prop='startTime'>
+            <el-date-picker
+                v-model.trim="searchKey.startTime"
+                type="datetimerange"
+                :picker-options="timeOption"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+            </el-date-picker>
+        </el-form-item>
+        <el-form-item label="结束时间" prop='endTime'>
+            <el-date-picker
+                v-model.trim="searchKey.endTime"
+                type="datetimerange"
+                :picker-options="timeOption"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+            </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="warning" icon="el-icon-search" @click="searchClick" :loading="searchLoading">查询</el-button>
+            <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
+        </el-form-item>
+    </el-form>
 
-        <div class="c-button-wrapper c-text-right">
-            <el-button size="mini" plain icon="el-icon-download" @click="downClick">批量下载</el-button>
-        </div>
+    <div class="c-button-wrapper c-text-right">
+        <el-button size="mini" plain icon="el-icon-download" @click="downClick">批量下载</el-button>
+    </div>
 
-        <el-table ref="multipleTable" :data="dataList" v-loading="loading"  
-            stripe  
-            border
-            class="c-mb-70"
-            max-height="724"
-            @selection-change="handleSelectionChange">
-            <el-table-column type="selection"></el-table-column>
-            <el-table-column label="序号" type="index" :index='indexMethod'></el-table-column>
-            <el-table-column min-width="18%" prop="fileName" label="文件名称"></el-table-column>
-            <el-table-column min-width="6%" prop="camCode" label="摄像头编号"></el-table-column>
-            <el-table-column min-width="16%" prop="roadPointName" label="路侧点名称"></el-table-column>
-            <el-table-column min-width="10%" prop="roadName" label="道路名称"></el-table-column>
-            <el-table-column min-width="10%" prop="startTime" label="开始时间"></el-table-column>
-            <el-table-column min-width="10%" prop="endTime" label="结束时间"></el-table-column>
-            <el-table-column min-width="8%" prop="duration" label="视频时长(Min)">
-                <template slot-scope="scope">{{s_to_hs(scope.row.duration)}}</template>
-            </el-table-column>
-            <el-table-column min-width="8%" prop="fileSizeUnit" label="视频大小(MB)"></el-table-column>
-            <el-table-column min-width="6%" prop="endTime" label="视频来源">
-                <template slot-scope="scope">{{scope.row.source == '1' ? '直播' : '手动获取'}}</template>
-            </el-table-column>
-            <el-table-column min-width="10%" prop="endTime" label="操作">
-                <template slot-scope="scope">
-                    <el-button size="small" icon="el-icon-view" circle type="warning" plain @click="replay(scope.row)"></el-button>
-                    <el-button size="small" icon="el-icon-download" circle type="warning" plain @click="exportClick(scope.row)"></el-button>
-                    <el-button size="small" icon="el-icon-delete" circle type="warning" plain @click="delClick(scope.row)"></el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+    <el-table ref="multipleTable" :data="dataList" v-loading="loading"  
+        stripe  
+        border
+        class="c-mb-70"
+        max-height="724"
+        @selection-change="handleSelectionChange">
+        <el-table-column type="selection"></el-table-column>
+        <el-table-column label="序号" type="index" :index='indexMethod'></el-table-column>
+        <el-table-column min-width="18%" prop="fileName" label="文件名称"></el-table-column>
+        <el-table-column min-width="6%" prop="camCode" label="摄像头编号"></el-table-column>
+        <el-table-column min-width="16%" prop="roadPointName" label="路侧点名称"></el-table-column>
+        <el-table-column min-width="10%" prop="roadName" label="道路名称"></el-table-column>
+        <el-table-column min-width="10%" prop="startTime" label="开始时间"></el-table-column>
+        <el-table-column min-width="10%" prop="endTime" label="结束时间"></el-table-column>
+        <el-table-column min-width="8%" prop="duration" label="视频时长(Min)">
+            <template slot-scope="scope">{{s_to_hs(scope.row.duration)}}</template>
+        </el-table-column>
+        <el-table-column min-width="8%" prop="fileSizeUnit" label="视频大小(MB)"></el-table-column>
+        <el-table-column min-width="6%" prop="endTime" label="视频来源">
+            <template slot-scope="scope">{{scope.row.source == '1' ? '直播' : '手动获取'}}</template>
+        </el-table-column>
+        <el-table-column min-width="10%" prop="endTime" label="操作">
+            <template slot-scope="scope">
+                <el-button size="small" icon="el-icon-view" circle type="warning" plain @click="replay(scope.row)"></el-button>
+                <el-button size="small" icon="el-icon-download" circle type="warning" plain @click="exportClick(scope.row)"></el-button>
+                <el-button size="small" icon="el-icon-delete" circle type="warning" plain @click="delClick(scope.row)"></el-button>
+            </template>
+        </el-table-column>
+    </el-table>
 
-        <div class="c-page clearfix">
-            <el-pagination
-                background
-                @current-change="changePageCurrent" 
-                :current-page="pageOption.page" 
-                :total="pageOption.total"
-                @size-change="changePageSize"
-                :page-sizes="[10,20,50,100,200]" 
-                :page-size="pageOption.size"
-                layout="total, sizes, prev, pager, next">
-            </el-pagination>
-        </div>
-
+    <div class="c-page clearfix">
+        <el-pagination
+            background
+            @current-change="changePageCurrent" 
+            :current-page="pageOption.page" 
+            :total="pageOption.total"
+            @size-change="changePageSize"
+            :page-sizes="[10,20,50,100,200]" 
+            :page-size="pageOption.size"
+            layout="total, sizes, prev, pager, next">
+        </el-pagination>
     </div>
     <road-video-replay v-if='isReplayShow' @backRoadManage='backFn'></road-video-replay>
 </div>
@@ -165,7 +161,6 @@ export default {
             isReplayShow:false,
             manageShow:true,
             playbackShow:false,
-            // startTime:'',
             endTime:'',
             searchLoading:false,
             loading:false,

@@ -304,7 +304,6 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
-                    // console.log(res.data.list);
                     this.pageOption.total = res.data.totalCount;
                 }
                 this.loading = false;

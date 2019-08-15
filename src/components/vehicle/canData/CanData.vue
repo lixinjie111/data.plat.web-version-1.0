@@ -50,7 +50,6 @@
             v-loading='loading'
             stripe
             border
-            class="c-mb-70"
             max-height="724">
             <el-table-column prop="vehicleId" label="车辆编号"></el-table-column>
             <el-table-column prop="dataId" label="数据编号"></el-table-column>
@@ -62,7 +61,7 @@
             </el-table-column>
         </el-table>
 
-        <div class="c-page clearfix">
+        <!-- <div class="c-page clearfix">
             <el-pagination
                 background
                 @current-change="changePageCurrent" 
@@ -73,18 +72,16 @@
                 :page-size="pageOption.size"
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
-        </div>
+        </div> -->
 
     </div>
 </template>
 <script>
-import TList from '@/common/utils/list.js'
 import {queryList} from '@/api/vehicle';
 import {requestqueryVehicleList} from '@/api/search';
 export default {
     name: 'BaseMessage',
     components: {
-        TList
     },
     data(){
         let _this = this,
@@ -258,6 +255,3 @@ export default {
     },
 }
 </script>
-<style>
-#bread-crumb li{ display:inline}
-</style>
