@@ -37,13 +37,10 @@
 </template>
 <script>
 import {findVehicleGroup} from '@/api/vehicle';
-import TList from '@/common/utils/list.js'
 export default {
     name:'GroupList',
     props: ['title','type','data'],
-    components: {
-        TList
-    },
+    components: {},
     data () {
         return {
             searchLoading:false,
@@ -111,11 +108,6 @@ export default {
         handleSelectionChange(val) {
             this.selector = [];
             this.selector = val;
-            // val.forEach(item => {
-            //     let obj = {};
-            //     obj.id = item.id;
-            //     this.selector.push(obj);
-            // });
         },
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();

@@ -105,14 +105,12 @@
 <script>
   import {queryPathList,exportExcel} from '@/api/vehicle';
   import {requestqueryVehicleList} from '@/api/search';
-  import AlertPanel from '@/common/view/Alert.vue'
-  import TList from '@/common/utils/list.js'
   import PathDataInfo from '@/components/vehicle/pathData/PathDataInfo.vue'
 
   export default {
     name: 'VideoManage',
     components: {
-      AlertPanel, PathDataInfo
+      PathDataInfo
     },
     data() {
       let _this = this;
@@ -178,11 +176,6 @@
       viewTrackData(item) {
         this.panel.data = item;
         this.panel.show = true;
-        // setTimeout(() => {
-        //   //初始化table和地图
-        //   this.$refs.refPathDataPanel.init(item);
-        // }, 100);
-
       },
       exportPathDataAlert() {
         this.panel.title = '提示';
@@ -238,7 +231,6 @@
           },
         ];
         const datas=[];
-
         const formDataList=this.dataList;
         for (let i = 0; i < formDataList.length; i++) {
           datas.push({
@@ -424,22 +416,3 @@
     },
   }
 </script>
-<style scoped>
-  .data-time-style {
-    display: inline-block;
-  }
-
-  .viewTrack:hover {
-    cursor: pointer;
-    color: red;
-  }
-  .viewTrack{
-    color: #00c1de;
-  }
-  .yk-form-tip{
-    color:#ff0000;
-    font-size:16px;
-    vertical-align: middle;
-    margin-bottom: 0;
-  }
-</style>

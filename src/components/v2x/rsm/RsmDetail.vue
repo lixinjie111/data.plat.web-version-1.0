@@ -2,10 +2,12 @@
 <div class="c-view-dialog" v-cloak>
         <div class="c-scroll-wrap">
             <div class="c-scroll-inner">
-                <h3 class="c-title">
-                    rsm数据<i class='el-icon-arrow-right'></i>rsm详情
-                    <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
-                </h3>
+                <div class="c-title-fixed">
+                    <h3 class="c-title">
+                        rsm数据<i class='el-icon-arrow-right'></i>rsm详情
+                        <el-page-header @back="backClick" class="c-return-btn"></el-page-header>
+                    </h3>
+                </div>
                 <div class="c-wrapper-20">
                     <el-table 
                         :data="dataList" 

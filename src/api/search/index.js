@@ -26,3 +26,7 @@ export const requestqueryVehicleCamList = params => { return axios.post(`${HTTPU
  */
 export const requestFindCamList = params => { return axios.post(`${HTTPURL}vehicle/queryVehicleCamListForSearchView`, params).then(res => res.data); };
 
+/**
+ * 路侧视频模糊查询地址
+ */
+export const queryRoadCamListSearch = params => { return axios.post(`${HTTPURL}road/queryRSCamList`, params).then(res => res.data); };

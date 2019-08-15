@@ -1,7 +1,9 @@
 <template>
     <!-- 基本信息 -->
     <div class="c-view-dialog" v-cloak>
-        <h3 class="c-title c-border-bottom">视频管理<i class='el-icon-arrow-right'></i>回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></h3>
+        <div class="c-title-fixed">
+            <h3 class="c-title c-border-bottom">视频管理<i class='el-icon-arrow-right'></i>回放<el-page-header @back="backClick" class="c-return-btn"></el-page-header></h3>
+        </div>
         <div class="c-wrapper-20 c-detail-box c-padding-20">
             <div class="c-detail-lable-list clearfix">
                 <p class="c-detail-lable">
@@ -29,7 +31,7 @@
             <div class="c-map-video-wrapper c-mt-20">
                 <div class="c-video-wrapper">
                     <div class="c-video">
-                        <video id="my-video" class="video-js vjs-big-play-centered" ref='myVideo' :src="videoPath" controls preload="auto" @seeking="videoProcess">
+                        <video id="my-video" class="video-js vjs-big-play-centered" ref='myVideo' :src="videoPath" controls preload="auto" @timeupdate="videoProcess">
                             <source :src="videoPath" type="video/mp4">
                         </video>
                     </div>
@@ -109,10 +111,14 @@ export default {
             let myVideo = document.getElementById('my-video');
             this.curTime = myVideo.currentTime;//获取视频实时时间
             let i = 0;
-            this.$refs.historyMap.getGps(this.gpsArr,'0',this.curTime);
-            if(this.curTime > 0){
-                i = i + 1;
-            };
+            if(this.gpsArr.length > 0){
+                this.$refs.historyMap.getGps(this.gpsArr,'0',this.curTime);
+                if(this.curTime > 0){
+                    i = i + 1;
+                };
+            }else{
+                return false;
+            }
         },
         myFunction(){
             let myVideo = document.getElementById('my-video');
