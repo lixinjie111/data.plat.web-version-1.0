@@ -1,10 +1,10 @@
-import Vue from 'vue'
-import VueX from 'vuex'
+// import Vue from 'vue'
+// import VueX from 'vuex'
 import { Utils } from '@/common/utils/utils.js'
 
-Vue.use(VueX)
+// Vue.use(VueX)
 
-const store = new VueX.Store({
+const store = new Vuex.Store({
     state: {
         platform: "20000",
         login: false,
