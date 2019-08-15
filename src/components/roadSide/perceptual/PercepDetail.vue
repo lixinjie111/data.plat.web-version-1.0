@@ -173,7 +173,7 @@ export default {
                     timeDivider: false,
                     durationDisplay: false,
                     remainingTimeDisplay: false,
-                    fullscreenToggle: false  //全屏按钮
+                    fullscreenToggle: true  //全屏按钮
                 }
             },
             tusvnOption: {
@@ -585,11 +585,23 @@ export default {
 .sl-video-player .vjs-time-control {
     display: none !important;
 }
+.sl-video-player .vjs-fullscreen-control {
+    display: block !important;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
 .sl-video-player .vjs-control-bar {
     display: block !important;
 }
 .sl-video-player .vjs-progress-control {
-    width: 100% !important;
+    position: absolute;
+    top: 0;
+    right: 45px;
+    left: 0;
+    bottom: 0;
+    width: auto !important;
 }
 .sl-video-player .vjs-play-progress:after {
     padding: 0 5px !important;
