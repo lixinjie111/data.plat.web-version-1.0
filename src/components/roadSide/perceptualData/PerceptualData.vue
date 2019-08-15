@@ -137,7 +137,9 @@ export default {
     },
     data(){
         return{
-            currentVideoNode:'N-NJ-0004',
+            currentVideoNode:{
+                code: 'N-NJ-0004'
+            },
             roadSideShow:false,
             provinceLoading:false,
             changeSize:false,
@@ -184,8 +186,8 @@ export default {
                 defaultFlag: false
             },
             markerOption: {
-                markers: [],
-                point: []
+                markers: null,
+                point: null
             },
             infoWindow: new AMap.InfoWindow({
                 offset: new AMap.Pixel(0, -33),
@@ -224,24 +226,24 @@ export default {
         },
         drawStartMarker() {
             let _this = this;
-            this.distanceMap.remove(this.markerOption.markers);
-            this.markerOption.markers = [];
-            this.markerOption.point.forEach((item, index) => {
-                let _position = ConvertCoord.wgs84togcj02(item.ptLon, item.ptLat);
-                let _marker = new AMap.Marker({
-                    map: this.distanceMap,
-                    position: new AMap.LngLat(_position[0],_position[1]),
-                });
-                _marker.content = `<div class="c-map-info-window">
-                                    <p class="c-info-window-text">摄像头编号：${item.label}<p>
-                                    <p class="c-info-window-text">道路名称：${item.roadName}<p>
-                                    <p class="c-info-window-text">经纬度：${item.ptLon},${item.ptLat}<p>
-                                </div>`;
-                _marker.on('click', this.markerClick);
-                _marker.emit('click', {target: _marker});
-                this.markerOption.markers.push(_marker);
-                this.distanceMap.setFitView();
+            if(this.markerOption.markers) {
+                this.distanceMap.remove(this.markerOption.markers);
+                this.markerOption.markers = null;
+            }
+            let _position = ConvertCoord.wgs84togcj02(this.markerOption.point.ptLon, this.markerOption.point.ptLat);
+            this.markerOption.markers = new AMap.Marker({
+                map: this.distanceMap,
+                position: new AMap.LngLat(_position[0],_position[1]),
             });
+            this.markerOption.markers.content = `<div class="c-map-info-window">
+                                <p class="c-info-window-text">摄像头编号：${this.markerOption.point.label}<p>
+                                <p class="c-info-window-text">道路名称：${this.markerOption.point.roadName}<p>
+                                <p class="c-info-window-text">经纬度：${this.markerOption.point.ptLon},${this.markerOption.point.ptLat}<p>
+                            </div>`;
+            this.markerOption.markers.on('click', this.markerClick);
+            this.markerOption.markers.emit('click', {target: this.markerOption.markers});
+
+            this.distanceMap.setFitView();
         },
         markerClick(e) {
             this.infoWindow.setContent(e.target.content);
@@ -343,7 +345,7 @@ export default {
                                 obj.rsPtId = item.rsPtId;
                                 obj.ptLon = item.ptLon;
                                 obj.ptLat = item.ptLat;
-                                obj.isOn = true;
+                                obj.isOn = false;
                                 obj.cameraRunStatus = item.cameraRunStatus;
                                 obj.icon = "sl-pause-icon";
                                 obj.type = 3;
@@ -374,7 +376,12 @@ export default {
                                             this.isMaskShow = false;
                                             let videoUrl = res.data.rtmp;
                                             this.embedFlash(videoUrl);
-                                            this.markerOption.point.push(children[i]);
+                                            this.markerOption.point = {
+                                                ptLon: children[i].ptLon,
+                                                ptLat: children[i].ptLat,
+                                                roadName: children[i].roadName,
+                                                label: children[i].label
+                                            };
                                             this.drawStartMarker();
                                         }
                                     })
@@ -391,26 +398,35 @@ export default {
             }
         },
         handleNodeClick(data){
-            this.markerOption.point = [];
+            this.markerOption.point = null;
             let camStatus = data.cameraRunStatus;
             this.changeSize = false;
-            if(this.currentVideoNode == data.code){
-                data.isOn = true;
-                this.endPlay();
-                data.icon = "sl-play-icon";
+            if(this.currentVideoNode.code == data.code){
+                if(data.isOn) {
+                    data.isOn = false;
+                    this.endPlay();
+                    data.icon = "sl-play-icon";
+                }else {
+                    data.isOn = true;
+                    this.startPlay(data);
+                    data.icon = "sl-pause-icon";
+                }
             }else{
+                this.currentVideoNode.isOn = false;
+                this.currentVideoNode.icon = "sl-play-icon";
                 if(camStatus == 1){//在线
                     if(data.isOn) {
                         data.isOn = false;
-                        this.startPlay(data);
-                    }else {
-                        data.isOn = true;
                         this.endPlay();
                         data.icon = "sl-play-icon";
+                    }else {
+                        data.isOn = true;
+                        this.startPlay(data);
+                        data.icon = "sl-pause-icon";
                     }
                     let roadCamInfo = Object.assign({},{roadName:this.roadName},data);
                     this.camDetail.rsPtId = roadCamInfo.rsPtId;
-                    this.markerOption.point.push(roadCamInfo);
+                    this.markerOption.point = roadCamInfo;
                     this.drawStartMarker();
                 }else {
                     if(camStatus == '0'){//未知
@@ -420,9 +436,12 @@ export default {
                     }else if(camStatus == '3'){//未注册
                         this.$message.error('摄像头未注册!');
                     }
+                    data.isOn = false;
                     this.endPlay();
+                    data.icon = "sl-play-icon";
+
                 }
-                this.currentVideoNode = data.code;
+                this.currentVideoNode = data;
             }
         },
         embedFlash(rtmpSource){//部署用此段
@@ -481,7 +500,7 @@ export default {
             }
             let protocal = JSON.parse(localStorage.getItem('protocal'));
             stopStream({
-                "camId":this.currentVideoNode,"protocal":protocal
+                "camId":this.currentVideoNode.code,"protocal":protocal
             }).then(res => {
             })
         },
@@ -542,7 +561,7 @@ export default {
         },
         searchClick(){
             var rsCamOptions = this.rsCamCodeOption.filterOption;
-            this.markerOption.point = [];
+            this.markerOption.point = null;
             if(rsCamOptions.length > 0){
                 //过滤匹配默认选中数据
                 rsCamOptions.forEach(item => {
@@ -577,7 +596,6 @@ export default {
                 this.treeData = [];
                 this.defaultArr = [];
             }
-            this.drawStartMarker();
         }
     },
     destroyed() {
