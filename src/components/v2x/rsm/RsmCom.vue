@@ -258,7 +258,7 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.rsRsuIdOption.filterOption = [];
+            this.rsRsuIdOption.filterOption = this.rsRsuIdOption.defaultOption;
         },
         rsRsuIdRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({

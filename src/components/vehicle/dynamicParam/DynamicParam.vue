@@ -248,7 +248,7 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.rsVehicleOption.filterOption = [];
+            this.rsVehicleOption.filterOption = this.rsVehicleOption.defaultOption;
         },
         cfgPanelFn(data){
             this.panel.show = false;

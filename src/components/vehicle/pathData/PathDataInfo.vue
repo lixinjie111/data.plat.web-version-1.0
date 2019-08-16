@@ -70,7 +70,7 @@
                     </tbody>
                   </table>
                 </div>
-                <div class="remaining-pages">{{requestDataParams.loadMoreData}}</div>
+                <!-- <div class="remaining-pages">{{requestDataParams.loadMoreData}}</div> -->
 
               </div>
         </div>
@@ -181,88 +181,13 @@ import { error } from 'util';
       },
       addPageData() {
         pathDetailList({
-          page: {
-              'pageSize': 100,
-              'pageIndex': this.requestDataParams.pageIndex
-          }, 
           'vehicleId': this.data.vehicleId,
           'startTime': this.data.originStartTime,
           'endTime': this.data.originEndTime,
-          'nextStartRow':this.requestDataParams.requestRowKey
+          'epsilon':10
         }).then(res => {
           if(res.status == '200'){
-            //重新赋值目前查询的总行数
-            if (res.data.list.length==100){
-              this.requestDataParams.requestRowKey = res.data.list[res.data.list.length-1].rowkey;
-              this.requestDataParams.pageIndex+=1;
-            }
-            if (res.data.list.length<100){
-              this.requestDataParams.isBottom=true;
-              this.requestDataParams.loadMoreData="所有数据加载完毕！"
-            }
-
-            if (res.data &&res.data.list && res.data.list.length > 0) {
-              //循环处理数据
-              let data_convert = res.data.list;
-              for (let i = 0; i < data_convert.length; i++) {
-                if (data_convert[i].gnss_LONG != "") {
-                  let st_gnss_LONG = (data_convert[i].gnss_LONG).toString();
-                  if (st_gnss_LONG.indexOf('.') != -1) {
-                    data_convert[i].gnss_LONG = st_gnss_LONG.substring(0, st_gnss_LONG.indexOf('.') + 8);
-                  } else {
-                    data_convert[i].gnss_LONG = st_gnss_LONG;
-                  }
-                }
-
-                if (data_convert[i].gnss_LAT != "") {
-                  let st_gnss_LAT = (data_convert[i].gnss_LAT).toString();
-                  if (st_gnss_LAT.indexOf('.') != -1) {
-                    data_convert[i].gnss_LAT = st_gnss_LAT.substring(0, st_gnss_LAT.indexOf('.') + 8);
-                  } else {
-                    data_convert[i].gnss_LAT = st_gnss_LAT;
-                  }
-                }
-
-                if (data_convert[i].gnss_HIGHT != "") {
-                  let st_gnss_HIGHT = (data_convert[i].gnss_HIGHT).toString();
-                  if (st_gnss_HIGHT.indexOf('.') != -1) {
-                    if (st_gnss_HIGHT.charAt(st_gnss_HIGHT.indexOf('.') + 1) == '0') {
-                      data_convert[i].gnss_HIGHT = st_gnss_HIGHT.substring(0, st_gnss_HIGHT.indexOf('.') + 1) + "1";
-                    } else {
-                      data_convert[i].gnss_HIGHT = st_gnss_HIGHT.substring(0, st_gnss_HIGHT.indexOf('.') + 2);
-                    }
-                  } else {
-                    data_convert[i].gnss_HIGHT = st_gnss_HIGHT;
-                  }
-                }
-
-                if (data_convert[i].gnss_SPD != "") {
-                  let st_gnss_SPD = (data_convert[i].gnss_SPD).toString();
-                  if (st_gnss_SPD.indexOf('.') != -1) {
-                    if (st_gnss_SPD.charAt(st_gnss_SPD.indexOf('.') + 1) == '0') {
-                      data_convert[i].gnss_SPD = st_gnss_SPD.substring(0, st_gnss_SPD.indexOf('.') + 1) + "1";
-                    } else {
-                      data_convert[i].gnss_SPD = st_gnss_SPD.substring(0, st_gnss_SPD.indexOf('.') + 2);
-                    }
-                  } else {
-                    data_convert[i].gnss_SPD = st_gnss_SPD;
-                  }
-                }
-                if (data_convert[i].gnss_HEAD != "") {
-                  let st_gnss_HEAD = (data_convert[i].gnss_HEAD).toString();
-                  if (st_gnss_HEAD.indexOf('.') != -1) {
-                    if (st_gnss_HEAD.charAt(st_gnss_HEAD.indexOf('.') + 1) == '0') {
-                      data_convert[i].gnss_HEAD = st_gnss_HEAD.substring(0, st_gnss_HEAD.indexOf('.') + 1) + "1";
-                    } else {
-                      data_convert[i].gnss_HEAD = st_gnss_HEAD.substring(0, st_gnss_HEAD.indexOf('.') + 2);
-                    }
-                  } else {
-                    data_convert[i].gnss_HEAD = st_gnss_HEAD;
-                  }
-                }
-              }
-              this.dataList = this.dataList.concat(data_convert);
-            }
+            this.dataList = res.data;
           }
         }).catch(err => {
 
@@ -337,13 +262,6 @@ import { error } from 'util';
         let hour=d.getHours();
         let minute=d.getMinutes();
         let second=d.getSeconds();
-        // let params = {
-        //   vehicleId:this.data.vehicleId,
-        //   plateNo: this.data.plateNo,
-        //   startTime: this.$dateUtil.dateToMs(this.data.startTime),
-        //   endTime:this.$dateUtil.dateToMs(this.data.endTime)
-        // }
-
         this.$confirm('是否导出全部轨迹数据?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -410,18 +328,15 @@ import { error } from 'util';
         //初始化选择项
         this.selectItem=0;
         pathDetailList({
-          page: {
-              'pageSize': 100,
-              'pageIndex': 0
-          }, 
           'vehicleId': this.data.vehicleId,
           'startTime': this.data.originStartTime,
           'endTime': this.data.originEndTime,
+          'epsilon':10,
         }).then(res => {
           if(res.status == '200'){
-            if(res.data.list.length) {
-              this.addLine(res.data.list);
-              let _position = ConvertCoord.wgs84togcj02(res.data.list[0].gnss_LONG, res.data.list[1].gnss_LAT);
+            if(res.data.length) {
+              this.addLine(res.data);
+              let _position = ConvertCoord.wgs84togcj02(res.data[0].gnss_LONG, res.data[1].gnss_LAT);
               this.addRemoveMaker(_position);
             }
           }
@@ -435,7 +350,6 @@ import { error } from 'util';
           let _position = ConvertCoord.wgs84togcj02(item.gnss_LONG, item.gnss_LAT);
           this.markers.polylinePath.push(new AMap.LngLat(_position[0], _position[1]));
         });
-        // console.log(pointList);
         if(!this.markers.markerStart) {
               this.drawStartMarker();
           }else {
@@ -500,7 +414,6 @@ import { error } from 'util';
         }
         let _position = ConvertCoord.wgs84togcj02(item.gnss_LONG, item.gnss_LAT);
         this.addRemoveMaker(_position);
-        // self.$refs.refMap.addNormalPoint(lng, lat, 'heighLightPoint_01', "PathDataLayer", 5, "#FF0000", "#FFFF00", 2);
       }
     },
   }

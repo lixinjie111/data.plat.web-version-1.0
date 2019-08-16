@@ -315,9 +315,9 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.rsCamCodeOption.defaultOption = [];
-            this.rsRoadNameOption.defaultOption = [];
-            this.rsRoadNameOption.defaultOption = [];
+            this.rsCamCodeOption.filterOption = this.rsCamCodeOption.defaultOption;
+            this.rsRoadNameOption.filterOption = this.rsRoadNameOption.defaultOption;
+            this.rsPointNameOption.filterOption = this.rsPointNameOption.defaultOption;
         },
         rsRoadNameRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({

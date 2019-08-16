@@ -275,7 +275,7 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.rsVehicleOption.filterOption = [];
+            this.rsVehicleOption.filterOption = this.rsVehicleOption.defaultOption;
         },
         rsVehicleRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({

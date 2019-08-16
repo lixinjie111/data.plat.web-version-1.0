@@ -301,9 +301,9 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.rsVehicleOption.filterOption = [];
-            this.rsPlateNoOption.filterOption = [];
-            this.rsCamOption.filterOption = [];
+            this.rsVehicleOption.filterOption = this.rsVehicleOption.defaultOption;
+            this.rsPlateNoOption.filterOption = this.rsPlateNoOption.defaultOption;
+            this.rsCamOption.filterOption = this.rsCamOption.defaultOption;
         },
         rsVehicleRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({

@@ -347,9 +347,9 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.rsCamCodeOption.defaultOption = [];
-            this.rsSerialNumOption.defaultOption = [];
-            this.rsPointNameOption.defaultOption = [];
+            this.rsCamCodeOption.filterOption = this.rsCamCodeOption.defaultOption;
+            this.rsSerialNumOption.filterOption = this.rsSerialNumOption.defaultOption;
+            this.rsPointNameOption.filterOption = this.rsPointNameOption.defaultOption;
         },
         rsCamCodeRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({

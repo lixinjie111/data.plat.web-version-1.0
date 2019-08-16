@@ -132,12 +132,14 @@ export default {
             fuzzySearchOption1: {
                 loading: false,
                 timer: null,
-                filterOption: []
+                filterOption: [],
+                defaultFilterOption:[]
             },
             fuzzySearchOption2: {
                 loading: false,
                 timer: null,
-                filterOption: []
+                filterOption: [],
+                defaultFilterOption:[]
             },
             playerOptions: {
                 overNative: true,
@@ -148,6 +150,7 @@ export default {
                 flash: {
                   // swf: '../../../../static/media/video-js.swf'
                     // swf: '/static/media/video-js.swf'       
+                    // swf: '/static/media/video-js.swf'
                     swf: isProduction ? '/dataManage/static/media/video-js.swf' : './static/media/video-js.swf'
                 },
                 muted: true, // 默认情况下将会消除任何音频。
@@ -180,6 +183,9 @@ export default {
             return this.$refs.videoPlayer.player
         }
     },
+    mounted() {
+        this.player.play();
+    },
     methods: {
         getPlateNo(item){//根据车牌号查询vehicleID、序列号、朝向、状态
             this.searchKey.status = item.statusText;
@@ -199,8 +205,7 @@ export default {
             this.totalTimeformat = '';
             this.monitStartTime = '';
             // console.log('因为切换车牌号,所以相应汽车的实时监控停止!');
-            
-            this.playerOptions.sources[0].src = '';
+
             queryDeviceType({//获取设备id
                 'vehicleId':this.searchKey.vehicleId
             }).then(res => {
@@ -360,13 +365,15 @@ export default {
                     }).then(res => {
                             if(res.status == '200'){
                                 //接口请求后执行的操作 
-                                this.fuzzySearchOption1.filterOption = res.data;
+                                this.fuzzySearchOption1.defaultFilterOption = this.fuzzySearchOption1.filterOption = res.data;
                             }
                             this.fuzzySearchOption1.loading = false;
                         }).catch(err => {
                             this.fuzzySearchOption1.loading = false;
                         });
                 }, 500);
+            }else{
+                this.fuzzySearchOption1.filterOption = this.fuzzySearchOption1.defaultFilterOption;
             }
         },
         remoteMethod1(query) {
@@ -392,7 +399,7 @@ export default {
                         });
                 }, 500);
             } else {
-                this.fuzzySearchOption1.filterOption = [];
+                this.fuzzySearchOption1.filterOption = this.fuzzySearchOption1.defaultFilterOption;
             }
         },
         selectVehicleIdList(){
@@ -407,14 +414,16 @@ export default {
                         if(res.status == '200'){
                             //接口请求后执行的操作 
                             this.fuzzySearchOption2.loading = false;
-                            this.fuzzySearchOption2.filterOption = res.data;
+                            this.fuzzySearchOption2.defaultFilterOption = this.fuzzySearchOption2.filterOption = res.data;
                         }
                         this.fuzzySearchOption2.loading = false;
                     }).catch(err => {
                         this.fuzzySearchOption2.loading = false;
                     });
                 }, 500); 
-            } 
+            }else{
+                this.fuzzySearchOption2.filterOption = this.fuzzySearchOption2.defaultFilterOption;
+            }
         },
         remoteMethod2(query) {
             if (query !== '') {

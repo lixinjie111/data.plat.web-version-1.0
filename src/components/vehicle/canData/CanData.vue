@@ -225,8 +225,7 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.searchKey = '';
-            this.rsVehicleOption.filterOption = [];
+            this.rsVehicleOption.filterOption = this.rsVehicleOption.defaultOption;
         },
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();

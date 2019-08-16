@@ -18,7 +18,8 @@ export const queryPathList = params => { return axios.post(`${HTTPURL}vehicle/pa
 /**
  * 轨迹详情
  */
-export const pathDetailList = params => { return axios.post(`${HTTPURL}vehicle/path/detail/list`, params).then(res => res.data); };
+export const pathDetailList = params => { return axios.post(`http://172.17.1.13:9099/dataPlatApp/vehicle/path/detail/list`, params).then(res => res.data); };
+// export const pathDetailList = params => { return axios.post(`${HTTPURL}vehicle/path/detail/list`, params).then(res => res.data); };
 
 /**
  * 导出轨迹数据
