@@ -115,6 +115,7 @@ import { error } from 'util';
       }
     },
     mounted() {
+      let _this = this;
       this.init();
       this.initMap();
       //注册键盘事件
@@ -159,6 +160,8 @@ import { error } from 'util';
       showDetail(row) {
         if(row) {
             this.currentIndex = row.index;
+            let _position = ConvertCoord.wgs84togcj02(row.gnss_LONG, row.gnss_LAT);
+            this.addRemoveMaker(_position);
         }
       },
       rowClassName({row, rowIndex}) {
@@ -263,7 +266,7 @@ import { error } from 'util';
             if(res.data.length) {
               this.dataList = res.data;
               this.addLine(res.data);
-              this.setCurrentRow(0);
+              this.setCurrentRow(this.dataList[0]);
             }
           }
           this.loading = false;
@@ -324,33 +327,32 @@ import { error } from 'util';
       },
       addRemoveMaker(point){
         if(this.removeMarker) {
-          this.removeMarker.setPosition(_position);
+          this.removeMarker.setPosition(point);
         }else {
           this.removeMarker = new AMap.Marker({
-              position: _position,
+              position: point,
               icon:'static/images/map/blue-point.png',
               offset: new AMap.Pixel(-11, -11)
           });
           this.distanceMap.add(this.removeMarker);
         }
       },
-      setCurrentRow(index) {
-        let _position = ConvertCoord.wgs84togcj02(this.dataList[index].gnss_LONG, this.dataList[index].gnss_LAT);
-        this.addRemoveMaker(_position);
+      setCurrentRow(row) {
         if(this.$refs.pathDataTable.bodyWrapper.children[0].children[1].children.length) {
-            this.setScrollTop(index);
+            this.setScrollTop(row);
         }else {
             setTimeout(() => {
-                this.setScrollTop(index);
+                this.setScrollTop(row);
             }, 1000);
         }
       },
-      setScrollTop(index) {
-          this.$refs.pathDataTable.setCurrentRow(this.dataList[index]);
+      setScrollTop(row) {
+          this.$refs.pathDataTable.setCurrentRow(row);
           this.rowHeight = this.$refs.pathDataTable.bodyWrapper.children[0].children[1].children[0].clientHeight;
           this.tableHeight = parseInt(this.$refs.pathDataTable.bodyHeight['max-height']);
           this.$refs.pathDataTable.bodyWrapper.scrollTop = this.rowHeight*this.currentIndex;
-          console.log(this.rowHeight, this.tableHeight);
+          let _position = ConvertCoord.wgs84togcj02(row.gnss_LONG, row.gnss_LAT);
+          this.addRemoveMaker(_position);
       }
     }
   }
