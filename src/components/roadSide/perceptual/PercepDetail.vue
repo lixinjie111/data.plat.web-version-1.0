@@ -42,19 +42,22 @@
                                 v-loading="loading" 
                                 highlight-current-row
                                 @current-change="showDetail"
+                                :row-class-name="rowClassName"
                                 max-height="763"
                                 :cell-style="{
                                     cursor: 'pointer'
                                 }">
                                 <!-- 关于分页 -->
                                 <!-- <el-table-column min-width="5%" label="编号" type="index" :index="indexMethod"></el-table-column> -->
+                                <!-- <el-table-column label="编号" type="index" :class="item.currentFlag ? 'is-active' : ''"></el-table-column> -->
+                                <!-- <el-table-column label="编号" type="index"> -->
                                 <el-table-column label="编号" type="index"></el-table-column>
-                                <el-table-column min-width="18%" label="时间">
+                                <el-table-column min-width="20%" label="时间">
                                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp, 'yy-mm-dd hh:mm:ss:ms')}}</template>
                                 </el-table-column>
-                                <el-table-column min-width="25%" label="感知目标数据">
+                                <el-table-column min-width="30%" label="感知目标数据">
                                     <template slot-scope="scope">
-                                        <el-popover placement="top" width="350" trigger="hover" popper-class="c-table-popover">
+                                        <el-popover placement="top" width="350" trigger="hover" popper-class="c-table-popover" :open-delay="2000">
                                             <div class="c-table-popover-content" v-html="scope.row.field"></div>
                                             <p class="c-table-popover-text" slot="reference" v-html='scope.row.field'></p>
                                         </el-popover>
@@ -62,7 +65,7 @@
                                 </el-table-column>
                                 <el-table-column min-width="50%" label="原始感知数据">
                                     <template slot-scope="scope">
-                                        <el-popover placement="top" width="600" trigger="hover" popper-class="c-table-popover">
+                                        <el-popover placement="top" width="600" trigger="hover" popper-class="c-table-popover" :open-delay="2000">
                                             <div class="c-table-popover-content" v-html="scope.row.data"></div>
                                             <p class="c-table-popover-text" slot="reference" v-html='scope.row.data'></p>
                                         </el-popover>
@@ -188,6 +191,10 @@ export default {
             initMapFlag: false,
             dataList: [],
 
+            rowHeight: 0,
+            currentIndex: -1,
+            tableHeight: 0,
+
             cameraParam: null
         }
     },
@@ -219,18 +226,49 @@ export default {
                     }else {
                         this.tusvnOption.show = true;
                         this.tusvnOption.loading = false;
+                        this.rowHeight = 0;
+                        this.currentIndex = -1;
                     }
                 }
             }
         }
     },
-    created(){
+    mounted(){
+        let _this = this;
     // mounted(){
         this.durationTime = (this.endTimeTimestamp - this.startTimeTimestamp)/1000;
         this.durationSecond = this.durationTime.toFixed(3).split(".")[0];
         this.durationMilliSecond = this.durationTime.toFixed(3).split(".")[1];
         this.getVideoUrl();
         this.findRoadMonitorCamera();
+
+        //注册键盘事件
+        document.onkeydown = function (event) {
+            let e = event || window.event || arguments.callee.caller.arguments[0];
+            e.preventDefault();
+            if (_this.dataList && _this.dataList.length > 0 && e) {
+                let _scrollTop = _this.$refs.percepDetailTable.bodyWrapper.scrollTop;
+                if (e.keyCode == 38) {
+                    if(_this.currentIndex > 0) {
+                        _this.currentIndex --;
+                        _this.$refs.percepDetailTable.setCurrentRow(_this.dataList[_this.currentIndex]);
+                        if(_this.currentIndex*_this.rowHeight <= _scrollTop) {
+                            _this.$refs.percepDetailTable.bodyWrapper.scrollTop = _this.currentIndex*_this.rowHeight;
+                        }
+                    }
+                }
+                if (e.keyCode == 40) {
+                    if(_this.currentIndex <= _this.dataList.length) {
+                        _this.currentIndex ++;
+                        _this.$refs.percepDetailTable.setCurrentRow(_this.dataList[_this.currentIndex]);
+                        if(_this.currentIndex*_this.rowHeight >= (_scrollTop + _this.tableHeight)) {
+                            _this.$refs.percepDetailTable.bodyWrapper.scrollTop = (_this.currentIndex+1)*_this.rowHeight - _this.tableHeight;
+                        }
+                    }
+                }
+            }
+        }
+
     },
     methods: {
         findRoadMonitorCamera() {
@@ -265,7 +303,21 @@ export default {
                     }
                 }
             });
-            this.$refs.percepDetailTable.setCurrentRow(this.dataList[_index]);
+            this.dataList[_index].isNearRow = true;
+            if(this.$refs.percepDetailTable.bodyWrapper.children[0].children[1].children.length) {
+                this.setScrollTop(_index);
+            }else {
+                setTimeout(() => {
+                    this.setScrollTop(_index);
+                }, 1000);
+            }
+        },
+        setScrollTop(index) {
+            this.currentIndex = index;
+            this.$refs.percepDetailTable.setCurrentRow(this.dataList[index]);
+            this.rowHeight = this.$refs.percepDetailTable.bodyWrapper.children[0].children[1].children[0].clientHeight;
+            this.tableHeight = parseInt(this.$refs.percepDetailTable.bodyHeight['max-height']);
+            this.$refs.percepDetailTable.bodyWrapper.scrollTop = this.rowHeight*this.currentIndex;
         },
         getVideoUrl() {
             getVideoUrlInfo(this.$route.params).then(res => {
@@ -288,10 +340,11 @@ export default {
                         item.loading = false;
                     });
                     this.dataList = res.data;
-
                 }
-                this.loading = false;
-                this.tusvnOption.loading = false;
+                setTimeout(() => {
+                    this.loading = false;
+                    this.tusvnOption.loading = false;
+                }, 100);
             }).catch(err => {
                 this.loading = false;
                 this.tusvnOption.loading = false;
@@ -433,6 +486,14 @@ export default {
                     this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
                     this.$refs.tusvnMap.showBData2(row);
                 }, 500);
+                this.currentIndex = row.index;
+            }
+        },
+        rowClassName({row, rowIndex}) {
+            //把每一行的索引放进row
+            row.index = rowIndex;
+            if(row.isNearRow) {
+                return "is-active"
             }
         },
         testDataFunc() {
@@ -610,8 +671,15 @@ export default {
     right: -80px;
 }
 .sl-percepDetail-container {
-    .current-row td {
+    .current-row {
         background: rgba(230, 162, 60, .5) !important;
+    }
+    .el-table td {
+        background: transparent !important;
+    }
+    .is-active {
+        background: rgba(141, 49, 200, .5) !important;
+        // background: rgba(141, 49, 200, .5) !important;
     }
     .el-input__inner {
         font-size: 16px !important;
