@@ -661,7 +661,7 @@ export default {
     display: block !important;
 }
 .sl-video-player .vjs-progress-control {
-    position: absolute;
+    position: absolute !important;
     top: 0;
     right: 45px;
     left: 0;
@@ -678,7 +678,7 @@ export default {
     .current-row {
         background: rgba(230, 162, 60, .5) !important;
     }
-    .el-table td {
+    .el-table td, .el-table .current-row td {
         background: transparent !important;
     }
     .is-active {
