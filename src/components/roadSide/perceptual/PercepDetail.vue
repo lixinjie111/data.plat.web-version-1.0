@@ -652,7 +652,7 @@ export default {
 }
 .sl-video-player .vjs-fullscreen-control {
     display: block !important;
-    position: absolute;
+    position: absolute !important;
     right: 0;
     top: 0;
     bottom: 0;
