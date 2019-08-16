@@ -87,6 +87,7 @@
                                     @loadeddata="onPlayerLoadedData"
                                     @timeupdate="onPlayerTimeupdate"
                                     @error="playerError"
+                                    @play="playFunc"
                                 ></video-player>                
                             </div>
                             <div class="percep-data">
@@ -437,6 +438,9 @@ export default {
                     this.player.currentTime('0.001');
                 }, 2000);
             }
+        },
+        playFunc() {
+            this.player.pause();
         },
         setProgressTime(obj) {
             this.boxLoading = false;
