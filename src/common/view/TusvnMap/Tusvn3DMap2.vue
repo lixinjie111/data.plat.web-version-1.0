@@ -362,6 +362,8 @@ export default {
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+4;
 
+                        mdl.rotation.set( this.pitch,this.yaw,Math.PI*(d.heading/180.0) );
+
                         let text = this.deviceModels[deviceid].texts[i];
                         text.setText(d.uuid.substr(0,8));
                         text.setPositon([dUTM[0],dUTM[1],this.defualtZ+6]);
