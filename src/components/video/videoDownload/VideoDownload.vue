@@ -3,7 +3,7 @@
     <div class="c-wrapper-20" v-cloak>
         <div v-show="!panel.show">
             <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
-                <el-form-item label="摄像头编号" prop='camCode'>
+                <el-form-item label="摄像头编号" prop='deviceId'>
                     <!-- <el-input v-model.trim="searchKey.camCode"></el-input> -->
                     <el-select
                         v-model.trim="searchKey.deviceId"
