@@ -102,14 +102,12 @@
     </div>
 </template>
 <script>
-import Paging from '@/common/view/Paging.vue'
 import BsmDetail from '@/components/v2x/bsm/BsmDetail.vue'
 import {findBSMList} from '@/api/v2x';
 import {requestqueryVehicleList} from '@/api/search';
 export default {
     name: 'BsmCom',
     components: {
-        Paging,
         BsmDetail
     },
     data(){

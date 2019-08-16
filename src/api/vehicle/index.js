@@ -41,7 +41,8 @@ export const exportPathExcel = params => { return axios.post(`${HTTPURL}vehicle/
 /**
  * 数据列表
  */
-export const queryList = params => { return axios.post(`${HTTPURL}dynamic/realTime/list`, params).then(res => res.data); };
+export const queryList = params => { return axios.post(`http://172.17.1.13:9099/dataPlatApp/dynamic/realTime/list`, params).then(res => res.data); };
+// export const queryList = params => { return axios.post(`${HTTPURL}dynamic/realTime/list`, params).then(res => res.data); };
 
 
 /**
