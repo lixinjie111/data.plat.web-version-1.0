@@ -20,10 +20,10 @@
     color: #fff;
     transition: height .3s ease-out;
     &.c-map-off {
-        height: 320px;
+        height: 400px;
     }
     &.c-map-on {
-        height: 500px;
+        height: 650px;
     }
 }
 // 地图缩放按钮

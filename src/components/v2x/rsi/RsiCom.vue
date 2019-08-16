@@ -11,6 +11,7 @@
                         placeholder="请输入关键词"
                         :remote-method="rsRsuIdRemoteMethod"
                         @focus="$searchFilter.remoteMethodClick(rsRsuIdOption, searchKey, 'rsuId', searchUrl)"
+                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsuId')"
                         :loading="rsRsuIdOption.loading">
                         <el-option
                             v-for="item in rsRsuIdOption.filterOption"
@@ -239,7 +240,7 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.rsRsuIdOption.filterOption = [];
+            this.rsRsuIdOption.filterOption = this.rsRsuIdOption.defaultOption;
         },
         rsRsuIdRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({

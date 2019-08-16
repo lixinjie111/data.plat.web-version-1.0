@@ -19,6 +19,7 @@ export const queryPathList = params => { return axios.post(`${HTTPURL}vehicle/pa
  * 轨迹详情
  */
 export const pathDetailList = params => { return axios.post(`${HTTPURL}vehicle/path/detail/list`, params).then(res => res.data); };
+// export const pathDetailList = params => { return axios.post(`${HTTPURL}vehicle/path/detail/list`, params).then(res => res.data); };
 
 /**
  * 导出轨迹数据
@@ -41,6 +42,7 @@ export const exportPathExcel = params => { return axios.post(`${HTTPURL}vehicle/
  * 数据列表
  */
 export const queryList = params => { return axios.post(`${HTTPURL}dynamic/realTime/list`, params).then(res => res.data); };
+// export const queryList = params => { return axios.post(`${HTTPURL}dynamic/realTime/list`, params).then(res => res.data); };
 
 
 /**

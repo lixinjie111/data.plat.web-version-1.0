@@ -80,7 +80,7 @@ export default {
             this.initView(this.viewVector1.x,this.viewVector1.y,this.viewVector1.z,this.viewVector2.x,this.viewVector2.y,this.viewVector2.z);
 
             //初始化websocket连接
-            this.initWebsocket(this.websocketUrl);
+            // this.initWebsocket(this.websocketUrl);
             setTimeout(()=>{
                 //科技园
                 // this.updateCameraPosition(442454.32658068417,4427227.807881102,37.735093606867046,0.0000028926452461693342,-0.39699074074074336,-0.730706721974606);
@@ -361,6 +361,8 @@ export default {
                         mdl.position.x = dUTM[0];
                         mdl.position.y = dUTM[1];
                         mdl.position.z = this.defualtZ+4;
+
+                        mdl.rotation.set( this.pitch,this.yaw,Math.PI*(d.heading/180.0) );
 
                         let text = this.deviceModels[deviceid].texts[i];
                         text.setText(d.uuid.substr(0,8));

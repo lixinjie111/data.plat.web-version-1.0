@@ -376,8 +376,8 @@
       },
       resetClick() {
         this.$refs.searchForm.resetFields();
-        this.rsVehicleOption.filterOption = [];
-        this.rsPlateNoOption.filterOption = [];
+        this.rsVehicleOption.filterOption = this.rsVehicleOption.defaultOption;
+        this.rsPlateNoOption.filterOption = this.rsPlateNoOption.defaultOption;
       },
       rsVehicleRemoteMethod(query) {
           this.$searchFilter.publicRemoteMethod({

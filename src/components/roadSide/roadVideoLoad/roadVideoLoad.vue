@@ -5,7 +5,7 @@
         <el-form ref="searchForm" :inline="true" :model="searchKey" size="small">
             <el-form-item label="摄像头编号" prop='deviceId'>
                 <el-select
-                    v-model.trim="searchKey.camCode"
+                    v-model.trim="searchKey.deviceId"
                     filterable
                     remote
                     reserve-keyword
@@ -295,7 +295,7 @@ export default {
                     'pageIndex': this.pageOption.page-1
                 },
                 'fileName':this.searchKey.fileName,
-                'camCode':this.searchKey.camCode,
+                'camCode':this.searchKey.deviceId,
                 'roadName':this.searchKey.rspRoadName,
                 'roadPointName':this.searchKey.rsPtName,
                 'source':this.searchKey.source,
@@ -330,8 +330,9 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.rsCamCodeOption.defaultOption = [];
-            this.rsRoadNameOption.defaultOption = [];
+            this.rsCamCodeOption.filterOption = this.rsCamCodeOption.defaultOption;
+            this.rsRoadNameOption.filterOption = this.rsRoadNameOption.defaultOption;
+            this.rsPointNameOption.filterOption = this.rsPointNameOption.defaultOption;
         },
         rsCamCodeRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({
