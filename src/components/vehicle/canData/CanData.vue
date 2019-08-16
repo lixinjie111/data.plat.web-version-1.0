@@ -21,9 +21,6 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="英文名称:" prop='enName'>
-                <el-input v-model.trim="searchKey.enName"></el-input>
-            </el-form-item>
             <el-form-item label="开始时间" prop='startTime'>
                 <el-date-picker
                     v-model.trim="searchKey.startTime"
@@ -52,12 +49,13 @@
             border
             max-height="724">
             <el-table-column prop="vehicleId" label="车辆编号"></el-table-column>
-            <el-table-column prop="dataId" label="数据编号"></el-table-column>
-            <el-table-column prop="enName" label="英文名称"></el-table-column>
-            <el-table-column prop="chName" label="中文名称"></el-table-column>
-            <el-table-column prop="dataValue" label="数据值"></el-table-column>
+            <el-table-column prop="GNSS_HEAD" label="航向角"></el-table-column>
+            <el-table-column prop="GNSS_SPD" label="地面速度"></el-table-column>
+            <el-table-column prop="GNSS_LONG" label="经度"></el-table-column>
+            <el-table-column prop="GNSS_LAT" label="纬度"></el-table-column>
+            <el-table-column prop="GNSS_HIGHT" label="高程"></el-table-column>
             <el-table-column label="时间">
-                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
+                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp)}}</template>
             </el-table-column>
         </el-table>
 
@@ -124,7 +122,6 @@ export default {
             searchLoading:false,
             searchKey: {
                 vehicleId: '',
-                enName: '',
                 startTime: '',
                 endTime: ''
             },
@@ -197,7 +194,6 @@ export default {
                     'pageIndex': this.pageOption.page-1
                 },
                 vehicleId:this.searchKey.vehicleId,
-                enName:this.searchKey.enName,
                 startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
                 endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
             }).then(res => {
@@ -225,8 +221,7 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.searchKey = '';
-            this.rsVehicleOption.filterOption = [];
+            this.rsVehicleOption.filterOption = this.rsVehicleOption.defaultOption;
         },
         changePageSize(value) {//每页显示条数变更
             this.initPageOption();
