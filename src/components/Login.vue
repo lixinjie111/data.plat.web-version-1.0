@@ -69,7 +69,7 @@ export default {
             loading: false
             
         }
-    },
+    }, 
     methods:{
         loginClick(){
             this.$refs.loginForm.validate(valid => {
