@@ -5,11 +5,13 @@
         <el-form-item label="摄像头编号" prop='deviceId'>
             <el-select
                 v-model.trim="searchKey.deviceId"
+                clearable
                 filterable
                 remote
                 reserve-keyword
                 placeholder="请输入关键词"
                 :remote-method="rsCamCodeRemoteMethod"
+                @clear="$searchFilter.clearFunc(rsCamCodeOption)"
                 @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'deviceId', cameraUrl)"
                 @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
                 :loading="rsCamCodeOption.loading">
@@ -24,11 +26,13 @@
         <el-form-item label="道路名称" prop='rspRoadName'>
             <el-select
                 v-model.trim="searchKey.rspRoadName"
+                clearable
                 filterable
                 remote
                 reserve-keyword
                 placeholder="请输入关键词"
                 :remote-method="rsRoadNameRemoteMethod"
+                @clear="$searchFilter.clearFunc(rsRoadNameOption)"
                 @focus="$searchFilter.remoteMethodClick(rsRoadNameOption, searchKey, 'rspRoadName', roadUrl)"
                 @blur="$searchFilter.remoteMethodBlur(searchKey, 'rspRoadName')"
                 :loading="rsRoadNameOption.loading">
@@ -43,11 +47,13 @@
         <el-form-item label="路侧点名称" prop='rsPtName'>
             <el-select
                 v-model.trim="searchKey.rsPtName"
+                clearable
                 filterable
                 remote
                 reserve-keyword
                 placeholder="请输入关键词"
                 :remote-method="rsPointNameRemoteMethod"
+                @clear="$searchFilter.clearFunc(rsPointNameOption)"
                 @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', roadUrl)"
                 @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsPtName')"
                 :loading="rsPointNameOption.loading">
@@ -94,7 +100,8 @@
     </el-form>
 
     <div class="c-button-wrapper c-text-right">
-        <el-button size="mini" plain icon="el-icon-download" @click="downClick">批量下载</el-button>
+        <el-button size="mini" plain icon="el-icon-delete" @click="delClick">删除</el-button>
+        <el-button size="mini" plain icon="el-icon-download" @click="downClick">下载</el-button>
     </div>
 
     <el-table ref="multipleTable" :data="dataList" v-loading="loading"  
@@ -121,8 +128,8 @@
         <el-table-column min-width="10%" prop="endTime" label="操作">
             <template slot-scope="scope">
                 <el-button size="small" icon="el-icon-view" circle type="warning" plain @click="replay(scope.row)"></el-button>
-                <el-button size="small" icon="el-icon-download" circle type="warning" plain @click="exportClick(scope.row)"></el-button>
-                <el-button size="small" icon="el-icon-delete" circle type="warning" plain @click="delClick(scope.row)"></el-button>
+                <!-- <el-button size="small" icon="el-icon-download" circle type="warning" plain @click="exportClick(scope.row)"></el-button> -->
+                <!-- <el-button size="small" icon="el-icon-delete" circle type="warning" plain @click="delClick(scope.row)"></el-button> -->
             </template>
         </el-table-column>
     </el-table>
@@ -203,6 +210,7 @@ export default {
                 accessPlatform: null,
             },
             sourceList:[
+                {name:'全部',val:''},
                 {name:'直播',val:'1'},
                 {name:'手动获取',val:'2'},
             ],
@@ -405,25 +413,29 @@ export default {
             s  =   (s.length==1)?'0'+s:s;
             return h+':'+s;
         },
-        delClick(item){
-            this.$confirm('确定要删除此条数据吗?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                let fileId = [];
-                fileId.push(item.fileName);
-                item.delLoading = true;
-                removeVideo({  
-                    "fields": fileId          
-                }).then(res => {
-                    if(res.status == '200'){
-                        this.$message.success(res.message);
-                        window.location.reload();
-                    }
-                    item.delLoading = false;
+        delClick(){
+            if (this.selector.length > 0) {
+                this.$confirm('确定要删除此条数据吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let fileId = [];
+                    fileId.push(item.fileName);
+                    // item.delLoading = true;
+                    removeVideo({  
+                        "fields": fileId          
+                    }).then(res => {
+                        if(res.status == '200'){
+                            this.$message.success(res.message);
+                            window.location.reload();
+                        }
+                        // item.delLoading = false;
+                    })
                 })
-            })
+            }else{
+                this.$message.error('请选择要删除的文件!');
+            }
         },
         replay(item){
             let videoInfo = JSON.stringify(item);

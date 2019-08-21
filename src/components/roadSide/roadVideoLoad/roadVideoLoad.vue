@@ -6,11 +6,13 @@
             <el-form-item label="摄像头编号" prop='deviceId'>
                 <el-select
                     v-model.trim="searchKey.deviceId"
+                    clearable
                     filterable
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsCamCodeRemoteMethod"
+                    @clear="$searchFilter.clearFunc(rsCamCodeOption)"
                     @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'deviceId', cameraUrl)"
                     @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')" 
                     :loading="rsCamCodeOption.loading">
@@ -25,11 +27,13 @@
             <el-form-item label="道路名称" prop='rspRoadName'>
                 <el-select
                     v-model.trim="searchKey.rspRoadName"
+                    clearable
                     filterable
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsRoadNameRemoteMethod"
+                    @clear="$searchFilter.clearFunc(rsRoadNameOption)"
                     @focus="$searchFilter.remoteMethodClick(rsRoadNameOption, searchKey, 'rspRoadName', roadUrl)"
                     @blur="$searchFilter.remoteMethodBlur(searchKey, 'rspRoadName')" 
                     :loading="rsRoadNameOption.loading">
@@ -44,11 +48,13 @@
             <el-form-item label="路侧点名称" prop='rsPtName'>
                 <el-select
                     v-model.trim="searchKey.rsPtName"
+                    clearable
                     filterable
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsPointNameRemoteMethod"
+                    @clear="$searchFilter.clearFunc(rsPointNameOption)"
                     @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', roadUrl)"
                     @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsPtName')" 
                     :loading="rsPointNameOption.loading">
@@ -228,10 +234,12 @@ export default {
                 accessPlatform: null,
             },
             sourceList:[
+                {name:'全部',val:''},
                 {name:'直播',val:'1'},
                 {name:'手动获取',val:'2'},
             ],
             statusList:[
+                {name:'全部',val:''},
                 {name:'未下载',val:'0'},
                 {name:'下载中',val:'1'},
                 {name:'下载完成',val:'2'},

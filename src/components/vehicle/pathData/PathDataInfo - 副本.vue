@@ -62,9 +62,7 @@
                         </el-table-column>
                         <el-table-column min-width="20%" label="经度" prop="gnss_LONG"></el-table-column>
                         <el-table-column min-width="20%" label="纬度" prop="gnss_LAT"></el-table-column>
-                        <el-table-column min-width="15%" label="速度(km/h)">
-                            <template slot-scope="scope">{{Number(scope.row.gnss_SPD).toFixed(1)}}</template>
-                        </el-table-column>
+                        <el-table-column min-width="15%" label="速度(km/h)" prop="gnss_SPD"></el-table-column>
                         <el-table-column min-width="15%" label="航向角" prop="gnss_HEAD"></el-table-column>
                         <el-table-column min-width="10%" label="高程(m)" prop="gnss_HIGHT"></el-table-column>
                     </el-table>
@@ -117,7 +115,6 @@ import { error } from 'util';
       }
     },
     mounted() {
-      let _this = this;
       this.init();
       this.initMap();
       //注册键盘事件
@@ -158,13 +155,10 @@ import { error } from 'util';
 
         this.distanceMap.addControl(_scale);
         this.distanceMap.addControl(_toolbar);
-        this.distanceMap.setStatus({keyboardEnable:false});  //不允许键盘操作
       },
       showDetail(row) {
         if(row) {
             this.currentIndex = row.index;
-            let _position = ConvertCoord.wgs84togcj02(row.gnss_LONG, row.gnss_LAT);
-            this.addRemoveMaker(_position);
         }
       },
       rowClassName({row, rowIndex}) {
@@ -269,7 +263,7 @@ import { error } from 'util';
             if(res.data.length) {
               this.dataList = res.data;
               this.addLine(res.data);
-              this.setCurrentRow(this.dataList[0]);
+              this.setCurrentRow(0);
             }
           }
           this.loading = false;
@@ -330,41 +324,34 @@ import { error } from 'util';
       },
       addRemoveMaker(point){
         if(this.removeMarker) {
-          this.removeMarker.setPosition(point);
+          this.removeMarker.setPosition(_position);
         }else {
           this.removeMarker = new AMap.Marker({
-              position: point,
+              position: _position,
               icon:'static/images/map/blue-point.png',
               offset: new AMap.Pixel(-11, -11)
           });
           this.distanceMap.add(this.removeMarker);
         }
       },
-      setCurrentRow(row) {
+      setCurrentRow(index) {
+        let _position = ConvertCoord.wgs84togcj02(this.dataList[index].gnss_LONG, this.dataList[index].gnss_LAT);
+        this.addRemoveMaker(_position);
         if(this.$refs.pathDataTable.bodyWrapper.children[0].children[1].children.length) {
-            this.setScrollTop(row);
+            this.setScrollTop(index);
         }else {
             setTimeout(() => {
-                this.setScrollTop(row);
+                this.setScrollTop(index);
             }, 1000);
         }
       },
-      setScrollTop(row) {
-          this.$refs.pathDataTable.setCurrentRow(row);
+      setScrollTop(index) {
+          this.$refs.pathDataTable.setCurrentRow(this.dataList[index]);
           this.rowHeight = this.$refs.pathDataTable.bodyWrapper.children[0].children[1].children[0].clientHeight;
           this.tableHeight = parseInt(this.$refs.pathDataTable.bodyHeight['max-height']);
           this.$refs.pathDataTable.bodyWrapper.scrollTop = this.rowHeight*this.currentIndex;
-          let _position = ConvertCoord.wgs84togcj02(row.gnss_LONG, row.gnss_LAT);
-          this.addRemoveMaker(_position);
+          console.log(this.rowHeight, this.tableHeight);
       }
-    },
-    destroyed(){
-       document.onkeydown = function (event) {
-            if (e.keyCode == 38 || e.keyCode == 40) {
-                e.preventDefault();
-            }
-            
-       } 
     }
   }
 </script>

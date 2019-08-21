@@ -261,6 +261,8 @@ export default {
                         this.provinceOptions.push(obj);
                     })
                 }
+                console.log(this.isFirst);
+                //首次加载
                 if(this.isFirst){
                     var provinceCode = this.provinceOptions[0].code;
                     this.searchKey.provinceValue = this.provinceOptions[0];
@@ -268,10 +270,12 @@ export default {
                     var cityCode = this.cityOptions[0].code;
                     this.searchKey.cityValue = this.cityOptions[0];
                     this.getRegion(cityCode);
+                    this.isFirst = false;
                 }
             })
         },
         getCitys(code){
+            console.log(code);
             this.searchKey.cityValue = '';
             this.cityOptions = [];
             this.treeList.forEach(item => {
@@ -283,6 +287,7 @@ export default {
                         obj.code = e.code;
                         this.cityOptions.push(obj);
                     })
+                    console.log(this.cityOptions);
                 }
             })
         },
@@ -296,7 +301,6 @@ export default {
                         obj.label = e.name;
                         obj.code = e.code;
                         obj.type = 1;
-                        this.treeData = [];
                         this.treeData.push(obj);
                     })
                 }
@@ -511,13 +515,14 @@ export default {
             this.changeSize = false;
         },
         getCityTrees(item){//获区市辖数据
-            this.newData = [];
             this.endPlay();
-            this.searchKey.cityValue = '';
-            this.cityOptions = item.children;
+            console.log(this.provinceOptions);
+            // this.searchKey.cityValue = '';
+            // this.cityOptions = item.children;
+            console.log(item);
         },
         queryCountyRoadTrees(item){
-            this.newData = []; 
+            console.log(item);
             this.endPlay();
             queryCountyRoadTree({
                 'cityCode':item.code,
@@ -525,6 +530,7 @@ export default {
             }).then(res => {
                 if(res.status == '200') {
                     this.treeData = res.data;
+                    console.log(this.treeData);
                 }
             })
         },
@@ -561,6 +567,7 @@ export default {
         },
         searchClick(){
             var rsCamOptions = this.rsCamCodeOption.filterOption;
+            console.log(rsCamOptions);
             this.markerOption.point = null;
             if(rsCamOptions.length > 0){
                 //过滤匹配默认选中数据
@@ -582,6 +589,7 @@ export default {
                                 obj.code = item.rspDistcodeCity;
                                 this.cityOptions = [];
                                 this.cityOptions.push(obj);
+                                console.log(this.cityOptions);
                                 this.getRegion(item.rspDistcodeCity);
                                 this.defaultArr = [];
                                 this.defaultArr.push(this.searchKey.deviceId);

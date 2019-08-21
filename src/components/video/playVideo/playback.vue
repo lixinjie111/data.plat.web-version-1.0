@@ -15,7 +15,7 @@
                     <span class="value">{{vehicleId ? vehicleId : '--'}}</span>
                 </p>
                 <p class="c-detail-lable">
-                    <span class="name">序列号:</span>
+                    <span class="name">摄像头编号:</span>
                     <span class="value">{{serialNum ? serialNum : '--'}}</span>
                 </p>
                 <p class="c-detail-lable">
@@ -83,7 +83,7 @@ export default {
             this.videoPath = historyInfo.destPath+'.mp4';
             this.vehicleId = historyInfo.vehicleId;
             this.plateNo = historyInfo.plateNo;
-            this.serialNum = historyInfo.camId;
+            this.serialNum = historyInfo.camCode;
             this.position = historyInfo.camDirection;
             this.camStatus = historyInfo.camStatus;
             queryDeviceType({//获取设备id

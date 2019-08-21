@@ -44,7 +44,8 @@ export const historyGpsInfo = params => { return axios.post(`${HTTPURL}vehicle/h
 /**
  * 视频列表
  */
-export const queryVideoList = params => { return axios.post(`${HTTPURL}cam/queryVideoList`, params).then(res => res.data); };
+export const queryVideoList = params => { return axios.post(`http://172.17.1.13:9099/dataPlatApp/cam/queryVideoList`, params).then(res => res.data); };
+// export const queryVideoList = params => { return axios.post(`${HTTPURL}cam/queryVideoList`, params).then(res => res.data); };
 /**
  * 删除文件
  */
