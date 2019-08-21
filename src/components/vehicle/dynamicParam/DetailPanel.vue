@@ -27,7 +27,7 @@
                     <el-table-column prop="dataId" label="数据编号"></el-table-column>
                     <el-table-column prop="enName" label="英文名称"></el-table-column>
                     <el-table-column prop="chName" label="中文名称"></el-table-column>
-                    <el-table-column prop="enName" label="数据值"></el-table-column>
+                    <el-table-column prop="dataValue" label="数据值"></el-table-column>
                     <el-table-column label="时间">
                         <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp)}}</template>
                     </el-table-column>    

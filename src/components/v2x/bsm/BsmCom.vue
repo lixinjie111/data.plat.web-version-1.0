@@ -57,7 +57,7 @@
                 <el-table-column prop="vehicleId" min-width="12%" label="车辆编号"></el-table-column>
                 <el-table-column prop="plateNo" label="车牌号码" min-width="10%"></el-table-column>
                 <el-table-column label="时间" min-width="16%">
-                    <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.gpstime),type=''}}</template>
+                    <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.gpstime,type='yy-mm-dd hh:mm:ss:ms')}}</template>
                 </el-table-column>
                 <el-table-column label="经度" min-width="12%">
                     <template slot-scope="scope">{{Number(scope.row.longitude).toFixed(8)}}</template>

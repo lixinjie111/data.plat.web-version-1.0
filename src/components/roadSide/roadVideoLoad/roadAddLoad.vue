@@ -333,6 +333,7 @@ export default {
             let camId = this.camSelected.serialNum;
             let startTime = this.formParams.startTime ? this.$dateUtil.dateToMs(this.formParams.startTime) : '';
             let endTime = this.formParams.endTime ? this.$dateUtil.dateToMs(this.formParams.endTime) : '';
+
             if(this.startTime == ''){
                 this.isStartTipsShow = true;
                 return;
