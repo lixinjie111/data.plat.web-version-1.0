@@ -11,8 +11,7 @@ export const queryRoadRegionTree = params => { return axios.post(`${HTTPURL}road
 /**
  * 左侧树形菜单
  */
-export const queryRoadCamList = params => { return axios.post(`http://172.17.1.13:9099/dataPlatApp/road/queryRoadCamListByRoadId`, params).then(res => res.data); };
-// export const queryRoadCamList = params => { return axios.post(`${HTTPURL}road/queryRoadCamListByRoadId`, params).then(res => res.data); };
+export const queryRoadCamList = params => { return axios.post(`${HTTPURL}road/queryRoadCamListByRoadId`, params).then(res => res.data); };
  /**
  * 开启直播报活
  */

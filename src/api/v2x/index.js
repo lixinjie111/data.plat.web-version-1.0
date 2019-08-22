@@ -28,8 +28,7 @@ export const findEventList = params => { return axios.post(`${HTTPURL}v2x/findEv
 /**
  * 数据列表
  */
-export const findRsmPage = params => { return axios.post(`http://172.17.1.13:9099/dataPlatApp/v2x/findRsmPage`, params).then(res => res.data); };
-// export const findRsmPage = params => { return axios.post(`${HTTPURL}v2x/findRsmPage`, params).then(res => res.data); };
+export const findRsmPage = params => { return axios.post(`${HTTPURL}v2x/findRsmPage`, params).then(res => res.data); };
 
 
 /**
@@ -39,5 +38,4 @@ export const findRsmPage = params => { return axios.post(`http://172.17.1.13:909
 /**
  * 数据列表
  */
-export const findRsiPage = params => { return axios.post(`http://172.17.1.13:9099/dataPlatApp/v2x/findRsiPage`, params).then(res => res.data); };
-// export const findRsiPage = params => { return axios.post(`${HTTPURL}v2x/findRsiPage`, params).then(res => res.data); };
+export const findRsiPage = params => { return axios.post(`${HTTPURL}v2x/findRsiPage`, params).then(res => res.data); };

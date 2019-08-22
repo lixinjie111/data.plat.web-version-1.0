@@ -34,11 +34,9 @@ export const queryRoadCamListSearch = params => { return axios.post(`${HTTPURL}r
 /**
  * 感知数据路侧点名称模糊查询
  */
-export const queryRoadPointList = params => { return axios.post(`http://172.17.1.13:9099/dataPlatApp/road/queryRoadPointList`, params).then(res => res.data); };
-// export const queryRoadPointList = params => { return axios.post(`${HTTPURL}road/queryRoadPointList`, params).then(res => res.data); };
+export const queryRoadPointList = params => { return axios.post(`${HTTPURL}road/queryRoadPointList`, params).then(res => res.data); };
 
 /**
  * 感知数据根据路侧点名称模糊查询摄像头编号、序列号
  */
-export const queryRoadSideCamList = params => { return axios.post(`http://172.17.1.13:9099/dataPlatApp/road/queryRoadSideCamList`, params).then(res => res.data); };
-// export const queryRoadPointList = params => { return axios.post(`${HTTPURL}road/queryRoadPointList`, params).then(res => res.data); };
+export const queryRoadSideCamList = params => { return axios.post(`${HTTPURL}road/queryRoadSideCamList`, params).then(res => res.data); };

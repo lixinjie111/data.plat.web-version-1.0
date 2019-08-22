@@ -446,7 +446,9 @@ export default {
                 'serialNum':''
             }).then(res => {
                 if(res.status == '200'){
-                    console.log(res.data);
+                    this.fuzzySearchOption2.filterOption = this.fuzzySearchOption3.filterOption = res.data;
+                    this.searchKey.deviceId = this.fuzzySearchOption2.filterOption[0];
+                    this.searchKey.serialNum = this.fuzzySearchOption3.filterOption[0];
                 }
             }).catch(err => {
 
@@ -501,17 +503,13 @@ export default {
             }
         },
         deviceIdSelect(val) {
-            console.log(val);
             // this.fuzzySearchOption3.filterOption = [];
             // this.fuzzySearchOption3.filterOption.push(val);
             this.searchKey.rsPtName = val.rsPtName;
             this.searchKey.serialNum = val.serialNum;
-            console.log(this.fuzzySearchOption3.filterOption);
         },
         remoteMethod3(query) {
-            console.log(query);
             if (query !== '') {
-                console.log('接口调用')
                 this.fuzzySearchOption3.loading = true;
                 clearTimeout(this.fuzzySearchOption3.timer);
                 this.fuzzySearchOption3.timer = setTimeout(() => {
@@ -561,8 +559,7 @@ export default {
             }
         },
         serialSelect(val) {
-            // this.fuzzySearchOption2.filterOption = [];
-            // this.fuzzySearchOption2.filterOption.push(val);
+            this.searchKey.rsPtName = val.rsPtName;
             this.searchKey.deviceId = val.deviceId;
         },
         // rsSerialNumRemoteMethod(query) {
