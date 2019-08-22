@@ -5,11 +5,13 @@
             <el-form-item label="自车编号" prop='vehicleId'>
                 <el-select
                     v-model.trim="searchKey.vehicleId"
+                    clearable
                     filterable
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsVehicleRemoteMethod"
+                    @clear="$searchFilter.clearFunc(rsVehicleOption)"
                     @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
                     @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                     :loading="rsVehicleOption.loading">
@@ -68,16 +70,16 @@
                 </template>
             </el-table-column>
             <el-table-column prop="alarmLvl" label="预警级别" min-width="10%"></el-table-column>
-            <el-table-column prop="dist" label="车距" min-width="8%"></el-table-column>
-            <el-table-column label="gps时间" min-width="20%">
-                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.gpstime)}}</template>
+            <el-table-column prop="dist" label="车距(m)" min-width="8%"></el-table-column>
+            <el-table-column label="gps时间(ms)" min-width="20%">
+                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.gpstime,type='yy-mm-dd hh:mm:ss:ms')}}</template>
             </el-table-column>
             <el-table-column prop="hlon" label="自车经度" min-width="12%"></el-table-column>
             <el-table-column prop="hlat" label="自车纬度" min-width="12%"></el-table-column>
-            <el-table-column prop="hheading" label="自车方向" min-width="10%"></el-table-column>
+            <el-table-column prop="hheading" label="自车航向角 " min-width="10%"></el-table-column>
             <el-table-column prop="rlon" label="远车经度" min-width="12%"></el-table-column>
             <el-table-column prop="rlat" label="远车纬度" min-width="12%"></el-table-column>
-            <el-table-column prop="rheading" label="远车方向" min-width="10%"></el-table-column>   
+            <el-table-column prop="rheading" label="远车航向角" min-width="10%"></el-table-column>   
         </el-table>
         <div class="c-page clearfix">
             <el-pagination

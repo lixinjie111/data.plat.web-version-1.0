@@ -9,10 +9,10 @@ class SearchFilter {
         if (option.query !== '') {
             this.queryName=option.query;
             option.searchOption.loading = true;
-            clearTimeout(option.searchOption.timer);
-            option.searchOption.timer = setTimeout(() => {
+            // clearTimeout(option.searchOption.timer);
+            // option.searchOption.timer = setTimeout(() => {
                 this.requestRoadSideTypeahead(option);
-            }, 500);
+            // }, 500);
         } else {
             option.searchOption.filterOption = option.searchOption.defaultOption;
         }
@@ -53,6 +53,10 @@ class SearchFilter {
         }).catch(err => {
             option.searchOption.loading = false;
         });
+    }
+    static clearFunc(searchOption) {
+        console.log(searchOption);
+        searchOption.filterOption = searchOption.defaultOption;
     }
     static remoteMethodBlur(searchObj, key) {
         searchObj[key] = this.queryName;

@@ -7,11 +7,13 @@
                     <!-- <el-input v-model.trim="searchKey.camCode"></el-input> -->
                     <el-select
                         v-model.trim="searchKey.deviceId"
+                        clearable
                         filterable
                         remote
                         reserve-keyword
                         placeholder="请输入关键词"
                         :remote-method="rsCamRemoteMethod"
+                        @clear="$searchFilter.clearFunc(rsCamOption)"
                         @focus="$searchFilter.remoteMethodClick(rsCamOption, searchKey, 'deviceId', cameraUrl)"
                         @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
                         :loading="rsCamOption.loading">
@@ -26,11 +28,13 @@
                 <el-form-item label="车牌号" prop='plateNo'>
                     <el-select
                         v-model.trim="searchKey.plateNo"
+                        clearable
                         filterable
                         remote
                         reserve-keyword
                         placeholder="请输入关键词"
                         :remote-method="rsPlateNoRemoteMethod"
+                        @clear="$searchFilter.clearFunc(rsPlateNoOption)"
                         @focus="$searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo', searchUrl)"
                         @blur="$searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
                         :loading="rsPlateNoOption.loading">
@@ -45,11 +49,13 @@
                 <el-form-item label="车辆编号" prop='vehicleId'>
                     <el-select
                         v-model.trim="searchKey.vehicleId"
+                        clearable
                         filterable
                         remote
                         reserve-keyword
                         placeholder="请输入关键词"
                         :remote-method="rsVehicleRemoteMethod"
+                        @clear="$searchFilter.clearFunc(rsVehicleOption)"
                         @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
                         @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                         :loading="rsVehicleOption.loading">
@@ -119,7 +125,7 @@
                 <el-table-column min-width="18%" label="文件名称" prop="fileName"></el-table-column>
                 <el-table-column min-width="11%" label="车辆编号" prop="vehicleId"></el-table-column>
                 <el-table-column min-width="11%" label="车牌号" prop="plateNo"></el-table-column>
-                <el-table-column min-width="14%" label="摄像头编号" prop="camId"></el-table-column>
+                <el-table-column min-width="14%" label="摄像头编号" prop="camCode"></el-table-column>
                 <el-table-column min-width="12%" label="开始时间" prop="startTime"></el-table-column>
                 <el-table-column min-width="12%" label="结束时间" prop="endTime"></el-table-column>
                 <el-table-column min-width="8%" label="视频来源">
@@ -210,6 +216,7 @@ export default {
                 accessPlatform: null,
             },
             sourceList:[
+                {name:'全部',val:''},
                 {name:'直播',val:'1'},
                 {name:'手动获取',val:'2'},
             ],

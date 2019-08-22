@@ -5,11 +5,13 @@
             <el-form-item label="RSU编号" prop='rsuId'>
                 <el-select
                         v-model.trim="searchKey.rsuId"
+                        clearable
                         filterable
                         remote
                         reserve-keyword
                         placeholder="请输入关键词"
                         :remote-method="rsRsuIdRemoteMethod"
+                        @clear="$searchFilter.clearFunc(rsRsuIdOption)"
                         @focus="$searchFilter.remoteMethodClick(rsRsuIdOption, searchKey, 'rsuId', searchUrl)"
                         @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsuId')"
                         :loading="rsRsuIdOption.loading">
@@ -53,7 +55,7 @@
             <el-table-column prop="msgID" label="消息编号" min-width="8%"></el-table-column>
             <el-table-column prop="rsuId" label="RSU编号" min-width="8%"></el-table-column>
             <el-table-column label="时间" min-width="14%">
-                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
+                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time,type='yy-mm-dd hh:mm:ss:ms')}}</template>
             </el-table-column>
             <el-table-column label="经度" min-width="10%">
                 <template slot-scope="scope">{{scope.row.longitude.toFixed(8)}}</template>
@@ -64,7 +66,7 @@
             <el-table-column prop="elevation" label="高程" min-width="8%"></el-table-column>
             <el-table-column prop='content' label="消息内容" min-width="10%"></el-table-column>
             <el-table-column prop='pathPtNum' label="坐标点个数" min-width="8%"></el-table-column>
-            <el-table-column min-width="20%" label="坐标点串" prop="fileName">
+            <el-table-column min-width="20%" label="影响路径" prop="fileName">
                 <template slot-scope="scope">
                     <el-popover placement="top" width="350" trigger="hover" popper-class="c-table-popover">
                         <div class="c-table-popover-content" v-html="scope.row.alertPath"></div>
@@ -72,7 +74,7 @@
                     </el-popover>
                 </template>
             </el-table-column>
-            <el-table-column prop='alertRadius' label="警告半径" min-width="10%"></el-table-column>
+            <el-table-column prop='alertRadius' label="影响范围(10cm)" min-width="10%"></el-table-column>
         </el-table>
         <div class="c-page clearfix">
             <el-pagination

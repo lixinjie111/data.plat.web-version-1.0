@@ -42,32 +42,33 @@
                         <span class="c-map-scale-btn" :class="isScaleMap ? 'c-map-scale-off' : 'c-map-scale-on'" @click="isScaleMap = !isScaleMap"></span>
                     </div>
                 </div>
-                <div class="c-wrapper-20 c-detail-box c-padding-20">
-                    <el-table
-                        ref="pathDataTable" 
-                        :data="dataList" 
-                        stripe 
-                        border
-                        v-loading="loading" 
-                        highlight-current-row
-                        @current-change="showDetail"
-                        :row-class-name="rowClassName"
-                        max-height="300"
-                        :cell-style="{
-                            cursor: 'pointer'
-                        }">
-                        <el-table-column label="序号" type="index"></el-table-column>
-                        <el-table-column min-width="25%" label="时间">
-                          <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp, 'yy-mm-dd hh:mm:ss:ms')}}</template>
-                        </el-table-column>
-                        <el-table-column min-width="20%" label="经度" prop="gnss_LONG"></el-table-column>
-                        <el-table-column min-width="20%" label="纬度" prop="gnss_LAT"></el-table-column>
-                        <el-table-column min-width="15%" label="速度(km/h)">
-                            <template slot-scope="scope">{{Number(scope.row.gnss_SPD).toFixed(1)}}</template>
-                        </el-table-column>
-                        <el-table-column min-width="15%" label="航向角" prop="gnss_HEAD"></el-table-column>
-                        <el-table-column min-width="10%" label="高程(m)" prop="gnss_HIGHT"></el-table-column>
-                    </el-table>
+                <div class="c-wrapper-20 c-padding-20 c-detail-box">
+                  <table class="path-table">
+                    <thead>
+                    <tr>
+                      <th style='width:5%;'>序号</th>
+                      <th style='width:20%;'>时间</th>
+                      <th style='width:20%;'>经度</th>
+                      <th style='width:20%;'>纬度</th>
+                      <th style='width:15%;'>速度(km/h)</th>
+                      <th style='width:10%;'>航向角</th>
+                      <th style='width:10%;'>高程(m)</th>
+                    </tr>
+                    </thead>
+                    <tbody class="tbody">
+                    <tr class="mouse-cursor" :class="index==selectItem?'table-row-color1':''"
+                        v-for='(item,index) in dataList' :key="index"
+                        @click.stop="selectRow(item,index);">
+                      <td style='width:5%;'>{{ index+1 }}</td>
+                      <td style='width:20%;'>{{$dateUtil.formatTime(item.timestamp,'yy-mm-dd hh:mm:ss:ms')}}</td>
+                      <td style='width:20%;'>{{item.gnss_LONG}}</td>
+                      <td style='width:20%;'>{{item.gnss_LAT}}</td>
+                      <td style='width:15%;'>{{item.gnss_SPD}}</td>
+                      <td style='width:10%;'>{{item.gnss_HEAD}}</td>
+                      <td style='width:10%;'>{{item.gnss_HIGHT}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
         </div>
@@ -83,7 +84,6 @@ import { error } from 'util';
     components: {},
     data() {
       return {
-        loading: true,
         isScaleMap: false,
         dataList: [],
         selectItem: 0,
@@ -109,41 +109,53 @@ import { error } from 'util';
         exportTime:{
           startTime:'',
           endTime:''
-        },
-
-        rowHeight: 0,
-        currentIndex: -1,
-        tableHeight: 0,
+        }
       }
     },
     mounted() {
-      let _this = this;
-      this.init();
+      let self = this;
       this.initMap();
+      this.init();
+      let table = document.getElementsByClassName("tbody")[0];
+
       //注册键盘事件
-      document.onkeydown = function (event) {
+      document.onkeydown = function () {
         let e = event || window.event || arguments.callee.caller.arguments[0];
-        e.preventDefault();
-        if (_this.dataList && _this.dataList.length > 0 && e) {
-            let _scrollTop = _this.$refs.pathDataTable.bodyWrapper.scrollTop;
-            if (e.keyCode == 38) {
-                if(_this.currentIndex > 0) {
-                    _this.currentIndex --;
-                    _this.$refs.pathDataTable.setCurrentRow(_this.dataList[_this.currentIndex]);
-                    if(_this.currentIndex*_this.rowHeight <= _scrollTop) {
-                        _this.$refs.pathDataTable.bodyWrapper.scrollTop = _this.currentIndex*_this.rowHeight;
-                    }
-                }
+        if (self.dataList && self.dataList.length > 0 && e) {
+          if (e.keyCode == 38) {
+            if (self.selectItem > 0) {
+              self.selectItem -= 1;
+              //设置滚动条高度
+              if (self.selectItem==0){
+                table.scrollTop=0;
+              } else{
+                table.scrollTop=41.33*(self.selectItem);
+              }
+              //画点
+              self.selectRow(self.dataList[self.selectItem]);
             }
-            if (e.keyCode == 40) {
-                if(_this.currentIndex <= _this.dataList.length) {
-                    _this.currentIndex ++;
-                    _this.$refs.pathDataTable.setCurrentRow(_this.dataList[_this.currentIndex]);
-                    if(_this.currentIndex*_this.rowHeight >= (_scrollTop + _this.tableHeight)) {
-                        _this.$refs.pathDataTable.bodyWrapper.scrollTop = (_this.currentIndex+1)*_this.rowHeight - _this.tableHeight;
-                    }
-                }
+          }
+          if (e.keyCode == 40) {
+            if (self.selectItem < self.dataList.length - 1) {
+              self.selectItem += 1;
+              //设置滚动条高度
+              if (self.selectItem==0){
+                table.scrollTop=0;
+              } else{
+                table.scrollTop=41.33*(self.selectItem-1);
+              }
+              //画点
+              self.selectRow(self.dataList[self.selectItem]);
             }
+            if (self.selectItem+1==self.dataList.length  && self.requestDataParams.isBottom==false) {
+            }
+          }
+        }
+      }
+
+      table.onscroll=function () {
+        if (table.scrollTop + table.clientHeight+1 >= table.scrollHeight) {
+          if (self.requestDataParams.isBottom==false){}
         }
       }
     },
@@ -158,18 +170,6 @@ import { error } from 'util';
 
         this.distanceMap.addControl(_scale);
         this.distanceMap.addControl(_toolbar);
-        this.distanceMap.setStatus({keyboardEnable:false});  //不允许键盘操作
-      },
-      showDetail(row) {
-        if(row) {
-            this.currentIndex = row.index;
-            let _position = ConvertCoord.wgs84togcj02(row.gnss_LONG, row.gnss_LAT);
-            this.addRemoveMaker(_position);
-        }
-      },
-      rowClassName({row, rowIndex}) {
-          //把每一行的索引放进row
-          row.index = rowIndex;
       },
       exportTrailDataAlert() {
         this.exportTrailData();
@@ -179,6 +179,38 @@ import { error } from 'util';
           this.$message.error('轨迹数据不存在！');
           return;
         }
+        let tittle = [
+          {
+            key: "lng",
+            name: "经度",
+            sort: 1
+          },
+          {
+            key: "lat",
+            name: "纬度",
+            sort: 2
+          },
+          {
+            key: "altitude",
+            name: "高程",
+            sort: 3
+          },
+          {
+            key: "speed",
+            name: "速度",
+            sort: 4
+          },
+          {
+            key: "pathAngle",
+            name: "航向角",
+            sort: 5
+          },
+          {
+            key: "time",
+            name: "时间",
+            sort: 6
+          },
+        ];
         const datas = [];
 
         const formDataList = this.dataList;
@@ -255,6 +287,7 @@ import { error } from 'util';
       },
       init() {
         //清空数组
+        this.dataList = [];
         this.exportTime.startTime = this.data.originStartTime;
         this.exportTime.endTime = this.data.originEndTime;
         //初始化选择项
@@ -269,13 +302,11 @@ import { error } from 'util';
             if(res.data.length) {
               this.dataList = res.data;
               this.addLine(res.data);
-              this.setCurrentRow(this.dataList[0]);
+              let _position = ConvertCoord.wgs84togcj02(res.data[0].gnss_LONG, res.data[1].gnss_LAT);
+              this.addRemoveMaker(_position);
             }
           }
-          this.loading = false;
-        }).catch(err => {
-          this.loading = false;
-        });
+        })
       },
       addLine(pointList) {
         this.markers.polylinePath = [];
@@ -340,31 +371,72 @@ import { error } from 'util';
           this.distanceMap.add(this.removeMarker);
         }
       },
-      setCurrentRow(row) {
-        if(this.$refs.pathDataTable.bodyWrapper.children[0].children[1].children.length) {
-            this.setScrollTop(row);
-        }else {
-            setTimeout(() => {
-                this.setScrollTop(row);
-            }, 1000);
+      selectRow(item, index) {
+        let self = this;
+        if (index ||index==0) {
+          self.selectItem = index;
         }
-      },
-      setScrollTop(row) {
-          this.$refs.pathDataTable.setCurrentRow(row);
-          this.rowHeight = this.$refs.pathDataTable.bodyWrapper.children[0].children[1].children[0].clientHeight;
-          this.tableHeight = parseInt(this.$refs.pathDataTable.bodyHeight['max-height']);
-          this.$refs.pathDataTable.bodyWrapper.scrollTop = this.rowHeight*this.currentIndex;
-          let _position = ConvertCoord.wgs84togcj02(row.gnss_LONG, row.gnss_LAT);
-          this.addRemoveMaker(_position);
+        let _position = ConvertCoord.wgs84togcj02(item.gnss_LONG, item.gnss_LAT);
+        this.addRemoveMaker(_position);
       }
     },
-    destroyed(){
-       document.onkeydown = function (event) {
-            if (e.keyCode == 38 || e.keyCode == 40) {
-                e.preventDefault();
-            }
-            
-       } 
-    }
   }
 </script>
+<style scoped>
+  .path-table {
+    position: relative;
+    word-break: break-all;
+    font-size: 14px;
+    color: #777C7C;
+    border-collapse: collapse;
+    border-radius: 5px;    
+    border: 1px solid #ebeef5;
+    border-top: none;
+  }
+
+  .path-table thead, .path-table tr {
+    text-align: center;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .path-table thead {
+    width: 100%;
+  }
+
+  .path-table thead tr {
+    background: #e6e6e6;
+    height: 48px;
+    color: #000;
+    font-weight: 400;
+  }
+
+  .path-table tbody {
+    display: block;
+    height: 246px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  .path-table tbody tr {
+    height: 40px;
+    border: none;
+  }
+
+  .path-table th, .path-table td {
+    padding: 0 5px;
+  }
+  .path-table td {
+    border-top: 1px solid #ebeef5;
+    border-right: 1px solid #ebeef5;
+  }
+
+  .table-row-color1 {
+    background-color: #fff0db;
+  }
+
+  .mouse-cursor:hover {
+    cursor: pointer;
+  }
+</style>

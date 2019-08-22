@@ -45,13 +45,13 @@
             </el-form-item>
             <el-form-item label="摄像头编号" prop='camSerialNum'>
                 <el-select
-                    v-model="formParams.camSerialNum"
-                    value-key="camSerialNum"
+                    v-model="formParams.camDeviceId"
+                    value-key="camDeviceId"
                     @change="handleSelectCamCode">
                     <el-option
                         v-for="(item,index) in camCodeList"
-                        :key="item.label+index"
-                        :label="item.label"
+                        :key="item.deviceId+index"
+                        :label="item.deviceId"
                         :value="item">
                     </el-option>
                 </el-select>
