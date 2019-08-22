@@ -2,26 +2,6 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <el-form ref="searchForm" :inline="true" :rules="rules" :model="searchKey" size="small">
-            <el-form-item label="路侧点名称:" prop='rsPtName'>
-                <el-select
-                    v-model.trim="searchKey.rsPtName"
-                    filterable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词"
-                    :remote-method="remoteMethod1"
-                    value-key="rsPtName"
-                    @focus="selectRsPtNameList"
-                    @change="RsPtNameSelect"
-                    :loading="fuzzySearchOption1.loading">
-                    <el-option
-                        v-for="(item,index) in fuzzySearchOption1.filterOption"
-                        :key="item.rsPtName+index"
-                        :label="item.rsPtName"
-                        :value="item">
-                    </el-option>
-                </el-select>
-            </el-form-item>
             <el-form-item label="摄像头编号: " prop="deviceId">
                 <el-select
                     v-model.trim="searchKey.deviceId"
@@ -29,13 +9,13 @@
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
-                    :remote-method="remoteMethod2"
+                    :remote-method="remoteMethod1"
                     value-key="deviceId"
                     @focus="selectDeviceIdList"
                     @change="deviceIdSelect"
-                    :loading="fuzzySearchOption2.loading">
+                    :loading="fuzzySearchOption1.loading">
                     <el-option
-                        v-for="(item,index) in fuzzySearchOption2.filterOption"
+                        v-for="(item,index) in fuzzySearchOption1.filterOption"
                         :key="item.deviceId+index"
                         :label='item.deviceId'
                         :value="item">
@@ -50,13 +30,13 @@
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
-                    :remote-method="remoteMethod3"
+                    :remote-method="remoteMethod2"
                     value-key="serialNum"
                     @focus="selectSerialNumList"
                     @change="serialSelect"
-                    :loading="fuzzySearchOption3.loading">
+                    :loading="fuzzySearchOption2.loading">
                     <el-option
-                        v-for="(item,index) in fuzzySearchOption3.filterOption"
+                        v-for="(item,index) in fuzzySearchOption2.filterOption"
                         :key="item.serialNum+index"
                         :label='item.serialNum'
                         :value="item">
@@ -128,7 +108,7 @@
 import {findVideoRecords,findRoadMonitorCameraInfo} from '@/api/roadSide';
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
-import {queryRoadCamListSearch,queryRoadPointList,requestqueryRoadList,requestRSCamList,queryRoadSideCamList} from '@/api/search';
+import {queryRoadCamListSearch,requestqueryRoadList,requestRSCamList} from '@/api/search';
 export default {
     name: 'VideoManage',
     components: {
@@ -189,7 +169,7 @@ export default {
             requestData: {},
             searchKey: {
                 rsPtId:'',
-                rsPtName:'',
+                // rsPtName:'',
                 cameraId:'',
                 // serialNum:'',
                 // serialNum:'3402000000132000001601',
@@ -259,12 +239,6 @@ export default {
                 filterOption: [],
                 defaultFilterOption:[]
             },
-            fuzzySearchOption3: {
-                loading: false,
-                timer: null,
-                filterOption: [],
-                defaultFilterOption:[]
-            },
             // rsSerialNumOption: {
             //     loading: false,
             //     timer: null,
@@ -284,8 +258,8 @@ export default {
         }
     },
     mounted(){
-        this.searchKey.deviceId = '';
-        this.searchKey.serialNum = '';
+        this.searchKey.deviceId = 'N-NJ-0007';
+        this.searchKey.serialNum = '3402000000132000003001';
         this.searchKey.startTime = this.$dateUtil.GetDateStr(7);
         this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
         this.initData();
@@ -308,7 +282,7 @@ export default {
         initData(){
             this.loading = true;
             findVideoRecords({
-                'rsPtName':this.searchKey.rsPtName,
+                // 'rsPtName':this.searchKey.rsPtName,
                 'deviceId':this.searchKey.deviceId,
                 'serialNum':  this.searchKey.serialNum,
                 'startTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
@@ -376,7 +350,6 @@ export default {
             this.$refs.searchForm.resetFields();
             this.fuzzySearchOption1.filterOption = this.fuzzySearchOption1.defaultOption;
             this.fuzzySearchOption2.filterOption = this.fuzzySearchOption2.defaultOption;
-            this.fuzzySearchOption3.filterOption = this.fuzzySearchOption3.defaultOption;
             // this.rsPointNameOption.filterOption = this.rsPointNameOption.defaultOption;
         },
         // rsCamCodeRemoteMethod(query) {
@@ -388,43 +361,16 @@ export default {
         //         request: this.cameraUrl
         //     });
         // },
-        remoteMethod1(query) {
-            if (query !== '') {
+        selectDeviceIdList(){
+            if(this.searchKey.deviceId == 'N-NJ-0007'){
                 this.fuzzySearchOption1.loading = true;
                 clearTimeout(this.fuzzySearchOption1.timer);
                 this.fuzzySearchOption1.timer = setTimeout(() => {
-                    queryRoadPointList({
-                        'field':'rsPtName',
-                        'value':query
-                    }).then(res => {
-                            if(res.status == '200'){
-                                //接口请求后执行的操作 
-                                this.fuzzySearchOption1.loading = false;
-                                this.fuzzySearchOption1.filterOption = res.data.filter(item => {
-                                return item.rsPtName.toLowerCase()
-                                    .indexOf(query.toLowerCase()) > -1;
-                                });
-                            }
-                            this.fuzzySearchOption1.loading = false;
-                        }).catch(err => {
-                            this.fuzzySearchOption1.loading = false;
-                        });
-                }, 500);
-            } else {
-                this.fuzzySearchOption1.filterOption = this.fuzzySearchOption1.defaultFilterOption;
-            }
-        },
-        selectRsPtNameList(){
-            if(this.searchKey.rsPtName == ''){
-                this.fuzzySearchOption1.loading = true;
-                clearTimeout(this.fuzzySearchOption1.timer);
-                this.fuzzySearchOption1.timer = setTimeout(() => {
-                    queryRoadPointList({
-                        'field':'rsPtName',
+                    queryRoadCamListSearch({
+                        'field':'deviceId',
                         'value':''
                     }).then(res => {
                             if(res.status == '200'){
-                                console.log(res.data);
                                 //接口请求后执行的操作 
                                 this.fuzzySearchOption1.defaultFilterOption = this.fuzzySearchOption1.filterOption = res.data;
                             }
@@ -437,129 +383,92 @@ export default {
                 this.fuzzySearchOption1.filterOption = this.fuzzySearchOption1.defaultFilterOption;
             }
         },
-        RsPtNameSelect(val){
-            console.log(val);
-            queryRoadSideCamList({
-                'rsPtId':val.rsPtId,
-                'rsPtName':val.rsPtName,
-                'deviceId':'',
-                'serialNum':''
-            }).then(res => {
-                if(res.status == '200'){
-                    this.fuzzySearchOption2.filterOption = this.fuzzySearchOption3.filterOption = res.data;
-                    this.searchKey.deviceId = this.fuzzySearchOption2.filterOption[0];
-                    this.searchKey.serialNum = this.fuzzySearchOption3.filterOption[0];
-                }
-            }).catch(err => {
-
-            })
-        },
-        selectDeviceIdList(){
-            if(this.searchKey.deviceId == ''){
-                this.fuzzySearchOption2.loading = true;
-                clearTimeout(this.fuzzySearchOption2.timer);
-                this.fuzzySearchOption2.timer = setTimeout(() => {
-                    queryRoadCamListSearch({
-                        'field':'deviceId',
-                        'value':''
-                    }).then(res => {
-                            if(res.status == '200'){
-                                //接口请求后执行的操作 
-                                this.fuzzySearchOption2.defaultFilterOption = this.fuzzySearchOption2.filterOption = res.data;
-                            }
-                            this.fuzzySearchOption2.loading = false;
-                        }).catch(err => {
-                            this.fuzzySearchOption2.loading = false;
-                        });
-                }, 500);
-            }else{
-                this.fuzzySearchOption2.filterOption = this.fuzzySearchOption2.defaultFilterOption;
-            }
-        },
-        remoteMethod2(query) {
+        remoteMethod1(query) {
             if (query !== '') {
-                this.fuzzySearchOption2.loading = true;
-                clearTimeout(this.fuzzySearchOption2.timer);
-                this.fuzzySearchOption2.timer = setTimeout(() => {
+                this.fuzzySearchOption1.loading = true;
+                clearTimeout(this.fuzzySearchOption1.timer);
+                this.fuzzySearchOption1.timer = setTimeout(() => {
                     queryRoadCamListSearch({
                         'field':'deviceId',
                         'value':query
                     }).then(res => {
                             if(res.status == '200'){
                                 //接口请求后执行的操作 
-                                this.fuzzySearchOption2.loading = false;
-                                this.fuzzySearchOption2.filterOption = res.data.filter(item => {
+                                this.fuzzySearchOption1.loading = false;
+                                this.fuzzySearchOption1.filterOption = res.data.filter(item => {
                                 return item.deviceId.toLowerCase()
                                     .indexOf(query.toLowerCase()) > -1;
                                 });
                             }
-                            this.fuzzySearchOption2.loading = false;
+                            this.fuzzySearchOption1.loading = false;
                         }).catch(err => {
-                            this.fuzzySearchOption2.loading = false;
+                            this.fuzzySearchOption1.loading = false;
                         });
                 }, 500);
             } else {
-                this.fuzzySearchOption2.filterOption = this.fuzzySearchOption2.defaultFilterOption;
+                this.fuzzySearchOption1.filterOption = this.fuzzySearchOption1.defaultFilterOption;
             }
         },
         deviceIdSelect(val) {
-            // this.fuzzySearchOption3.filterOption = [];
-            // this.fuzzySearchOption3.filterOption.push(val);
-            this.searchKey.rsPtName = val.rsPtName;
+            this.fuzzySearchOption2.filterOption = [];
+            this.fuzzySearchOption2.filterOption.push(val);
             this.searchKey.serialNum = val.serialNum;
         },
-        remoteMethod3(query) {
+        remoteMethod2(query) {
+            console.log(query);
             if (query !== '') {
-                this.fuzzySearchOption3.loading = true;
-                clearTimeout(this.fuzzySearchOption3.timer);
-                this.fuzzySearchOption3.timer = setTimeout(() => {
+                console.log('接口调用')
+                this.fuzzySearchOption2.loading = true;
+                clearTimeout(this.fuzzySearchOption2.timer);
+                this.fuzzySearchOption2.timer = setTimeout(() => {
                     queryRoadCamListSearch({
                         'field':'serialNum',
                         'value':query
                     }).then(res => {
                         if(res.status == '200'){
                             //接口请求后执行的操作 
-                            this.fuzzySearchOption3.loading = false;
-                            this.fuzzySearchOption3.filterOption = res.data.filter(item => {
+                            this.fuzzySearchOption2.loading = false;
+                            this.fuzzySearchOption2.filterOption = res.data.filter(item => {
                             return item.serialNum.toLowerCase()
                                 .indexOf(query.toLowerCase()) > -1;
                             });
                         }
-                        this.fuzzySearchOption3.loading = false;
+                        this.fuzzySearchOption2.loading = false;
                     }).catch(err => {
-                        this.fuzzySearchOption3.loading = false;
+                        this.fuzzySearchOption2.loading = false;
                     });
 
                 }, 500);
             } else {
-                this.fuzzySearchOption3.filterOption = [];
+                this.fuzzySearchOption2.filterOption = [];
             }
         },
         selectSerialNumList(){
-            if(this.searchKey.serialNum == ''){
-                this.fuzzySearchOption3.loading = true;
-                clearTimeout(this.fuzzySearchOption3.timer);
-                this.fuzzySearchOption3.timer = setTimeout(() => {
+            if(this.searchKey.serialNum == '3402000000132000003001'){
+                this.fuzzySearchOption2.loading = true;
+                clearTimeout(this.fuzzySearchOption2.timer);
+                this.fuzzySearchOption2.timer = setTimeout(() => {
                     queryRoadCamListSearch({
                         'field':'serialNum',
                         'value':''
                     }).then(res => {
                         if(res.status == '200'){
                             //接口请求后执行的操作 
-                            this.fuzzySearchOption3.loading = false;
-                            this.fuzzySearchOption3.defaultFilterOption = this.fuzzySearchOption3.filterOption = res.data;
+                            this.fuzzySearchOption2.loading = false;
+                            this.fuzzySearchOption2.defaultFilterOption = this.fuzzySearchOption2.filterOption = res.data;
                         }
-                        this.fuzzySearchOption3.loading = false;
+                        this.fuzzySearchOption2.loading = false;
                     }).catch(err => {
-                        this.fuzzySearchOption3.loading = false;
+                        this.fuzzySearchOption2.loading = false;
                     });
                 }, 500); 
             }else{
-                this.fuzzySearchOption3.filterOption = this.fuzzySearchOption3.defaultFilterOption;
+                this.fuzzySearchOption2.filterOption = this.fuzzySearchOption2.defaultFilterOption;
             }
         },
         serialSelect(val) {
-            this.searchKey.rsPtName = val.rsPtName;
+            this.fuzzySearchOption1.filterOption = [];
+            this.fuzzySearchOption1.filterOption.push(val);
             this.searchKey.deviceId = val.deviceId;
         },
         // rsSerialNumRemoteMethod(query) {

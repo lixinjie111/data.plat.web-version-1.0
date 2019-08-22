@@ -11,12 +11,14 @@
                         <el-form-item>
                             <el-select
                                 v-model.trim="searchKey.deviceId"
+                                clearable
                                 filterable
                                 remote
                                 reserve-keyword
                                 value-key="deviceId"
                                 placeholder="请输入关键词"
                                 :remote-method="rsCamCodeRemoteMethod"
+                                @clear='clearFn'
                                 @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey,'deviceId', cameraUrl)"
                                 @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
                                 :loading="rsCamCodeOption.loading">
@@ -249,6 +251,32 @@ export default {
             this.infoWindow.setContent(e.target.content);
             this.infoWindow.open(this.distanceMap, e.target.getPosition());
         },
+        queryCountyRoadTrees(item){
+            this.endPlay();
+            queryCountyRoadTree({
+                'cityCode':item.code,
+                'type':'N'
+            }).then(res => {
+                if(res.status == '200') {
+                    this.regionList = [];
+                    res.data.forEach(child => {
+                        var obj = {};
+                        obj.name = child.label;
+                        obj.code = child.code;
+                        obj.dataList = [];
+                        child.children.forEach(roadInfo => {
+                            var o ={};
+                            o.name = roadInfo.label;
+                            o.code = roadInfo.code;
+                            obj.dataList.push(o);
+                        })
+                        this.regionList.push(obj);
+                        this.treeData = this.regionList;
+                        console.log(this.treeData);
+                    })
+                }
+            })
+        },
         getSideTree(){
             queryRoadRegionTree().then(res => {
                 this.treeList = res.data;
@@ -261,6 +289,7 @@ export default {
                         this.provinceOptions.push(obj);
                     })
                 }
+                //首次加载
                 if(this.isFirst){
                     var provinceCode = this.provinceOptions[0].code;
                     this.searchKey.provinceValue = this.provinceOptions[0];
@@ -268,6 +297,7 @@ export default {
                     var cityCode = this.cityOptions[0].code;
                     this.searchKey.cityValue = this.cityOptions[0];
                     this.getRegion(cityCode);
+                    this.isFirst = false;
                 }
             })
         },
@@ -296,7 +326,6 @@ export default {
                         obj.label = e.name;
                         obj.code = e.code;
                         obj.type = 1;
-                        this.treeData = [];
                         this.treeData.push(obj);
                     })
                 }
@@ -391,7 +420,6 @@ export default {
                         }else{
                             return false;
                         }
-                        
                         return;
                     }
                 })
@@ -511,20 +539,20 @@ export default {
             this.changeSize = false;
         },
         getCityTrees(item){//获区市辖数据
-            this.newData = [];
             this.endPlay();
+            this.searchKey.deviceId = '';
             this.searchKey.cityValue = '';
-            this.cityOptions = item.children;
-        },
-        queryCountyRoadTrees(item){
-            this.newData = []; 
-            this.endPlay();
-            queryCountyRoadTree({
-                'cityCode':item.code,
-                'type':'N'
-            }).then(res => {
-                if(res.status == '200') {
-                    this.treeData = res.data;
+            this.treeData = [];
+            this.provinceOptions.forEach((a,index,arr) => {
+                if(a.code == item.code){
+                    //重新获取市辖区信息
+                    this.cityOptions = [];
+                    this.treeList[index].dataList.forEach(cityVal => {
+                        var obj = {};
+                        obj.label = cityVal.name;
+                        obj.code = cityVal.code;
+                        this.cityOptions.push(obj);
+                    })
                 }
             })
         },
@@ -561,6 +589,7 @@ export default {
         },
         searchClick(){
             var rsCamOptions = this.rsCamCodeOption.filterOption;
+            this.treeData = [];
             this.markerOption.point = null;
             if(rsCamOptions.length > 0){
                 //过滤匹配默认选中数据
@@ -574,6 +603,21 @@ export default {
                                 this.provinceOptions = [];
                                 this.provinceOptions.push(obj);
                             }
+                            
+                            this.treeList.forEach((provinceInfo,index) => {
+                                if(provinceInfo.code == this.provinceOptions[0].code){
+                                    this.searchKey.provinceValue = this.provinceOptions[0];
+                                    this.cityOptions = [];
+                                    this.treeList[index].dataList.forEach(cityInfo => {
+                                        var obj = {};
+                                        obj.label = cityInfo.name;
+                                        obj.code = cityInfo.code;
+                                        this.cityOptions.push(obj);
+                                    })
+                                    this.searchKey.cityValue = this.cityOptions[0];
+                                    this.getSideTree();
+                                }
+                            })
                         })
                         this.cityOptions.forEach(a => {
                             if(a.code == item.rspDistcodeCity){
@@ -596,6 +640,9 @@ export default {
                 this.treeData = [];
                 this.defaultArr = [];
             }
+        },
+        clearFn(){
+            this.rsCamCodeOption.defaultOption = this.rsCamCodeOption.filterOption;
         }
     },
     destroyed() {

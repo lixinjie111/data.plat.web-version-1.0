@@ -5,13 +5,11 @@
             <el-form-item label="车辆编号:" prop='vehicleId'>
                 <el-select
                     v-model.trim="searchKey.vehicleId"
-                    clearable
                     filterable
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsVehicleRemoteMethod"
-                    @clear="$searchFilter.clearFunc(rsVehicleOption)"
                     @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
                     @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                     :loading="rsVehicleOption.loading">
@@ -22,6 +20,9 @@
                         :value="item">
                     </el-option>
                 </el-select>
+            </el-form-item>
+            <el-form-item label="英文名称:" prop='enName'>
+                <el-input v-model.trim="searchKey.enName"></el-input>
             </el-form-item>
             <el-form-item label="开始时间" prop='startTime'>
                 <el-date-picker
@@ -123,6 +124,7 @@ export default {
             searchLoading:false,
             searchKey: {
                 vehicleId: '',
+                enName: '',
                 startTime: '',
                 endTime: ''
             },
@@ -195,6 +197,7 @@ export default {
                     'pageIndex': this.pageOption.page-1
                 },
                 vehicleId:this.searchKey.vehicleId,
+                enName:this.searchKey.enName,
                 startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
                 endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
             }).then(res => {
@@ -246,7 +249,7 @@ export default {
     mounted(){
         this.searchKey.vehicleId = 'B21E-00-022';
         this.searchKey.startTime = this.$dateUtil.GetDateStr(31);
-        this.searchKey.endTime = this.$dateUtil.GetDateStr(0);
+        this.searchKey.endTime = this.$dateUtil.GetDateStr(2);
         this.getQueryList();
     },
 }

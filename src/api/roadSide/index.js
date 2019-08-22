@@ -11,7 +11,7 @@ export const queryRoadRegionTree = params => { return axios.post(`${HTTPURL}road
 /**
  * 左侧树形菜单
  */
-export const queryRoadCamList = params => { return axios.post(`${HTTPURL}road/queryRoadCamList`, params).then(res => res.data); };
+export const queryRoadCamList = params => { return axios.post(`${HTTPURL}road/queryRoadCamListByRoadId`, params).then(res => res.data); };
  /**
  * 开启直播报活
  */
@@ -98,4 +98,5 @@ export const getVideoUrlInfo = params => { return axios.post(`${HTTPURL}percepti
  * 获取视频地址
  */
 export const findPerceptionRecordsInfo = params => { return axios.post(`${HTTPURL}perception/findPerceptionRecords`, params).then(res => res.data); };
+
 

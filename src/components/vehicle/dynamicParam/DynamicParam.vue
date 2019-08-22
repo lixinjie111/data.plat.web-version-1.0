@@ -6,11 +6,13 @@
                 <el-form-item label="车辆编号" prop='vehicleId'>
                     <el-select
                         v-model.trim="searchKey.vehicleId"
+                        clearable
                         filterable
                         remote
                         reserve-keyword
                         placeholder="请输入关键词"
                         :remote-method="rsVehicleRemoteMethod"
+                        @clear="$searchFilter.clearFunc(rsVehicleOption)"
                         @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
                         @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                         :loading="rsVehicleOption.loading">

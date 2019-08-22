@@ -30,3 +30,13 @@ export const requestFindCamList = params => { return axios.post(`${HTTPURL}vehic
  * 路侧视频模糊查询地址
  */
 export const queryRoadCamListSearch = params => { return axios.post(`${HTTPURL}road/queryRSCamList`, params).then(res => res.data); };
+
+/**
+ * 感知数据路侧点名称模糊查询
+ */
+export const queryRoadPointList = params => { return axios.post(`${HTTPURL}road/queryRoadPointList`, params).then(res => res.data); };
+
+/**
+ * 感知数据根据路侧点名称模糊查询摄像头编号、序列号
+ */
+export const queryRoadSideCamList = params => { return axios.post(`${HTTPURL}road/queryRoadSideCamList`, params).then(res => res.data); };

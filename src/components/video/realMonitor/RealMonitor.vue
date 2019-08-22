@@ -487,7 +487,7 @@ export default {
             localStorage.setItem('protocal',protocal);
             this.$refs.maxMap.clearVehicleInfo();
             this.endVideo();
-        }
+        },
     },
     beforeDestroy(){
         clearInterval(this.playTimer);
