@@ -261,7 +261,7 @@ export default {
                     this.regionList = [];
                     res.data.forEach(child => {
                         var obj = {};
-                        obj.name = child.label;
+                        obj.label = child.label;
                         obj.code = child.code;
                         obj.dataList = [];
                         child.children.forEach(roadInfo => {
@@ -272,7 +272,6 @@ export default {
                         })
                         this.regionList.push(obj);
                         this.treeData = this.regionList;
-                        console.log(this.treeData);
                     })
                 }
             })
