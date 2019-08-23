@@ -125,7 +125,7 @@
     </div>
 </template>
 <script>
-import {findVideoRecords,findRoadMonitorCameraInfo} from '@/api/roadSide';
+import {findVideoRecords} from '@/api/roadSide';
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import {queryRoadCamListSearch,queryRoadPointList,requestqueryRoadList,requestRSCamList,queryRoadSideCamList} from '@/api/search';
