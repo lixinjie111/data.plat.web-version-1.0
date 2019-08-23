@@ -9,8 +9,8 @@
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
-                    :remote-method="remoteMethod1"
                     value-key="rsPtName"
+                    :remote-method="remoteMethod1"
                     @focus="selectRsPtNameList"
                     @change="RsPtNameSelect"
                     :loading="fuzzySearchOption1.loading">
@@ -29,8 +29,8 @@
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
-                    :remote-method="remoteMethod2"
                     value-key="deviceId"
+                    :remote-method="remoteMethod2"
                     @focus="selectDeviceIdList"
                     @change="deviceIdSelect"
                     :loading="fuzzySearchOption2.loading">
@@ -43,15 +43,15 @@
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="摄像头序列号: " prop="deviceId">
+            <el-form-item label="摄像头序列号: " prop="serialNum">
                 <el-select
                     v-model.trim="searchKey.serialNum"
                     filterable
                     remote
                     reserve-keyword
                     placeholder="请输入关键词"
-                    :remote-method="remoteMethod3"
                     value-key="serialNum"
+                    :remote-method="remoteMethod3"
                     @focus="selectSerialNumList"
                     @change="serialSelect"
                     :loading="fuzzySearchOption3.loading">
@@ -170,20 +170,18 @@ export default {
                     callback();
                 }
             };
-        // 110108_001
-        // 3402000000132000001101
-        // 3402000000132000000301
         return {
             pageOption: {
                 size: 10,
                 total: 0,
                 page: 1
             },
+            defaultSelectOptions:[],
             searchLoad:false,
             loading: false,
             rsPtIdList:[],
             cameraIdList:[],
-            serialNumList:['3402000000132000003001', '3402000000132000003101', '3402000000132000003201', '3402000000132000003301'],
+            serialNumList:[],
             deviceIdList:[],
             inputFlag: true,
             requestData: {},
@@ -191,9 +189,6 @@ export default {
                 rsPtId:'',
                 rsPtName:'',
                 cameraId:'',
-                // serialNum:'',
-                // serialNum:'3402000000132000001601',
-                // serialNum:'3402000000132000001401',
                 serialNum:'',
                 deviceId:'',
                 startTime:'' ,
@@ -232,6 +227,9 @@ export default {
                 cfgShow: false,
             },
             rules:{
+                rsPtName:[
+                    { required: true, message: '路侧点名称不能为空', trigger: 'blur' },
+                ],
                 deviceId:[
                     { required: true, message: '摄像头编号不能为空', trigger: 'blur' },
                 ],
@@ -265,30 +263,18 @@ export default {
                 filterOption: [],
                 defaultFilterOption:[]
             },
-            // rsSerialNumOption: {
-            //     loading: false,
-            //     timer: null,
-            //     filterOption: [],
-            //     defaultOption: [],
-            //     defaultFlag: false
-            // },
-            // rsPointNameOption: {
-            //     loading: false,
-            //     timer: null,
-            //     filterOption: [],
-            //     defaultOption: [],
-            //     defaultFlag: false
-            // },
-            // cameraUrl: requestRSCamList,
-            // roadUrl:requestqueryRoadList
         }
     },
     mounted(){
-        this.searchKey.deviceId = '';
-        this.searchKey.serialNum = '';
+        this.searchKey.rsPtName = '博园路k1+530';
+        this.searchKey.deviceId = 'N-NJ-0004';
+        this.searchKey.serialNum = '3402000000132000003001';
         this.searchKey.startTime = this.$dateUtil.GetDateStr(7);
         this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
         this.initData();
+        this.selectRsPtNameList();
+        this.selectDeviceIdList();
+        this.selectSerialNumList();
     },
     methods: {
         initPageOption() {
@@ -374,20 +360,10 @@ export default {
         },
         resetClick(){
             this.$refs.searchForm.resetFields();
-            this.fuzzySearchOption1.filterOption = this.fuzzySearchOption1.defaultOption;
-            this.fuzzySearchOption2.filterOption = this.fuzzySearchOption2.defaultOption;
-            this.fuzzySearchOption3.filterOption = this.fuzzySearchOption3.defaultOption;
-            // this.rsPointNameOption.filterOption = this.rsPointNameOption.defaultOption;
+            this.fuzzySearchOption1.defaultOption = this.fuzzySearchOption1.filterOption;
+            this.fuzzySearchOption2.defaultOption = this.fuzzySearchOption2.filterOption;
+            this.fuzzySearchOption3.defaultOption = this.fuzzySearchOption3.filterOption;
         },
-        // rsCamCodeRemoteMethod(query) {
-        //     this.$searchFilter.publicRemoteMethod({
-        //         query: query,
-        //         searchOption: this.rsCamCodeOption,
-        //         searchObj: this.searchKey,
-        //         key: 'deviceId', 
-        //         request: this.cameraUrl
-        //     });
-        // },
         remoteMethod1(query) {
             if (query !== '') {
                 this.fuzzySearchOption1.loading = true;
@@ -415,7 +391,6 @@ export default {
             }
         },
         selectRsPtNameList(){
-            if(this.searchKey.rsPtName == ''){
                 this.fuzzySearchOption1.loading = true;
                 clearTimeout(this.fuzzySearchOption1.timer);
                 this.fuzzySearchOption1.timer = setTimeout(() => {
@@ -424,57 +399,54 @@ export default {
                         'value':''
                     }).then(res => {
                             if(res.status == '200'){
-                                console.log(res.data);
                                 //接口请求后执行的操作 
-                                this.fuzzySearchOption1.defaultFilterOption = this.fuzzySearchOption1.filterOption = res.data;
+                                this.fuzzySearchOption1.filterOption = res.data;
                             }
                             this.fuzzySearchOption1.loading = false;
                         }).catch(err => {
                             this.fuzzySearchOption1.loading = false;
                         });
                 }, 500);
-            }else{
-                this.fuzzySearchOption1.filterOption = this.fuzzySearchOption1.defaultFilterOption;
-            }
         },
         RsPtNameSelect(val){
-            console.log(val);
             queryRoadSideCamList({
-                'rsPtId':val.rsPtId,
-                'rsPtName':val.rsPtName,
-                'deviceId':'',
-                'serialNum':''
+                'rsPtId':val.rsPtId ? val.rsPtId : '',
+                'rsPtName':val.rsPtName ? val.rsPtName : '',
+                'deviceId':val.deviceId ? val.deviceId : '',
+                'serialNum':val.serialNum ? val.serialNum : ''
             }).then(res => {
                 if(res.status == '200'){
-                    this.fuzzySearchOption2.filterOption = this.fuzzySearchOption3.filterOption = res.data;
-                    this.searchKey.deviceId = this.fuzzySearchOption2.filterOption[0];
-                    this.searchKey.serialNum = this.fuzzySearchOption3.filterOption[0];
+                    if(res.data.length > 0){
+                        this.defaultSelectOptions = this.fuzzySearchOption2.filterOption = this.fuzzySearchOption3.filterOption = res.data;
+                        this.searchKey.deviceId = this.fuzzySearchOption2.filterOption[0].deviceId;
+                        this.searchKey.serialNum = this.fuzzySearchOption3.filterOption[0].serialNum;
+                    }else{
+                        this.searchKey.deviceId = [];
+                        this.searchKey.serialNum = [];
+                        this.fuzzySearchOption2.filterOption = this.fuzzySearchOption3.filterOption = [];
+                    }
                 }
             }).catch(err => {
 
             })
         },
         selectDeviceIdList(){
-            if(this.searchKey.deviceId == ''){
-                this.fuzzySearchOption2.loading = true;
-                clearTimeout(this.fuzzySearchOption2.timer);
-                this.fuzzySearchOption2.timer = setTimeout(() => {
-                    queryRoadCamListSearch({
-                        'field':'deviceId',
-                        'value':''
-                    }).then(res => {
-                            if(res.status == '200'){
-                                //接口请求后执行的操作 
-                                this.fuzzySearchOption2.defaultFilterOption = this.fuzzySearchOption2.filterOption = res.data;
-                            }
-                            this.fuzzySearchOption2.loading = false;
-                        }).catch(err => {
-                            this.fuzzySearchOption2.loading = false;
-                        });
-                }, 500);
-            }else{
-                this.fuzzySearchOption2.filterOption = this.fuzzySearchOption2.defaultFilterOption;
-            }
+            this.fuzzySearchOption2.loading = true;
+            clearTimeout(this.fuzzySearchOption2.timer);
+            this.fuzzySearchOption2.timer = setTimeout(() => {
+                queryRoadCamListSearch({
+                    'field':'deviceId',
+                    'value':''
+                }).then(res => {
+                        if(res.status == '200'){
+                            //接口请求后执行的操作 
+                            this.fuzzySearchOption2.filterOption = res.data;
+                        }
+                        this.fuzzySearchOption2.loading = false;
+                    }).catch(err => {
+                        this.fuzzySearchOption2.loading = false;
+                    });
+            }, 500);
         },
         remoteMethod2(query) {
             if (query !== '') {
@@ -503,8 +475,6 @@ export default {
             }
         },
         deviceIdSelect(val) {
-            // this.fuzzySearchOption3.filterOption = [];
-            // this.fuzzySearchOption3.filterOption.push(val);
             this.searchKey.rsPtName = val.rsPtName;
             this.searchKey.serialNum = val.serialNum;
         },
@@ -532,11 +502,10 @@ export default {
 
                 }, 500);
             } else {
-                this.fuzzySearchOption3.filterOption = [];
+                this.fuzzySearchOption3.defaultFilterOption = this.fuzzySearchOption3.filterOption;
             }
         },
         selectSerialNumList(){
-            if(this.searchKey.serialNum == ''){
                 this.fuzzySearchOption3.loading = true;
                 clearTimeout(this.fuzzySearchOption3.timer);
                 this.fuzzySearchOption3.timer = setTimeout(() => {
@@ -554,32 +523,11 @@ export default {
                         this.fuzzySearchOption3.loading = false;
                     });
                 }, 500); 
-            }else{
-                this.fuzzySearchOption3.filterOption = this.fuzzySearchOption3.defaultFilterOption;
-            }
         },
         serialSelect(val) {
             this.searchKey.rsPtName = val.rsPtName;
             this.searchKey.deviceId = val.deviceId;
         },
-        // rsSerialNumRemoteMethod(query) {
-        //     this.$searchFilter.publicRemoteMethod({
-        //         query: query,
-        //         searchOption: this.rsSerialNumOption,
-        //         searchObj: this.searchKey,
-        //         key: 'serialNum',
-        //         request: this.cameraUrl
-        //     });
-        // },
-        // rsPointNameRemoteMethod(query) {
-        //     this.$searchFilter.publicRemoteMethod({
-        //         query: query,
-        //         searchOption: this.rsPointNameOption,
-        //         searchObj: this.searchKey,
-        //         key: 'rsPtName',
-        //         request: this.roadUrl
-        //     });
-        // },
     }
 }
 </script>

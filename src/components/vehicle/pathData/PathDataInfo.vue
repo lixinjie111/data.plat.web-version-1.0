@@ -58,7 +58,7 @@
                         }">
                         <el-table-column label="序号" type="index"></el-table-column>
                         <el-table-column min-width="25%" label="时间">
-                          <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp, 'yy-mm-dd hh:mm:ss:ms')}}</template>
+                            <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp, 'yy-mm-dd hh:mm:ss:ms')}}</template>
                         </el-table-column>
                         <el-table-column min-width="20%" label="经度" prop="gnss_LONG"></el-table-column>
                         <el-table-column min-width="20%" label="纬度" prop="gnss_LAT"></el-table-column>
@@ -69,27 +69,27 @@
                         <el-table-column min-width="10%" label="高程(m)" prop="gnss_HIGHT"></el-table-column>
                     </el-table>
                 </div>
-              </div>
+            </div>
         </div>
 </div>
 </template>
 <script>
-  import ConvertCoord from'@/common/utils/coordConvert.js';
-  import { setTimeout } from 'timers';
-  import {pathDetailList,exportPathExcel} from '@/api/vehicle';
+import ConvertCoord from'@/common/utils/coordConvert.js';
+import { setTimeout } from 'timers';
+import {pathDetailList,exportPathExcel} from '@/api/vehicle';
 import { error } from 'util';
-  export default {
+export default {
     props: ['data'],
     components: {},
     data() {
-      return {
+        return {
         loading: true,
         isScaleMap: false,
         dataList: [],
         selectItem: 0,
         panel:{
-          title:'',
-          msg:''
+            title:'',
+            msg:''
         },
         dialogOption: {
             loading: false,
@@ -104,51 +104,51 @@ import { error } from 'util';
         },
         removeMarker:null,
         requestDataParams:{
-          isBottom:false,
+            isBottom:false,
         },
         exportTime:{
-          startTime:'',
-          endTime:''
+            startTime:'',
+            endTime:''
         },
 
         rowHeight: 0,
         currentIndex: -1,
         tableHeight: 0,
-      }
+        }
     },
     mounted() {
-      let _this = this;
-      this.init();
-      this.initMap();
-      //注册键盘事件
-      document.onkeydown = function (event) {
-        let e = event || window.event || arguments.callee.caller.arguments[0];
-        e.preventDefault();
-        if (_this.dataList && _this.dataList.length > 0 && e) {
-            let _scrollTop = _this.$refs.pathDataTable.bodyWrapper.scrollTop;
-            if (e.keyCode == 38) {
-                if(_this.currentIndex > 0) {
-                    _this.currentIndex --;
-                    _this.$refs.pathDataTable.setCurrentRow(_this.dataList[_this.currentIndex]);
-                    if(_this.currentIndex*_this.rowHeight <= _scrollTop) {
-                        _this.$refs.pathDataTable.bodyWrapper.scrollTop = _this.currentIndex*_this.rowHeight;
+        let _this = this;
+        this.init();
+        this.initMap();
+        //注册键盘事件
+        document.onkeydown = function (event) {
+            let e = event || window.event || arguments.callee.caller.arguments[0];
+            e.preventDefault();
+            if (_this.dataList && _this.dataList.length > 0 && e) {
+                let _scrollTop = _this.$refs.pathDataTable.bodyWrapper.scrollTop;
+                if (e.keyCode == 38) {
+                    if(_this.currentIndex > 0) {
+                        _this.currentIndex --;
+                        _this.$refs.pathDataTable.setCurrentRow(_this.dataList[_this.currentIndex]);
+                        if(_this.currentIndex*_this.rowHeight <= _scrollTop) {
+                            _this.$refs.pathDataTable.bodyWrapper.scrollTop = _this.currentIndex*_this.rowHeight;
+                        }
                     }
                 }
-            }
-            if (e.keyCode == 40) {
-                if(_this.currentIndex <= _this.dataList.length) {
-                    _this.currentIndex ++;
-                    _this.$refs.pathDataTable.setCurrentRow(_this.dataList[_this.currentIndex]);
-                    if(_this.currentIndex*_this.rowHeight >= (_scrollTop + _this.tableHeight)) {
-                        _this.$refs.pathDataTable.bodyWrapper.scrollTop = (_this.currentIndex+1)*_this.rowHeight - _this.tableHeight;
+                if (e.keyCode == 40) {
+                    if(_this.currentIndex <= _this.dataList.length) {
+                        _this.currentIndex ++;
+                        _this.$refs.pathDataTable.setCurrentRow(_this.dataList[_this.currentIndex]);
+                        if(_this.currentIndex*_this.rowHeight >= (_scrollTop + _this.tableHeight)) {
+                            _this.$refs.pathDataTable.bodyWrapper.scrollTop = (_this.currentIndex+1)*_this.rowHeight - _this.tableHeight;
+                        }
                     }
                 }
             }
         }
-      }
     },
     methods: {
-      initMap(){
+        initMap(){
         let _scale = new AMap.Scale(),
             _toolbar = new AMap.ToolBar({
                 liteStyle: true,

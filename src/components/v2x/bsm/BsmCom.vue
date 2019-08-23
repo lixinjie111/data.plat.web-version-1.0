@@ -66,7 +66,7 @@
                     <template slot-scope="scope">{{Number(scope.row.latitude).toFixed(8)}}</template>
                 </el-table-column>
                 <el-table-column prop="altitude" label="高程" min-width="6%"></el-table-column>
-                <el-table-column label="车速" min-width="6%">
+                <el-table-column label="车速(km/h)" min-width="6%">
                     <template slot-scope="scope">{{Number(scope.row.speed).toFixed(1)}}</template>
                 </el-table-column>
                 <el-table-column label="航向" min-width="6%">
