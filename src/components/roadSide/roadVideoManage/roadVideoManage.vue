@@ -125,9 +125,9 @@
         <el-table-column min-width="6%" prop="endTime" label="视频来源">
             <template slot-scope="scope">{{scope.row.source == '1' ? '直播' : '手动获取'}}</template>
         </el-table-column>
-        <el-table-column min-width="10%" prop="endTime" label="操作">
+        <el-table-column min-width="10%" prop="endTime" label="回放">
             <template slot-scope="scope">
-                <el-button size="small" icon="el-icon-view" circle type="warning" plain @click="replay(scope.row)"></el-button>
+                <el-button size="small" icon="el-icon-refresh-left" circle type="warning" plain @click="replay(scope.row)"></el-button>
                 <!-- <el-button size="small" icon="el-icon-download" circle type="warning" plain @click="exportClick(scope.row)"></el-button> -->
                 <!-- <el-button size="small" icon="el-icon-delete" circle type="warning" plain @click="delClick(scope.row)"></el-button> -->
             </template>
