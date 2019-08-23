@@ -118,7 +118,6 @@ export default {
         searchClick(){
             this.pageOption.page = 1;
             this.pageOption.total = 0;
-            
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoading = true;
