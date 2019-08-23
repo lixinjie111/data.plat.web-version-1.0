@@ -344,9 +344,9 @@ export default {
             return (this.pageOption.page-1) * this.pageOption.size + index + 1;
         },
         searchClick(){
-            this.searchLoad = true;
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
+                    this.searchLoad = true;
                     this.initPaging();
                     this.initData();
                 } else {
