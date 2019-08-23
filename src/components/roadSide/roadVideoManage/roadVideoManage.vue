@@ -311,9 +311,9 @@ export default {
             });
         },
         searchClick(){
-            this.searchLoading = true;
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
+                    this.searchLoading = true;
                     this.initPaging();
                     this.initData();
                 } else {
