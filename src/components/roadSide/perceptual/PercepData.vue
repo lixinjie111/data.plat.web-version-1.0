@@ -292,6 +292,7 @@ export default {
             this.deviceIdList = [];
         },
         initData(){
+            console.log(this.searchKey.deviceId);
             this.loading = true;
             findVideoRecords({
                 'rsPtName':this.searchKey.rsPtName,
@@ -409,6 +410,7 @@ export default {
                 }, 500);
         },
         RsPtNameSelect(val){
+            this.searchKey.rsPtName = val.rsPtName;
             queryRoadSideCamList({
                 'rsPtId':val.rsPtId ? val.rsPtId : '',
                 'rsPtName':val.rsPtName ? val.rsPtName : '',
@@ -475,6 +477,7 @@ export default {
             }
         },
         deviceIdSelect(val) {
+            this.searchKey.deviceId = val.deviceId;
             this.searchKey.rsPtName = val.rsPtName;
             this.searchKey.serialNum = val.serialNum;
         },
@@ -527,6 +530,7 @@ export default {
         serialSelect(val) {
             this.searchKey.rsPtName = val.rsPtName;
             this.searchKey.deviceId = val.deviceId;
+            this.searchKey.serialNum = val.serialNum;
         },
     }
 }
