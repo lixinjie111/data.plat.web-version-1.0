@@ -67,7 +67,7 @@
             <el-form-item label="开始时间" prop='startTime'>
                 <el-date-picker
                     v-model.trim="searchKey.startTime"
-                    type="datetime"
+                    type="date"
                     placeholder="开始时间"
                     :picker-options="startTimeOption">
                 </el-date-picker>
@@ -75,7 +75,7 @@
             <el-form-item label="结束时间" prop='endTime'>
                 <el-date-picker
                     v-model.trim="searchKey.endTime"
-                    type="datetime"
+                    type="date"
                     placeholder="结束时间"
                     :picker-options="endTimeOption">
                 </el-date-picker>
