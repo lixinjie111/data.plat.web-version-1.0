@@ -144,9 +144,12 @@
                 </template>
             </el-table-column>
             <el-table-column prop="note" label="失败原因" min-width="9%"></el-table-column>
-
-            <el-table-column label="视频来源" min-width="7%">
-                <template slot-scope="scope">{{scope.row == '1' ? '直播' : '手动获取'}}</template>
+            <el-table-column min-width="7%" label="视频来源">
+                <template slot-scope="scope">
+                    <template v-if="scope.row.source == 1">直播</template>
+                    <template v-if="scope.row.source == 2">手动获取</template>
+                    <template v-if="scope.row.source == ''"></template>
+                </template>
             </el-table-column>
             <el-table-column label="操作" min-width="5%">
                 <template slot-scope="scope">
@@ -407,6 +410,11 @@ export default {
             }
             this.dialogOption.show = false;
         }
+    },
+    beforeRouteLeave(to, from, next) {
+        // 设置下一个路由的 meta
+        to.meta.keepAlive = false;
+        next();
     },
     mounted(){
         this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];

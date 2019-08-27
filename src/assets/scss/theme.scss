@@ -1,16 +1,18 @@
 @charset "UTF-8";
 
 $fontGrayColor: #666;
-$black: #000;
 $borderColor: #e6e6e6;
 $bgColor: #f7f7f7;
 $tableBgColor: #fafafa;
 $mapBgColor: #f5f5f5;
 $tableCurrentBgColor: #fff0db;
+
 $red: #fe3509;
 $yellow: #f59307;
 $green: #156f32;
 $blue: #2ea7d4;
+$white: #fff;
+$black: #000;
 
 @mixin lineClampOne() {
   white-space: nowrap;
