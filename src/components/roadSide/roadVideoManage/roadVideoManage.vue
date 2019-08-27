@@ -425,7 +425,7 @@ export default {
                     type: 'warning'
                 }).then(() => {
                     let fileId = [];
-                    fileId.push(item.fileName);
+                    fileId = this.selector;
                     // item.delLoading = true;
                     removeVideo({  
                         "fields": fileId          
