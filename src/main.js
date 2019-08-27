@@ -74,6 +74,7 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+
 /* eslint-disable no-new */
 const vm = new Vue({
   el: '#app',

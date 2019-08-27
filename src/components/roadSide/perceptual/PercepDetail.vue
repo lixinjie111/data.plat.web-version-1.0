@@ -561,6 +561,11 @@ export default {
                 this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
             }
         }
+    },
+    beforeRouteLeave(to, from, next) {
+        // 设置下一个路由的 meta
+        to.meta.keepAlive = true; // 让 PercepData 缓存，即不刷新
+        next();
     }
 }
 </script>

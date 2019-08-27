@@ -472,6 +472,11 @@ export default {
             this.panel.show = false; 
         }
     },
+    beforeRouteLeave(to, from, next) {
+        // 设置下一个路由的 meta
+        to.meta.keepAlive = false;
+        next();
+    },
     mounted(){
         this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
         this.searchKey.endTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
