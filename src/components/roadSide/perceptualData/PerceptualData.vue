@@ -374,8 +374,9 @@ export default {
                                 obj.ptLon = item.ptLon;
                                 obj.ptLat = item.ptLat;
                                 obj.isOn = false;
+                                obj.protocal = item.protocol;
                                 obj.cameraRunStatus = item.cameraRunStatus;
-                                obj.icon = "sl-pause-icon";
+                                obj.icon = "sl-play-icon";
                                 obj.type = 3;
                                 obj.leaf = true;
                                 children.push(obj);
@@ -393,6 +394,7 @@ export default {
                                     children.forEach((item,i) => {
                                         if(item.serialNum == this.defaultSerialNum){
                                             var camerData = res.data;
+                                            children[i].icon = 'sl-pause-icon';
                                             this.camDetail.camId = children[i].serialNum;
                                             this.camDetail.camCode = children[i].label;
                                             this.camDetail.roadName = children[i].roadName;
@@ -643,6 +645,11 @@ export default {
         clearFn(){
             this.rsCamCodeOption.defaultOption = this.rsCamCodeOption.filterOption;
         }
+    },
+    beforeRouteLeave(to, from, next) {
+        // 设置下一个路由的 meta
+        to.meta.keepAlive = false;
+        next();
     },
     destroyed() {
         clearInterval(this.timer);

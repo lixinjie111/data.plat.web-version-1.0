@@ -271,7 +271,7 @@ h3.c-title {
 		right: 0;
 		top: 0;
 		bottom: 0;
-		z-index: 99;
+		z-index: 101;
 	}
 }
 
@@ -342,6 +342,9 @@ h3.c-title {
 .c-blue {
 	color: $blue !important;
 }
+.c-white {
+	color: $white !important;
+}
 .c-hover-underline {
 	&:hover {
 		cursor: pointer;
@@ -355,25 +358,29 @@ h3.c-title {
 	position: absolute;
 }
 
-// 实体弹窗蒙层
-
-.c-view-dialog-54 {
+.c-position-trbl {
 	position: absolute;
 	left: 0;
-	top: -54px;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
+// 实体弹窗蒙层
+
+.c-view-dialog, .c-view-dialog-54 {
+	position: absolute;
+	left: 0;
 	right: 0;
 	bottom: 0;
-	z-index: 100;
+	z-index: 101;
 	background-color: $bgColor;
 }
 .c-view-dialog {
-	position: absolute;
-	left: 0;
 	top: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 100;
-	background-color: $bgColor;
+}
+.c-view-dialog-54 {
+	top: -54px;
 }
 // .c-view-dialog-54, .c-view-dialog {
 // 	.c-scroll-wrap {
@@ -454,4 +461,25 @@ h3.c-title {
 }
 .c-flex-1 {
     flex: 1;
+}
+
+// 为空
+.c-empty-box {
+	position: relative;
+    line-height: 20px;
+    padding: 80px 0 10px;
+    color: #909399;
+    text-align: center;
+	&:before {
+		content: "";
+	    position: absolute;
+	    left: 50%;
+	    top: 0;
+	    margin-left: -38px;
+	    width: 76px;
+	    height: 70px;
+		background-image: url(../images/table-empty.png);
+		background-size: 100% 100%;
+		background-position: center 10px;
+	}
 }

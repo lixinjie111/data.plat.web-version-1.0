@@ -1,261 +1,353 @@
 @charset "UTF-8";
 @import './theme.scss';
+
 //地图marker弹窗
 .c-map-info-window {
-    color: $black;
-    font-size:14px;
-    .c-info-window-text {
-        margin:10px 8px
-    }
+  color: $black;
+  font-size: 14px;
+
+  .c-info-window-text {
+    margin: 10px 8px
+  }
 }
+
 // 弹窗的关闭按钮
 .amap-info-close {
-    right: 5px !important;
+  right: 5px !important;
 }
+
 //大地图
 .c-map-big-wrapper {
-    position: relative;
-    height: 320px;
-    background-color: $mapBgColor;
-    color: #fff;
-    transition: height .3s ease-out;
-    &.c-map-off {
-        height: 300px;
-    }
-    &.c-map-on {
-        height: 500px;
-    }
+  position: relative;
+  height: 320px;
+  z-index: 100;
+  background-color: $mapBgColor;
+  color: #fff;
+  transition: height .3s ease-out;
+
+  &.c-map-off {
+    height: 400px;
+  }
+
+  &.c-map-on {
+    height: 650px;
+  }
 }
+
 // 地图缩放按钮
 .c-map-scale-btn {
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    z-index: 1;
-    width: 35px;
-    height: 35px;
-    background-size: 100% 100%;
-    cursor: pointer;
-    &.c-map-scale-on {
-        background-image: url('../images/map/scale-on-arrow.png');
-    }
-    &.c-map-scale-off {
-        background-image: url('../images/map/scale-off-arrow.png');
-    }
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1;
+  width: 35px;
+  height: 35px;
+  background-size: 100% 100%;
+  cursor: pointer;
+
+  &.c-map-scale-on {
+    background-image: url('../images/map/scale-on-arrow.png');
+  }
+
+  &.c-map-scale-off {
+    background-image: url('../images/map/scale-off-arrow.png');
+  }
 }
+
 //地图视频
 .c-map-video-wrapper {
-    position: relative;
-    // 视频16：9
-    .c-video-wrapper {
-        position: relative;
-        width: 66%;
-        padding-bottom: 37.125%;
-        background-color: $black;
-        .c-video {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            background-color: transparent;
-        }
-    }
-    .c-map-wrapper {
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 34%;
-        z-index:100;
-        background-color: $mapBgColor;
-        transition: width .3s ease-out;
-    }
-    .c-video-mask{
-        position:absolute;
-        top:0;
-        left:0;
-        bottom:0;
-        right:0;
-        z-index:11;
-        background-color: #000;
-        @include layoutMode(both);
-        font-size: 18px;
-        color: #fff;
-        [class^="el-icon"],
-        [class*=" el-icon"] {
-            font-size: 50px;
-            font-weight: normal;
-        }
-        .el-icon-video-play {
-            cursor: pointer;
-        }
-    }
+  position: relative;
 
+  // 视频16：9
+  .c-video-wrapper {
+    position: relative;
+    width: 66%;
+    padding-bottom: 37.125%;
+    background-color: $black;
+  }
+
+  .c-map-wrapper {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 34%;
+    z-index: 100;
+    background-color: $mapBgColor;
+    transition: width .3s ease-out;
+  }
+
+}
+
+// 视频盒子
+.c-video-16-9 {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  background: $black;
+}
+
+.c-video-4-3 {
+  position: relative;
+  width: 100%;
+  padding-bottom: 75%;
+  background: $black;
+}
+
+.c-video {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+
+  &:hover {
+    .el-icon-refresh {
+      opacity: 1;
+    }
+  }
+}
+
+.c-video-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  font-size: 14px;
+  height: 40px;
+  color: #fff;
+  @include layoutMode(all);
+  padding: 0 10px;
+
+  .el-icon-refresh {
+    opacity: 0;
+    cursor: pointer;
+  }
+}
+
+.c-video-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  background-color: #000;
+  @include layoutMode(both);
+  font-size: 18px;
+  color: #fff;
+
+  [class^="el-icon"],
+  [class*=" el-icon"] {
+    font-size: 50px;
+    font-weight: normal;
+  }
+
+  .el-icon-video-play {
+    cursor: pointer;
+  }
+
+  .c-video-tip {
+    font-size: 14px;
+  }
+
+  .c-empty-box {
+    font-size: 14px;
+    color: #fff;
+  }
+}
+
+
+.c-video-list {
+  float: left;
+  width: 25%;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .c-map-container {
-    width:100%;
-    height:100%;
+  width: 100%;
+  height: 100%;
 }
 
 .c-flex {
-    .c-video-wrapper {
-        width: 100%;
-        padding-bottom: 56.25%;
-    }
-    .c-map-wrapper {
-        width: 0;
-        transition: width .3s ease-out;
-    }
-    .c-map-change-max{
-        width: 40% !important;
-    }
+  .c-video-wrapper {
+    width: 100%;
+    padding-bottom: 56.25%;
+  }
+
+  .c-map-wrapper {
+    width: 0;
+    transition: width .3s ease-out;
+  }
+
+  .c-map-change-max {
+    width: 40% !important;
+  }
 }
 
-.c-map-change-max{
-    width:100% !important;
-    .c-icon-map-info{
-        left: auto !important;
-        width: 560px;
-    }
+.c-map-change-max {
+  width: 100% !important;
+
+  .c-icon-map-info {
+    left: auto !important;
+    width: 560px;
+  }
 }
+
 // 小地图里的弹层信息框
 .c-map-info {
-    position: absolute;
-    z-index: 1;
+  position: absolute;
+  z-index: 1;
+  right: 10px;
+  top: 10px;
+  font-size: 14px;
+  line-height: 36px;
+  color: #fff;
+
+  .c-map-info-list {
+    min-width: 280px;
+    position: relative;
+    width: 100%;
+    height: 36px;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, .4);
+    padding: 0 10px;
+    white-space: nowrap;
+  }
+
+  &.c-icon-map-info {
+    left: 10px;
     right: 10px;
     top: 10px;
-    font-size: 14px;
-    line-height: 36px;
-    color: #fff;
+
+    // width: auto;
     .c-map-info-list {
-        min-width: 280px;
-        position: relative;
-        width: 100%;
-        height: 36px;
-        box-sizing: border-box;
-        background: rgba(0, 0, 0, .4);
-        padding: 0 10px;
-        white-space: nowrap;
-    }
-    &.c-icon-map-info {
+      float: left;
+      width: 50%;
+      padding: 0 0 0 50px;
+
+      &:before {
+        content: "";
+        position: absolute;
+        top: 0;
         left: 10px;
-        right: 10px;
-        top: 10px;
-        // width: auto;
-        .c-map-info-list {
-            float: left;
-            width: 50%;
-            padding: 0 0 0 50px;
-            &:before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 10px;
-                bottom: 0;
-                width: 36px;
-                background-repeat: no-repeat;
-                background-position: center center;
-            }
-            &.speed{
-                &:before {
-                    background-image: url('../images/map/speed.png');
-                    background-size: 26px 22px;
-                }
-            }
-            &.angle{
-                &:before {
-                    background-image: url('../images/map/angle.png');
-                    background-size: 25px 25px;
-                }
-            }
-            &.lonlat{
-                &:before {
-                    background-image: url('../images/map/lonlat.png');
-                    background-size: 26px 26px;
-                }
-            }
-            &.time{
-                &:before {
-                    background-image: url('../images/map/time.png');
-                    background-size: 26px 26px;
-                }
-            }
+        bottom: 0;
+        width: 36px;
+        background-repeat: no-repeat;
+        background-position: center center;
+      }
+
+      &.speed {
+        &:before {
+          background-image: url('../images/map/speed.png');
+          background-size: 26px 22px;
         }
+      }
+
+      &.angle {
+        &:before {
+          background-image: url('../images/map/angle.png');
+          background-size: 25px 25px;
+        }
+      }
+
+      &.lonlat {
+        &:before {
+          background-image: url('../images/map/lonlat.png');
+          background-size: 26px 26px;
+        }
+      }
+
+      &.time {
+        &:before {
+          background-image: url('../images/map/time.png');
+          background-size: 26px 26px;
+        }
+      }
     }
+  }
 }
 
 // 大地图里的弹层信息框
 .c-map-view-info {
-    position: absolute;
-    z-index: 1;
-    right: 10px;
-    top: 10px;
-    padding: 10px;
-    color: #fff;
-    line-height: 20px;
-    background: rgba(0, 0, 0, .4);
-    .list {
-        position: relative;
-        padding: 10px 0 10px 18px;
-        &:before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 16px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #f59307;
-        }
-        .name {
-            font-size: 14px;
-            display: block;
-            height: 20px;
-        }
-        .value {
-            margin-top: 8px;
-            font-size: 16px;
-            display: block;
-            height: 20px;
-        }
+  position: absolute;
+  z-index: 1;
+  right: 10px;
+  top: 10px;
+  padding: 10px;
+  color: #fff;
+  line-height: 20px;
+  background: rgba(0, 0, 0, .4);
+
+  .list {
+    position: relative;
+    padding: 10px 0 10px 18px;
+
+    &:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 16px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #f59307;
     }
+
+    .name {
+      font-size: 14px;
+      display: block;
+      height: 20px;
+    }
+
+    .value {
+      margin-top: 8px;
+      font-size: 16px;
+      display: block;
+      height: 20px;
+    }
+  }
 }
 
 
 //地图按钮
 .c-map-btn {
-    position: absolute;
-    top:50%;
-    left:-15px;
-    width:15px;
-    height: 120px;
-    margin-top:-60px;
-    z-index: 1;
-    cursor: pointer;
-    background-size: 100% 100%;
-    &.c-map-btn-left {
-        left: -15px;
-        background-image: url('../images/map/left-bar.png')
-    }
-    &.c-map-btn-right {
-        left: 0;
-        background-image: url('../images/map/right-bar.png')
-    }
+  position: absolute;
+  top: 50%;
+  left: -15px;
+  width: 15px;
+  height: 120px;
+  margin-top: -60px;
+  z-index: 1;
+  cursor: pointer;
+  background-size: 100% 100%;
+
+  &.c-map-btn-left {
+    left: -15px;
+    background-image: url('../images/map/left-bar.png')
+  }
+
+  &.c-map-btn-right {
+    left: 0;
+    background-image: url('../images/map/right-bar.png')
+  }
 }
 
 // 3d地图
 .c-tusvn-map-box {
-    position: relative;
-    background-color: $black;
+  position: relative;
+  background-color: $black;
 }
+
 .c-tusvn-map {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
 }

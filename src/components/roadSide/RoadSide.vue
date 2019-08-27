@@ -4,7 +4,10 @@
         <div class="c-title-fixed">    
             <h3 class="c-title">{{ current.menu }}</h3>
         </div>
-        <router-view></router-view> 
+        <keep-alive>
+            <router-view v-if="$route.meta.keepAlive"></router-view>
+        </keep-alive>
+        <router-view v-if="!$route.meta.keepAlive"></router-view> 
     </div>
 
 </template>
