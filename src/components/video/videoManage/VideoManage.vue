@@ -122,8 +122,12 @@
                 <template slot-scope="scope">{{s_to_hs(scope.row.duration)}}</template>
             </el-table-column>
             <el-table-column min-width="8%" label="视频大小(MB)" prop="fileSizeUnit"></el-table-column>
-            <el-table-column min-width="6%" label="视频来源">
-                <template slot-scope="scope">{{scope.row.source==1 ? '直播' : '手动获取'}}</template>
+            <el-table-column min-width="8%" label="视频来源">
+                <template slot-scope="scope">
+                    <template v-if="scope.row.source == 1">直播</template>
+                    <template v-if="scope.row.source == 2">手动获取</template>
+                    <template v-if="scope.row.source == ''"></template>
+                </template>
             </el-table-column>
             <el-table-column min-width="10%" label="回放">
                 <template slot-scope="scope">
