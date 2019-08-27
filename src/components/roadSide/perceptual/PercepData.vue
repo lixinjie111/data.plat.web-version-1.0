@@ -1,7 +1,7 @@
 <template>
     <!-- 基本信息 -->
-    <keep-alive exclude='PercepData'>
-        <div class="c-wrapper-20" v-cloak>
+    <keep-alive include='PercepData' v-cloak>
+        <div class="c-wrapper-20">
             <el-form ref="searchForm" :inline="true" :rules="rules" :model="searchKey" size="small">
                 <el-form-item label="路侧点名称:" prop='rsPtName'>
                     <el-select
@@ -132,7 +132,7 @@ import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import {queryRoadCamListSearch,queryRoadPointList,requestqueryRoadList,requestRSCamList,queryRoadSideCamList} from '@/api/search';
 export default {
-    name: 'VideoManage',
+    name: 'PercepData',
     components: {
         VueDatepickerLocal
     },
