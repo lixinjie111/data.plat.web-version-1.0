@@ -189,7 +189,6 @@ export default new VueRouter({
               name: 'perceptualData',
               meta: {
                   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                  keepAlive:false //路由不被缓存
               },
               component: PerceptualData,
             },    
@@ -198,7 +197,6 @@ export default new VueRouter({
               name: 'RoadSideInfo',
               meta: {
                   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                  keepAlive:false //路由不被缓存
               },
               component: RoadSideInfo,
             },        
@@ -207,7 +205,6 @@ export default new VueRouter({
               name: 'RoadVideoManage',
               meta: {
                   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                  keepAlive:false //路由不被缓存
               },
               component: RoadVideoManage,
             },            
@@ -216,7 +213,6 @@ export default new VueRouter({
               name: 'RoadVideoReplay',
               meta: {
                   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                  keepAlive:false //路由不被缓存
               },
               component: RoadVideoReplay,
             },            
@@ -225,7 +221,6 @@ export default new VueRouter({
               name: 'RoadVideoLoad',
               meta: {
                   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                  keepAlive:false //路由不被缓存
               },
               component: RoadVideoLoad,
             },            
@@ -234,7 +229,6 @@ export default new VueRouter({
               name: 'RoadAddLoad',
               meta: {
                   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                  keepAlive:false //路由不被缓存
               },
               component: RoadVideoLoad,
             },            
@@ -248,7 +242,6 @@ export default new VueRouter({
               name: 'PercepData',
               meta: {
                   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                  keepAlive:true //路由被缓存
               },
               component: PercepData,
             },
@@ -257,7 +250,6 @@ export default new VueRouter({
               name: 'PercepDetail',
               meta: {
                   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                  keepAlive:false //路由不被缓存
               },
               component: PercepDetail,
             },

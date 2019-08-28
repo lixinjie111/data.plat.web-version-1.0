@@ -34,6 +34,37 @@ export default {
       }
     }
   },
+  // watch: {
+  //   deep: true,
+  //   "$route"(newVal, oldVal) {
+  //     console.log(newVal);
+    
+  //   }
+  // },
+  beforeRouteEnter (to, from, next) {
+    console.log("进入");
+      // if(to.name == 'PercepDetail'){
+      //     console.log('缓存')
+      //     to.meta.keepAlive = true; // 让 PercepData 缓存，即不刷新
+      // }else{
+      //     console.log('无缓存')
+      //     to.meta.keepAlive = false;
+      // };
+      
+      next();
+  },
+  beforeRouteLeave (to, from, next) {
+    console.log("离开");
+      // if(to.name == 'PercepDetail'){
+      //     console.log('缓存')
+      //     to.meta.keepAlive = true; // 让 PercepData 缓存，即不刷新
+      // }else{
+      //     console.log('无缓存')
+      //     to.meta.keepAlive = false;
+      // };
+      
+      next();
+  },
 }
 </script>
 
