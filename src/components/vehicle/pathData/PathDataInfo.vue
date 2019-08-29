@@ -154,7 +154,7 @@ export default {
                 liteStyle: true,
                 position: 'LT'
             });
-        this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.$parent.defaultMapOption);
+        this.distanceMap = new AMap.Map('map-container', window.defaultMapOption);
 
         this.distanceMap.addControl(_scale);
         this.distanceMap.addControl(_toolbar);
