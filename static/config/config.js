@@ -15,3 +15,11 @@ window.config = {
 
     version: 1.0,       // 版本号
 }
+//地图默认配置
+window.defaultMapOption = {
+	center: [121.551976, 31.276054],
+	zoom: 17,		// 默认：比例尺显示100m
+	resizeEnable: true, //是否监控地图容器尺寸变化
+	rotateEnable: true,
+	mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
+}

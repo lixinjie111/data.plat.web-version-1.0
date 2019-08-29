@@ -142,6 +142,7 @@ export default {
             currentVideoNode:{
                 code: 'N-NJ-0004'
             },
+            roads:[],
             roadSideShow:false,
             provinceLoading:false,
             changeSize:false,
@@ -195,6 +196,10 @@ export default {
                 offset: new AMap.Pixel(0, -33),
                 anchor: 'bottom-center'
             }),
+            isSearch:false,
+            selectDeviceId:'',
+            selectSerialNum:'',
+            defaultProvince:'上海市',
             defaultArr:['N-NJ-0004'],
             defaultSerialNum:'3402000000132000003001',
             timer: null,
@@ -224,7 +229,7 @@ export default {
             });
         },
         initMap(){
-            this.distanceMap = new AMap.Map('map-container', this.$parent.$parent.$parent.defaultMapOption);
+            this.distanceMap = new AMap.Map('map-container', window.defaultMapOption);
         },
         drawStartMarker() {
             let _this = this;
@@ -253,6 +258,8 @@ export default {
         },
         queryCountyRoadTrees(item){
             this.endPlay();
+            this.roads = [];
+            this.defaultArr = [];
             queryCountyRoadTree({
                 'cityCode':item.code,
                 'type':'N'
@@ -351,6 +358,7 @@ export default {
             }
             if (node.level > 2) return resolve([]);
             if(node.level == 2){
+                this.roads.push(node.data.code);
                 queryRoadCamList({
                     roadCode:node.data.code
                 }).then(res => {
@@ -365,6 +373,7 @@ export default {
                             //默认选中样式
                             camDetail.forEach(item => {
                                 var obj = {};
+                                obj.roadCode = node.data.code;
                                 obj.label = item.deviceId;
                                 obj.code = item.deviceId;
                                 obj.serialNum = item.serialNum;
@@ -382,45 +391,58 @@ export default {
                                 children.push(obj);
                             })
                         }
+                        if(node.data.code == this.roads[0]){
+                            this.selectDeviceId = children[0].code;
+                            this.selectSerialNum = children[0].serialNum;
+                        }
                         resolve(children);
-                        this.$refs.tree.setCurrentKey(this.defaultArr[0]);
                         let protocal = JSON.parse(localStorage.getItem('protocal'));
                         //默认打开摄像头编号为N-NJ-0004的视频
-                        if(this.defaultArr.length > 0){
-                            startStreamRoad({
-                                camId:this.defaultSerialNum,protocal:protocal
-                            }).then(res =>{
-                                if(res.status == '200') {
-                                    children.forEach((item,i) => {
-                                        if(item.serialNum == this.defaultSerialNum){
-                                            var camerData = res.data;
-                                            children[i].icon = 'sl-pause-icon';
-                                            this.camDetail.camId = children[i].serialNum;
-                                            this.camDetail.camCode = children[i].label;
-                                            this.camDetail.roadName = children[i].roadName;
-                                            this.camDetail.roadPointName = children[i].rsPtName;
-                                            this.camDetail.roadPointId = children[i].rsPtId;
-                                            this.camDetail.rsPtId = children[i].rsPtId;
-                                            this.camDetail.lon = Number(children[i].ptLon).toFixed(8);
-                                            this.camDetail.lat = Number(children[i].ptLat).toFixed(8);
-                                            this.isMaskShow = false;
-                                            let videoUrl = res.data.rtmp;
-                                            this.embedFlash(videoUrl);
-                                            this.markerOption.point = {
-                                                ptLon: children[i].ptLon,
-                                                ptLat: children[i].ptLat,
-                                                roadName: children[i].roadName,
-                                                label: children[i].label
-                                            };
-                                            this.drawStartMarker();
-                                        }
-                                    })
-                                    
-                                }
-                            });
+                        if(this.defaultProvince == this.searchKey.provinceValue.label){
+                            if(this.isSearch == true){
+                                // console.log('重置搜索条件');
+                            }else{
+                                this.defaultSerialNum = '3402000000132000003001';
+                                this.defaultArr = ['N-NJ-0004'];
+                                this.defaultArr.push(this.selectDeviceId);
+                            }
                         }else{
-                            return false;
+                            this.defaultSerialNum = this.selectSerialNum;
+                            this.defaultArr = [];
+                            this.defaultArr.push(this.selectDeviceId);
                         }
+                        this.$refs.tree.setCurrentKey(this.defaultArr[0]);
+                        startStreamRoad({
+                            camId:this.defaultSerialNum,protocal:protocal
+                        }).then(res =>{
+                            if(res.status == '200') {
+                                children.forEach((item,i) => {
+                                    if(item.serialNum == this.defaultSerialNum){
+                                        var camerData = res.data;
+                                        children[i].icon = 'sl-pause-icon';
+                                        this.camDetail.camId = children[i].serialNum;
+                                        this.camDetail.camCode = children[i].label;
+                                        this.camDetail.roadName = children[i].roadName;
+                                        this.camDetail.roadPointName = children[i].rsPtName;
+                                        this.camDetail.roadPointId = children[i].rsPtId;
+                                        this.camDetail.rsPtId = children[i].rsPtId;
+                                        this.camDetail.lon = Number(children[i].ptLon).toFixed(8);
+                                        this.camDetail.lat = Number(children[i].ptLat).toFixed(8);
+                                        this.isMaskShow = false;
+                                        let videoUrl = res.data.rtmp;
+                                        this.embedFlash(videoUrl);
+                                        this.markerOption.point = {
+                                            ptLon: children[i].ptLon,
+                                            ptLat: children[i].ptLat,
+                                            roadName: children[i].roadName,
+                                            label: children[i].label
+                                        };
+                                        this.drawStartMarker();
+                                    }
+                                })
+                                
+                            }
+                        });
                         return;
                     }
                 })
@@ -591,6 +613,8 @@ export default {
         searchClick(){
             var rsCamOptions = this.rsCamCodeOption.filterOption;
             this.treeData = [];
+            this.defaultArr = [];
+            this.isSearch = true;
             this.markerOption.point = null;
             if(rsCamOptions.length > 0){
                 //过滤匹配默认选中数据
