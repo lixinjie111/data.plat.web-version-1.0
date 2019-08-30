@@ -3,6 +3,13 @@ let _Logs = [
                     versionNum: "V1.1",
                     powerChange: [
                         {
+                            title: "2019-08-30",
+                            list: [
+                                    "测试bug修复",
+                                    "can数据滚动加载数据"                           
+                                ]
+                        },
+                        {
                             title: "2019-08-23",
                             list: [
                                     "测试bug修复",
