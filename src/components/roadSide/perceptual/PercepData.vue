@@ -43,26 +43,27 @@
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="摄像头序列号: " prop="serialNum">
-                <el-select
-                    v-model.trim="searchKey.serialNum"
-                    filterable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词"
-                    value-key="serialNum"
-                    :remote-method="remoteMethod3"
-                    @focus="selectSerialNumList"
-                    @change="serialSelect"
-                    :loading="fuzzySearchOption3.loading">
-                    <el-option
-                        v-for="(item,index) in fuzzySearchOption3.filterOption"
-                        :key="item.serialNum+index"
-                        :label='item.serialNum'
-                        :value="item">
-                    </el-option>
-                </el-select>
-            </el-form-item>
+                <el-form-item label="摄像头序列号: " prop="serialNum">
+                    <el-select
+                        v-model.trim="searchKey.serialNum"
+                        filterable
+                        remote
+                        class='m-padright-15'
+                        reserve-keyword
+                        placeholder="请输入关键词"
+                        value-key="serialNum"
+                        :remote-method="remoteMethod3"
+                        @focus="selectSerialNumList"
+                        @change="serialSelect"
+                        :loading="fuzzySearchOption3.loading">
+                        <el-option
+                            v-for="(item,index) in fuzzySearchOption3.filterOption"
+                            :key="item.serialNum+index"
+                            :label='item.serialNum'
+                            :value="item">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
 
             <el-form-item label="开始时间" prop='startTime'>
                 <el-date-picker
@@ -592,3 +593,8 @@ export default {
     },
 }
 </script>
+<style>
+.m-padright-15 .el-input--suffix .el-input__inner{
+    padding-right:15px !important;
+}
+</style>
