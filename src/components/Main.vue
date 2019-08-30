@@ -23,9 +23,6 @@
 import HeaderBar3 from '@/components/layout/Header3.vue'
 import LeftBar from '@/components/layout/LeftBar.vue'
 
-import ResponseCss from '@/assets/css/response.css'
-
-
 export default {
     name: 'Main',
     components: {

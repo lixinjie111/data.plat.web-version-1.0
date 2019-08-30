@@ -45,6 +45,7 @@
             </el-form-item>
         </el-form>
         <el-table
+            ref='table'
             :data="dataList" 
             v-loading='loading'
             stripe
@@ -174,8 +175,21 @@ export default {
                 defaultOption: [],
                 defaultFlag: false
             },
+            scrollData:{
+                dom:'',
+                loading:false,
+                isScroll:false
+            },
             searchUrl: requestqueryVehicleList
         }
+    },
+    mounted(){
+        this.scrollData.dom = this.$refs.table.bodyWrapper;
+        this.searchKey.vehicleId = 'B21E-00-022';
+        this.searchKey.startTime = this.$dateUtil.GetDateStr(31);
+        this.searchKey.endTime = this.$dateUtil.GetDateStr(0);
+        this.getQueryList();
+        this.scrollData.dom.addEventListener('scroll',this.scrollMore);
     },
     methods: {
         initPageOption() {
@@ -200,7 +214,7 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     this.pageOption.total = res.data.list.length;
-                    this.dataList = res.data.list;
+                    this.dataList = this.dataList.concat(res.data.list);
                 }
                 this.loading = false;
                 this.searchLoading = false;
@@ -242,12 +256,15 @@ export default {
                 request: this.searchUrl
             });
         },
-    },
-    mounted(){
-        this.searchKey.vehicleId = 'B21E-00-022';
-        this.searchKey.startTime = this.$dateUtil.GetDateStr(31);
-        this.searchKey.endTime = this.$dateUtil.GetDateStr(0);
-        this.getQueryList();
-    },
+        scrollMore(){
+            const scrollTopHeight = this.scrollData.dom.scrollTop;//滚动高度
+            const clientHeight = this.scrollData.dom.clientHeight;//可用区域高度
+            const scrollHeight = this.scrollData.dom.scrollHeight;//滚动条的总高度
+            if(scrollTopHeight + clientHeight == scrollHeight){
+                this.pageOption.page = this.pageOption.page + 1;
+                this.getQueryList();
+            }
+        }
+    }
 }
 </script>
