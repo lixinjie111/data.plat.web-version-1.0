@@ -285,7 +285,7 @@ export default {
                     for(let m = 0;m<this.cacheModelNum;m++)
                     {
                         //车
-                        var geoBox1 = new THREE.BoxBufferGeometry(1.7, 4.6, 1.4);
+                        var geoBox1 = new THREE.BoxBufferGeometry(2.5, 2.5, 2.5);
                         var model1 = new THREE.Mesh( geoBox1, this.matStdObjects );
                         model1.position.set( 0, 0, 0 );
                         model1.rotation.set( this.pitch,this.yaw,this.roll );
@@ -331,6 +331,10 @@ export default {
                         person.position.x = 0;
                         person.position.y = 0;
                         person.position.z = 0;
+
+                        let text = this.deviceModels[deviceid].texts[p];
+                        text.setPositon([0,0,0]);
+                        text.update();
                     }
                 }
 
