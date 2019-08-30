@@ -227,6 +227,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoading = true;
+                    this.dataList = [];
                     this.initPaging();
                     this.getQueryList();
                 } else {

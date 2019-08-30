@@ -203,6 +203,7 @@ export default {
             defaultArr:['N-NJ-0004'],
             defaultSerialNum:'3402000000132000003001',
             timer: null,
+            protocal:'',
             cameraUrl: queryRoadCamListSearch,
         }
     },
@@ -363,10 +364,6 @@ export default {
                     roadCode:node.data.code
                 }).then(res => {
                     if(res.status == '200') {
-                        if(res.data.length) {
-                            var protocal = JSON.stringify(res.data[0].protocol);
-                            localStorage.setItem('protocal',protocal);
-                        }
                         var camDetail = res.data;
                         var children = [];
                         if(camDetail.length > 0){
@@ -394,9 +391,9 @@ export default {
                         if(node.data.code == this.roads[0]){
                             this.selectDeviceId = children[0].code;
                             this.selectSerialNum = children[0].serialNum;
+                            this.protocal = children[0].protocal;
                         }
                         resolve(children);
-                        let protocal = JSON.parse(localStorage.getItem('protocal'));
                         //默认打开摄像头编号为N-NJ-0004的视频
                         if(this.defaultProvince == this.searchKey.provinceValue.label){
                             if(this.isSearch == true){
@@ -413,7 +410,7 @@ export default {
                         }
                         this.$refs.tree.setCurrentKey(this.defaultArr[0]);
                         startStreamRoad({
-                            camId:this.defaultSerialNum,protocal:protocal
+                            camId:this.defaultSerialNum,protocal:this.protocal
                         }).then(res =>{
                             if(res.status == '200') {
                                 children.forEach((item,i) => {
@@ -449,6 +446,7 @@ export default {
             }
         },
         handleNodeClick(data){
+            this.protocal = data.protocal;
             this.markerOption.point = null;
             let camStatus = data.cameraRunStatus;
             this.changeSize = false;
@@ -520,9 +518,8 @@ export default {
         startPlay(camerData){
             let camList = this.camInfo;
             let camLen = camList.length;
-            let protocal = JSON.parse(localStorage.getItem('protocal'));
             startStreamRoad({
-                camId:camerData.serialNum,protocal:protocal
+                camId:camerData.serialNum,protocal:this.protocal
             }).then(res =>{
                 if(res.status == '200') {
                     this.camDetail.camId = camerData.serialNum;
@@ -549,9 +546,8 @@ export default {
             for(let i=0;i<nodeSelArray.length;i++){
                 nodeSelArray[i].classList.remove('pause');
             }
-            let protocal = JSON.parse(localStorage.getItem('protocal'));
             stopStream({
-                "camId":this.currentVideoNode.code,"protocal":protocal
+                "camId":this.currentVideoNode.code,"protocal":this.protocal
             }).then(res => {
             })
         },
