@@ -1,5 +1,5 @@
 <template>
-
+    <div class="c-wrapper-20">
         <div class="index-logo-wrap">
             <img class="index-logo" src="static/images/banner.png">
             <p class="index-text">智能网联汽车数据管理平台</p>
@@ -12,18 +12,17 @@
                     <a class="index-footer-list" href="javascript:;" @click="clickFn(item)" v-for="item in linkData">{{item.title}}</a>
                 </div>
                 <div class="index-footer-right">
-                    <span>版本信息：{{logs[0].versionNum}}（build{{logs[0].powerChange[0].title.split('-').join('')}}）</span>
+                    <span>版本信息：V1.1-build20190718</span>
                     <a href="javascript:;" class="index-blue-color" @click="$router.push('/logs')">更新日志</a>
                 </div>
             </div>
         </div>
-
+    </div>
 </template>
 
 <script>
-import Logs from "../../static/logs/logs"
 export default {
-    name: 'Home',
+    name: 'Index',
     data () {
         return {
             linkData: [{
@@ -37,9 +36,8 @@ export default {
                 link: "http://120.133.21.14:9094/trafficInfoRelease/"
             }, {
                 title: "监控管理平台",
-                link: "http://120.133.21.14:9093/dataMonitor/#/dataMonitor"
-            }],
-            logs: Logs      
+                link: "http://120.133.21.14:9093/monPlatform"
+            }]      
         }
     },
     methods: {
@@ -52,7 +50,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
-
+.c-wrapper-20 {
     .index-logo-wrap {
         position: absolute;
         left: 0;
@@ -60,21 +58,21 @@ export default {
         top: 0;
         bottom: 0;
         background-color: $black;
-        .index-logo {
-            width: 100%;
-            height: 100%;
-        }
-        .index-text {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            @include layoutMode();
-            font-size: 36px;
-            color: #fff;
-            letter-spacing: 5px;
-        }
+    }
+	.index-logo {
+		width: 100%;
+        height: 100%;
+	}
+    .index-text {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        @include layoutMode();
+        font-size: 36px;
+        color: #fff;
+        letter-spacing: 5px;
     }
 	.index-footer {
 		position: absolute;
@@ -115,4 +113,5 @@ export default {
             text-decoration: underline;
         }
     }
+}
 </style>

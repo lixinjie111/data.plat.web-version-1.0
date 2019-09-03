@@ -103,6 +103,7 @@ export default {
     position: relative;
     height: 100%;
     background-color: #f2f2f2;
+    letter-spacing: 2px;
     .login-logo {
         position: absolute;
         left: 49px;
@@ -166,6 +167,7 @@ export default {
         height: 80px;
         letter-spacing: 3px;
         background-color: #f2f2f2;
+        color: #000;
         @include layoutMode();
     }
     .login-item-box {
@@ -208,12 +210,14 @@ export default {
         }
     }
     .el-input__inner {
+        font-size: 14px;
         background: transparent;        
-        border: none;
+        border: none !important;
         height: 50px;
         padding: 0 21px;
         @include layoutMode(pack);
         color: #333 !important;
+        width: 100% !important;
     }
     input:-webkit-autofill {
         -webkit-box-shadow: 0 0 0px 1000px white inset;
