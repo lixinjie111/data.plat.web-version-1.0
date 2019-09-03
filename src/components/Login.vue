@@ -100,10 +100,12 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/scss/theme.scss";
 #login-warpper {
+    font-family: MicrosoftYaHei;
     position: relative;
     height: 100%;
     background-color: #f2f2f2;
     letter-spacing: 2px;
+    line-height: 40px;
     .login-logo {
         position: absolute;
         left: 49px;
@@ -183,7 +185,6 @@ export default {
         background-color: #3293bd;
         border-radius: 10px;
         font-size: 18px;
-        // letter-spacing: 7px;
         color: #fff;
         border: none;
         margin-top: 30px;
@@ -225,5 +226,3 @@ export default {
     }
 }
 </style>
-
-
