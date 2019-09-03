@@ -218,7 +218,7 @@ export default {
             clearInterval(this.timer);
             this.timer = setInterval(()=>{
                 this.computCamNum();
-            },5000);
+            },200);
         },
         rsCamCodeRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({
@@ -409,37 +409,40 @@ export default {
                             this.defaultArr.push(this.selectDeviceId);
                         }
                         this.$refs.tree.setCurrentKey(this.defaultArr[0]);
-                        startStreamRoad({
+                        if(this.defaultArr[0]){
+                            startStreamRoad({
                             camId:this.defaultSerialNum,protocal:this.protocal
                         }).then(res =>{
                             if(res.status == '200') {
-                                children.forEach((item,i) => {
-                                    if(item.serialNum == this.defaultSerialNum){
-                                        var camerData = res.data;
-                                        children[i].icon = 'sl-pause-icon';
-                                        this.camDetail.camId = children[i].serialNum;
-                                        this.camDetail.camCode = children[i].label;
-                                        this.camDetail.roadName = children[i].roadName;
-                                        this.camDetail.roadPointName = children[i].rsPtName;
-                                        this.camDetail.roadPointId = children[i].rsPtId;
-                                        this.camDetail.rsPtId = children[i].rsPtId;
-                                        this.camDetail.lon = Number(children[i].ptLon).toFixed(8);
-                                        this.camDetail.lat = Number(children[i].ptLat).toFixed(8);
-                                        this.isMaskShow = false;
-                                        let videoUrl = res.data.rtmp;
-                                        this.embedFlash(videoUrl);
-                                        this.markerOption.point = {
-                                            ptLon: children[i].ptLon,
-                                            ptLat: children[i].ptLat,
-                                            roadName: children[i].roadName,
-                                            label: children[i].label
-                                        };
-                                        this.drawStartMarker();
-                                    }
-                                })
-                                
-                            }
-                        });
+                                    children.forEach((item,i) => {
+                                        if(item.serialNum == this.defaultSerialNum){
+                                            var camerData = res.data;
+                                            children[i].icon = 'sl-pause-icon';
+                                            this.camDetail.camId = children[i].serialNum;
+                                            this.camDetail.camCode = children[i].label;
+                                            this.camDetail.roadName = children[i].roadName;
+                                            this.camDetail.roadPointName = children[i].rsPtName;
+                                            this.camDetail.roadPointId = children[i].rsPtId;
+                                            this.camDetail.rsPtId = children[i].rsPtId;
+                                            this.camDetail.lon = Number(children[i].ptLon).toFixed(8);
+                                            this.camDetail.lat = Number(children[i].ptLat).toFixed(8);
+                                            this.isMaskShow = false;
+                                            let videoUrl = res.data.rtmp;
+                                            this.embedFlash(videoUrl);
+                                            this.markerOption.point = {
+                                                ptLon: children[i].ptLon,
+                                                ptLat: children[i].ptLat,
+                                                roadName: children[i].roadName,
+                                                label: children[i].label
+                                            };
+                                            this.drawStartMarker();
+                                        }
+                                    })
+                                    
+                                }
+                            });
+                        };
+                        
                         return;
                     }
                 })
