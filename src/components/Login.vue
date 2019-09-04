@@ -1,5 +1,5 @@
 <template>
-<div id="login-warpper">
+<div id="login-warpper" v-if="visibleFlag">
     <img class="login-logo" src="../../static/images/login-logo.png">
     <div class="login-container">
         <img class="login-bg" src="../../static/images/login-bg.jpg">
@@ -53,6 +53,7 @@ export default {
             }
         };
         return {
+            visibleFlag: false,
             loginForm: {
                 userNo: '',
                 password: '',
@@ -69,31 +70,60 @@ export default {
             loading: false
             
         }
+    },
+    created() {
+        let _data = localStorage.getItem("yk-token");
+        if(_data) {
+            let _dataObj = JSON.parse(_data),
+                _delayTime = 1000 * 60 * 60 * 24;
+            if (new Date().getTime() - _dataObj.time > _delayTime) {
+                console.log('信息已过期');
+                this.removeStorage();
+            }else{
+                // 直接调用登录接口
+                let _params = {
+                    token: _dataObj.data,
+                    platform: this.$store.state.platform
+                };
+                this.loginFunc(_params);
+            }
+        }else {
+            this.removeStorage();
+        }
     }, 
     methods:{
         loginClick(){
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
                     this.loading = true;
-                    requestLogin(this.loginForm).then(res => {
-                        if(res.status == '200'){
-                            let temp = res.data;
-                            SessionUtils.setItem('login',temp);
-                            this.$router.push('/home');
-                            this.$message.success(res.message);
-                        }
-                        this.loading = false;
-                    }).catch(err => {
-                        this.loading = false;
-                    })
-                } else {
+                    this.loginFunc(this.loginForm);
+                }else {
                     this.loading = false;
-                    return false;
                 }
             });
-            
-            
         },
+        loginFunc(params) {
+            requestLogin(params).then(res => {
+                this.loading = false;
+                if(res.status == 200) {
+                    let temp = res.data;                           
+                    temp = JSON.parse(temp);
+                    SessionUtils.setItem('login',temp);
+                    localStorage.setItem("yk-token",JSON.stringify({data:JSON.parse(res.data).token,"time":new Date().getTime()}));
+                    this.$router.push('/home');
+                }else {
+                    this.removeStorage();
+                }
+            }).catch(err => {
+                this.loading = false;
+                this.removeStorage();
+            })
+        },
+        removeStorage() {
+            sessionStorage.clear();
+            localStorage.removeItem("yk-token");
+            this.visibleFlag = true;
+        }
     }
 }
 </script>
