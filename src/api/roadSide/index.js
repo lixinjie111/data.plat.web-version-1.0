@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {HTTPURL,operPlatUrl} from '../requestUrl';
+import {HTTPURL} from '../requestUrl';
 
 /**
  * 实时监控

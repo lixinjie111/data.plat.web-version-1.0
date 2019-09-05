@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {HTTPURL,operPlatUrl} from '../requestUrl';
+import {HTTPURL,OPERATEURL} from '../requestUrl';
 
 
 /**
@@ -66,11 +66,11 @@ export const redoVideoTask = params => { return axios.post(`${HTTPURL}cam/redoVi
 /**
  * 获取车辆信息
  */
-export const queryPage = params => { return axios.post(`${operPlatUrl}vehicle/query/page`, params).then(res => res.data); };
+export const queryPage = params => { return axios.post(`${OPERATEURL}vehicle/query/page`, params).then(res => res.data); };
 /**
  * 获取设备信息
  */
-export const findByDeviceList = params => { return axios.post(`${operPlatUrl}vehicle/findByDeviceList`, params).then(res => res.data); };
+export const findByDeviceList = params => { return axios.post(`${OPERATEURL}vehicle/findByDeviceList`, params).then(res => res.data); };
 /**
  * 新建下载任务
  */

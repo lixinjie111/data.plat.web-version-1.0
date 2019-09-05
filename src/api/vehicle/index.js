@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {HTTPURL,operPlatUrl} from '../requestUrl';
+import {HTTPURL,OPERATEURL} from '../requestUrl';
 
 /**
  *车辆数据
@@ -57,7 +57,7 @@ export const dynamicParamList = params => { return axios.post(`${HTTPURL}dynamic
 /**
  * 组数据列表
  */
-export const findPropByGroupId = params => { return axios.post(`${operPlatUrl}vehicleTerminal/remote/findPropByGroupId`, params).then(res => res.data); };
+export const findPropByGroupId = params => { return axios.post(`${OPERATEURL}vehicleTerminal/remote/findPropByGroupId`, params).then(res => res.data); };
 
 /**
  * 详情
@@ -67,12 +67,12 @@ export const getDetatilList = params => { return axios.post(`${HTTPURL}dynamic/e
 /**
  * 全集数据
  */
-export const findVehicleProperty = params => { return axios.post(`${operPlatUrl}vehicleTerminal/v2/remote/findVehicleProperty`, params).then(res => res.data); };
+export const findVehicleProperty = params => { return axios.post(`${OPERATEURL}vehicleTerminal/v2/remote/findVehicleProperty`, params).then(res => res.data); };
 
 /**
  * 本地组数据
  */
-export const findVehicleGroup = params => { return axios.post(`${operPlatUrl}vehicleTerminal/v2/remote/findVehicleGroup`, params).then(res => res.data); };
+export const findVehicleGroup = params => { return axios.post(`${OPERATEURL}vehicleTerminal/v2/remote/findVehicleGroup`, params).then(res => res.data); };
 
 /**
  * 提交本地数据

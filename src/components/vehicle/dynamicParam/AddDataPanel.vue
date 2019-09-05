@@ -33,7 +33,6 @@ export default {
             activeName: 'first',
             dataList: [],
             groupList:[],
-            operPlatUrl:'',
             panel: {
                 title: '提示',
                 type: '',
@@ -47,7 +46,6 @@ export default {
     },
     methods: {
         init(){
-            this.operPlatUrl = window.config.operPlatUrl;
             this.$refs.fullList.initData();
             this.$refs.groupList.initData();
         },

@@ -125,7 +125,6 @@ export default {
                 }
             };
         return {
-            operPlatUrl: window.config.operPlatUrl,
             visible: true,
             loading: false,
             allList:[],
