@@ -70,7 +70,6 @@ export default {
                 size: 10,
                 total: 0,
             },
-            operPlatUrl:'',
         }
     },
     methods: {
@@ -80,7 +79,6 @@ export default {
             this.pageOption.page = 1;
         },
         init(){
-            this.operPlatUrl = window.config.operPlatUrl;
             this.initPaging();
             this.initData();         
         },

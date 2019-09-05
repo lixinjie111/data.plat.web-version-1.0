@@ -106,10 +106,9 @@ export default {
             requestLogin(params).then(res => {
                 this.loading = false;
                 if(res.status == 200) {
-                    let temp = res.data;                           
-                    temp = JSON.parse(temp);
-                    SessionUtils.setItem('login',temp);
-                    localStorage.setItem("yk-token",JSON.stringify({data:JSON.parse(res.data).token,"time":new Date().getTime()}));
+                    let temp = res.data;        
+                    SessionUtils.setItem('login',JSON.parse(temp));
+                    localStorage.setItem("yk-token",JSON.stringify({data:JSON.parse(temp).token,"time":new Date().getTime()}));
                     this.$router.push('/home');
                 }else {
                     this.removeStorage();
