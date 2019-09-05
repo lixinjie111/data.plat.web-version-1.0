@@ -19,11 +19,12 @@
 </template>
 <script>
 import { mapActions } from 'vuex';
+import SessionUtils from '@/store/session.js'
 export default {
     name: "HeaderBar",
     data() {
         return {
-            sysAdminName: this.$store.state.admin.adminName
+            sysAdminName: this.$store.state.user.name
         }
     },
     methods: {
@@ -33,7 +34,13 @@ export default {
             this.$confirm('确认退出吗?', '提示', {
             }).then(() => {
                 this.goLogOut(this).then(res => {
-                    this.$router.push({ path: '/' });
+                    console.log('退出');
+                    if(res.status == '200'){
+                        localStorage.removeItem("yk-token");
+                        sessionStorage.clearItems();
+                        // this.$router.push({ path: '/login' });
+                    }
+                    
                 });
             }).catch(err => {
                 console.log("取消退出！");

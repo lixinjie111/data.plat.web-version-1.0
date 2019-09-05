@@ -10,7 +10,7 @@
                     <el-form :model="searchKey" size="small" class="c-text-between">
                         <el-form-item>
                             <el-select
-                                v-model.trim="searchKey.deviceId"
+                                v-model.trim="searchKey.device"
                                 clearable
                                 filterable
                                 remote
@@ -26,7 +26,7 @@
                                     v-for="item in rsCamCodeOption.filterOption"
                                     :key="item.deviceId"
                                     :label="item.deviceId"
-                                    :value="item.deviceId">
+                                    :value="item">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -64,9 +64,9 @@
                         </el-form-item>
                     </el-form>
                     <div class="c-mt-10 c-flex">
-                        <span class="c-flex-1">总数:{{camStatusNums.camTotal}}</span>
-                        <span class="c-flex-1">在线:{{camStatusNums.onlineNum}}</span>
-                        <span class="c-flex-1">实时监控:{{camStatusNums.monitNum}}</span>
+                        <span class="c-flex-1">总数:{{camStatusNums.count}}</span>
+                        <span class="c-flex-1">在线:{{camStatusNums.monitorCount}}</span>
+                        <span class="c-flex-1">实时监控:{{camStatusNums.onlineCount}}</span>
                     </div>
                     <el-tree
                         class="c-padding-10 carm-oragn-sels"
@@ -78,7 +78,7 @@
                         ref="tree"
                         default-expand-all
                         highlight-current
-                        :default-expanded-keys="defaultArr"
+                        :default-expanded-keys="currentArr"
                         @node-click="handleNodeClick" 
                         >
                         <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
@@ -139,9 +139,16 @@ export default {
     },
     data(){
         return{
-            currentVideoNode:{
-                code: 'N-NJ-0004'
+            defaultData: {
+                code: 'N-NJ-0004',
+                serialNum: '3402000000132000003001'
             },
+            currentVideoNode:{
+                code: 'N-NJ-0004',
+                serialNum:'3402000000132000003001'
+            },
+            currentArr: ['N-NJ-0004'],
+
             roads:[],
             roadSideShow:false,
             provinceLoading:false,
@@ -168,7 +175,7 @@ export default {
             searchKey:{
                 provinceValue:'',
                 cityValue:'',
-                deviceId:''
+                device:'',
             },
             defaultProps: {
                 code:'code',
@@ -177,9 +184,9 @@ export default {
                 isLeaf: 'leaf'
             },
             camStatusNums:{
-                camTotal:0,
-                onlineNum:0,
-                monitNum:0,
+                count:0,
+                monitorCount:0,
+                onlineCount:0,
             },
             rsCamCodeOption: {
                 loading: false,
@@ -197,28 +204,44 @@ export default {
                 anchor: 'bottom-center'
             }),
             isSearch:false,
-            selectDeviceId:'',
-            selectSerialNum:'',
-            defaultProvince:'上海市',
-            defaultArr:['N-NJ-0004'],
-            defaultSerialNum:'3402000000132000003001',
+            // selectDeviceId:'',
+            // selectSerialNum:'',
             timer: null,
             protocal:'',
             cameraUrl: queryRoadCamListSearch,
         }
     },
+    watch: {
+        "searchKey.cityValue"(newVal, oldVal) {
+            if(newVal.code) {
+                clearInterval(this.timer);
+                this.computCamNum();
+                this.timer = setInterval(()=>{
+                    this.computCamNum();
+                },5000);
+            }else {
+                clearInterval(this.timer);
+                this.camStatusNums.count = 0;
+                this.camStatusNums.monitorCount = 0;
+                this.camStatusNums.onlineCount = 0;
+            }
+        }
+    },
     mounted(){
         this.getSideTree();//获取树结构数据
-        this.wsRequest();
         this.initMap();
+        // this.computCamNum();
     },
     methods:{
-        wsRequest(){
-            //5s刷一次实时状态
-            clearInterval(this.timer);
-            this.timer = setInterval(()=>{
-                this.computCamNum();
-            },200);
+        computCamNum(){
+            //查询总数。在线数，实时监控数
+            getCityCameraStatics({
+                cityCode: this.searchKey.cityValue.code
+            }).then(res =>{
+                if(res.status == '200'){
+                    this.camStatusNums = res.data;
+                }
+            });
         },
         rsCamCodeRemoteMethod(query) {
             this.$searchFilter.publicRemoteMethod({
@@ -260,7 +283,7 @@ export default {
         queryCountyRoadTrees(item){
             this.endPlay();
             this.roads = [];
-            this.defaultArr = [];
+            this.currentArr = [];
             queryCountyRoadTree({
                 'cityCode':item.code,
                 'type':'N'
@@ -389,33 +412,29 @@ export default {
                             })
                         }
                         if(node.data.code == this.roads[0]){
-                            this.selectDeviceId = children[0].code;
-                            this.selectSerialNum = children[0].serialNum;
+                            // this.selectDeviceId = children[0].code;
+                            // this.selectSerialNum = children[0].serialNum;
                             this.protocal = children[0].protocal;
                         }
                         resolve(children);
-                        //默认打开摄像头编号为N-NJ-0004的视频
-                        if(this.defaultProvince == this.searchKey.provinceValue.label){
-                            if(this.isSearch == true){
-                                // console.log('重置搜索条件');
-                            }else{
-                                this.defaultSerialNum = '3402000000132000003001';
-                                this.defaultArr = ['N-NJ-0004'];
-                                this.defaultArr.push(this.selectDeviceId);
-                            }
-                        }else{
-                            this.defaultSerialNum = this.selectSerialNum;
-                            this.defaultArr = [];
-                            this.defaultArr.push(this.selectDeviceId);
+                        if(this.searchKey.device) {
+                            this.currentVideoNode.code = this.searchKey.device.deviceId;
+                            this.currentVideoNode.serialNum = this.searchKey.device.serialNum;
+                        }else {
+                            this.currentVideoNode.code = this.defaultData.code;
+                            this.currentVideoNode.serialNum = this.defaultData.serialNum;
                         }
-                        this.$refs.tree.setCurrentKey(this.defaultArr[0]);
-                        if(this.defaultArr[0]){
+                        this.currentArr = [];
+                        this.currentArr.push(this.currentVideoNode.code);
+
+                        this.$refs.tree.setCurrentKey(this.currentArr[0]);
+                        if(this.currentArr[0]){
                             startStreamRoad({
-                            camId:this.defaultSerialNum,protocal:this.protocal
+                            camId:this.currentVideoNode.serialNum,protocal:this.protocal
                         }).then(res =>{
                             if(res.status == '200') {
                                     children.forEach((item,i) => {
-                                        if(item.serialNum == this.defaultSerialNum){
+                                        if(item.serialNum == this.currentVideoNode.serialNum){
                                             var camerData = res.data;
                                             children[i].icon = 'sl-pause-icon';
                                             this.camDetail.camId = children[i].serialNum;
@@ -493,7 +512,7 @@ export default {
                     data.icon = "sl-play-icon";
 
                 }
-                this.currentVideoNode = data;
+                this.currentVideoNode.data = data;
             }
         },
         embedFlash(rtmpSource){//部署用此段
@@ -549,10 +568,12 @@ export default {
             for(let i=0;i<nodeSelArray.length;i++){
                 nodeSelArray[i].classList.remove('pause');
             }
-            stopStream({
-                "camId":this.currentVideoNode.code,"protocal":this.protocal
-            }).then(res => {
-            })
+            if(this.currentVideoNode.code) {
+                stopStream({
+                    "camId":this.currentVideoNode.code,"protocal":this.protocal
+                }).then(res => {
+                })
+            }
         },
         goRoadSide(){
             clearInterval(this.timer);
@@ -562,7 +583,7 @@ export default {
         },
         getCityTrees(item){//获区市辖数据
             this.endPlay();
-            this.searchKey.deviceId = '';
+            this.searchKey.device = '';
             this.searchKey.cityValue = '';
             this.treeData = [];
             this.provinceOptions.forEach((a,index,arr) => {
@@ -591,34 +612,20 @@ export default {
         mapChangeMin(){
             this.changeSize = false;
         },
-        computCamNum(){
-            if(this.searchKey.cityValue != undefined && this.searchKey.cityValue != ''){
-                //查询总数。在线数，实时监控数
-                getCityCameraStatics({
-                    cityCode: this.searchKey.cityValue.code
-                }).then(res =>{
-                    if(res.status == '200'){
-                        this.camStatusNums.camTotal = res.data.count;
-                        this.camStatusNums.monitNum = res.data.monitorCount;
-                        this.camStatusNums.onlineNum = res.data.onlineCount;
-                    }
-                });   
-            }else {
-                this.camStatusNums.camTotal = 0;
-                this.camStatusNums.monitNum = 0;
-                this.camStatusNums.onlineNum = 0;
-            }
-        },
         searchClick(){
             var rsCamOptions = this.rsCamCodeOption.filterOption;
             this.treeData = [];
-            this.defaultArr = [];
+
+            this.currentVideoNode.code = this.searchKey.device.deviceId;
+            this.currentVideoNode.serialNum = this.searchKey.device.serialNum;
+            this.currentArr = [this.searchKey.device.deviceId];
+
             this.isSearch = true;
             this.markerOption.point = null;
             if(rsCamOptions.length > 0){
                 //过滤匹配默认选中数据
                 rsCamOptions.forEach(item => {
-                    if(item.deviceId == this.searchKey.deviceId){
+                    if(item.deviceId == this.searchKey.device.deviceId){
                         this.provinceOptions.forEach(e => {
                             if(e.code == item.rspDistcodeProvince){
                                 let obj = {};
@@ -651,18 +658,18 @@ export default {
                                 this.cityOptions = [];
                                 this.cityOptions.push(obj);
                                 this.getRegion(item.rspDistcodeCity);
-                                this.defaultArr = [];
-                                this.defaultArr.push(this.searchKey.deviceId);
+                                this.currentArr = [];
+                                this.currentArr.push(this.searchKey.device.deviceId);
                             }
                         })
-                        this.defaultSerialNum = item.serialNum;
+                        this.currentVideoNode.serialNum = item.serialNum;
                     }
                 })
             }else{
                 this.provinceOptions = [];
                 this.cityOptions = [];
                 this.treeData = [];
-                this.defaultArr = [];
+                this.currentArr = [];
             }
         },
         clearFn(){

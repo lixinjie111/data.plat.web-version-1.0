@@ -1,5 +1,5 @@
-// import axios from 'axios';
-import {HTTPURL,operPlatUrl} from '../requestUrl';
+import axios from 'axios';
+import {HTTPURL} from '../requestUrl';
 
 /**
  * bsm数据

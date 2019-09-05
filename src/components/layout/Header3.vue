@@ -39,6 +39,9 @@ export default {
             dialogResetPasswordFlag: false,
         }
     },
+    mounted(){
+        console.log(JSON.parse(SessionUtils.getItem('login')));
+    },
     methods: {
         logoutClick(){
             requestLogout({
@@ -47,6 +50,7 @@ export default {
                 if(res.status == '200'){
                     this.$router.push('/login');
                     this.$store.dispatch('logout');
+                    localStorage.removeItem("yk-token");
                     SessionUtils.deleteItem('login');
                 }
             });
