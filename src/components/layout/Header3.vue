@@ -39,9 +39,6 @@ export default {
             dialogResetPasswordFlag: false,
         }
     },
-    mounted(){
-        console.log(JSON.parse(SessionUtils.getItem('login')));
-    },
     methods: {
         logoutClick(){
             requestLogout({

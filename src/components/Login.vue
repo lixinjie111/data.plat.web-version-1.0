@@ -119,7 +119,7 @@ export default {
             })
         },
         removeStorage() {
-            sessionStorage.clear();
+            SessionUtils.clearItems();
             localStorage.removeItem("yk-token");
             this.visibleFlag = true;
         }
