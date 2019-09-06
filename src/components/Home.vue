@@ -30,13 +30,13 @@ export default {
                 link: "http://www.tusvn.com/"
             }, {
                 title: "运营管理平台",
-                link: "http://120.133.21.14:9090/operationPlatform/#/home"
+                link: window.config.baseUrl+":9090/operationPlatform/#/home"
             }, {
                 title: "交通信息发布平台",
-                link: "http://120.133.21.14:9094/trafficInfoRelease/"
+                link: window.config.baseUrl+":9094/trafficInfoRelease/"
             }, {
                 title: "监控管理平台",
-                link: "http://120.133.21.14:9093/monPlatform"
+                link: window.config.baseUrl+":9093/monPlatform"
             }]      
         }
     },
