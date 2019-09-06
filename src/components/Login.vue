@@ -119,9 +119,9 @@ export default {
             })
         },
         removeStorage() {
-            sessionStorage.clear();
-            localStorage.removeItem("yk-token");
             this.visibleFlag = true;
+            SessionUtils.deleteItem('login');
+            localStorage.removeItem("yk-token");
         }
     }
 }
