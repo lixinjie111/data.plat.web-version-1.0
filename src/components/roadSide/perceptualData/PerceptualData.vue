@@ -608,7 +608,6 @@ export default {
             })
         },
         backClick(){
-            this.wsRequest();
             this.roadSideShow = false;
         },
         mapChangeMax(){
