@@ -484,11 +484,9 @@ export default {
                     data.icon = "sl-pause-icon";
                 }
             }else{
-                console.log('切换')
                 this.currentVideoNode.isOn = false;
                 this.currentVideoNode.icon = "sl-play-icon";
                 if(camStatus == 1){//在线
-                console.log(data.isOn);
                     if(data.isOn) {
                         data.isOn = false;
                         this.endPlay();
@@ -504,15 +502,23 @@ export default {
                     this.markerOption.point = roadCamInfo;
                     this.drawStartMarker();
                 }else {
-                    this.camDetail.roadName = '';
-                    this.camDetail.camCode = '';
-                    this.camDetail.camId = '';
-                    this.camDetail.roadPointName = '';
                     if(camStatus == '0'){//未知
+                        this.camDetail.roadName = '';
+                        this.camDetail.camCode = '';
+                        this.camDetail.camId = '';
+                        this.camDetail.roadPointName = '';
                         this.$message.error('未知摄像头!');
                     }else if(camStatus == '2'){//离线
+                        this.camDetail.roadName = '';
+                        this.camDetail.camCode = '';
+                        this.camDetail.camId = '';
+                        this.camDetail.roadPointName = '';
                         this.$message.error('摄像头为离线状态!');
                     }else if(camStatus == '3'){//未注册
+                        this.camDetail.roadName = '';
+                        this.camDetail.camCode = '';
+                        this.camDetail.camId = '';
+                        this.camDetail.roadPointName = '';
                         this.$message.error('摄像头未注册!');
                     }
                     data.isOn = false;
@@ -553,6 +559,7 @@ export default {
                 if(res.status == '200') {
                     this.camDetail.camId = camerData.serialNum;
                     this.camDetail.camCode = camerData.label;
+                    this.camDetail.roadName = camerData.roadName;
                     this.camDetail.roadPointName = camerData.rsPtName;
                     this.camDetail.roadPointId = camerData.rsPtId;
                     this.camDetail.lon = Number(camerData.ptLon).toFixed(8);
