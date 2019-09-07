@@ -430,7 +430,7 @@ export default {
                         this.$refs.tree.setCurrentKey(this.currentArr[0]);
                         if(this.currentArr[0]){
                             startStreamRoad({
-                            camId:this.currentVideoNode.serialNum,protocal:this.protocal
+                                camId:this.currentVideoNode.serialNum,protocal:this.protocal
                         }).then(res =>{
                             if(res.status == '200') {
                                     children.forEach((item,i) => {
@@ -497,9 +497,14 @@ export default {
                     }
                     let roadCamInfo = Object.assign({},{roadName:this.roadName},data);
                     this.camDetail.rsPtId = roadCamInfo.rsPtId;
+                    this.camDetail.roadName = data.roadName;
                     this.markerOption.point = roadCamInfo;
                     this.drawStartMarker();
                 }else {
+                    this.camDetail.roadName = '';
+                    this.camDetail.camCode = '';
+                    this.camDetail.camId = '';
+                    this.camDetail.roadPointName = '';
                     if(camStatus == '0'){//未知
                         this.$message.error('未知摄像头!');
                     }else if(camStatus == '2'){//离线
@@ -510,7 +515,6 @@ export default {
                     data.isOn = false;
                     this.endPlay();
                     data.icon = "sl-play-icon";
-
                 }
                 this.currentVideoNode.data = data;
             }
@@ -559,10 +563,6 @@ export default {
         },
         endPlay(){
             this.isMaskShow = true;
-            this.camId = '--';
-            this.camCode = '--';
-            this.roadPointName = '--';
-            this.roadPointId = '--';
             let nodeSel = document.querySelectorAll('.el-tree-node .el-tree-node__content .el-tree-node__expand-icon');
             let nodeSelArray = Array.from(nodeSel);
             for(let i=0;i<nodeSelArray.length;i++){
@@ -572,6 +572,14 @@ export default {
                 stopStream({
                     "camId":this.currentVideoNode.code,"protocal":this.protocal
                 }).then(res => {
+                    this.camId = '--';
+                    this.camCode = '--';
+                    this.roadPointName = '--';
+                    this.roadPointId = '--';
+                    this.camDetail.roadName = '';
+                    this.camDetail.camCode = '';
+                    this.camDetail.camId = '';
+                    this.camDetail.roadPointName = '';
                 })
             }
         },
@@ -585,6 +593,10 @@ export default {
             this.endPlay();
             this.searchKey.device = '';
             this.searchKey.cityValue = '';
+            this.camDetail.camCode = '';
+            this.camDetail.camId = '';
+            this.camDetail.roadName = '';
+            this.camDetail.roadPointName = '';
             this.treeData = [];
             this.provinceOptions.forEach((a,index,arr) => {
                 if(a.code == item.code){
