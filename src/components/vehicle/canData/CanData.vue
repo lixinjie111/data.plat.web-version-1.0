@@ -213,6 +213,7 @@ export default {
                 endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
             }).then(res => {
                 if(res.status == '200'){
+                    this.$refs.table.bodyWrapper.scrollTop = 0;
                     this.pageOption.total = res.data.list.length;
                     this.dataList = this.dataList.concat(res.data.list);
                 }

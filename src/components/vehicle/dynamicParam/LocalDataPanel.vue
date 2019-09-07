@@ -46,6 +46,7 @@
                     </div>
 
                     <el-table
+                        ref="table"
                         :data="dataList" 
                         v-loading='loading'
                         stripe

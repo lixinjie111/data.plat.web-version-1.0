@@ -88,6 +88,7 @@
                 </el-form-item>
             </el-form>
             <el-table 
+                ref="table"
                 :data="showDataList"
                 v-loading="loading"  
                 border
@@ -310,6 +311,7 @@ export default {
                     this.dataList = res.data;
                     this.showDataList = this.dataList;
                     this.pageOption.total = res.data.length;
+                    this.$refs.table.bodyWrapper.scrollTop = 0;
                     if(this.pageOption.total > this.pageOption.size) {
                         this.initShowData();
                     }else {

@@ -10,6 +10,7 @@
         </el-form-item>
     </el-form>
     <el-table
+        ref="table"
         :data="dataList" 
         v-loading='loading'
         stripe
@@ -84,6 +85,7 @@ export default {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;
+                    this.$refs.table.bodyWrapper.scrollTop = 0;
                     let inputs = document.querySelectorAll(".yk-table tbody input");
                     inputs.forEach(function(item){
                         item.checked = false;
