@@ -29,7 +29,7 @@ export default {
                 title: "启迪云控官网",
                 link: "http://www.tusvn.com/"
             },{
-                title: "感知融合管理平台",
+                title: "融合感知平台",
                 link: window.config.baseUrl+":9093/fusionMonitor/"
             }, {
                 title: "运营管理平台",
