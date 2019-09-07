@@ -28,6 +28,9 @@ export default {
             linkData: [{
                 title: "启迪云控官网",
                 link: "http://www.tusvn.com/"
+            },{
+                title: "感知融合",
+                link: window.config.baseUrl+":9093/fusionMonitor/"
             }, {
                 title: "运营管理平台",
                 link: window.config.baseUrl+":9090/operationPlatform/#/home"

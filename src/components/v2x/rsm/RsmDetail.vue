@@ -10,6 +10,7 @@
                 </div>
                 <div class="c-wrapper-20">
                     <el-table 
+                        ref="table"
                         :data="dataList" 
                         stripe
                         border
@@ -67,6 +68,7 @@
             init:function(data){
                 this.dataInfo = data;
                 this.dataList = data.phases;
+                this.$refs.table.bodyWrapper.scrollTop = 0;
             },
             backClick(){
                 this.$emit('goBack');

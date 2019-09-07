@@ -27,6 +27,7 @@
             <div class="c-wrapper-20 c-detail-box">
                 <p class='c-title'>绑定设备列表</p>
                 <el-table
+                    ref="table"
                     :data='deviceList'  
                     stripe  
                     border>
@@ -163,6 +164,7 @@ export default {
                         }
                     ],
                     this.deviceList = res.data.deviceList;
+                    this.$refs.table.bodyWrapper.scrollTop = 0;
                 }
             })
         },

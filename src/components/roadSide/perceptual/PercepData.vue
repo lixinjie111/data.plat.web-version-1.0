@@ -65,6 +65,7 @@
                     </el-select>
                 </el-form-item>
 
+<<<<<<< HEAD
             <el-form-item label="开始时间" prop='startTime'>
                 <el-date-picker
                     v-model.trim="searchKey.startTime"
@@ -122,6 +123,67 @@
                 :page-size="pageOption.size"
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
+=======
+                <el-form-item label="开始时间" prop='startTime'>
+                    <el-date-picker
+                        v-model.trim="searchKey.startTime"
+                        type="date"
+                        placeholder="开始时间"
+                        :picker-options="startTimeOption">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="结束时间" prop='endTime'>
+                    <el-date-picker
+                        v-model.trim="searchKey.endTime"
+                        type="date"
+                        placeholder="结束时间"
+                        :picker-options="endTimeOption">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="warning" icon="el-icon-search" :loading='searchLoad' @click="searchClick">查询</el-button>
+                    <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
+                </el-form-item>
+            </el-form>
+            <el-table 
+                ref="table"
+                :data="showDataList"
+                v-loading="loading"  
+                border
+                class="c-mb-70"
+                max-height="724"
+                stripe>
+                <el-table-column label="编号" type="index" :index="indexMethod"></el-table-column>
+                <el-table-column min-width="17%" label="路侧点名称" prop="rsPtName"></el-table-column>
+                <el-table-column min-width="17%" label="摄像头编号" prop="deviceId"></el-table-column>
+                <el-table-column min-width="17%" label="摄像头序列号" prop="serialNum"></el-table-column>
+                <el-table-column min-width="45%" label="文件名称" prop="fileName"></el-table-column>
+                <el-table-column min-width="15%" label="开始时间">
+                    <template slot-scope="scope">{{$dateUtil.formatTimeReal(scope.row.startTime)}}</template>
+                </el-table-column>
+                <el-table-column min-width="15%" label="结束时间">
+                    <template slot-scope="scope">{{$dateUtil.formatTimeReal(scope.row.endTime)}}</template>
+                </el-table-column>
+                <el-table-column min-width="8%" label="操作">
+                    <template slot-scope="scope">
+                        <el-button size="small" icon="el-icon-view" circle type="warning" plain :loading="scope.row.loading" @click="goDetail(scope.row)"></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+                
+            <div class="c-page clearfix">
+                <el-pagination
+                    background
+                    @current-change="changePageCurrent" 
+                    :current-page="pageOption.page" 
+                    :total="pageOption.total"
+                    @size-change="changePageSize"
+                    :page-sizes="[10,20,50,100,200]" 
+                    :page-size="pageOption.size"
+                    layout="total, sizes, prev, pager, next">
+                </el-pagination>
+            </div>
+>>>>>>> master
         </div>
     </div>
 </template>
@@ -316,6 +378,7 @@ export default {
                     this.dataList = res.data;
                     this.showDataList = this.dataList;
                     this.pageOption.total = res.data.length;
+                    this.$refs.table.bodyWrapper.scrollTop = 0;
                     if(this.pageOption.total > this.pageOption.size) {
                         this.initShowData();
                     }else {

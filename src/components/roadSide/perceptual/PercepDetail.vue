@@ -347,6 +347,7 @@ export default {
                         item.loading = false;
                     });
                     this.dataList = res.data;
+                    this.$refs.percepDetailTable.bodyWrapper.scrollTop = 0;
                 }
                 setTimeout(() => {
                     this.loading = false;

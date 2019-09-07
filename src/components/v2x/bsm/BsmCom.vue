@@ -46,6 +46,7 @@
                 </el-form-item>
             </el-form>
             <el-table 
+                ref="table"
                 :data="dataList" 
                 v-loading='loading'
                 stripe
@@ -254,6 +255,7 @@ export default {
                     });
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;
+                    this.$refs.table.bodyWrapper.scrollTop = 0;
                 }
                 this.loading = false;
                 this.searchLoad = false;
