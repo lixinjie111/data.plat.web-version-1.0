@@ -149,6 +149,8 @@ export default {
             },
             currentArr: ['N-NJ-0004'],
 
+            playerData: null,
+
             roads:[],
             roadSideShow:false,
             provinceLoading:false,
@@ -305,7 +307,7 @@ export default {
                         this.treeData = this.regionList;
                     })
                 }
-            })
+            });
         },
         getSideTree(){
             queryRoadRegionTree().then(res => {
@@ -403,11 +405,21 @@ export default {
                                 obj.ptLon = item.ptLon;
                                 obj.ptLat = item.ptLat;
                                 obj.isOn = false;
+                                obj.icon = "sl-play-icon";
                                 obj.protocal = item.protocol;
                                 obj.cameraRunStatus = item.cameraRunStatus;
-                                obj.icon = "sl-play-icon";
                                 obj.type = 3;
                                 obj.leaf = true;
+                                // console.log("this.currentVideoNode.code:--"+this.currentVideoNode.code, "obj.code:--"+obj.code);
+                                if(this.currentVideoNode.code == obj.code){
+                                    this.currentArr = [];
+                                    this.currentArr.push(this.currentVideoNode.code);
+                                    this.$refs.tree.setCurrentKey(this.currentArr[0]);
+                                    // obj.isOn = true;
+                                    // obj.icon = "sl-pause-icon";
+                                    // this.startPlay(obj);
+                                    this.handleNodeClick(obj);
+                                }
                                 children.push(obj);
                             })
                         }
@@ -417,52 +429,6 @@ export default {
                             this.protocal = children[0].protocal;
                         }
                         resolve(children);
-                        if(this.searchKey.device) {
-                            this.currentVideoNode.code = this.searchKey.device.deviceId;
-                            this.currentVideoNode.serialNum = this.searchKey.device.serialNum;
-                        }else {
-                            this.currentVideoNode.code = this.defaultData.code;
-                            this.currentVideoNode.serialNum = this.defaultData.serialNum;
-                        }
-                        this.currentArr = [];
-                        this.currentArr.push(this.currentVideoNode.code);
-
-                        this.$refs.tree.setCurrentKey(this.currentArr[0]);
-                        if(this.currentArr[0]){
-                            startStreamRoad({
-                                camId:this.currentVideoNode.serialNum,protocal:this.protocal
-                        }).then(res =>{
-                            if(res.status == '200') {
-                                    children.forEach((item,i) => {
-                                        if(item.serialNum == this.currentVideoNode.serialNum){
-                                            var camerData = res.data;
-                                            children[i].icon = 'sl-pause-icon';
-                                            this.camDetail.camId = children[i].serialNum;
-                                            this.camDetail.camCode = children[i].label;
-                                            this.camDetail.roadName = children[i].roadName;
-                                            this.camDetail.roadPointName = children[i].rsPtName;
-                                            this.camDetail.roadPointId = children[i].rsPtId;
-                                            this.camDetail.rsPtId = children[i].rsPtId;
-                                            this.camDetail.lon = Number(children[i].ptLon).toFixed(8);
-                                            this.camDetail.lat = Number(children[i].ptLat).toFixed(8);
-                                            this.isMaskShow = false;
-                                            let videoUrl = res.data.rtmp;
-                                            this.embedFlash(videoUrl);
-                                            this.markerOption.point = {
-                                                ptLon: children[i].ptLon,
-                                                ptLat: children[i].ptLat,
-                                                roadName: children[i].roadName,
-                                                label: children[i].label
-                                            };
-                                            this.drawStartMarker();
-                                        }
-                                    })
-                                    
-                                }
-                            });
-                        };
-                        
-                        return;
                     }
                 })
             }
@@ -470,31 +436,34 @@ export default {
         handleNodeClick(data){
             this.protocal = data.protocal;
             this.markerOption.point = null;
-            this.currentVideoNode.code = data.code;//重置当前设备号
             let camStatus = data.cameraRunStatus;
             this.changeSize = false;
             if(this.currentVideoNode.code == data.code){
                 if(data.isOn) {
                     data.isOn = false;
-                    this.endPlay();
                     data.icon = "sl-play-icon";
+                    this.endPlay();
+                    this.currentVideoNode.code = this.defaultData.code;
+                    this.currentVideoNode.serialNum = this.defaultData.serialNum;
                 }else {
-                    data.isOn = true;
+                    // data.isOn = true;
+                    // data.icon = "sl-pause-icon";
                     this.startPlay(data);
-                    data.icon = "sl-pause-icon";
                 }
             }else{
-                this.currentVideoNode.isOn = false;
-                this.currentVideoNode.icon = "sl-play-icon";
+                // this.currentVideoNode.isOn = false;
+                // this.currentVideoNode.icon = "sl-play-icon";
                 if(camStatus == 1){//在线
                     if(data.isOn) {
                         data.isOn = false;
-                        this.endPlay();
                         data.icon = "sl-play-icon";
+                        this.endPlay();
+                        this.currentVideoNode.code = this.defaultData.code;
+                        this.currentVideoNode.serialNum = this.defaultData.serialNum;
                     }else {
-                        data.isOn = true;
-                        this.startPlay();
-                        data.icon = "sl-pause-icon";
+                        // data.isOn = true;
+                        // data.icon = "sl-pause-icon";
+                        this.startPlay(data);
                     }
                     let roadCamInfo = Object.assign({},{roadName:this.roadName},data);
                     this.camDetail.rsPtId = roadCamInfo.rsPtId;
@@ -502,30 +471,23 @@ export default {
                     this.markerOption.point = roadCamInfo;
                     this.drawStartMarker();
                 }else {
+                    this.camDetail.roadName = '';
+                    this.camDetail.camCode = '';
+                    this.camDetail.camId = '';
+                    this.camDetail.roadPointName = '';
                     if(camStatus == '0'){//未知
-                        this.camDetail.roadName = '';
-                        this.camDetail.camCode = '';
-                        this.camDetail.camId = '';
-                        this.camDetail.roadPointName = '';
                         this.$message.error('未知摄像头!');
                     }else if(camStatus == '2'){//离线
-                        this.camDetail.roadName = '';
-                        this.camDetail.camCode = '';
-                        this.camDetail.camId = '';
-                        this.camDetail.roadPointName = '';
                         this.$message.error('摄像头为离线状态!');
-                    }else if(camStatus == '3'){//未注册
-                        this.camDetail.roadName = '';
-                        this.camDetail.camCode = '';
-                        this.camDetail.camId = '';
-                        this.camDetail.roadPointName = '';
+                    }else if(camStatus == '3'){//
                         this.$message.error('摄像头未注册!');
                     }
-                    data.isOn = false;
-                    this.endPlay();
-                    data.icon = "sl-play-icon";
+                    if(this.playerData) {      
+                        data.isOn = false;
+                        data.icon = "sl-play-icon";
+                        this.endPlay();
+                    }           
                 }
-                this.currentVideoNode.data = data;
             }
         },
         embedFlash(rtmpSource){//部署用此段
@@ -551,36 +513,57 @@ export default {
             document.getElementById("cmsplayer").innerHTML = embedCode;
         },
         startPlay(camerData){
-            let camList = this.camInfo;
-            let camLen = camList.length;
+            if(this.playerData) {
+                this.endPlay();
+            }
+            // console.log("player----------");
+            // console.log(camerData.code);
+            // console.log(camerData.serialNum);
             startStreamRoad({
                 camId:camerData.serialNum,protocal:this.protocal
             }).then(res =>{
                 if(res.status == '200') {
-                    this.camDetail.camId = camerData.serialNum;
-                    this.camDetail.camCode = camerData.label;
-                    this.camDetail.roadName = camerData.roadName;
-                    this.camDetail.roadPointName = camerData.rsPtName;
-                    this.camDetail.roadPointId = camerData.rsPtId;
-                    this.camDetail.lon = Number(camerData.ptLon).toFixed(8);
-                    this.camDetail.lat = Number(camerData.ptLat).toFixed(8);
-                    this.isMaskShow = false;
                     let videoUrl = res.data.rtmp;
-                    this.embedFlash(videoUrl);
-                    camerData.icon = "sl-pause-icon";
+                    if(videoUrl) {
+                        this.camDetail.camId = camerData.serialNum;
+                        this.camDetail.camCode = camerData.label;
+                        this.camDetail.roadName = camerData.roadName;
+                        this.camDetail.roadPointName = camerData.rsPtName;
+                        this.camDetail.roadPointId = camerData.rsPtId;
+                        this.camDetail.lon = Number(camerData.ptLon).toFixed(8);
+                        this.camDetail.lat = Number(camerData.ptLat).toFixed(8);
+                        this.isMaskShow = false;
+                        this.embedFlash(videoUrl);
+                        camerData.isOn = true;
+                        camerData.icon = "sl-pause-icon";
+
+                        this.playerData = camerData;
+                    }else {
+                        camerData.isOn = false;
+                        camerData.icon = "sl-play-icon";
+                    }
+                }else {
+                    camerData.isOn = false;
+                    camerData.icon = "sl-play-icon";
                 }
+            }).catch(err => {
+                camerData.isOn = false;
+                camerData.icon = "sl-play-icon";
             });
         },
-        endPlay(data){
-            this.isMaskShow = true;
-            let nodeSel = document.querySelectorAll('.el-tree-node .el-tree-node__content .el-tree-node__expand-icon');
-            let nodeSelArray = Array.from(nodeSel);
-            for(let i=0;i<nodeSelArray.length;i++){
-                nodeSelArray[i].classList.remove('pause');
-            }
-            if(this.currentVideoNode.code) {
+        endPlay(){
+            if(this.playerData) {
+                this.isMaskShow = true;
+                let nodeSel = document.querySelectorAll('.el-tree-node .el-tree-node__content .el-tree-node__expand-icon');
+                let nodeSelArray = Array.from(nodeSel);
+                for(let i=0;i<nodeSelArray.length;i++){
+                    nodeSelArray[i].classList.remove('pause');
+                }
+                // console.log("endPlay----------");
+                // console.log(this.playerData.code);
+                // console.log(this.playerData.serialNum);
                 stopStream({
-                    "camId":this.currentVideoNode.code,"protocal":this.protocal
+                    "camId":this.playerData.code,"protocal":this.protocal
                 }).then(res => {
                     this.camId = '--';
                     this.camCode = '--';
@@ -590,7 +573,10 @@ export default {
                     this.camDetail.camCode = '';
                     this.camDetail.camId = '';
                     this.camDetail.roadPointName = '';
-                })
+                });
+                this.playerData.isOn = false;
+                this.playerData.icon = "sl-play-icon";
+                this.playerData = null;
             }
         },
         goRoadSide(){
@@ -635,67 +621,56 @@ export default {
             this.changeSize = false;
         },
         searchClick(){
-            var rsCamOptions = this.rsCamCodeOption.filterOption;
-            this.treeData = [];
-
-            this.currentVideoNode.code = this.searchKey.device.deviceId;
-            this.currentVideoNode.serialNum = this.searchKey.device.serialNum;
-            this.currentArr = [this.searchKey.device.deviceId];
-
-            this.isSearch = true;
-            this.markerOption.point = null;
-            if(rsCamOptions.length > 0){
-                //过滤匹配默认选中数据
-                rsCamOptions.forEach(item => {
-                    if(item.deviceId == this.searchKey.device.deviceId){
-                        this.provinceOptions.forEach(e => {
-                            if(e.code == item.rspDistcodeProvince){
-                                let obj = {};
-                                obj.label = e.label;
-                                obj.code = item.rspDistcodeProvince;
-                                this.provinceOptions = [];
-                                this.provinceOptions.push(obj);
-                            }
-                            
-                            this.treeList.forEach((provinceInfo,index) => {
-                                if(provinceInfo.code == this.provinceOptions[0].code){
-                                    this.searchKey.provinceValue = this.provinceOptions[0];
-                                    this.cityOptions = [];
-                                    this.treeList[index].dataList.forEach(cityInfo => {
-                                        var obj = {};
-                                        obj.label = cityInfo.name;
-                                        obj.code = cityInfo.code;
-                                        this.cityOptions.push(obj);
-                                    })
-                                    this.searchKey.cityValue = this.cityOptions[0];
-                                    this.getSideTree();
-                                }
-                            })
-                        })
-                        this.cityOptions.forEach(a => {
-                            if(a.code == item.rspDistcodeCity){
-                                let obj = {};
-                                obj.label = a.label;
-                                obj.code = item.rspDistcodeCity;
-                                this.cityOptions = [];
-                                this.cityOptions.push(obj);
-                                this.getRegion(item.rspDistcodeCity);
-                                this.currentArr = [];
-                                this.currentArr.push(this.searchKey.device.deviceId);
-                            }
-                        })
-                        this.currentVideoNode.serialNum = item.serialNum;
-                    }
-                })
-            }else{
-                this.provinceOptions = [];
-                this.cityOptions = [];
+            if(this.searchKey.device) {
                 this.treeData = [];
-                this.currentArr = [];
+
+                this.currentVideoNode.code = this.searchKey.device.deviceId;
+                this.currentVideoNode.serialNum = this.searchKey.device.serialNum;
+
+                this.isSearch = true;
+                this.markerOption.point = null;
+                this.provinceOptions.forEach(e => {
+                    if(e.code == this.searchKey.device.rspDistcodeProvince){
+                        let obj = {};
+                        obj.label = e.label;
+                        obj.code = this.searchKey.device.rspDistcodeProvince;
+                        this.provinceOptions = [];
+                        this.provinceOptions.push(obj);
+                    }
+                    
+                    this.treeList.forEach((provinceInfo,index) => {
+                        if(provinceInfo.code == this.provinceOptions[0].code){
+                            this.searchKey.provinceValue = this.provinceOptions[0];
+                            this.cityOptions = [];
+                            this.treeList[index].dataList.forEach(cityInfo => {
+                                var obj = {};
+                                obj.label = cityInfo.name;
+                                obj.code = cityInfo.code;
+                                this.cityOptions.push(obj);
+                            })
+                            this.searchKey.cityValue = this.cityOptions[0];
+                            this.getSideTree();
+                        }
+                    })
+                });
+                this.cityOptions.forEach(a => {
+                    if(a.code == this.searchKey.device.rspDistcodeCity){
+                        let obj = {};
+                        obj.label = a.label;
+                        obj.code = this.searchKey.device.rspDistcodeCity;
+                        this.cityOptions = [];
+                        this.cityOptions.push(obj);
+                        this.getRegion(this.searchKey.device.rspDistcodeCity);
+                        this.currentArr = [];
+                        this.currentArr.push(this.searchKey.device.deviceId);
+                    }
+                });
             }
         },
         clearFn(){
             this.rsCamCodeOption.defaultOption = this.rsCamCodeOption.filterOption;
+            this.currentVideoNode.code = this.defaultData.code;
+            this.currentVideoNode.serialNum = this.defaultData.serialNum;
         }
     },
     beforeRouteLeave(to, from, next) {

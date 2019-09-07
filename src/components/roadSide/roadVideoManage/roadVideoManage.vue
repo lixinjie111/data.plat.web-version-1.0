@@ -302,6 +302,7 @@ export default {
                     this.pageOption.total = res.data.totalCount;
                     this.searchLoading = false;
                     this.loading = false;
+                    this.$refs.multipleTable.bodyWrapper.scrollTop = 0;
                 }
             }).catch(err => {
                 this.searchLoading = false;

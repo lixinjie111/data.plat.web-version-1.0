@@ -103,6 +103,7 @@
             <el-button size="mini" plain icon="el-icon-download" @click="downClick">下载</el-button>
         </div>
         <el-table
+            ref="table"
             :data="dataList" 
             v-loading='loading'
             stripe
@@ -289,6 +290,7 @@ export default {
                     });
                     this.dataList = res.data.list || [];
                     this.pageOption.total = res.data.totalCount || 0;
+                    this.$refs.table.bodyWrapper.scrollTop = 0;
                 }
                 this.loading = false;
                 this.searchLoading = false;
