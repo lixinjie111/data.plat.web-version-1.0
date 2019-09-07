@@ -410,7 +410,7 @@ export default {
                                 obj.cameraRunStatus = item.cameraRunStatus;
                                 obj.type = 3;
                                 obj.leaf = true;
-                                console.log("this.currentVideoNode.code:--"+this.currentVideoNode.code, "obj.code:--"+obj.code);
+                                // console.log("this.currentVideoNode.code:--"+this.currentVideoNode.code, "obj.code:--"+obj.code);
                                 if(this.currentVideoNode.code == obj.code){
                                     this.currentArr = [];
                                     this.currentArr.push(this.currentVideoNode.code);
@@ -516,9 +516,9 @@ export default {
             if(this.playerData) {
                 this.endPlay();
             }
-            console.log("player----------");
-            console.log(camerData.code);
-            console.log(camerData.serialNum);
+            // console.log("player----------");
+            // console.log(camerData.code);
+            // console.log(camerData.serialNum);
             startStreamRoad({
                 camId:camerData.serialNum,protocal:this.protocal
             }).then(res =>{
