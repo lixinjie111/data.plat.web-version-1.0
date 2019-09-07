@@ -470,6 +470,7 @@ export default {
         handleNodeClick(data){
             this.protocal = data.protocal;
             this.markerOption.point = null;
+            this.currentVideoNode.code = data.code;//重置当前设备号
             let camStatus = data.cameraRunStatus;
             this.changeSize = false;
             if(this.currentVideoNode.code == data.code){
@@ -483,16 +484,18 @@ export default {
                     data.icon = "sl-pause-icon";
                 }
             }else{
+                console.log('切换')
                 this.currentVideoNode.isOn = false;
                 this.currentVideoNode.icon = "sl-play-icon";
                 if(camStatus == 1){//在线
+                console.log(data.isOn);
                     if(data.isOn) {
                         data.isOn = false;
                         this.endPlay();
                         data.icon = "sl-play-icon";
                     }else {
                         data.isOn = true;
-                        this.startPlay(data);
+                        this.startPlay();
                         data.icon = "sl-pause-icon";
                     }
                     let roadCamInfo = Object.assign({},{roadName:this.roadName},data);
@@ -561,7 +564,7 @@ export default {
                 }
             });
         },
-        endPlay(){
+        endPlay(data){
             this.isMaskShow = true;
             let nodeSel = document.querySelectorAll('.el-tree-node .el-tree-node__content .el-tree-node__expand-icon');
             let nodeSelArray = Array.from(nodeSel);
@@ -590,7 +593,6 @@ export default {
             this.changeSize = false;
         },
         getCityTrees(item){//获区市辖数据
-            this.endPlay();
             this.searchKey.device = '';
             this.searchKey.cityValue = '';
             this.camDetail.camCode = '';
@@ -598,6 +600,7 @@ export default {
             this.camDetail.roadName = '';
             this.camDetail.roadPointName = '';
             this.treeData = [];
+            this.endPlay();
             this.provinceOptions.forEach((a,index,arr) => {
                 if(a.code == item.code){
                     //重新获取市辖区信息
