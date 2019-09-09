@@ -4,10 +4,9 @@
         <div class="c-title-fixed">    
             <h3 class="c-title">{{ current.menu }}</h3>
         </div>
-        <keep-alive>
-            <router-view v-if="$route.meta.keepAlive"></router-view>
+        <keep-alive :include="keepAliveArr">
+            <router-view></router-view>
         </keep-alive>
-        <router-view v-if="!$route.meta.keepAlive"></router-view> 
     </div>
 
 </template>
@@ -18,16 +17,15 @@ export default {
     name: 'video',
     data(){
         return {
+            keepAliveArr: [],
             current: {
                 menu: null,
             }
         }
     },
     methods: {
-
     },
     mounted(){
-
     },
     beforeDestroy(){
 
@@ -38,8 +36,8 @@ export default {
         })
     },
     beforeRouteUpdate(to, from, next){
-        next();
         this.current.menu = Utils.setBreadCrumbs(to.path);
+        next();
 
     }
 }

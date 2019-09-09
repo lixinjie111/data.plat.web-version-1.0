@@ -1,48 +1,47 @@
 <template>
     <!-- 基本信息 -->
-    <keep-alive include='PercepData' v-cloak>
-        <div class="c-wrapper-20">
-            <el-form ref="searchForm" :inline="true" :rules="rules" :model="searchKey" size="small">
-                <el-form-item label="路侧点名称:" prop='rsPtName'>
-                    <el-select
-                        v-model.trim="searchKey.rsPtName"
-                        filterable
-                        remote
-                        reserve-keyword
-                        placeholder="请输入关键词"
-                        value-key="rsPtName"
-                        :remote-method="remoteMethod1"
-                        @focus="selectRsPtNameList"
-                        @change="RsPtNameSelect"
-                        :loading="fuzzySearchOption1.loading">
-                        <el-option
-                            v-for="(item,index) in fuzzySearchOption1.filterOption"
-                            :key="item.rsPtName+index"
-                            :label="item.rsPtName"
-                            :value="item">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="摄像头编号: " prop="deviceId">
-                    <el-select
-                        v-model.trim="searchKey.deviceId"
-                        filterable
-                        remote
-                        reserve-keyword
-                        placeholder="请输入关键词"
-                        value-key="deviceId"
-                        :remote-method="remoteMethod2"
-                        @focus="selectDeviceIdList"
-                        @change="deviceIdSelect"
-                        :loading="fuzzySearchOption2.loading">
-                        <el-option
-                            v-for="(item,index) in fuzzySearchOption2.filterOption"
-                            :key="item.deviceId+index"
-                            :label='item.deviceId'
-                            :value="item">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
+    <div class="c-wrapper-20" v-cloak>
+        <el-form ref="searchForm" :inline="true" :rules="rules" :model="searchKey" size="small">
+            <el-form-item label="路侧点名称:" prop='rsPtName'>
+                <el-select
+                    v-model.trim="searchKey.rsPtName"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    value-key="rsPtName"
+                    :remote-method="remoteMethod1"
+                    @focus="selectRsPtNameList"
+                    @change="RsPtNameSelect"
+                    :loading="fuzzySearchOption1.loading">
+                    <el-option
+                        v-for="(item,index) in fuzzySearchOption1.filterOption"
+                        :key="item.rsPtName+index"
+                        :label="item.rsPtName"
+                        :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="摄像头编号: " prop="deviceId">
+                <el-select
+                    v-model.trim="searchKey.deviceId"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    value-key="deviceId"
+                    :remote-method="remoteMethod2"
+                    @focus="selectDeviceIdList"
+                    @change="deviceIdSelect"
+                    :loading="fuzzySearchOption2.loading">
+                    <el-option
+                        v-for="(item,index) in fuzzySearchOption2.filterOption"
+                        :key="item.deviceId+index"
+                        :label='item.deviceId'
+                        :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
 
                 <el-form-item label="摄像头序列号: " prop="serialNum">
                     <el-select
@@ -65,7 +64,6 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-
                 <el-form-item label="开始时间" prop='startTime'>
                     <el-date-picker
                         v-model.trim="searchKey.startTime"
@@ -126,7 +124,7 @@
                 </el-pagination>
             </div>
         </div>
-    </keep-alive>
+    </div>
 </template>
 <script>
 import {findVideoRecords} from '@/api/roadSide';
@@ -134,7 +132,7 @@ import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import {queryRoadCamListSearch,queryRoadPointList,requestqueryRoadList,requestRSCamList,queryRoadSideCamList} from '@/api/search';
 export default {
-    name: 'VideoManage',
+    name: 'PercepData',
     components: {
         VueDatepickerLocal
     },
@@ -268,6 +266,14 @@ export default {
                 defaultFilterOption:[]
             },
         }
+    },
+    beforeRouteLeave(to, from, next) {
+        if (to.name == "PercepDetail") {
+            this.$parent.keepAliveArr = ["PercepData"];
+        }else {
+            this.$parent.keepAliveArr = [];
+        }
+        next();
     },
     mounted(){
         this.searchKey.rsPtName = '博园路k1+530';
@@ -586,7 +592,7 @@ export default {
             this.searchKey.deviceId = val.deviceId;
             this.searchKey.serialNum = val.serialNum;
         },
-    }
+    },
 }
 </script>
 <style>
