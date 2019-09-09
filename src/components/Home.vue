@@ -33,13 +33,13 @@ export default {
                 link: window.config.baseUrl+":9093/fusionMonitor/"
             }, {
                 title: "运营管理平台",
-                link: window.config.baseUrl+":9090/operationPlatform/#/home"
+                link: window.config.baseUrl+":9090/operationPlatform/"
             }, {
                 title: "交通信息发布平台",
                 link: window.config.baseUrl+":9094/trafficInfoRelease/"
             }, {
                 title: "监控管理平台",
-                link: window.config.baseUrl+":9093/monPlatform"
+                link: window.config.baseUrl+":9093/monPlatform/"
             }]      
         }
     },
