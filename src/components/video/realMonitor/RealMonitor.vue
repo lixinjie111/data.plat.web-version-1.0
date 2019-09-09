@@ -184,7 +184,7 @@ export default {
         }
     },
     mounted() {
-        this.player.play();
+        // this.player.play();
     },
     methods: {
         getPlateNo(item){//根据车牌号查询vehicleID、序列号、朝向、状态
