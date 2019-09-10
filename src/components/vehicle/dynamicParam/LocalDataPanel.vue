@@ -241,14 +241,24 @@ export default {
         },
         okClick(){
             if(this.dataList.length == 0) {
-                this.$message.error('showPrompt','请增加数据集 ！');
+                this.$message({
+                    type: 'error',
+                    duration: '1500',
+                    message: '请增加数据集！',
+                    showClose: true
+                });
                 return;
             }
             let startTime = this.$dateUtil.dateToMs(this.searchKey.startTime);
             let endTime = this.$dateUtil.dateToMs(this.searchKey.endTime);
 
             if(endTime - startTime > 3600 * 1000){
-                this.$message.error('showPrompt','数据采集开始时间和结束时间间隔不能大于1小时 ！');
+                this.$message({
+                    type: 'error',
+                    duration: '1500',
+                    message: '数据采集开始时间和结束时间间隔不能大于1小时！',
+                    showClose: true
+                });
                 return;
             }
                 

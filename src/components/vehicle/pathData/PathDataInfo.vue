@@ -176,7 +176,12 @@ export default {
       },
       exportTrailData() {
         if (this.dataList.length == 0) {
-          this.$message.error('轨迹数据不存在！');
+          this.$message({
+              type: 'error',
+              duration: '1500',
+              message: '轨迹数据不存在！',
+              showClose: true
+          });
           return;
         }
         const datas = [];
