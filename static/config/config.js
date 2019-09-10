@@ -1,17 +1,24 @@
 window.config = {
-    //内网
+    //望京 内网
     // baseUrl: 'http://172.17.1.16',
     // url: 'http://172.17.1.16:9091/dataPlatApp/',//数据平台
     // operateUrl: 'http://172.17.1.16:9090/operateApp/',//运营平台
     // downloadUrl: 'http://172.17.1.16:9091/dataPlatApp/cam/download/', //导出&&下载地址
     // websocketUrl:'ws://172.17.1.16:49982/mon',
 
-    //外网
+    //望京 外网
     baseUrl: 'http://120.133.21.14',
     url: 'http://120.133.21.14:9091/dataPlatApp/',//数据平台
     operateUrl: 'http://120.133.21.14:9090/operateApp/',//运营平台
     downloadUrl: 'http://120.133.21.14:9091/dataPlatApp/cam/download/', //导出&&下载地址
     websocketUrl:'ws://120.133.21.14:49982/mon',
+
+    //上海正式环境  内网-IP
+    // baseUrl:'http://172.16.1.197',
+    // url: 'http://172.16.1.197:9091/dataPlatApp/',//数据平台
+    // operateUrl: 'http://172.16.1.197:9090/operateApp/',//运营平台
+    // downloadUrl: 'http://172.16.1.197:9091/dataPlatApp/cam/download/', //导出&&下载地址
+    // websocketUrl:'ws://172.16.1.199:9982/mon',   //监控
 
     version: 1.0,       // 版本号
 }
