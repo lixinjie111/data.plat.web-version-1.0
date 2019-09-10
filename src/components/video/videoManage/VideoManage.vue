@@ -257,7 +257,12 @@ export default {
                 window.location.href = window.config.downloadUrl+item.fileName;
                 // window.location.href="http://172.17.1.13:9091/dataPlatApp/cam/download/"+item.fileName;
             }).catch(() => {
-                this.$message.info('已取消导出');          
+                this.$message({
+                    type: 'info',
+                    duration: '1500',
+                    message: '已取消导出',
+                    showClose: true
+                });        
             });
         },
         initPaging(){
@@ -369,7 +374,12 @@ export default {
                     console.log('err', err);
             });
             } else {
-                this.$message.error('请选择要下载的文件!');
+                this.$message({
+                    type: 'error',
+                    duration: '1500',
+                    message: '请选择要下载的文件!',
+                    showClose: true
+                });
             }
         },
         downloadFile(res){
@@ -424,17 +434,24 @@ export default {
                         "fields": fileId          
                     }).then(res => {
                         if(res.status == '200'){
-                            this.$message.success(res.message);
+                            this.$message({
+                                type: 'success',
+                                duration: '1500',
+                                message: res.message,
+                                showClose: true
+                            });
                             this.initData();
                         }
                         // item.delLoading = false;
-                    }).catch(error => {
-                        // item.delLoading = false;
-                        this.$message.error(error.message);          
                     });
                 })
             }else{
-                this.$message.error('请选择要删除的文件!');
+                this.$message({
+                    type: 'error',
+                    duration: '1500',
+                    message: '请选择要删除的文件!',
+                    showClose: true
+                });
             }
         },
         replayFn(data){

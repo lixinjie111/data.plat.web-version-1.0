@@ -379,7 +379,12 @@ export default {
                     console.log('err', err);
                 });
             } else {
-                this.$message.error('请选择要下载的文件!');
+                this.$message({
+                    type: 'error',
+                    duration: '1500',
+                    message: '请选择要下载的文件!',
+                    showClose: true
+                });
             }
         },
         downloadFile(res){
@@ -434,14 +439,24 @@ export default {
                         "fields": fileId          
                     }).then(res => {
                         if(res.status == '200'){
-                            this.$message.success(res.message);
+                            this.$message({
+                                type: 'success',
+                                duration: '1500',
+                                message: res.message,
+                                showClose: true
+                            });
                             window.location.reload();
                         }
                         // item.delLoading = false;
                     })
                 })
             }else{
-                this.$message.error('请选择要删除的文件!');
+                this.$message({
+                    type: 'error',
+                    duration: '1500',
+                    message: '请选择要删除的文件!',
+                    showClose: true
+                });
             }
         },
         replay(item){
@@ -471,7 +486,12 @@ export default {
                 window.location.href = window.config.downloadUrl + item.fileName;
                 // axios.get(window.config.downloadUrl+item.fileName, {}).then();
             }).catch(() => {
-                this.$message.info('已取消导出');          
+                this.$message({
+                    type: 'info',
+                    duration: '1500',
+                    message: '已取消导出',
+                    showClose: true
+                });  
             });
         },
         backFn(){
