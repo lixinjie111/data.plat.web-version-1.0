@@ -266,7 +266,12 @@ export default {
                     });
                 }
             }else{
-                this.$message.error('请选择车牌号!');
+                this.$message({
+                    type: 'error',
+                    duration: '1500',
+                    message: '请选择车牌号!',
+                    showClose: true
+                });
             }
         },
         onPlayerEnded() {

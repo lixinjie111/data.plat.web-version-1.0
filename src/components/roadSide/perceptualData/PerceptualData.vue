@@ -475,12 +475,21 @@ export default {
                     this.camDetail.camCode = '';
                     this.camDetail.camId = '';
                     this.camDetail.roadPointName = '';
+                    let _message = '';
                     if(camStatus == '0'){//未知
-                        this.$message.error('未知摄像头!');
+                        _message = '未知摄像头!';
                     }else if(camStatus == '2'){//离线
-                        this.$message.error('摄像头为离线状态!');
+                        _message = '摄像头为离线状态!';
                     }else if(camStatus == '3'){//
-                        this.$message.error('摄像头未注册!');
+                        _message = '摄像头未注册!';
+                    }
+                    if(_message) {
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: _message,
+                            showClose: true
+                        });
                     }
                     if(this.playerData) {      
                         data.isOn = false;

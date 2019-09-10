@@ -390,9 +390,12 @@ export default {
                     fileId: item.fileName
                 }).then(res => {
                     if(res.status == '200'){
-                        this.$message.success(res.message);
-                    }else{
-                        this.$message.error(res.message);
+                        this.$message({
+                            type: 'success',
+                            duration: '1500',
+                            message: res.message,
+                            showClose: true
+                        });
                     }
                     this.initDialogData();
                 })

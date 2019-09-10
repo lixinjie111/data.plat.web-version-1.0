@@ -105,7 +105,12 @@ export default {
 
                     requestPasswd(this.formParams).then(res => {
                         this.submitloading = false;
-                        this.$message.success("修改密码成功");
+                        this.$message({
+                            type: 'success',
+                            duration: '1500',
+                            message: '密码修改成功!',
+                            showClose: true
+                        });
                         // removeAuthInfo();
                         this.$router.push({
                             path: '/login'
