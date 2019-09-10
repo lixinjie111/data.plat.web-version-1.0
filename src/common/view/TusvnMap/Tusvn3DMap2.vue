@@ -36,11 +36,7 @@ export default {
             ,interval:1
             ,count:0
 
-            // ,websocketUrl:"ws://10.0.1.57:9999/ws"
-            // ,websocketUrl:"ws://192.168.1.132:9998/ws"
-            // ,websocketUrl:"ws://120.133.21.14:29998/ws"
-            // ,websocketUrl:"ws://10.0.1.57:9982/mon"
-            ,websocketUrl:"ws://192.168.1.68:9982/mon"
+            ,websocketUrl: window.config.websocketUrl
             ,hostWebsocket:null
             ,tweens: {}
 
