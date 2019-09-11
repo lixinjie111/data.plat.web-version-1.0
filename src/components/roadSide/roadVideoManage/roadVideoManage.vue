@@ -403,6 +403,7 @@ export default {
                     evt.initEvent('click', false, false) // 对firefox的兼容
                     a.href = url;
                     a.download = filename;
+                    document.body.appendChild(a);
                     a.dispatchEvent(evt); // 对firefox的兼容
                     a.click();
                     window.URL.revokeObjectURL(url);

@@ -2,7 +2,7 @@
     <div class="c-wrapper-20">
         <div class="index-logo-wrap">
             <img class="index-logo" src="static/images/banner.png">
-            <p class="index-text">智能网联汽车数据管理平台</p>
+            <p class="index-text">智能网联汽车数据分析中心</p>
             <div class="index-footer">
                 <div class="index-footer-left">
                     <span>建议浏览器：Chrome</span>
