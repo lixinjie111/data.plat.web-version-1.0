@@ -17,6 +17,7 @@ window.config = {
 
     //上海正式环境  内网-IP
     // baseUrl:'http://172.16.1.197',
+    // monUrl: 'http://172.16.1.199',
     // url: 'http://172.16.1.197:9091/dataPlatApp/',//数据平台
     // operateUrl: 'http://172.16.1.197:9090/operateApp/',//运营平台
     // downloadUrl: 'http://172.16.1.197:9091/dataPlatApp/cam/download/', //导出&&下载地址
@@ -24,6 +25,7 @@ window.config = {
 
     //上海正式环境  内网-主机名
     // baseUrl:'http://app01',
+    // monUrl: 'http://app03',
     // url: 'http://app01:9091/dataPlatApp/',//数据平台
     // operateUrl: 'http://app01:9090/operateApp/',//运营平台
     // downloadUrl: 'http://app01:9091/dataPlatApp/cam/download/', //导出&&下载地址
@@ -31,6 +33,7 @@ window.config = {
 
     //上海正式环境  外网
     // baseUrl:'http://116.236.72.204',
+    // monUrl: 'http://116.236.72.206',
     // url: 'http://116.236.72.204:9091/dataPlatApp/',//数据平台
     // operateUrl: 'http://116.236.72.204:9090/operateApp/',//运营平台
     // downloadUrl: 'http://116.236.72.204:9091/dataPlatApp/cam/download/', //导出&&下载地址

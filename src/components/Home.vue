@@ -30,7 +30,7 @@ export default {
                 link: "http://www.tusvn.com/"
             },{
                 title: "融合感知中心",
-                link: window.config.baseUrl+":9093/fusionMonitor/"
+                link: window.config.monUrl+":9093/fusionMonitor/"
             }, {
                 title: "运营管理中心",
                 link: window.config.baseUrl+":9090/operationPlatform/"
@@ -39,7 +39,7 @@ export default {
                 link: window.config.baseUrl+":9094/trafficInfoRelease/"
             }, {
                 title: "监控管理中心",
-                link: window.config.baseUrl+":9093/monPlatform/"
+                link: window.config.monUrl+":9093/monPlatform/"
             }]      
         }
     },
