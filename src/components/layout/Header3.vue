@@ -2,9 +2,8 @@
     <div id="header">
         <div class="logo">
             <img src="static/images/logo.png" class="logo-img"/>
-            <!-- <em class="name">运营管理平台</em> -->
+            <em class="name">数据分析中心</em>
         </div>
-
         <div class="userinfo">
             <el-dropdown trigger="hover">
                 <span class="el-dropdown-link userinfo-inner">

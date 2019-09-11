@@ -2,7 +2,7 @@
     <div class="c-wrapper-20">
         <div class="index-logo-wrap">
             <img class="index-logo" src="static/images/banner.png">
-            <p class="index-text">智能网联汽车数据管理平台</p>
+            <p class="index-text">智能网联汽车数据分析中心</p>
             <div class="index-footer">
                 <div class="index-footer-left">
                     <span>建议浏览器：Chrome</span>
@@ -29,16 +29,16 @@ export default {
                 title: "启迪云控官网",
                 link: "http://www.tusvn.com/"
             },{
-                title: "融合感知平台",
+                title: "融合感知中心",
                 link: window.config.baseUrl+":9093/fusionMonitor/"
             }, {
-                title: "运营管理平台",
+                title: "运营管理中心",
                 link: window.config.baseUrl+":9090/operationPlatform/"
             }, {
-                title: "交通信息发布平台",
+                title: "服务发布中心",
                 link: window.config.baseUrl+":9094/trafficInfoRelease/"
             }, {
-                title: "监控管理平台",
+                title: "监控管理中心",
                 link: window.config.baseUrl+":9093/monPlatform/"
             }]      
         }
