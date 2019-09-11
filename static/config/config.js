@@ -9,7 +9,7 @@ window.config = {
 
     //外网
     baseUrl: 'http://120.133.21.14',
-    monUrl = 'http://120.133.21.14',
+    monUrl: 'http://120.133.21.14',
     url: 'http://120.133.21.14:9091/dataPlatApp/',//数据平台
     operateUrl: 'http://120.133.21.14:9090/operateApp/',//运营平台
     downloadUrl: 'http://120.133.21.14:9091/dataPlatApp/cam/download/', //导出&&下载地址
