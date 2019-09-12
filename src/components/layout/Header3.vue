@@ -12,30 +12,20 @@
                 </span>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item divided>版本v1.0</el-dropdown-item>
-                    <el-dropdown-item divided @click.native="resetPassword">修改密码</el-dropdown-item>
                     <el-dropdown-item divided @click.native="logoutClick">退出</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
-        <dialog-reset-password v-if="dialogResetPasswordFlag" @cancleFunc="cancleFunc"></dialog-reset-password>
     </div>
 </template>
 <script>
 
 import SessionUtils from '@/store/session.js'
 import { requestLogout } from '@/api/login/index'
-import DialogResetPassword from "./components/resetPassword.vue";
 export default {
-    components: {
-        DialogResetPassword
-    },
     data(){
         return {
-            loginInfo: JSON.parse(SessionUtils.getItem('login')),
-            name: 'Header',
-            isSubMenu: false,
-            userName:'',
-            dialogResetPasswordFlag: false,
+            loginInfo: JSON.parse(SessionUtils.getItem('login'))
         }
     },
     methods: {
@@ -44,19 +34,13 @@ export default {
                 token: this.loginInfo.token
             }).then(res => {
                 if(res.status == '200'){
-                    this.$router.push('/login');
                     this.$store.dispatch('logout');
-                    localStorage.removeItem("yk-token");
                     SessionUtils.deleteItem('login');
+                    localStorage.removeItem("yk-token");
+                    this.$router.push('/login');
                 }
             });
-        },
-        resetPassword(){ 
-            this.dialogResetPasswordFlag = true;
-        },
-        cancleFunc() {
-            this.dialogResetPasswordFlag = false;
-        },
+        }
     }
 }
 </script>
