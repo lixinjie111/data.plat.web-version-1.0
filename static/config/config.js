@@ -37,7 +37,7 @@ window.config = {
     // url: 'http://116.236.72.204:49091/dataPlatApp/',//数据平台
     // operateUrl: 'http://116.236.72.204:49090/operateApp/',//运营平台
     // downloadUrl: 'http://116.236.72.204:49091/dataPlatApp/cam/download/', //导出&&下载地址
-    // websocketUrl:'ws://116.236.72.204:49982/mon',   //监控
+    // websocketUrl:'ws://116.236.72.206:49982/mon',   //监控
 
     version: 1.0,       // 版本号
 }
