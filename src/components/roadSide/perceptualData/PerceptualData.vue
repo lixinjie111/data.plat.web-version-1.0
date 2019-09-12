@@ -65,8 +65,8 @@
                     </el-form>
                     <div class="c-mt-10 c-flex">
                         <span class="c-flex-1">总数:{{camStatusNums.count}}</span>
-                        <span class="c-flex-1">在线:{{camStatusNums.monitorCount}}</span>
-                        <span class="c-flex-1">实时监控:{{camStatusNums.onlineCount}}</span>
+                        <span class="c-flex-1">在线:{{camStatusNums.onlineCount}}</span>
+                        <span class="c-flex-1">实时监控:{{camStatusNums.monitorCount}}</span>
                     </div>
                     <el-tree
                         class="c-padding-10 carm-oragn-sels"
