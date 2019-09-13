@@ -276,9 +276,15 @@ export default {
         next();
     },
     mounted(){
+        //望京 默认参数
         this.searchKey.rsPtName = '博园路k1+530';
         this.searchKey.deviceId = 'N-NJ-0004';
         this.searchKey.serialNum = '3402000000132000003001';
+        //上海 默认参数
+        // this.searchKey.rsPtName = '博园路TX03';
+        // this.searchKey.deviceId = 'N-NJ111F';
+        // this.searchKey.serialNum = '3100000000132000000501';
+        
         this.searchKey.startTime = this.$dateUtil.GetDateStr(7);
         this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
         this.initData();
