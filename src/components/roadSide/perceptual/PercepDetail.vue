@@ -570,7 +570,7 @@ export default {
         }
     },
     destroyed(){
-        document.onkeydown = function (event) {
+        document.onkeydown = function (e) {
             if (e.keyCode == 38 || e.keyCode == 40) {
                 e.preventDefault();
             }  
