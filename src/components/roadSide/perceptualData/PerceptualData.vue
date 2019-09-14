@@ -414,11 +414,15 @@ export default {
                                 if(this.currentVideoNode.code == obj.code){
                                     this.currentArr = [];
                                     this.currentArr.push(this.currentVideoNode.code);
-                                    this.$refs.tree.setCurrentKey(this.currentArr[0]);
+                                    setTimeout(() => {
+                                        this.$refs.tree.setCurrentKey(this.currentArr[0]);
+                                        this.handleNodeClick(obj);
+                                    }, 0);
+                                    // console.log(obj.code);
                                     // obj.isOn = true;
                                     // obj.icon = "sl-pause-icon";
                                     // this.startPlay(obj);
-                                    this.handleNodeClick(obj);
+                                    // this.handleNodeClick(obj);
                                 }
                                 children.push(obj);
                             })
@@ -434,6 +438,7 @@ export default {
             }
         },
         handleNodeClick(data){
+            // console.log(data);
             this.protocal = data.protocal;
             this.markerOption.point = null;
             let camStatus = data.cameraRunStatus;
@@ -543,6 +548,7 @@ export default {
                         this.camDetail.lat = Number(camerData.ptLat).toFixed(8);
                         this.isMaskShow = false;
                         this.embedFlash(videoUrl);
+                        // console.log(camerData);
                         camerData.isOn = true;
                         camerData.icon = "sl-pause-icon";
 
@@ -550,6 +556,12 @@ export default {
                     }else {
                         camerData.isOn = false;
                         camerData.icon = "sl-play-icon";
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "视频地址为空，暂无法播放",
+                            showClose: true
+                        });
                     }
                 }else {
                     camerData.isOn = false;
