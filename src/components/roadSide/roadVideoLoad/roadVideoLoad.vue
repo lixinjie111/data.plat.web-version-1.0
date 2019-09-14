@@ -320,6 +320,7 @@ export default {
             }).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
+                    console.log(this.dataList);
                     this.pageOption.total = res.data.totalCount;
                     this.$refs.table.bodyWrapper.scrollTop = 0;
                 }
@@ -411,9 +412,10 @@ export default {
         },
         backFn(type){
             if(type == 'add'){
+                console.log('新建成功！')
                 this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
                 this.searchKey.endTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
-                this.init();
+                this.initData();
             }
             this.dialogOption.show = false;
         }
