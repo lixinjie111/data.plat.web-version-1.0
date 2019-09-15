@@ -494,11 +494,11 @@ export default {
                     this.camDetail.roadPointName = '';
                     let _message = '';
                     if(camStatus == '0'){//未知
-                        _message = '未知摄像头!';
+                        _message = '摄像头未注册!';
                     }else if(camStatus == '2'){//离线
                         _message = '摄像头为离线状态!';
                     }else if(camStatus == '3'){//
-                        _message = '摄像头未注册!';
+                        _message = '未知摄像头!';
                     }
                     if(_message) {
                         this.$message({
