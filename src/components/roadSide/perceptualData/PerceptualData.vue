@@ -83,7 +83,7 @@
                         >
                         <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
                             <i class="sl-video-icon" :class="data.icon" :id='data.label' v-if="data.icon"></i>
-                            <span class="sl-play-text">{{ node.label }}</span>              
+                            <span class="sl-play-text" :class='data.isHaveVideo ? "sl-custom-yellow" : ""'>{{ node.label }}</span>              
                         </span>
                     </el-tree>
 
@@ -140,13 +140,21 @@ export default {
     data(){
         return{
             defaultData: {
-                code: 'N-NJ-0004',
-                serialNum: '3402000000132000003001'
+                code: '',
+                serialNum: ''
             },
             currentVideoNode:{
-                code: 'N-NJ-0004',
-                serialNum:'3402000000132000003001'
+                code: '',
+                serialNum:''
             },
+            // defaultData: {
+            //     code: 'N-NJ-0004',
+            //     serialNum: '3402000000132000003001'
+            // },
+            // currentVideoNode:{
+            //     code: 'N-NJ-0004',
+            //     serialNum:'3402000000132000003001'
+            // },
             currentArr: ['N-NJ-0004'],
 
             playerData: null,
@@ -405,11 +413,15 @@ export default {
                                 obj.ptLon = item.ptLon;
                                 obj.ptLat = item.ptLat;
                                 obj.isOn = false;
+                                obj.isHaveVideo = false;
                                 obj.icon = "sl-play-icon";
                                 obj.protocal = item.protocol;
                                 obj.cameraRunStatus = item.cameraRunStatus;
                                 obj.type = 3;
                                 obj.leaf = true;
+                                if(obj.cameraRunStatus == '1'){
+                                    obj.isHaveVideo = true;
+                                }
                                 // console.log("this.currentVideoNode.code:--"+this.currentVideoNode.code, "obj.code:--"+obj.code);
                                 if(this.currentVideoNode.code == obj.code){
                                     this.currentArr = [];
@@ -551,7 +563,6 @@ export default {
                         // console.log(camerData);
                         camerData.isOn = true;
                         camerData.icon = "sl-pause-icon";
-
                         this.playerData = camerData;
                     }else {
                         camerData.isOn = false;
@@ -772,6 +783,9 @@ export default {
 }
 .video-js.vjs-ended .vjs-big-play-button, .video-js.vjs-paused .vjs-big-play-button, .vjs-paused.vjs-has-started.vjs-custom-skin>.video-js .vjs-big-play-button{
     display:none;
+}
+.sl-custom-yellow{
+    color:#f49308;
 }
 </style>
 
