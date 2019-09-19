@@ -83,7 +83,7 @@
                         >
                         <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
                             <i class="sl-video-icon" :class="data.icon" :id='data.label' v-if="data.icon"></i>
-                            <span class="sl-play-text">{{ node.label }}</span>              
+                            <span class="sl-play-text" :class='data.isHaveVideo ? "sl-custom-yellow" : ""'>{{ node.label }}</span>              
                         </span>
                     </el-tree>
 
@@ -140,13 +140,21 @@ export default {
     data(){
         return{
             defaultData: {
-                code: 'N-NJ-0004',
-                serialNum: '3402000000132000003001'
+                code: '',
+                serialNum: ''
             },
             currentVideoNode:{
-                code: 'N-NJ-0004',
-                serialNum:'3402000000132000003001'
+                code: '',
+                serialNum:''
             },
+            // defaultData: {
+            //     code: 'N-NJ-0004',
+            //     serialNum: '3402000000132000003001'
+            // },
+            // currentVideoNode:{
+            //     code: 'N-NJ-0004',
+            //     serialNum:'3402000000132000003001'
+            // },
             currentArr: ['N-NJ-0004'],
 
             playerData: null,
@@ -405,20 +413,28 @@ export default {
                                 obj.ptLon = item.ptLon;
                                 obj.ptLat = item.ptLat;
                                 obj.isOn = false;
+                                obj.isHaveVideo = false;
                                 obj.icon = "sl-play-icon";
                                 obj.protocal = item.protocol;
                                 obj.cameraRunStatus = item.cameraRunStatus;
                                 obj.type = 3;
                                 obj.leaf = true;
+                                if(obj.cameraRunStatus == '1'){
+                                    obj.isHaveVideo = true;
+                                }
                                 // console.log("this.currentVideoNode.code:--"+this.currentVideoNode.code, "obj.code:--"+obj.code);
                                 if(this.currentVideoNode.code == obj.code){
                                     this.currentArr = [];
                                     this.currentArr.push(this.currentVideoNode.code);
-                                    this.$refs.tree.setCurrentKey(this.currentArr[0]);
+                                    setTimeout(() => {
+                                        this.$refs.tree.setCurrentKey(this.currentArr[0]);
+                                        this.handleNodeClick(obj);
+                                    }, 0);
+                                    // console.log(obj.code);
                                     // obj.isOn = true;
                                     // obj.icon = "sl-pause-icon";
                                     // this.startPlay(obj);
-                                    this.handleNodeClick(obj);
+                                    // this.handleNodeClick(obj);
                                 }
                                 children.push(obj);
                             })
@@ -434,6 +450,7 @@ export default {
             }
         },
         handleNodeClick(data){
+            // console.log(data);
             this.protocal = data.protocal;
             this.markerOption.point = null;
             let camStatus = data.cameraRunStatus;
@@ -477,11 +494,11 @@ export default {
                     this.camDetail.roadPointName = '';
                     let _message = '';
                     if(camStatus == '0'){//未知
-                        _message = '未知摄像头!';
+                        _message = '摄像头未注册!';
                     }else if(camStatus == '2'){//离线
                         _message = '摄像头为离线状态!';
                     }else if(camStatus == '3'){//
-                        _message = '摄像头未注册!';
+                        _message = '未知摄像头!';
                     }
                     if(_message) {
                         this.$message({
@@ -543,13 +560,19 @@ export default {
                         this.camDetail.lat = Number(camerData.ptLat).toFixed(8);
                         this.isMaskShow = false;
                         this.embedFlash(videoUrl);
+                        // console.log(camerData);
                         camerData.isOn = true;
                         camerData.icon = "sl-pause-icon";
-
                         this.playerData = camerData;
                     }else {
                         camerData.isOn = false;
                         camerData.icon = "sl-play-icon";
+                        this.$message({
+                            type: 'error',
+                            duration: '1500',
+                            message: "视频地址为空，暂无法播放",
+                            showClose: true
+                        });
                     }
                 }else {
                     camerData.isOn = false;
@@ -765,6 +788,9 @@ export default {
 }
 .video-js.vjs-ended .vjs-big-play-button, .video-js.vjs-paused .vjs-big-play-button, .vjs-paused.vjs-has-started.vjs-custom-skin>.video-js .vjs-big-play-button{
     display:none;
+}
+.sl-custom-yellow{
+    color:#f49308;
 }
 </style>
 

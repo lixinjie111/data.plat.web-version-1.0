@@ -568,6 +568,13 @@ export default {
                 this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
             }
         }
+    },
+    destroyed(){
+        document.onkeydown = function (e) {
+            if (e.keyCode == 38 || e.keyCode == 40) {
+                e.preventDefault();
+            }  
+        } 
     }
 }
 </script>
