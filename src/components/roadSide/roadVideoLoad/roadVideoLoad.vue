@@ -137,19 +137,14 @@
                 <template slot-scope="scope">{{scope.row.endTime}}</template>
             </el-table-column>
             <el-table-column prop="plateNo" min-width="6%" label="下载状态">
-                <template slot-scope="scope">
-                    <span v-if='scope.row.taskStatus == "0"'>未下载</span>
-                    <span v-if='scope.row.taskStatus == "1"'>下载中</span>
-                    <span v-if='scope.row.taskStatus == "2"'>下载完成</span>
-                    <span v-if='scope.row.taskStatus == "3"'>下载失败</span>
+                <template slot-scope="{row}">
+                    <span>{{row.taskStatus | taskStatusFilter}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="note" label="失败原因" min-width="9%"></el-table-column>
             <el-table-column min-width="7%" label="视频来源">
                 <template slot-scope="scope">
-                    <template v-if="scope.row.source == 1">直播</template>
-                    <template v-if="scope.row.source == 2">手动获取</template>
-                    <template v-if="scope.row.source == ''"></template>
+                    <span>{{scope.row.source | sourceFileter}}</span>
                 </template>
             </el-table-column>
             <el-table-column label="操作" min-width="5%">
@@ -189,6 +184,25 @@ export default {
     name: 'VideoDownload',
     components: {
         Addload
+    },
+    filters:{
+        taskStatusFilter(status){
+            const statusMap = {
+                '0':'未下载',
+                '1':'下载中',
+                '2':'下载完成',
+                '3':'下载失败'
+            }
+            return statusMap[status];
+        },
+        sourceFileter(source){
+            const sourceMap = {
+                '1':'直播',
+                '2':'手动',
+                '':''
+            }
+            return sourceMap[source];
+        }
     },
     data(){
         let _this = this;
