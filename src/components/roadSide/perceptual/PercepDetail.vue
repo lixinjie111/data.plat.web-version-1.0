@@ -81,12 +81,18 @@
                                 </el-table-column>
                                 <el-table-column min-width="10%" label="出现车辆">
                                     <template slot-scope="scope">
-                                        <p>{{scope.row.addCar}}</p>
+                                        <el-popover placement="top" width="350" trigger="click" popper-class="c-table-popover">
+                                            <div class="c-table-popover-content" v-html="scope.row.addCar"></div>
+                                            <p class="c-table-popover-text" slot="reference" v-html='scope.row.addCar'></p>
+                                        </el-popover>
                                     </template>
                                 </el-table-column>
                                 <el-table-column min-width="10%" label="消失车辆">
                                     <template slot-scope="scope">
-                                        <p>{{scope.row.disappearCar}}</p>
+                                        <el-popover placement="top" width="350" trigger="click" popper-class="c-table-popover">
+                                            <div class="c-table-popover-content" v-html="scope.row.disappearCar"></div>
+                                            <p class="c-table-popover-text" slot="reference" v-html='scope.row.disappearCar'></p>
+                                        </el-popover>
                                     </template>
                                 </el-table-column>
                                 <el-table-column min-width="50%" label="原始感知数据">
