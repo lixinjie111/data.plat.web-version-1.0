@@ -167,7 +167,7 @@ export default {
             },
             perceptionData: {
                 "serialNum": this.$route.params.serialNum, //设备序列号
-                "framesTime": new Date(this.$dateUtil.formatTimeReal(this.$route.params.startTime)).getTime(),
+                "framesTime": '',
             },
 
             startTimeTimestamp: new Date(this.$dateUtil.formatTimeReal(this.$route.params.startTime)).getTime(),
@@ -295,6 +295,7 @@ export default {
         this.findRoadMonitorCamera();
 
         this.curTime = this.params.startTime;
+        this.perceptionData.framesTime = this.startTimeTimestamp;
         console.log(this.curTime);
 
         //注册键盘事件
