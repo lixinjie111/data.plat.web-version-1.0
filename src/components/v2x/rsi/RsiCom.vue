@@ -69,7 +69,7 @@
             <el-table-column prop='pathPtNum' label="坐标点个数" min-width="8%"></el-table-column>
             <el-table-column min-width="20%" label="影响路径" prop="fileName">
                 <template slot-scope="scope">
-                    <el-popover placement="top" width="350" trigger="hover" popper-class="c-table-popover">
+                    <el-popover placement="top" width="350" trigger="click" popper-class="c-table-popover">
                         <div class="c-table-popover-content" v-html="scope.row.alertPath"></div>
                         <p class="c-table-popover-text" slot="reference" v-html='scope.row.alertPath'></p>
                     </el-popover>
