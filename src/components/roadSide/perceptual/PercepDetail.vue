@@ -139,8 +139,8 @@
 import TList from '@/common/utils/list.js'
 import TMDate from '@/common/utils/date.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
-import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap2.vue";
-import { getMap } from '@/common/view/TusvnMap/tusvnMap.js';
+import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap3.vue";
+import { getMap } from '@/common/view/TusvnMap/tusvnMap3.js';
 import { findRoadMonitorCameraInfo, getVideoUrlInfo, findPerceptionRecordsInfo } from '@/api/roadSide';
 import { setTimeout } from 'timers';
 export default {
