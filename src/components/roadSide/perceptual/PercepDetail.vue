@@ -392,7 +392,7 @@ export default {
                     this.timeDiffer(this.dataList);//计算时间差
                     this.carNum(this.dataList);//计算车的数量
                     this.personNum(this.dataList);//计算行人数量
-                    this.disappearCar(this.dataList);//消失的车辆
+                    this.carInfo(this.dataList);//车辆出现、消失情况
                     this.$refs.percepDetailTable.bodyWrapper.scrollTop = 0;
                 }
                 setTimeout(() => {
@@ -431,7 +431,7 @@ export default {
                 this.$set(val,'personNum',typePerson.length);
             })
         },
-        disappearCar(arr){
+        carInfo(arr){//查找消失、出现车辆
             arr.map((val,index) => {
                 let lastCars = arr[index].data.targets.filter(x => x.uuid);
                 let newCars = arr[index+1].data.targets.filter(item => item.uuid);
@@ -439,8 +439,8 @@ export default {
                 let newCarArry = [];
                 lastCars.map(item => lastCarArry.push(item.uuid));
                 newCars.map(item => newCarArry.push(item.uuid));
-                let disappearCars = lastCarArry.filter(val => newCarArry.indexOf(val) == -1);
-                let addCars = newCarArry.filter(val => lastCarArry.indexOf(val) == -1);
+                let disappearCars = lastCarArry.filter(val => newCarArry.indexOf(val) == -1);//查找消失车辆
+                let addCars = newCarArry.filter(val => lastCarArry.indexOf(val) == -1);//查找出现车辆
                 this.$set(val,'disappearCar',disappearCars);
                 this.$set(val,'addCar',addCars);
             })
