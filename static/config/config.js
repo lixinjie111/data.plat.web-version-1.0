@@ -1,7 +1,7 @@
 window.config = {
     //内网
     // baseUrl: 'http://172.17.1.16',
-    // monUrl = 'http://172.17.1.16',
+    // monUrl: 'http://172.17.1.16',
     // url: 'http://172.17.1.16:9091/dataPlatApp/',//数据平台
     // operateUrl: 'http://172.17.1.16:9090/operateApp/',//运营平台
     // downloadUrl: 'http://172.17.1.16:9091/dataPlatApp/cam/download/', //导出&&下载地址
