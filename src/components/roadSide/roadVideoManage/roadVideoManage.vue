@@ -124,9 +124,7 @@
         <el-table-column min-width="8%" prop="fileSizeUnit" label="视频大小(MB)"></el-table-column>
         <el-table-column min-width="8%" label="视频来源">
             <template slot-scope="scope">
-                <template v-if="scope.row.source == 1">直播</template>
-                <template v-if="scope.row.source == 2">手动获取</template>
-                <template v-if="scope.row.source == ''"></template>
+                <span>{{scope.row.source | sourceFileter}}</span>
             </template>
         </el-table-column>
         <el-table-column min-width="10%" prop="endTime" label="回放">
@@ -165,6 +163,16 @@ export default {
     components: {
         VueDatepickerLocal,
         RoadVideoReplay
+    },
+    filters:{
+        sourceFileter(source){
+            const sourceMap = {
+                '1':'直播',
+                '2':'手动',
+                '':''
+            }
+            return sourceMap[source];
+        }
     },
     data(){
         let _this = this;
