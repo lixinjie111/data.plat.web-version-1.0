@@ -381,7 +381,6 @@ export default {
                         'fileIds': this.selector
                     }
                 }).then(res => {
-                    console.log(res);
                     this.downloadFile(res);
                 }).catch(err => {
                     console.log('err', err);
@@ -396,7 +395,6 @@ export default {
             }
         },
         downloadFile(res){
-            console.log(res);
             if (res.data) {
                 if ('msSaveBlob' in navigator) { // 对IE和Edge的兼容
                     window.navigator.msSaveBlob(res.data, decodeURI(res.headers['content-disposition'].split('filename=')[1]))
