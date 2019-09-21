@@ -244,7 +244,7 @@ export default {
             handler(newVal, oldVal) {
                 if(newVal) {
                     this.tusvnOption.show = true;
-                    console.log("初始化地图已完成");
+                    // console.log("初始化地图已完成");
                     if(this.dataList.length) {
                         // console.log("列表加载在初始化地图之前");
                         this.setCurrentRow();
@@ -268,24 +268,29 @@ export default {
             }
         },
         "perceptionData.framesTime"(newVal, oldVal) {
+            console.log(newVal);
+            console.log(oldVal);
             this.setTime(newVal);
             if(this.stopFrequentLoad.timer) {
                 clearTimeout(this.stopFrequentLoad.timer._id);
             }
+            
             this.stopFrequentLoad.timer = setTimeout(() => {
                 console.log("加载数据--------------"+newVal);
                 this.findPerceptionRecords();
+                console.log('毫秒变化');
+                console.log(this.currentMillisecond);
                 this.player.currentTime(this.currentSecond+'.'+this.currentMillisecond);
             }, this.stopFrequentLoad.timeLimit);
         }
     },
     beforeRouteLeave(to, from, next) {
         if (to.name != "PercepData") {
-            this.$parent.keepAliveArr = [];
+            this.$parent.keepAliveArr = []; 
         }
         next();
     },
-    mounted(){
+    mounted(){   
         let _this = this;
         this.durationTime = (this.endTimeTimestamp - this.startTimeTimestamp)/1000;
         this.durationSecond = this.durationTime.toFixed(3).split(".")[0];
@@ -344,6 +349,7 @@ export default {
             });
         },
         setCurrentRow() {
+            console.log(Number(this.currentMillisecond));
             let _curTimestamp = Number(this.$dateUtil.dateToMs(this.curTime))+Number(this.currentMillisecond);
             let _interval = 0,
                 _index;
@@ -390,6 +396,8 @@ export default {
             this.loading = true;
             this.dataList = [];
             this.tusvnOption.loading = true;
+            this.perceptionData.framesTime = this.$dateUtil.timeStampChange(this.perceptionData.framesTime);
+            console.log(this.perceptionData.framesTime);
             findPerceptionRecordsInfo(this.perceptionData).then(res => {
                 if(res.status == '200'){
                     res.data.forEach((item) => {
@@ -491,6 +499,7 @@ export default {
             }
         },
         onPlayerTimeupdate(e) {
+            console.log(this.currentTime);
             console.log("onPlayerTimeupdate---------------");
             // console.log(e.cache_.duration);
             // console.log('currentTime', e.cache_.currentTime);
