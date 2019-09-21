@@ -246,7 +246,6 @@ export default {
             this.pageOption.size = 10;
         },
         findBSMLists(){
-            this.dataList = [];
             this.loading = true;
             findBSMList({
                 vehicleId : this.searchKey.vehicleId,
@@ -257,6 +256,7 @@ export default {
                     "pageIndex": this.pageOption.page-1
                 }, 
             }).then(res => {
+                this.dataList = [];
                 if(res.status == '200'){
                     res.data.list.forEach((item) => {
                         item.loading = false;
