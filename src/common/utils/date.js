@@ -51,6 +51,17 @@ class TDate {
         var ss = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
         return d.getFullYear() + m + day + h + min + ss;
     }
+    static timeStampChange(t){//时间戳转yyyyMMddHHmmss时间格式
+        var d = new Date(t);  
+        var m = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1);
+        var day = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
+        var h = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
+        var min = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
+        var ss = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
+        var millisecond = d.getMilliseconds() < 100 ? '0' + d.getMilliseconds() : d.getMilliseconds();
+        console.log(millisecond);
+        return d.getFullYear() + m + day + h + min + ss + millisecond;
+    }
     static timeToConversion(t){//国际标准时间转yyyy-MM-dd HH:mm:ss时间格式
         var d = new Date(t);  
         var m = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1);

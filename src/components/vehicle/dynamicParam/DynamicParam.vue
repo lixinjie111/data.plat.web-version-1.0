@@ -195,7 +195,6 @@ export default {
             this.pageOption.size = 10;
         },
         dynamicParamList(){
-            this.dataList = [];
             this.loading = true;
             dynamicParamList({
                 page: {
@@ -208,6 +207,7 @@ export default {
                 'startTime': this.searchKey.time[0] ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
                 'endTime': this.searchKey.time[1] ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
             }).then(res => {
+                this.dataList = [];
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;

@@ -273,7 +273,7 @@ export default {
                 clearTimeout(this.stopFrequentLoad.timer._id);
             }
             this.stopFrequentLoad.timer = setTimeout(() => {
-                console.log("加载数据--------------"+newVal);
+                // console.log("加载数据--------------"+newVal);
                 this.findPerceptionRecords();
                 this.player.currentTime(this.currentSecond+'.'+this.currentMillisecond);
             }, this.stopFrequentLoad.timeLimit);
@@ -296,7 +296,7 @@ export default {
 
         this.curTime = this.params.startTime;
         this.perceptionData.framesTime = this.startTimeTimestamp;
-        console.log(this.curTime);
+        // console.log(this.curTime);
 
         //注册键盘事件
         document.onkeydown = function (event) {
@@ -390,7 +390,11 @@ export default {
             this.loading = true;
             this.dataList = [];
             this.tusvnOption.loading = true;
-            findPerceptionRecordsInfo(this.perceptionData).then(res => {
+            let paramsOption = {
+                framesTime:this.$dateUtil.timeStampChange(this.perceptionData.framesTime),
+                serialNum:this.perceptionData.serialNum
+            };
+            findPerceptionRecordsInfo(paramsOption).then(res => {
                 if(res.status == '200'){
                     res.data.forEach((item) => {
                         item.loading = false;
@@ -424,7 +428,7 @@ export default {
         },
         carNum(arr){
             arr.map((val,index) => {
-                let typeCar = arr[index].data.targets.filter((item,i) => {
+                let typeCar = val.data.targets.filter((item,i) => {
                     return item.type == 2;
                 })
                 this.$set(val,'carNum',typeCar.length);
@@ -432,7 +436,7 @@ export default {
         },
         personNum(arr){
             arr.map((val,index) => {
-                let typePerson = arr[index].data.targets.filter((item,i) => {
+                let typePerson = val.data.targets.filter((item,i) => {
                     return item.type == 0;
                 })
                 this.$set(val,'personNum',typePerson.length);
@@ -465,14 +469,14 @@ export default {
                 _curDate = Number(time.getTime())+Number(this.currentMillisecond);
             }
             if(_curDate < this.startTimeTimestamp) {
-                console.log('小于最小时间');
+                // console.log('小于最小时间');
                 this.perceptionData.framesTime = this.startTimeTimestamp;
             }else if(_curDate > Number(this.endTimeTimestamp)) {
-                console.log('大于最大时间');
+                // console.log('大于最大时间');
                 this.perceptionData.framesTime = this.endTimeTimestamp;
 
             }else {
-                console.log('正常时间范围内');
+                // console.log('正常时间范围内');
                 this.perceptionData.framesTime = _curDate;
             }
         },
@@ -491,7 +495,7 @@ export default {
             }
         },
         onPlayerTimeupdate(e) {
-            console.log("onPlayerTimeupdate---------------");
+            // console.log("onPlayerTimeupdate---------------");
             // console.log(e.cache_.duration);
             // console.log('currentTime', e.cache_.currentTime);
             // console.log(this.currentTime,e.cache_.currentTime,Number(e.cache_.currentTime.toFixed(1)).toFixed(3));
@@ -518,14 +522,14 @@ export default {
             // }
         },
         onPlayerLoadedData(e) {
-            console.log("onPlayerLoadedData");
+            // console.log("onPlayerLoadedData");
             if(this.playerOptions.sources[0].src != '') {
                 // console.log("准备就绪----------");
                 this.player.currentTime('0.001');
             }
         },
         playerError(e) {
-            console.log("playerError");
+            // console.log("playerError");
             if(this.playerOptions.sources[0].src != '') {
                 let _videoUrl = this.playerOptions.sources[0].src;
                 this.playerOptions.sources[0].src = '';
@@ -539,14 +543,14 @@ export default {
             this.player.pause();
         },
         setProgressTime(obj) {
-            console.log(this.currentSecond, this.currentMillisecond);
+            // console.log(this.currentSecond, this.currentMillisecond);
             // this.boxLoading = false;
             let _second = this.currentSecond*1000,
                 _curTime = this.startTimeTimestamp + Number(_second);
             // this.curTime = this.$dateUtil.formatTime(_curTime);
             // this.curTimeDate = this.curTime+'.'+this.currentMillisecond;
             this.curTimeDate = this.$dateUtil.formatTime(_curTime)+'.'+this.currentMillisecond;
-            console.log("onPlayerTimeupdate---------------"+this.curTimeDate);
+            // console.log("onPlayerTimeupdate---------------"+this.curTimeDate);
             obj.controlBar.progressControl.children_[0].children_[2].el_.setAttribute('data-current-time', this.curTimeDate);
             // console.log('开始时间startTime：'+this.params.startTime);
             // console.log('结束时间endTime：'+this.params.endTime);
@@ -663,6 +667,7 @@ export default {
     .time-input{
         float:left;
         position:relative;
+        cursor: pointer;
     }
     .time-ms {
         position: absolute;
