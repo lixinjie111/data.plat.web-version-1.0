@@ -97,7 +97,7 @@
                                 </el-table-column>
                                 <el-table-column min-width="50%" label="原始感知数据">
                                     <template slot-scope="scope">
-                                        <el-popover placement="top" width="600" trigger="hover" popper-class="c-table-popover" :open-delay="2000">
+                                        <el-popover placement="top" width="600" trigger="click" popper-class="c-table-popover">
                                             <div class="c-table-popover-content" v-html="scope.row.data"></div>
                                             <p class="c-table-popover-text" slot="reference" v-html='scope.row.data'></p>
                                         </el-popover>
