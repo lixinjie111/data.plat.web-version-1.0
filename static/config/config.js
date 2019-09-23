@@ -1,7 +1,7 @@
 window.config = {
     //内网
     // baseUrl: 'http://172.17.1.16',
-    // monUrl = 'http://172.17.1.16',
+    // monUrl: 'http://172.17.1.16',
     // url: 'http://172.17.1.16:9091/dataPlatApp/',//数据平台
     // operateUrl: 'http://172.17.1.16:9090/operateApp/',//运营平台
     // downloadUrl: 'http://172.17.1.16:9091/dataPlatApp/cam/download/', //导出&&下载地址
@@ -25,3 +25,14 @@ window.defaultMapOption = {
 	rotateEnable: true,
 	mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
 }
+
+window.circleParam = {
+    redius:600.0,
+    center:[325535.061,3462402.816,13.618],
+    color:"#ffffff",
+    outline:false,
+    outlineColor:"#ff0000",
+    opacity:0.5,
+    rotate:[0,0,0]
+};
+

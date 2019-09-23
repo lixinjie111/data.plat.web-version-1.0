@@ -76,9 +76,7 @@
                 <el-table-column prop="angle" label="方向盘转角" min-width="10%"></el-table-column>
                 <el-table-column label="刹车踏板" min-width="8%">
                     <template slot-scope="scope">
-                            <div v-if="scope.row.brakePedal == 'on' || scope.row.brakePedal == 'ON'" class="msg-right">是</div>
-                            <div v-if="scope.row.brakePedal == 'off' || scope.row.brakePedal == 'OFF'" class="msg-right">否</div>
-                            <div v-if="scope.row.brakePedal == 'unavailable' || scope.row.brakePedal == 'UNAVAILABLE'" class="msg-right">不支持</div>
+                        <span>{{scope.row.brakePedal | brakePedalFilter}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" min-width="5%"> 
@@ -221,6 +219,16 @@ export default {
             searchUrl: requestqueryVehicleList 
         }
     },
+    filters:{
+        brakePedalFilter(brakePedal){
+            const brakePedalMap = {
+                'on||ON':'是',
+                'off||OFF':'否',
+                'unavailable||UNAVAILABLE':'不支持'
+            }
+            return brakePedalMap[brakePedal];
+        }
+    },
     methods: {
         initPageOption() {
             this.dataList = [];
@@ -238,7 +246,6 @@ export default {
             this.pageOption.size = 10;
         },
         findBSMLists(){
-            this.dataList = [];
             this.loading = true;
             findBSMList({
                 vehicleId : this.searchKey.vehicleId,
@@ -249,6 +256,7 @@ export default {
                     "pageIndex": this.pageOption.page-1
                 }, 
             }).then(res => {
+                this.dataList = [];
                 if(res.status == '200'){
                     res.data.list.forEach((item) => {
                         item.loading = false;

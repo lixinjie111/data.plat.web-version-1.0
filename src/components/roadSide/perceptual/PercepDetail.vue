@@ -9,7 +9,8 @@
                         <el-page-header @back="$router.go(-1);" class="c-return-btn"></el-page-header>
                     </h3>
                 </div>
-                <div class="sl-percepDetail-container c-wrapper-20" v-loading="boxLoading">
+                <!-- <div class="sl-percepDetail-container c-wrapper-20" v-loading="boxLoading"> -->
+                <div class="sl-percepDetail-container c-wrapper-20">
                     <div class='sl-btn-box clearfix'>
                         <el-button class="sl-btn" type="warning" icon="el-icon-arrow-left" @click="reduceTime"></el-button>
                         <div class='time-input'>
@@ -55,17 +56,48 @@
                                 <el-table-column min-width="20%" label="时间">
                                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp, 'yy-mm-dd hh:mm:ss:ms')}}</template>
                                 </el-table-column>
-                                <el-table-column min-width="30%" label="感知目标数据">
+                                <!-- <el-table-column min-width="30%" label="感知目标数据">
                                     <template slot-scope="scope">
                                         <el-popover placement="top" width="350" trigger="hover" popper-class="c-table-popover" :open-delay="2000">
                                             <div class="c-table-popover-content" v-html="scope.row.field"></div>
                                             <p class="c-table-popover-text" slot="reference" v-html='scope.row.field'></p>
                                         </el-popover>
                                     </template>
+                                </el-table-column> -->
+                                <el-table-column min-width="10%" label="时间差">
+                                    <template slot-scope="scope">
+                                        <p>{{scope.row.timeDiffer}}</p>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column min-width="10%" label="车的数量">
+                                    <template slot-scope="scope">
+                                        <p>{{scope.row.carNum}}</p>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column min-width="10%" label="行人数量">
+                                    <template slot-scope="scope">
+                                        <p>{{scope.row.personNum}}</p>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column min-width="10%" label="出现车辆">
+                                    <template slot-scope="scope">
+                                        <el-popover placement="top" width="350" trigger="click" popper-class="c-table-popover">
+                                            <div class="c-table-popover-content" v-html="scope.row.addCar"></div>
+                                            <p class="c-table-popover-text" slot="reference" v-html='scope.row.addCar'></p>
+                                        </el-popover>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column min-width="10%" label="消失车辆">
+                                    <template slot-scope="scope">
+                                        <el-popover placement="top" width="350" trigger="click" popper-class="c-table-popover">
+                                            <div class="c-table-popover-content" v-html="scope.row.disappearCar"></div>
+                                            <p class="c-table-popover-text" slot="reference" v-html='scope.row.disappearCar'></p>
+                                        </el-popover>
+                                    </template>
                                 </el-table-column>
                                 <el-table-column min-width="50%" label="原始感知数据">
                                     <template slot-scope="scope">
-                                        <el-popover placement="top" width="600" trigger="hover" popper-class="c-table-popover" :open-delay="2000">
+                                        <el-popover placement="top" width="600" trigger="click" popper-class="c-table-popover">
                                             <div class="c-table-popover-content" v-html="scope.row.data"></div>
                                             <p class="c-table-popover-text" slot="reference" v-html='scope.row.data'></p>
                                         </el-popover>
@@ -113,8 +145,8 @@
 import TList from '@/common/utils/list.js'
 import TMDate from '@/common/utils/date.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
-import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap2.vue";
-import { getMap } from '@/common/view/TusvnMap/tusvnMap.js';
+import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap3.vue";
+import { getMap } from '@/common/view/TusvnMap/tusvnMap3.js';
 import { findRoadMonitorCameraInfo, getVideoUrlInfo, findPerceptionRecordsInfo } from '@/api/roadSide';
 import { setTimeout } from 'timers';
 export default {
@@ -126,7 +158,7 @@ export default {
     data(){
         let _this = this;
         return {
-            boxLoading: true,
+            // boxLoading: true,
             loading: false,
             params: {
                 "serialNum": this.$route.params.serialNum, //设备序列号
@@ -135,11 +167,12 @@ export default {
             },
             perceptionData: {
                 "serialNum": this.$route.params.serialNum, //设备序列号
-                "framesTime":""
+                "framesTime": '',
             },
 
             startTimeTimestamp: new Date(this.$dateUtil.formatTimeReal(this.$route.params.startTime)).getTime(),
             endTimeTimestamp: new Date(this.$dateUtil.formatTimeReal(this.$route.params.endTime)).getTime(),
+            // currentTimeTimestamp: new Date(this.$dateUtil.formatTimeReal(this.$route.params.startTime)).getTime(),
 
             limit: 100,
             curTime: 0,   //视频当前绝对时间(s) 
@@ -187,7 +220,8 @@ export default {
             // 阻止频繁加载数据
             stopFrequentLoad: {
                 timeLimit: 1500,
-                timer: null
+                timer: null,
+                bthTimer: null
             },
             initMapFlag: false,
             dataList: [],
@@ -210,7 +244,7 @@ export default {
             handler(newVal, oldVal) {
                 if(newVal) {
                     this.tusvnOption.show = true;
-                    console.log("初始化地图已完成");
+                    // console.log("初始化地图已完成");
                     if(this.dataList.length) {
                         // console.log("列表加载在初始化地图之前");
                         this.setCurrentRow();
@@ -221,7 +255,7 @@ export default {
         dataList: {
             handler(newVal, oldVal) {
                 if(this.initMapFlag) {
-                    console.log("列表第一条地图已完成");
+                    // console.log("列表第一条地图已完成");
                     if(newVal.length) {
                         this.setCurrentRow();
                     }else {
@@ -232,6 +266,19 @@ export default {
                     }
                 }
             }
+        },
+        "perceptionData.framesTime"(newVal, oldVal) {
+            console.log('获取时间');
+            this.setTime(newVal);
+            clearTimeout(this.stopFrequentLoad.timer);
+            if(this.stopFrequentLoad.timer) {
+                clearTimeout(this.stopFrequentLoad.timer._id);
+            }
+            this.stopFrequentLoad.timer = setTimeout(() => {
+                // console.log("加载数据--------------"+newVal);
+                this.player.currentTime(this.currentSecond+'.'+this.currentMillisecond);
+                this.findPerceptionRecords();
+            }, this.stopFrequentLoad.timeLimit);
         }
     },
     beforeRouteLeave(to, from, next) {
@@ -242,13 +289,14 @@ export default {
     },
     mounted(){
         let _this = this;
-    // mounted(){
         this.durationTime = (this.endTimeTimestamp - this.startTimeTimestamp)/1000;
         this.durationSecond = this.durationTime.toFixed(3).split(".")[0];
         this.durationMilliSecond = this.durationTime.toFixed(3).split(".")[1];
+        this.perceptionData.framesTime = this.startTimeTimestamp;
         this.getVideoUrl();
         this.findRoadMonitorCamera();
-
+        // this.findPerceptionRecords();
+        this.curTime = this.params.startTime;
         //注册键盘事件
         document.onkeydown = function (event) {
             let e = event || window.event || arguments.callee.caller.arguments[0];
@@ -333,7 +381,7 @@ export default {
                     this.playerOptions.sources[0].src = _videoUrl;
                 }
             }).catch(err => {
-                this.boxLoading = false;
+                // this.boxLoading = false;
                 this.tusvnOption.loading = false;
             });
         },
@@ -341,12 +389,20 @@ export default {
             this.loading = true;
             this.dataList = [];
             this.tusvnOption.loading = true;
-            findPerceptionRecordsInfo(this.perceptionData).then(res => {
+            let paramsOption = {
+                framesTime:this.$dateUtil.timeStampChange(this.perceptionData.framesTime),
+                serialNum:this.perceptionData.serialNum
+            };
+            findPerceptionRecordsInfo(paramsOption).then(res => {
                 if(res.status == '200'){
                     res.data.forEach((item) => {
                         item.loading = false;
                     });
                     this.dataList = res.data;
+                    this.timeDiffer(this.dataList);//计算时间差
+                    this.carNum(this.dataList);//计算车的数量
+                    this.personNum(this.dataList);//计算行人数量
+                    this.carInfo(this.dataList);//车辆出现、消失情况
                     this.$refs.percepDetailTable.bodyWrapper.scrollTop = 0;
                 }
                 setTimeout(() => {
@@ -358,58 +414,90 @@ export default {
                 this.tusvnOption.loading = false;
             });
         },
+        timeDiffer(arr){
+            arr.map((val,index) => {
+                if(index > 0){
+                    let timeDiffer = parseInt(arr[index].timestamp) - parseInt(arr[index - 1].timestamp);
+                    this.$set(val,'timeDiffer',timeDiffer);
+                }else{
+                    this.$set(val,'timeDiffer',0);
+                }
+            });
+            return arr;
+        },
+        carNum(arr){
+            arr.map((val,index) => {
+                let typeCar = val.data.targets.filter((item,i) => {
+                    return item.type == 2;
+                })
+                this.$set(val,'carNum',typeCar.length);
+            })
+        },
+        personNum(arr){
+            arr.map((val,index) => {
+                let typePerson = val.data.targets.filter((item,i) => {
+                    return item.type == 0;
+                })
+                this.$set(val,'personNum',typePerson.length);
+            })
+        },
+        carInfo(arr){//查找消失、出现车辆
+            arr.map((val,index) => {
+                let lastCars = arr[index].data.targets.filter(x => x.uuid);
+                let newCars = arr[index+1].data.targets.filter(item => item.uuid);
+                let lastCarArry = [];
+                let newCarArry = [];
+                lastCars.map(item => lastCarArry.push(item.uuid));
+                newCars.map(item => newCarArry.push(item.uuid));
+                let disappearCars = lastCarArry.filter(val => newCarArry.indexOf(val) == -1);//查找消失车辆
+                let addCars = newCarArry.filter(val => lastCarArry.indexOf(val) == -1);//查找出现车辆
+                this.$set(val,'disappearCar',disappearCars);
+                this.$set(val,'addCar',addCars);
+            })
+        },
+        setTime(timestamp) {
+            this.curTime = this.$dateUtil.formatTime(timestamp);
+            let _time = ((timestamp-this.startTimeTimestamp)/1000).toFixed(3);
+            this.currentSecond = _time.split(".")[0];
+            let _timestamp = timestamp.toString();
+            this.currentMillisecond = _timestamp.substr(_timestamp.length-3);
+        },
         changeDate(time) {
             let _curDate = Number(time.getTime());
-            if(_curDate < this.startTimeTimestamp) {
-                console.log('小于最小时间');
-                this.curTime = this.params.startTime;
-                this.currentSecond = 0;
-                this.currentMillisecond = '000';
-            }else if((_curDate+Number(this.currentMilliSecond)) > (Number(this.endTimeTimestamp)+Number(this.durationMilliSecond))) {
-                console.log('大于最大时间');
-                this.curTime = this.params.endTime;
-                this.currentSecond = this.durationSecond;
-                this.currentMillisecond = this.durationMilliSecond;
-            }else {
-                console.log('正常时间范围内');
-                this.currentSecond = (_curDate-this.startTimeTimestamp)/1000;
+            if(this.currentMilliSecond != '000') {
+                _curDate = Number(time.getTime())+Number(this.currentMillisecond);
             }
-            this.player.currentTime(this.currentSecond+'.'+this.currentMillisecond);
+            if(_curDate < this.startTimeTimestamp) {
+                // console.log('小于最小时间');
+                this.perceptionData.framesTime = this.startTimeTimestamp;
+            }else if(_curDate > Number(this.endTimeTimestamp)) {
+                // console.log('大于最大时间');
+                this.perceptionData.framesTime = this.endTimeTimestamp;
+
+            }else {
+                // console.log('正常时间范围内');
+                this.perceptionData.framesTime = _curDate;
+            }
         },
         reduceTime() {
-            if(this.currentMillisecond >= this.limit) {
-                this.currentMillisecond = (Number(this.currentMillisecond) - this.limit) == 0 ? '000' : Number(this.currentMillisecond) - this.limit;
-                this.player.currentTime(this.currentSecond+'.'+this.currentMillisecond);
+            if(this.perceptionData.framesTime - this.limit >= this.startTimeTimestamp) {
+                this.perceptionData.framesTime -= this.limit;
             }else {
-                if(this.currentSecond > 0) {
-                    this.currentMillisecond = 1000-this.limit;         //减秒操作
-                    this.currentSecond --;
-                    this.player.currentTime(this.currentSecond+'.'+this.currentMillisecond);
-                }
+                this.perceptionData.framesTime = this.startTimeTimestamp;
             }
-            // console.log(this.currentMillisecond);
         },
         addTime(){
-            if(Number(this.currentSecond) < Number(this.durationSecond)) {
-                if(this.currentMillisecond < 1000-this.limit) {
-                    this.currentMillisecond = Number(this.currentMillisecond) + this.limit; 
-                }else {
-                    this.currentMillisecond = '000';         //加秒操作
-                    this.currentSecond ++;
-                }
-                this.player.currentTime(this.currentSecond+'.'+this.currentMillisecond);
+            if(this.perceptionData.framesTime + this.limit <= this.endTimeTimestamp) {
+                this.perceptionData.framesTime += this.limit;
             }else {
-                if(this.currentMillisecond < this.durationMilliSecond - this.limit) {
-                    this.currentMillisecond = Number(this.currentMillisecond) + this.limit;
-                    this.player.currentTime(this.currentSecond+'.'+this.currentMillisecond);
-                }
+                this.perceptionData.framesTime = this.endTimeTimestamp;
             }
-            // console.log(this.currentMillisecond);
         },
         onPlayerTimeupdate(e) {
-            console.log("onPlayerTimeupdate");
+            // console.log("onPlayerTimeupdate---------------");
             // console.log(e.cache_.duration);
             // console.log('currentTime', e.cache_.currentTime);
+            // console.log(this.currentTime,e.cache_.currentTime,Number(e.cache_.currentTime.toFixed(1)).toFixed(3));
             // if(this.currentTime != Number(e.cache_.currentTime.toFixed(1)).toFixed(3)) {
                 this.currentTime = Number(e.cache_.currentTime.toFixed(1)).toFixed(3);
                 if(this.currentTime.split('.')[0] != this.currentSecond) {
@@ -423,20 +511,24 @@ export default {
                         this.durationTime = e.cache_.duration;
                         this.durationSecond = this.durationTime.toFixed(3).split(".")[0];
                         this.durationMilliSecond = this.durationTime.toFixed(3).split(".")[1];
+                        this.endTimeTimestamp = Number(this.startTimeTimestamp)+Number(this.durationSecond)*60*1000+Number(this.durationMilliSecond);
                     }
                 }
+                this.perceptionData.framesTime = this.startTimeTimestamp+Number(this.currentSecond*1000)+Number(this.currentMillisecond);
+                // console.log(this.$dateUtil.formatTime(this.perceptionData.framesTime));
+
                 this.setProgressTime(e);
             // }
         },
         onPlayerLoadedData(e) {
-            console.log("onPlayerLoadedData");
+            // console.log("onPlayerLoadedData");
             if(this.playerOptions.sources[0].src != '') {
                 // console.log("准备就绪----------");
                 this.player.currentTime('0.001');
             }
         },
         playerError(e) {
-            console.log("playerError");
+            // console.log("playerError");
             if(this.playerOptions.sources[0].src != '') {
                 let _videoUrl = this.playerOptions.sources[0].src;
                 this.playerOptions.sources[0].src = '';
@@ -450,11 +542,15 @@ export default {
             this.player.pause();
         },
         setProgressTime(obj) {
-            this.boxLoading = false;
+            // console.log(this.currentSecond, this.currentMillisecond);
+            // this.boxLoading = false;
             let _second = this.currentSecond*1000,
                 _curTime = this.startTimeTimestamp + Number(_second);
-            this.curTime = this.$dateUtil.formatTime(_curTime);
-            this.curTimeDate = this.curTime+'.'+this.currentMillisecond;
+            // this.curTime = this.$dateUtil.formatTime(_curTime);
+            // this.curTimeDate = this.curTime+'.'+this.currentMillisecond;
+            this.curTimeDate = this.$dateUtil.formatTime(_curTime)+'.'+this.currentMillisecond;
+            // console.log("onPlayerTimeupdate---------------"+this.curTimeDate);
+            obj.controlBar.progressControl.children_[0].children_[2].el_.setAttribute('data-current-time', this.curTimeDate);
             // console.log('开始时间startTime：'+this.params.startTime);
             // console.log('结束时间endTime：'+this.params.endTime);
             // console.log('开始时间时间戳startTimeTimestamp：'+this.startTimeTimestamp);
@@ -470,21 +566,20 @@ export default {
 
             // console.log(obj.controlBar.currentTimeDisplay.contentEl_);
             // obj.controlBar.currentTimeDisplay.contentEl_.innerHTML = this.curTimeDate;
-            obj.controlBar.progressControl.children_[0].children_[2].el_.setAttribute('data-current-time', this.curTimeDate);
             // console.log("&&&&&&&&&&&&&&&&&&&");
             // console.log(this.curTime, this.currentMillisecond);
-            if(this.stopFrequentLoad.timer) {
-                clearTimeout(this.stopFrequentLoad.timer);
-                this.stopFrequentLoad.timer = setTimeout(() => {
-                    this.perceptionData.framesTime = this.$dateUtil.timeConversion(this.curTime)+this.currentMillisecond;
-                    this.findPerceptionRecords();
-                }, this.stopFrequentLoad.timeLimit);
-            }else {
-                this.stopFrequentLoad.timer = setTimeout(() => {
-                    this.perceptionData.framesTime = this.$dateUtil.timeConversion(this.curTime)+this.currentMillisecond;
-                    this.findPerceptionRecords();
-                }, 0);
-            }
+            // if(this.stopFrequentLoad.timer) {
+            //     clearTimeout(this.stopFrequentLoad.timer);
+            //     this.stopFrequentLoad.timer = setTimeout(() => {
+            //         this.perceptionData.framesTime = this.$dateUtil.timeConversion(this.curTime)+this.currentMillisecond;
+            //         this.findPerceptionRecords();
+            //     }, this.stopFrequentLoad.timeLimit);
+            // }else {
+            //     this.stopFrequentLoad.timer = setTimeout(() => {
+            //         this.perceptionData.framesTime = this.$dateUtil.timeConversion(this.curTime)+this.currentMillisecond;
+            //         this.findPerceptionRecords();
+            //     }, 0);
+            // }
         },
         showDetail(row) {
             if(row) {
@@ -493,7 +588,6 @@ export default {
                 setTimeout(() => {
                     this.tusvnOption.loading = false;
                     row.loading = false;
-                    // this.$refs.tusvnMap.updateCameraPosition(442481.5124901131,4427254.14590794,27.173398250989216,26.86058551360609,-0.6171498919343764,-0.43315502055389093);
                     this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
                     this.$refs.tusvnMap.showBData2(row);
                 }, 500);
@@ -507,69 +601,16 @@ export default {
                 return "is-active"
             }
         },
-        testDataFunc() {
-            let _testData = {
-                "field": [{
-                    "latitude": 39.993361246927414,
-                    "longitude": 116.3259240143911
-                }],
-                "data": {
-                    "deviceType": 30634,
-                    "rcuId": "2046A1037E1F",
-                    "_id": "2046A1037E1F_30634_3402000000132000001601__1561015100278",
-                    "deviceId": "3402000000132000001601",
-                    "targets": [{
-                        "boxY": 0,
-                        "boxX": 868,
-                        "relativeY": 14430,
-                        "relativeX": 3680,
-                        "latitude": 39.993361246927414,
-                        "weight": 123,
-                        "type": 2,
-                        "boxHeight": 232,
-                        "uuid": "F183C1D23404447FB5C46068F722BABF",
-                        "speed": 0,
-                        "len": 346,
-                        "location": {
-                            "coordinates": [116.3259240143911, 39.993361246927414],
-                            "type": "Point"
-                        },
-                        "state": 0,
-                        "boxWidth": 297,
-                        "lane": 0,
-                        "longitude": 116.3259240143911,
-                        "height": 99
-                    }],
-                    "timestampStr": "2019-06-20 15:18:20.000278",
-                    "timestamp": 1561015100278
-                },
-                "deviceId": "3402000000132000001601",
-                "timestamp": 1561015100278
-            };
-
-            // this.tusvnOption.show = false;
-            this.tusvnOption.loading = true;
-            setTimeout(() => {
-                // this.tusvnOption.show = true;
-                this.tusvnOption.loading = false;
-                console.log("haha-----------------");
-                // this.$refs.tusvnMap.updateCameraPosition(442481.5124901131,4427254.14590794,27.173398250989216,26.86058551360609,-0.6171498919343764,-0.43315502055389093);
-                this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
-                this.$refs.tusvnMap.showBData2(_testData);
-            }, 500);
-        },
         mapcomplete(row) {
             this.initMapFlag = true;
             getMap(this.$refs.tusvnMap);
             if(this.cameraParam) {
-                // this.$refs.tusvnMap.updateCameraPosition(442481.5124901131,4427254.14590794,27.173398250989216,26.86058551360609,-0.6171498919343764,-0.43315502055389093);
-                // this.$refs.tusvnMap.updateCameraPosition(326297.1669125299,3462321.135051115,30.651420831899046,30.905553118989463,-0.5303922863908559,-2.6312825799826953);
-               // this.$refs.tusvnMap.updateCameraPosition(325994.544950895,3462549.120490024,26.547772446367873,23.382136948463224,0.5808973368959062,1.47249100492297);
                 this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
             }
         }
     },
     destroyed(){
+        this.$refs.tusvnMap&&this.$refs.tusvnMap.reset3DMap();
         document.onkeydown = function (e) {
             if (e.keyCode == 38 || e.keyCode == 40) {
                 e.preventDefault();
@@ -625,6 +666,7 @@ export default {
     .time-input{
         float:left;
         position:relative;
+        cursor: pointer;
     }
     .time-ms {
         position: absolute;
