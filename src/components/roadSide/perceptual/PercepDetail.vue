@@ -219,7 +219,7 @@ export default {
             },
             // 阻止频繁加载数据
             stopFrequentLoad: {
-                timeLimit: 2000,
+                timeLimit: 1500,
                 timer: null,
                 bthTimer: null
             },
@@ -244,7 +244,7 @@ export default {
             handler(newVal, oldVal) {
                 if(newVal) {
                     this.tusvnOption.show = true;
-                    console.log("初始化地图已完成");
+                    // console.log("初始化地图已完成");
                     if(this.dataList.length) {
                         // console.log("列表加载在初始化地图之前");
                         this.setCurrentRow();
@@ -255,7 +255,7 @@ export default {
         dataList: {
             handler(newVal, oldVal) {
                 if(this.initMapFlag) {
-                    console.log("列表第一条地图已完成");
+                    // console.log("列表第一条地图已完成");
                     if(newVal.length) {
                         this.setCurrentRow();
                     }else {
@@ -268,14 +268,16 @@ export default {
             }
         },
         "perceptionData.framesTime"(newVal, oldVal) {
+            console.log('获取时间');
             this.setTime(newVal);
+            clearTimeout(this.stopFrequentLoad.timer);
             if(this.stopFrequentLoad.timer) {
                 clearTimeout(this.stopFrequentLoad.timer._id);
             }
             this.stopFrequentLoad.timer = setTimeout(() => {
                 // console.log("加载数据--------------"+newVal);
-                this.findPerceptionRecords();
                 this.player.currentTime(this.currentSecond+'.'+this.currentMillisecond);
+                this.findPerceptionRecords();
             }, this.stopFrequentLoad.timeLimit);
         }
     },
@@ -290,14 +292,11 @@ export default {
         this.durationTime = (this.endTimeTimestamp - this.startTimeTimestamp)/1000;
         this.durationSecond = this.durationTime.toFixed(3).split(".")[0];
         this.durationMilliSecond = this.durationTime.toFixed(3).split(".")[1];
-
+        this.perceptionData.framesTime = this.startTimeTimestamp;
         this.getVideoUrl();
         this.findRoadMonitorCamera();
-
+        // this.findPerceptionRecords();
         this.curTime = this.params.startTime;
-        this.perceptionData.framesTime = this.startTimeTimestamp;
-        // console.log(this.curTime);
-
         //注册键盘事件
         document.onkeydown = function (event) {
             let e = event || window.event || arguments.callee.caller.arguments[0];
