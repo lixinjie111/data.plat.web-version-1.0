@@ -59,7 +59,6 @@ class TDate {
         var min = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
         var ss = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
         var millisecond = d.getMilliseconds() < 100 ? '0' + d.getMilliseconds() : d.getMilliseconds();
-        console.log(millisecond);
         return d.getFullYear() + m + day + h + min + ss + millisecond;
     }
     static timeToConversion(t){//国际标准时间转yyyy-MM-dd HH:mm:ss时间格式
