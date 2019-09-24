@@ -428,7 +428,7 @@ export default {
         carNum(arr){
             arr.map((val,index) => {
                 let typeCar = val.data.targets.filter((item,i) => {
-                    return item.type == 2;
+                    return item.type == 1 || item.type == 2 || item.type == 3 || item.type == 4 || item.type == 5 || item.type == 6 || item.type == 7 || item.type == 8;
                 })
                 this.$set(val,'carNum',typeCar.length);
             })

@@ -42,7 +42,7 @@ export default {
             // ,websocketUrl:"ws://192.168.1.132:9998/ws"
             // ,websocketUrl:"ws://120.133.21.14:29998/ws"
             // ,websocketUrl:"ws://10.0.1.57:9982/mon"
-            ,websocketUrl:"ws://192.168.1.68:9982/mon"
+            ,websocketUrl:window.config.websocketUrl
             ,hostWebsocket:null
             ,tweens: {}
 
@@ -80,7 +80,7 @@ export default {
             ,intervalIds:new Array()
 
             //车辆监控
-            ,cartrackwebsocketUrl:"ws://120.133.21.14:49982/mon"
+            ,cartrackwebsocketUrl:window.config.websocketUrl
             ,carid:'B21E-00-024'
             ,carTrackAction:'fusel_sider_veh'//fusel_sider_veh track
             // ,pmodels:{

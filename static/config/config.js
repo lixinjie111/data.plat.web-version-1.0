@@ -49,3 +49,14 @@ window.defaultMapOption = {
 	rotateEnable: true,
 	mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
 }
+
+window.circleParam = {
+    redius:600.0,
+    center:[325535.061,3462402.816,13.618],
+    color:"#ffffff",
+    outline:false,
+    outlineColor:"#ff0000",
+    opacity:0.5,
+    rotate:[0,0,0]
+};
+
