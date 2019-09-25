@@ -55,6 +55,9 @@
           center: [121.262939,31.245149], //初始化地图中心点
           mapStyle:'amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8',
       });
+      setTimeout(()=>{
+          this.distanceMap.setMapStyle(window.defaultMapOption.mapStyle);
+      },0);
       this.getGps('B21E-00-017',1563866127715,2);
     },
     beforeDestroy() {

@@ -36,6 +36,9 @@ export default {
     methods: {
         initMap(){
             this.distanceMap = new AMap.Map('map-container', window.defaultMapOption);
+            setTimeout(()=>{
+                this.distanceMap.setMapStyle(window.defaultMapOption.mapStyle);
+            },0);
             this.distanceMapLine();
         },
         getGps(gpsArr,newArr,curTime){
