@@ -63,7 +63,7 @@
                         <el-table-column min-width="20%" label="经度" prop="gnss_LONG"></el-table-column>
                         <el-table-column min-width="20%" label="纬度" prop="gnss_LAT"></el-table-column>
                         <el-table-column min-width="15%" label="速度(km/h)">
-                            <template slot-scope="scope">{{Number(scope.row.gnss_SPD).toFixed(1)}}</template>
+                            <template slot-scope="scope">{{scope.row.gnss_SPD}}</template>
                         </el-table-column>
                         <el-table-column min-width="15%" label="航向角" prop="gnss_HEAD"></el-table-column>
                         <el-table-column min-width="10%" label="高程(m)" prop="gnss_HIGHT"></el-table-column>

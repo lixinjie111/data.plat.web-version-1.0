@@ -59,10 +59,10 @@
                 <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time,type='yy-mm-dd hh:mm:ss:ms')}}</template>
             </el-table-column>
             <el-table-column label="经度" min-width="10%">
-                <template slot-scope="scope">{{Number(scope.row.longitude).toFixed(8)}}</template>
+                <template slot-scope="scope">{{scope.row.longitude}}</template>
             </el-table-column>
             <el-table-column label="纬度" min-width="10%">
-                <template slot-scope="scope">{{Number(scope.row.latitude).toFixed(8)}}</template>
+                <template slot-scope="scope">{{scope.row.latitude}}</template>
             </el-table-column>
             <el-table-column prop="elevation" label="高程" min-width="8%"></el-table-column>
             <el-table-column prop='content' label="消息内容" min-width="10%"></el-table-column>

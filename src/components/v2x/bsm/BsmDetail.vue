@@ -64,11 +64,11 @@ import vehicleInfoTag from '@/common/detail/vehicleInfoTag';
                         },
                         {
                             name:"经度",
-                            value:Number(this.infoTagData.longitude).toFixed(8),
+                            value:this.infoTagData.longitude,
                         },
                         {
                             name:"纬度",
-                            value:Number(this.infoTagData.latitude).toFixed(8),
+                            value:this.infoTagData.latitude,
                         },
                         {
                             name:"高程",
@@ -76,7 +76,7 @@ import vehicleInfoTag from '@/common/detail/vehicleInfoTag';
                         },
                         {
                             name:"车辆速度",
-                            value:Number(this.infoTagData.speed).toFixed(1),
+                            value:this.infoTagData.speed,
                         }
                    ]
                },
