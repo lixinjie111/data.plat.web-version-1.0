@@ -89,6 +89,9 @@ export default {
             //     mapStyle: 'light'
             // });
             this.distanceMap = new AMap.Map('map-container-r',window.defaultMapOption);
+            setTimeout(()=>{
+                this.distanceMap.setMapStyle(window.defaultMapOption.mapStyle);
+            },0);
             // this.distanceMap.setZoom();
             this.distanceMap.addControl(_scale);
             this.distanceMap.addControl(_toolbar);

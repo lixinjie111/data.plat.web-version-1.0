@@ -98,6 +98,9 @@
             },
             initMap(){
                 this.distanceMap = new AMap.Map('map-container', window.defaultMapOption);
+                setTimeout(()=>{
+                    this.distanceMap.setMapStyle(window.defaultMapOption.mapStyle);
+                },0);
             },
             backClick(){
                 this.$emit('backRoadManage');
