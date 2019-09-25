@@ -559,8 +559,8 @@ export default {
                         this.camDetail.roadName = camerData.roadName;
                         this.camDetail.roadPointName = camerData.rsPtName;
                         this.camDetail.roadPointId = camerData.rsPtId;
-                        this.camDetail.lon = Number(camerData.ptLon).toFixed(8);
-                        this.camDetail.lat = Number(camerData.ptLat).toFixed(8);
+                        this.camDetail.lon = camerData.ptLon;
+                        this.camDetail.lat = camerData.ptLat;
                         this.isMaskShow = false;
                         this.embedFlash(videoUrl);
                         // console.log(camerData);
