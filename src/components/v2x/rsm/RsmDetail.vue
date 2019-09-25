@@ -24,10 +24,10 @@
                             <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
                         </el-table-column>
                         <el-table-column label="经度">
-                            <template slot-scope="scope">{{scope.row.longitude.toFixed(8)}}</template>
+                            <template slot-scope="scope">{{Number(scope.row.longitude).toFixed(8)}}</template>
                         </el-table-column>
                         <el-table-column label="纬度">
-                            <template slot-scope="scope">{{scope.row.latitude.toFixed(8)}}</template>
+                            <template slot-scope="scope">{{Number(scope.row.latitude).toFixed(8)}}</template>
                         </el-table-column>
                         <el-table-column prop='elevation' label="高程"></el-table-column>
                         <el-table-column prop='transmission' label="档位"></el-table-column>
