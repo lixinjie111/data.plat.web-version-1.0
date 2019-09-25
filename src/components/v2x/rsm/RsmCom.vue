@@ -60,10 +60,10 @@
                     <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
                 </el-table-column>
                 <el-table-column label="经度" min-width='9'>
-                    <template slot-scope="scope">{{scope.row.lonRsm.toFixed(8)}}</template>
+                    <template slot-scope="scope">{{Number(scope.row.lonRsm).toFixed(8)}}</template>
                 </el-table-column>
                 <el-table-column label="纬度" min-width='9'>
-                    <template slot-scope="scope">{{scope.row.latRsm.toFixed(8)}}</template>
+                    <template slot-scope="scope">{{Number(scope.row.latRsm).toFixed(8)}}</template>
                 </el-table-column>
                 <el-table-column prop="elevRsm" label="高程" min-width='9'></el-table-column>
                 <el-table-column prop='num' label="参与者个数" min-width='8'></el-table-column>
