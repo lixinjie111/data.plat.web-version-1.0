@@ -43,11 +43,11 @@ import VueAMap from "vue-amap";
 Vue.use(VueAMap);
 
 VueAMap.initAMapApiLoader({
-  key: "8bf04484a44d846096c9ab84730e88b8",
-  plugin: [
-    "AMap.ElasticMarker"
-  ],
-  uiVersion: "1.0"
+    key: "8bf04484a44d846096c9ab84730e88b8",
+    plugin: [
+        "AMap.ElasticMarker"
+    ],
+    uiVersion: "1.0"
 });
 
 /* eslint-disable no-new */
@@ -58,30 +58,30 @@ VueAMap.initAMapApiLoader({
 
 // 路由拦截器
 router.beforeEach((to, from, next) => {
-  if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
-      if (sessionStorage.getItem('login')) {  // 通过vuex state获取当前的token是否存在
-          next();
-      }
-      else {
-          next({
-              path: '/login',
-              query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
-          })
-      }
-  }
-  else {
-      next();
-  }
+    if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
+        if (sessionStorage.getItem('login')) {  // 通过vuex state获取当前的token是否存在
+            next();
+        }
+        else {
+            next({
+                path: '/login',
+                query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+            })
+        }
+    }
+    else {
+        next();
+    }
 })
 
 
 /* eslint-disable no-new */
 const vm = new Vue({
-  el: '#app',
-  router,
-  store,
-  components: { App },
-  template: '<App/>'
+    el: '#app',
+    router,
+    store,
+    components: { App },
+    template: '<App/>'
 })
 
 

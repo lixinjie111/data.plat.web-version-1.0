@@ -75,99 +75,99 @@ export default new Router({
       redirect: 'home',   
       children: [
         {
-          path: '/home',    // 首页
-          name: 'home',
-          meta: {
-              requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-          },
-          component: Home
+            path: '/home',    // 首页
+            name: 'home',
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            },
+            component: Home
         },      
         {
-          path: '/refresh',    // 重新加载当前路由
-          name: 'refresh',
-          meta: {
-              requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-          },
-          component: Refresh
+            path: '/refresh',    // 重新加载当前路由
+            name: 'refresh',
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            },
+            component: Refresh
         },        
         {
-          path: '/system',    // 系统设置
-          name: 'SysManage',  
-          meta: {
-              requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-          },       
-          component: SysManage,   
-          children:[]  
+            path: '/system',    // 系统设置
+            name: 'SysManage',  
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            },       
+            component: SysManage,   
+            children:[]  
         },           
         {
-          path: '/vehicleVideo',     // 车载视频
-          name: 'VehicleVideo',
-          component: VehicleVideo,
-          children: [                       
-            {
-              path: '/realMonitor',    // 实时监控
-              name: 'RealMonitor',
-              meta: {
-                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-              },
-              component: RealMonitor
-            },
-            {
-              path: '/playback',    // 历史监控
-              name: 'PlayBack',
-              meta: {
-                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-              },
-              component: PlayBack
-            },
-            {
-              path: '/videoManage',    // 视频管理
-              name: 'VideoManage',
-              meta: {
-                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-              },
-              component: VideoManage,
-            },
-            {
-              path: '/videoDownload',    // 视频下载
-              name: 'VideoDownload',
-              meta: {
-                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-              },
-              component: VideoDownload
-            },
-          ]
+            path: '/vehicleVideo',     // 车载视频
+            name: 'VehicleVideo',
+            component: VehicleVideo,
+            children: [                       
+                {
+                path: '/realMonitor',    // 实时监控
+                name: 'RealMonitor',
+                meta: {
+                    requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                },
+                    component: RealMonitor
+                },
+                {
+                path: '/playback',    // 历史监控
+                name: 'PlayBack',
+                meta: {
+                    requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                },
+                    component: PlayBack
+                },
+                {
+                path: '/videoManage',    // 视频管理
+                name: 'VideoManage',
+                meta: {
+                    requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                },
+                    component: VideoManage,
+                },
+                {
+                path: '/videoDownload',    // 视频下载
+                name: 'VideoDownload',
+                meta: {
+                    requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                },
+                    component: VideoDownload
+                },
+            ]
         },
         {
-          path: '/vehilcle',     // 车辆数据
-          name: 'vehilcleManage',
-          component: VehilcleManage,
-          children: [        
-            {
-              path: '/pathData',    // 轨迹数据
-              name: 'PathData',
-              meta: {
-                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-              },
-              component: PathData,
-            },            
-            {
-              path: '/canData',    // CAN数据
-              name: 'CanData',
-              meta: {
-                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-              },
-              component: CanData,
-            },            
-            {
-              path: '/dynamicParam',    // 动态参数
-              name: 'DynamicParam',
-              meta: {
-                  requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-              },
-              component: DynamicParam,
-            },            
-          ]
+            path: '/vehilcle',     // 车辆数据
+            name: 'vehilcleManage',
+            component: VehilcleManage,
+            children: [        
+                {
+                path: '/pathData',    // 轨迹数据
+                name: 'PathData',
+                meta: {
+                    requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                },
+                component: PathData,
+                },            
+                {
+                path: '/canData',    // CAN数据
+                name: 'CanData',
+                meta: {
+                    requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                },
+                component: CanData,
+                },            
+                {
+                path: '/dynamicParam',    // 动态参数
+                name: 'DynamicParam',
+                meta: {
+                    requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                },
+                component: DynamicParam,
+                },            
+            ]
         },
         {
           path: '/roadSide',     // 路侧数据路侧数据

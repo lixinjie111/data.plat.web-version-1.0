@@ -18,7 +18,7 @@
                 :videoUrl="videoUrl" 
                 autoplay
                 :fluent="true" 
-                :live="true"
+                :live="liveFlag"
                 @message="onPlayerMessage"
                 @error="onPlayerError"
                 @ended="onPlayerEnded"
@@ -40,6 +40,10 @@ export default {
         requestVideoUrl: [Function, String],  //请求视频axios封装方法/视频地址
         params: Object, //请求视频参数
         type: String,   //视频字段名
+        liveFlag: {     //是否是直播
+            default: true,
+            type: Boolean
+        },
         refreshFlag: {     //是否显示标题栏的刷新按钮
             default: true,
             type: Boolean
@@ -93,7 +97,10 @@ export default {
     },
     methods: {
         initVideoTimer() {
-            clearInterval(this.videoLoadingDelay.timer);
+            if(this.videoLoadingDelay.timer) {
+                clearInterval(this.videoLoadingDelay.timer);
+                clearInterval(this.videoLoadingDelay.timer._id);
+            }
             this.videoLoadingDelay.count = 0;
         },
         videoTimer() {
@@ -127,7 +134,11 @@ export default {
             this.videoUrl = '';
         },
         setVideoOptionClose() {
+            this.initVideoTimer();
             this.videoOption.videoMaskFlag = false;
+            this.videoOption.playFlag = false;
+            this.videoOption.loadingFlag = false;
+            this.videoOption.playError = false;
         },
         onPlayerMessage(player) {
             // console.log("onPlayerMessage");
@@ -140,7 +151,6 @@ export default {
         },
         onPlayerTimeupdate(player) {
             // console.log("onPlayerTimeupdate");
-            this.initVideoTimer();
             this.setVideoOptionClose();
         },
         onPlayerPause() {
@@ -153,7 +163,6 @@ export default {
         },
         requestVideo() {
             this.setVideoOptionLoading();
-
             if(!this.videoUrl) {
                 // 请求接口
                 if(typeof this.requestVideoUrl == "function") {
@@ -161,6 +170,15 @@ export default {
                         if(res.status == 200) {
                             if(res.data[this.type]) {
                                 this.videoUrl = res.data[this.type];
+                                if(!this.liveFlag) {
+                                    this.setVideoOptionClose();
+                                }else {
+                                    this.initVideoTimer();
+                                    this.videoTimer();
+                                }
+                                // setTimeout(() => {
+                                //     this.player.play();
+                                // }, 0);
                                 this.$emit("videoLoadCompleted");
                             }else {
                                 this.videoUrl = '';
@@ -175,13 +193,21 @@ export default {
                 }else {
                     if(this.requestVideoUrl) {
                         this.videoUrl = this.requestVideoUrl;
+                        if(!this.liveFlag) {
+                            this.setVideoOptionClose();
+                        }
+                        // setTimeout(() => {
+                        //     this.player.play();
+                        // }, 0);
                         this.$emit("videoLoadCompleted");
                     }else {
                         this.setVideoOptionError("暂无视频数据");
                     }
                 }
-                
             }else {
+                if(!this.liveFlag) {
+                    this.setVideoOptionClose();
+                }
                 this.player.play();
             }
         },
@@ -189,7 +215,9 @@ export default {
             if(this.videoUrl == ''){
                 this.requestVideo();
             }else {
-                this.setVideoOptionLoading();
+                if(this.liveFlag) {
+                    this.setVideoOptionLoading();
+                }
                 this.videoLoadingDelay.count = 0;
                 this.$emit("refreshVideo");
                 // this.$refs.livePlayer && this.player.pause();
@@ -200,6 +228,11 @@ export default {
                 //     }, 500);
                 // }, 0);
             }
+        }
+    },
+    destoryed() {
+        if(this.player) {
+            this.player.pause();
         }
     }
 }
