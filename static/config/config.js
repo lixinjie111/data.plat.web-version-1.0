@@ -15,6 +15,15 @@ window.config = {
     downloadUrl: 'http://120.133.21.14:9091/dataPlatApp/cam/download/', //导出&&下载地址
     websocketUrl:'ws://120.133.21.14:49982/mon',
 
+
+    // 临时
+    // baseUrl: 'http://http://116.236.72.204',
+    // monUrl: 'http://http://116.236.72.204',
+    // url: 'http://116.236.72.204:49091/dataPlatApp/',//数据平台
+    // operateUrl: 'http://http://116.236.72.204:9090/operateApp/',//运营平台
+    // downloadUrl: 'http://http://116.236.72.204:9091/dataPlatApp/cam/download/', //导出&&下载地址
+    // websocketUrl:'ws://http://116.236.72.204:49982/mon',
+
     version: 1.0,       // 版本号
 }
 //地图默认配置

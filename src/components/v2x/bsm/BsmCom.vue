@@ -216,7 +216,8 @@ export default {
                 defaultOption: [],
                 defaultFlag: false
             },
-            searchUrl: requestqueryVehicleList 
+            searchUrl: requestqueryVehicleList,
+            historySearchKey: {}
         }
     },
     filters:{
@@ -247,15 +248,16 @@ export default {
         },
         findBSMLists(){
             this.loading = true;
-            findBSMList({
-                vehicleId : this.searchKey.vehicleId,
-                startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
-                endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '',
+            this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
+            this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
+            let params = {
                 page: {
                     "pageSize": this.pageOption.size,
                     "pageIndex": this.pageOption.page-1
-                }, 
-            }).then(res => {
+                },
+                ... this.historySearchKey
+            }
+            findBSMList(params).then(res => {
                 this.dataList = [];
                 if(res.status == '200'){
                     res.data.list.forEach((item) => {
@@ -276,6 +278,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
+                    this.historySearchKey = this.searchKey;
                     this.initPaging();
                     this.findBSMLists();
                 } else {
