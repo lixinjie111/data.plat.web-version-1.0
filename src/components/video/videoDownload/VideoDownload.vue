@@ -212,6 +212,7 @@ export default {
                 startTime: [],
                 endTime: []
             },
+            historySearchKey: {},
             selector: [],
             auth: {
                 isUpadte: true,
@@ -311,23 +312,18 @@ export default {
             this.dataList = [];
             this.loading = true;
             let protocal = JSON.parse(localStorage.getItem('protocal')) || '';
-            queryTaskList({
+            let _params = Object.assign({},this.historySearchKey,{
                 page: {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 },
-                'fileName':this.searchKey.fileName,
-                'camCode':this.searchKey.deviceId,
-                'vehicleId':this.searchKey.vehicleId,
-                'source':this.searchKey.source,
-                'plateNo':this.searchKey.plateNo,
-                'taskStatus':this.searchKey.taskStatus,
                 'protocal':protocal,
                 'startBeginTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
                 'startEndTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
                 'stopBeginTime': this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
                 'stopEndTime': this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : ''
-            }).then(res => {
+            });
+            queryTaskList(_params).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;
@@ -347,6 +343,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
             if (valid) {
                     this.searchLoading = true;
+                    this.historySearchKey = this.searchKey;
                     this.initPaging();
                     this.initData();
                 } else {

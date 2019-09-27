@@ -196,6 +196,7 @@ export default {
                 startTime:'' ,
                 endTime: ''
             },
+            historySearchKey: {},
             startTimeOption: {
                 disabledDate: time => {
                     let _time = time.getTime(),
@@ -309,13 +310,12 @@ export default {
         },
         initData(){
             this.loading = true;
-            findVideoRecords({
-                'rsPtName':this.searchKey.rsPtName,
-                'deviceId':this.searchKey.deviceId,
-                'serialNum':  this.searchKey.serialNum,
-                'startTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
-                'endTime':  this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
-            }).then(res => {
+            this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
+            this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
+            let _params = {
+                ... this.historySearchKey
+            }
+            findVideoRecords(_params).then(res => {
                 if(res.status == '200'){
                     res.data.forEach((item) => {
                         item.loading = false;
@@ -364,6 +364,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
+                    this.historySearchKey = this.searchKey;
                     this.initPaging();
                     this.initData();
                 } else {

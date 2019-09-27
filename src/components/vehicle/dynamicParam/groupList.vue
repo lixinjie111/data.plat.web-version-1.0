@@ -51,6 +51,7 @@ export default {
             searchKey: {
                 name: '',  
             },
+            historySearchKey: {},
             pageOption: {
                 page: 1,
                 size: 10,
@@ -75,13 +76,13 @@ export default {
         },
         initData(){
             this.loading = true;
-            findVehicleGroup({
-                'name':this.searchKey.name,  
+            let _params = Object.assign({},this.historySearchKey,{
                 'page':{
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 }
-            }).then(res => {
+            });
+            findVehicleGroup(_params).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;
@@ -100,6 +101,7 @@ export default {
             this.pageOption.page = 1;
             this.pageOption.total = 0;
             this.searchLoading = true;
+            this.historySearchKey = this.searchKey;
             this.initData();
         },
         resetClick(){

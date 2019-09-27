@@ -192,6 +192,7 @@ export default {
                 startTime: [],
                 endTime: []
             },
+            historySearchKey: {},
             selector: [],
             pageOption: {
                 page: 1,
@@ -281,22 +282,18 @@ export default {
         initData(){
             this.dataList = [];
             this.loading = true;
-            queryVideoList({
+            let _params = Object.assign({},this.historySearchKey,{
                 'page': {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 },
-                'fileName':this.searchKey.fileName,
-                'vehicleId':this.searchKey.vehicleId,
-                'plateNo':this.searchKey.plateNo,
-                'source':this.searchKey.source,
-                'camId':this.searchKey.deviceId,
                 'protocal': JSON.parse(localStorage.getItem('protocal')) || '',
                 'startBeginTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
                 'startEndTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
                 'stopBeginTime':this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
                 'stopEndTime':this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : ''
-            }).then(res => {
+            });
+            queryVideoList(_params).then(res => {
                 if(res.status == '200'){
                     res.data.list.forEach(item => {
                         item.delLoading = false;
@@ -323,6 +320,7 @@ export default {
         },
         searchClick(){
             this.searchLoading = true;
+            this.historySearchKey = this.searchKey;
             this.initPaging();
             this.initData();
         },
