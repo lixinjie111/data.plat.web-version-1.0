@@ -66,6 +66,7 @@ export default {
                 enName:'',
                 chName:''
             },
+            historySearchKey:{},
             pageOption: {
                 page: 1,
                 size: 10,
@@ -90,15 +91,13 @@ export default {
         },
         initData(){
             this.loading = true;
-            findVehicleProperty({
-                'sid':this.searchKey.sid,
-                'name':this.searchKey.enName,
-                'longidentifier':this.searchKey.chName,          
+            let _params = Object.assign({}, this.historySearchKey, {
                 page:{
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page - 1
                 }
-            }).then(res => {
+            });
+            findVehicleProperty(_params).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;
@@ -121,6 +120,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoading = true;
+                    this.historySearchKey = this.searchKey;
                     this.initData();
                 } else {
                     return false;

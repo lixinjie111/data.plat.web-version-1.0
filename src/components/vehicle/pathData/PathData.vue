@@ -127,6 +127,7 @@
           plateNo: '',
           time:[]
         },
+        historySearchKey: {},
         selector: {
           isAll: false,
           item: null,     // 选择项
@@ -294,16 +295,15 @@
       },
       queryPathList() {
         this.loading = true;
-        queryPathList({
+        let _params = Object.assign({},this.historySearchKey,{
             page: {
                 "pageSize": this.pageOption.size,
                 "pageIndex": this.pageOption.page-1
             },
-            'vehicleId':this.searchKey.vehicleId,
-            'plateNo':this.searchKey.plateNo,
             'startTime':this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
             'endTime':this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
-        }).then(res => {
+        })
+        queryPathList(_params).then(res => {
           if(res.status == '200'){
               //转换开始时间、结束时间、行驶时长
               let data_convert=res.data.list;
@@ -374,6 +374,7 @@
         this.$refs.searchForm.validate((valid) => {
             if (valid) {
                 this.searchLoading = true;
+                this.historySearchKey = this.searchKey;
                 this.initPaging();
                 this.queryPathList();
             } else {

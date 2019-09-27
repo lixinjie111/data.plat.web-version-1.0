@@ -127,6 +127,7 @@ export default {
                 startTime: '',
                 endTime: ''
             },
+            historySearchKey: {},
             pageOption: {
                 page: 1,
                 size: 10,
@@ -203,15 +204,15 @@ export default {
             this.pageOption.size = 10;
         },
         getQueryList(){
-            queryList({
+            let _params = Object.assign({},this.historySearchKey, {
                 page: {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 },
-                vehicleId:this.searchKey.vehicleId,
                 startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
                 endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
-            }).then(res => {
+            })
+            queryList(_params).then(res => {
                 if(res.status == '200'){
                     this.$refs.table.bodyWrapper.scrollTop = 0;
                     this.pageOption.total = res.data.list.length;
@@ -228,6 +229,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoading = true;
+                    this.historySearchKey = this.searchKey;
                     this.dataList = [];
                     this.initPaging();
                     this.getQueryList();

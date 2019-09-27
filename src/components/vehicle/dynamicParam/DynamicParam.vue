@@ -118,6 +118,7 @@ export default {
                 eventNo: '',
                 time:[]
             },
+            historySearchKey:{},
             pageOption: {
                 page: 1,
                 size: 10,
@@ -196,17 +197,15 @@ export default {
         },
         dynamicParamList(){
             this.loading = true;
-            dynamicParamList({
+            let _params = Object.assign({}, this.historySearchKey,{
                 page: {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 },
-                'vehicleId': this.searchKey.vehicleId,
-                'eventName': this.searchKey.eventName,
-                'eventNo': this.searchKey.eventNo,
                 'startTime': this.searchKey.time[0] ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
                 'endTime': this.searchKey.time[1] ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
-            }).then(res => {
+            });
+            dynamicParamList(_params).then(res => {
                 this.dataList = [];
                 if(res.status == '200'){
                     this.dataList = res.data.list;
@@ -243,6 +242,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoading = true;
+                    this.historySearchKey = this.searchKey;
                     this.initPaging();
                     this.dynamicParamList();
                 } else {

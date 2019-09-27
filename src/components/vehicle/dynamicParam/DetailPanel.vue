@@ -62,6 +62,7 @@ export default {
                 queryId:'',
                 dataId:''
             },
+            historySearchKey: {},
             dataList: [],
             currentPage:1,
             loading:false
@@ -76,14 +77,13 @@ export default {
             let _this = this;
             this.dataList = [];
             this.loading = true;
-            getDetatilList({
+            let _params = Object.assign({},this.historySearchKey,{
                 page: {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
-                },
-                'queryId': dataDetail.queryId,
-                'sId': this.searchKey.dataId,
-            }).then(res => {
+                }
+            })
+            getDetatilList(_params).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;
@@ -97,6 +97,7 @@ export default {
         },
         searchClick(){
             this.pageOption.page = 0;
+            this.historySearchKey = this.searchKey;
             this.getDetatil();
         },
         backClick(){
