@@ -203,7 +203,8 @@ export default {
                 defaultOption: [],
                 defaultFlag: false
             },
-            searchUrl: requestqueryRSUList 
+            searchUrl: requestqueryRSUList,
+            historySearchKey: {}
         }
     },
     methods: {
@@ -228,15 +229,16 @@ export default {
         findRsmPage(){
             this.dataList = [];
             this.loading = true;
-            findRsmPage({
+            this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
+            this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
+            let params = {
                 page: {
-                    'pageSize': this.pageOption.size,
-                    'pageIndex': this.pageOption.page-1
+                    "pageSize": this.pageOption.size,
+                    "pageIndex": this.pageOption.page-1
                 },
-                'rsuId': this.searchKey.rsuId,
-                'startTime':this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
-                'endTime':this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''      
-            }).then(res => {
+                ... this.historySearchKey
+            }
+            findRsmPage(params).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;
@@ -253,6 +255,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
+                    this.historySearchKey = this.searchKey;
                     this.initPaging();
                     this.findRsmPage();
                 } else {
