@@ -234,6 +234,7 @@ export default {
                 startTime:[],
                 endTime:[]
             },
+            historySearchKey: {},
             pageOption: {
                 page: 1,
                 size: 10,
@@ -315,26 +316,21 @@ export default {
         initData(){
             this.dataList = [];
             this.loading = true;
-            queryRoadTaskList({
+            this.historySearchKey.startBeginTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '';
+            this.historySearchKey.startEndTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '';
+            this.historySearchKey.stopBeginTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '';
+            this.historySearchKey.stopEndTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : '';
+            this.historySearchKey.protocal = JSON.parse(localStorage.getItem('protocal')) || '';
+            let _params = {
                 page: {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 },
-                'fileName':this.searchKey.fileName,
-                'camCode':this.searchKey.deviceId,
-                'roadName':this.searchKey.rspRoadName,
-                'roadPointName':this.searchKey.rsPtName,
-                'source':this.searchKey.source,
-                'taskStatus':this.searchKey.taskStatus,
-                'startBeginTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
-                'startEndTime': this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
-                'stopBeginTime': this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
-                'stopEndTime': this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : '',
-                'protocal': JSON.parse(localStorage.getItem('protocal')) || '',
-            }).then(res => {
+                ...this.historySearchKey
+            }
+            queryRoadTaskList(_params).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
-                    console.log(this.dataList);
                     this.pageOption.total = res.data.totalCount;
                     this.$refs.table.bodyWrapper.scrollTop = 0;
                 }
@@ -349,6 +345,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoading = true;
+                    this.historySearchKey = this.searchKey;
                     this.initPaging();
                     this.initData();
                 } else {
@@ -426,7 +423,6 @@ export default {
         },
         backFn(type){
             if(type == 'add'){
-                console.log('新建成功！')
                 this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
                 this.searchKey.endTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
                 this.initData();

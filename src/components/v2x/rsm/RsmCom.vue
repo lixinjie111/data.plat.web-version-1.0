@@ -231,14 +231,14 @@ export default {
             this.loading = true;
             this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
             this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
-            let params = {
+            let _params = {
                 page: {
                     "pageSize": this.pageOption.size,
                     "pageIndex": this.pageOption.page-1
                 },
                 ... this.historySearchKey
             }
-            findRsmPage(params).then(res => {
+            findRsmPage(_params).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.pageOption.total = res.data.totalCount;

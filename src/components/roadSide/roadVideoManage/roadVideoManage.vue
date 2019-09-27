@@ -199,6 +199,7 @@ export default {
                 startTime: [],
                 endTime: []
             },
+            historySearchKey: {},
             selector: [],
             auth: {
                 isUpadte: true,
@@ -285,23 +286,19 @@ export default {
             this.dataList = [];
             this.loading = false;
             let protocal = JSON.parse(localStorage.getItem('protocal')) || '';
-            queryRoadVideoList({
+            this.historySearchKey.protocal = protocal;
+            this.historySearchKey.startBeginTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '';
+            this.historySearchKey.startEndTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '';
+            this.historySearchKey.stopBeginTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '';
+            this.historySearchKey.stopEndTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : '';
+            let _params = {
                 page: {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
                 },
-                camCode: this.searchKey.deviceId,
-                fileName: this.searchKey.fileName,
-                roadName: this.searchKey.rspRoadName,
-                source: this.searchKey.source,
-                taskStatus: this.searchKey.taskStatus,
-                roadPointName: this.searchKey.rsPtName,
-                protocal:protocal,
-                startBeginTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '',
-                startEndTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '',
-                stopBeginTime: this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '',
-                stopEndTime: this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : ''
-            }).then(res => {
+                ...this.historySearchKey
+            }
+            queryRoadVideoList(_params).then(res => {
                 if(res.status == '200'){
                     this.dataList = res.data.list;
                     this.dataList.forEach(item => {
@@ -327,6 +324,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoading = true;
+                    this.historySearchKey = this.searchKey;
                     this.initPaging();
                     this.initData();
                 } else {

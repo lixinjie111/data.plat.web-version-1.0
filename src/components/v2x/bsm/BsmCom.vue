@@ -71,7 +71,7 @@
                     <template slot-scope="scope">{{scope.row.speed}}</template>
                 </el-table-column>
                 <el-table-column label="航向" min-width="6%">
-                    <template slot-scope="scope">{{(scope.row.heading).toFixed(1)}}</template>
+                    <template slot-scope="scope">{{scope.row.heading}}</template>
                 </el-table-column>
                 <el-table-column prop="angle" label="方向盘转角" min-width="10%"></el-table-column>
                 <el-table-column label="刹车踏板" min-width="8%">
@@ -250,14 +250,14 @@ export default {
             this.loading = true;
             this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
             this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
-            let params = {
+            let _params = {
                 page: {
                     "pageSize": this.pageOption.size,
                     "pageIndex": this.pageOption.page-1
                 },
                 ... this.historySearchKey
             }
-            findBSMList(params).then(res => {
+            findBSMList(_params).then(res => {
                 this.dataList = [];
                 if(res.status == '200'){
                     res.data.list.forEach((item) => {
