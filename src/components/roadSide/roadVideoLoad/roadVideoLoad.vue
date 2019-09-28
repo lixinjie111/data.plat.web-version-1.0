@@ -305,6 +305,7 @@ export default {
         init(){
             this.manageShow = true;
             this.playbackShow = false;
+
             this.initPaging();
             this.initData();
         },
@@ -346,6 +347,10 @@ export default {
                 if (valid) {
                     this.searchLoading = true;
                     this.historySearchKey = this.searchKey;
+                    this.historySearchKey.startBeginTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '';
+                    this.historySearchKey.startEndTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '';
+                    this.historySearchKey.stopBeginTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '';
+                    this.historySearchKey.stopEndTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : '';
                     this.initPaging();
                     this.initData();
                 } else {

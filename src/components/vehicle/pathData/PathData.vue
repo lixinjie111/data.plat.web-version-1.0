@@ -125,6 +125,8 @@
         searchKey: {
           vehicleId: '',
           plateNo: '',
+          startTime:'',
+          endTime:'',
           time:[]
         },
         historySearchKey: {},
@@ -285,6 +287,8 @@
         };
       },
       init() {
+        this.historySearchKey.startTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+        this.historySearchKey.endTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
         this.initPaging();
         this.queryPathList();
       },
@@ -299,9 +303,7 @@
             page: {
                 "pageSize": this.pageOption.size,
                 "pageIndex": this.pageOption.page-1
-            },
-            'startTime':this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
-            'endTime':this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
+            }
         })
         queryPathList(_params).then(res => {
           if(res.status == '200'){
@@ -375,6 +377,8 @@
             if (valid) {
                 this.searchLoading = true;
                 this.historySearchKey = this.searchKey;
+                this.historySearchKey.startTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+                this.historySearchKey.endTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
                 this.initPaging();
                 this.queryPathList();
             } else {

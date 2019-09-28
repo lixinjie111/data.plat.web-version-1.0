@@ -278,9 +278,9 @@ export default {
     },
     mounted(){
         //望京 默认参数
-        this.searchKey.rsPtName = '博园路k1+530';
-        this.searchKey.deviceId = 'N-NJ-0004';
-        this.searchKey.serialNum = '3402000000132000003001';
+        this.historySearchKey.rsPtName = this.searchKey.rsPtName = '博园路k1+530';
+        this.historySearchKey.deviceId = this.searchKey.deviceId = 'N-NJ-0004';
+        this.historySearchKey.serialNum = this.searchKey.serialNum = '3402000000132000003001';
         //上海 默认参数
         // this.searchKey.rsPtName = '博园路TX03';
         // this.searchKey.deviceId = 'N-NJ111F';
@@ -288,6 +288,8 @@ export default {
         
         this.searchKey.startTime = this.$dateUtil.GetDateStr(7);
         this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
+        this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
+        this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
         this.initData();
         this.selectRsPtNameList();
         this.selectDeviceIdList();
@@ -310,8 +312,6 @@ export default {
         },
         initData(){
             this.loading = true;
-            this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
-            this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
             let _params = {
                 ... this.historySearchKey
             }
@@ -364,7 +364,11 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
-                    this.historySearchKey = this.searchKey;
+                    this.historySearchKey.rsPtName = this.searchKey.rsPtName;
+                    this.historySearchKey.deviceId = this.searchKey.deviceId;
+                    this.historySearchKey.serialNum = this.searchKey.serialNum;
+                    this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
+                    this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
                     this.initPaging();
                     this.initData();
                 } else {
