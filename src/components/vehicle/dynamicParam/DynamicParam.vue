@@ -201,9 +201,7 @@ export default {
                 page: {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
-                },
-                'startTime': this.searchKey.time[0] ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '',
-                'endTime': this.searchKey.time[1] ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : ''
+                }
             });
             dynamicParamList(_params).then(res => {
                 this.dataList = [];
@@ -243,6 +241,8 @@ export default {
                 if (valid) {
                     this.searchLoading = true;
                     this.historySearchKey = this.searchKey;
+                    this.historySearchKey.startTime = this.searchKey.time[0] ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+                    this.historySearchKey.endTime = this.searchKey.time[1] ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
                     this.initPaging();
                     this.dynamicParamList();
                 } else {
