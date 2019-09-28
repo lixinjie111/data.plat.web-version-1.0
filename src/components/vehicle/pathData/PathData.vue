@@ -287,8 +287,6 @@
         };
       },
       init() {
-        this.historySearchKey.startTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
-        this.historySearchKey.endTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
         this.initPaging();
         this.queryPathList();
       },
@@ -424,6 +422,8 @@
     },
     mounted() {
       this.searchKey.time = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
+      this.historySearchKey.startTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+      this.historySearchKey.endTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
       this.init();
     },
   }
