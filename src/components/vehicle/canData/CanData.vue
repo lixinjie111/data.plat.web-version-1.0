@@ -186,9 +186,11 @@ export default {
     },
     mounted(){
         this.scrollData.dom = this.$refs.table.bodyWrapper;
-        this.searchKey.vehicleId = 'B21E-00-022';
+        this.historySearchKey.vehicleId = this.searchKey.vehicleId = 'B21E-00-022';
         this.searchKey.startTime = this.$dateUtil.GetDateStr(31);
         this.searchKey.endTime = this.$dateUtil.GetDateStr(0);
+        this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
+        this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
         this.getQueryList();
         this.scrollData.dom.addEventListener('scroll',this.scrollMore);
     },
@@ -208,9 +210,7 @@ export default {
                 page: {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
-                },
-                startTime:this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
-                endTime:this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
+                }
             })
             queryList(_params).then(res => {
                 if(res.status == '200'){
@@ -230,6 +230,8 @@ export default {
                 if (valid) {
                     this.searchLoading = true;
                     this.historySearchKey = this.searchKey;
+                    this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
+                    this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
                     this.dataList = [];
                     this.initPaging();
                     this.getQueryList();

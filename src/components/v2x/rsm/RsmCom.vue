@@ -229,8 +229,7 @@ export default {
         findRsmPage(){
             this.dataList = [];
             this.loading = true;
-            this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
-            this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
+            
             let _params = {
                 page: {
                     "pageSize": this.pageOption.size,
@@ -256,6 +255,8 @@ export default {
                 if (valid) {
                     this.searchLoad = true;
                     this.historySearchKey = this.searchKey;
+                    this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
+                    this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
                     this.initPaging();
                     this.findRsmPage();
                 } else {

@@ -248,8 +248,6 @@ export default {
         },
         findBSMLists(){
             this.loading = true;
-            this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
-            this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
             let _params = {
                 page: {
                     "pageSize": this.pageOption.size,
@@ -279,6 +277,8 @@ export default {
                 if (valid) {
                     this.searchLoad = true;
                     this.historySearchKey = this.searchKey;
+                    this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
+                    this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
                     this.initPaging();
                     this.findBSMLists();
                 } else {
@@ -322,6 +322,8 @@ export default {
     mounted(){
         this.searchKey.startTime = this.$dateUtil.GetDateStr(1);
         this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
+        this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
+            this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
         this.findBSMLists();
     },
     beforeDestroy(){
