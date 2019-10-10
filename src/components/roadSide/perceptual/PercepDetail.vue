@@ -390,8 +390,7 @@ export default {
             this.dataList = [];
             this.tusvnOption.loading = true;
             let paramsOption = {
-                framesTime:this.perceptionData.framesTime,
-                // framesTime:this.$dateUtil.timeStampChange(this.perceptionData.framesTime),
+                framesTime:this.$dateUtil.timeStampChange(this.perceptionData.framesTime),
                 serialNum:this.perceptionData.serialNum
             };
             findPerceptionRecordsInfo(paramsOption).then(res => {
