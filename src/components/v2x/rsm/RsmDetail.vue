@@ -21,7 +21,7 @@
                         <el-table-column prop="plateNo" label="车牌号"></el-table-column>
                         <el-table-column prop="vehicleClass" label="车辆类型"></el-table-column>
                         <el-table-column label="时间">
-                            <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
+                            <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time,type='yy-mm-dd hh:mm:ss:ms')}}</template>
                         </el-table-column>
                         <el-table-column label="经度">
                             <template slot-scope="scope">{{scope.row.longitude}}</template>
@@ -31,7 +31,9 @@
                         </el-table-column>
                         <el-table-column prop='elevation' label="高程"></el-table-column>
                         <el-table-column prop='transmission' label="档位"></el-table-column>
-                        <el-table-column prop='speed' label="速度"></el-table-column>
+                        <el-table-column prop='speed' label="速度">
+                            <template slot-scope="scope">{{(scope.row.speed/3.6).toFixed(2)}}</template>
+                        </el-table-column>
                         <el-table-column prop='heading' label="方向"></el-table-column>
                         <el-table-column prop='angle' label="方向盘转角"></el-table-column>
                         <el-table-column prop='lonAccel' label="纵向加速度"></el-table-column>
