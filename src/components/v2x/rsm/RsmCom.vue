@@ -57,7 +57,7 @@
                 <el-table-column prop="msgCnt" min-width='10' label="消息编号"></el-table-column>
                 <el-table-column prop="rsuId" label="RSU编号" min-width='10'></el-table-column>
                 <el-table-column label="时间" min-width='14'>
-                    <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time)}}</template>
+                    <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time,type='yy-mm-dd hh:mm:ss:ms')}}</template>
                 </el-table-column>
                 <el-table-column label="经度" min-width='9'>
                     <template slot-scope="scope">{{scope.row.lonRsm}}</template>
@@ -66,7 +66,9 @@
                     <template slot-scope="scope">{{scope.row.latRsm}}</template>
                 </el-table-column>
                 <el-table-column prop="elevRsm" label="高程" min-width='9'></el-table-column>
-                <el-table-column prop='num' label="参与者个数" min-width='8'></el-table-column>
+                <el-table-column prop='vehicleNum' label="车辆个数" min-width='8'></el-table-column>
+                <el-table-column prop='personNum' label="行人个数" min-width='8'></el-table-column>
+                <!-- <el-table-column prop='num' label="参与者个数" min-width='8'></el-table-column> -->
                 <el-table-column label="操作" min-width='5'>
                     <template slot-scope="scope">
                         <el-button size="small" icon="el-icon-view" circle type="warning" plain @click="detail(scope.row)"></el-button>
