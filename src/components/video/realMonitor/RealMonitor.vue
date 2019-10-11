@@ -5,7 +5,6 @@
             <el-form-item label="车牌号: " class="c-detail-lable">
                 <el-select
                     v-model.trim="searchKey.plateNo"
-                    clearable
                     filterable
                     remote
                     reserve-keyword
@@ -27,7 +26,6 @@
             <el-form-item label="车辆编号: " prop='vehicleId' class="c-detail-lable">
                 <el-select
                     v-model.trim="searchKey.vehicleId"
-                    clearable
                     filterable
                     remote
                     reserve-keyword
@@ -63,14 +61,13 @@
             <!-- 地图视频模块 -->
             <div class="c-map-video-wrapper">
                 <div class="c-video-wrapper">
-                    <live-player 
-                        :requestVideoUrl="rtmpUrl"
-                        type="rtmp"
-                        :autoplay="true"
-                        :refreshFlag="false"
-                        >
-                    </live-player>
-                    <!-- <div class='c-video-mask' v-show='isMaskShow'></div> -->
+                    <video-player 
+                        class="c-video" 
+                        ref="videoPlayer"
+                        :options="playerOptions"
+                        @ended="onPlayerEnded"
+                    ></video-player>
+                    <div class='c-video-mask' v-show='isMaskShow'></div>
                 </div>
                 <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                     <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
@@ -96,8 +93,6 @@
 
 </template>
 <script>
-// 视频插件
-import LivePlayer from '@/common/livePlayer/template.vue';
 import MaxMap from './maxMap.vue';
 import {queryCamList,startStream,queryDeviceType,sendStreamHeart} from '@/api/video';
 import {requestqueryVehicleCamList} from '@/api/search';
@@ -106,7 +101,6 @@ export default {
     name: 'RealMonitor',
     components: {
         MaxMap,
-        LivePlayer
     },
     data(){
         return {
@@ -117,7 +111,6 @@ export default {
             playTimer:null,
             old_time:null,
             totalTime:0,
-            rtmpUrl:'',
             totalTimeformat:'',
             isStart:false,
             isDisabled: true,
@@ -147,7 +140,47 @@ export default {
                 timer: null,
                 filterOption: [],
                 defaultFilterOption:[]
+            },
+            playerOptions: {
+                overNative: true,
+                autoplay: true,
+                controls: true,
+                techOrder: ['flash', 'html5'],
+                sourceOrder: true,
+                flash: {
+                  // swf: '../../../../static/media/video-js.swf'
+                    // swf: '/static/media/video-js.swf'       
+                    // swf: '/static/media/video-js.swf'
+                    swf: isProduction ? '/dataManage/static/media/video-js.swf' : './static/media/video-js.swf'
+                },
+                muted: true, // 默认情况下将会消除任何音频。
+                loop: false, // 导致视频一结束就重新开始。
+                preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+                language: 'zh-CN',
+                aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+                fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+                sources: [
+                    {
+                        // type: 'rtmp/mp4',
+                        type: 'rtmp/flv',
+                        // type: 'rtmp',
+                        src: ''
+                    }
+                ],
+                // width: document.documentElement.clientWidth,
+                notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+                // controlBar: {
+                //     timeDivider: false,
+                //     durationDisplay: false,
+                //     remainingTimeDisplay: false,
+                //     fullscreenToggle: true  //全屏按钮
+                // }
             }
+        }
+    },
+    computed: {
+        player() {
+            return this.$refs.videoPlayer.player
         }
     },
     mounted() {
@@ -183,7 +216,7 @@ export default {
         },
         realMonit(){
             if(this.searchKey.vehicleId != ''){
-                if(this.rtmpUrl){
+                if(this.playerOptions.sources[0].src){
                     this.isStart = true;
                     this.isMaskShow = false;
                     // this.player.play();
@@ -209,7 +242,7 @@ export default {
                             if(res.status == '200'){
                                 //获取视频地址并赋值
                                 let videoUrl = res.data.rtmp;
-                                this.rtmpUrl = videoUrl;
+                                this.playerOptions.sources[0].src = videoUrl;
                                 // this.player.load(videoUrl);
                                 //直播报活调用
                                 this.repeatFn();
@@ -453,8 +486,7 @@ export default {
             this.resetVideoMap(val);
         },
         resetVideoMap(val){
-            this.rtmpUrl = '';
-            // this.playerOptions.sources[0].src = '';
+            this.playerOptions.sources[0].src = '';
             this.protocal = val.protocol;
             let protocal = JSON.stringify(this.protocal);
             localStorage.setItem('protocal',protocal);
@@ -477,7 +509,7 @@ export default {
 .sl-real-momitor-video .vjs-time-control {
     display: none !important;
 }
-.c-map-video-wrapper .c-video-wrapper{
-    padding-bottom:0;
+.video-js.vjs-paused .vjs-big-play-button{
+    display: none !important;
 }
 </style>

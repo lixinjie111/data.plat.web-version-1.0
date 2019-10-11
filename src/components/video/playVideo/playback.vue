@@ -31,15 +31,9 @@
             <div class="c-map-video-wrapper c-mt-20">
                 <div class="c-video-wrapper">
                     <div class="c-video">
-                        <video-player 
-                            :requestVideoUrl="videoPath"
-                            :autoplay="false"
-                            @videoLoadCompleted="videoLoadCompleted"
-                            @videoTimeupdate="videoProcess">
-                        </video-player>
-                        <!-- <video id="my-video" class="video-js vjs-big-play-centered" ref='myVideo' :src="videoPath" controls preload="auto" @timeupdate="videoProcess">
+                        <video id="my-video" class="video-js vjs-big-play-centered" ref='myVideo' :src="videoPath" controls preload="auto" @timeupdate="videoProcess">
                             <source :src="videoPath" type="video/mp4">
-                        </video> -->
+                        </video>
                     </div>
                 </div>
                 <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
@@ -52,8 +46,6 @@
     </div>
 </template>
 <script>
-// 视频插件
-import VideoPlayer from '@/common/videoPlayer/template'
 import HistoryMap from './historyMap.vue';
 import {queryDeviceType,historyGpsInfo} from '@/api/video';
 export default {
@@ -61,7 +53,6 @@ export default {
     props: ['title','type','data'],
     components: {
         HistoryMap,
-        VideoPlayer
     },
     data(){
         return {
@@ -95,7 +86,6 @@ export default {
             this.serialNum = historyInfo.camCode;
             this.position = historyInfo.camDirection;
             this.camStatus = historyInfo.camStatus;
-            console.log(this.videoPath);
             queryDeviceType({//获取设备id
                 'vehicleId':this.vehicleId
             }).then(res => {
@@ -117,10 +107,9 @@ export default {
                 }
             })
         },
-        videoProcess(player){
-            // let myVideo = document.getElementById('my-video');
-            // this.curTime = myVideo.currentTime;//获取视频实时时间
-            this.curTime = player.currentTime();//获取视频实时时间
+        videoProcess(){
+            let myVideo = document.getElementById('my-video');
+            this.curTime = myVideo.currentTime;//获取视频实时时间
             let i = 0;
             if(this.gpsArr.length > 0){
                 this.$refs.historyMap.getGps(this.gpsArr,'0',this.curTime);
@@ -152,9 +141,7 @@ export default {
                 };
             },false);
         },
-        videoLoadCompleted() {
-            console.log("视频加载完成");
-        },
+        
         backClick(){
             this.$emit('backVideoManage');
         },
@@ -166,19 +153,19 @@ export default {
         },
     },
     mounted(){
-        // let _this = this;
-        // let myVideo = document.getElementById('my-video');
-        // let myPlayer = videojs('my-video');
-        this.init();
-        // myPlayer.on('pause', function () {
-        //     let _this = this;
-        //     clearInterval(_this.getGpsTimer);//清除GPS
-        // });
-        // myPlayer.on('end', function () {
-        //     let _this = this;
-        //     clearInterval(_this.getGpsTimer);//清除GPS
-        // });
-        // this.addEvent();
+        let _this = this;
+        let myVideo = document.getElementById('my-video');
+        let myPlayer = videojs('my-video');
+        _this.init();
+        myPlayer.on('pause', function () {
+            let _this = this;
+            clearInterval(_this.getGpsTimer);//清除GPS
+        });
+        myPlayer.on('end', function () {
+            let _this = this;
+            clearInterval(_this.getGpsTimer);//清除GPS
+        });
+        this.addEvent();
     },
     beforeDestroy(){
         clearInterval(this.getGpsTimer);//清除GPS

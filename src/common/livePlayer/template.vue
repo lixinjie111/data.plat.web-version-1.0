@@ -68,7 +68,7 @@ export default {
             },
             videoLoadingDelay: {
                 timer: null,
-                countTime: 10,
+                countTime: 15,
                 count: 0
             }
         }
@@ -80,9 +80,6 @@ export default {
     },
     watch: {
         deep: true,
-        'requestVideoUrl'(newVal,oldVal){
-            console.log(newVal);
-        },
         'videoOption.loadingFlag'(newVal, oldVal) {
             this.initVideoTimer();
             if(newVal) {
@@ -165,8 +162,6 @@ export default {
             // console.log('player play!');
         },
         requestVideo() {
-            console.log(this.videoUrl);
-            console.log(this.requestVideoUrl);
             this.setVideoOptionLoading();
             if(!this.videoUrl) {
                 // 请求接口
@@ -196,7 +191,6 @@ export default {
                         this.setVideoOptionError("接口响应失败，请稍后再试");
                     });
                 }else {
-                    console.log(this.requestVideoUrl);
                     if(this.requestVideoUrl) {
                         this.videoUrl = this.requestVideoUrl;
                         if(!this.liveFlag) {
