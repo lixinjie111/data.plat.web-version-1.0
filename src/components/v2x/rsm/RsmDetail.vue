@@ -52,7 +52,7 @@
 <script>
     export default {
         name: 'rsmDetail',    
-        props: ['title','type','data'],
+        props: ['title','data'],
         data: function(){
           return {
               msgCnt:'',
