@@ -147,6 +147,19 @@
 .c-font-16 {
 	font-size: 16px !important;
 }
+//外壳 间距统
+.c-wrapper-10 {
+	margin: 10px;
+}
+.c-wrapper-20 {
+	margin: 20px;
+}
+.c-padding-10 {
+	padding: 10px;
+}
+.c-padding-20 {
+	padding: 20px;
+}
 //间距
 .c-ml-10 {
 	margin-left: 10px;
@@ -205,19 +218,6 @@
 }
 .c-border-bottom {
 	border-bottom: 1px solid $borderColor;
-}
-//外壳 间距统
-.c-wrapper-10 {
-	margin: 10px;
-}
-.c-wrapper-20 {
-	margin: 20px;
-}
-.c-padding-10 {
-	padding: 10px;
-}
-.c-padding-20 {
-	padding: 20px;
 }
 
 .c-width-precent-30 {
@@ -324,10 +324,6 @@ h3.c-title {
 .c-table-img {
 	display: inline-block;
 	height: 62px;
-}
-
-.c-flex {
-	flex: 1;
 }
 
 .c-red {
@@ -440,6 +436,12 @@ h3.c-title {
 .c-table-popover-text {
 	@include lineClamp(4);
 }
+.c-table-popover-text-2 {
+	@include lineClamp(2);
+}
+.c-table-popover-text-1 {
+	@include lineClamp(1);
+}
 // 单元格里的popover提示框
 .c-table-popover {
 	box-shadow: 0 2px 12px 0 rgba(0,0,0,.5);
@@ -461,6 +463,21 @@ h3.c-title {
 }
 .c-flex-1 {
     flex: 1;
+}
+.c-flex-2 {
+    flex: 2;
+}
+.c-flex-3 {
+    flex: 3;
+}
+.c-flex-4 {
+    flex: 4;
+}
+.c-flex-5 {
+    flex: 5;
+}
+.c-flex-6 {
+    flex: 6;
 }
 
 // 为空
