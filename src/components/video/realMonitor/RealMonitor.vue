@@ -5,6 +5,7 @@
             <el-form-item label="车牌号: " class="c-detail-lable">
                 <el-select
                     v-model.trim="searchKey.plateNo"
+                    clearable
                     filterable
                     remote
                     reserve-keyword
@@ -26,6 +27,7 @@
             <el-form-item label="车辆编号: " prop='vehicleId' class="c-detail-lable">
                 <el-select
                     v-model.trim="searchKey.vehicleId"
+                    clearable
                     filterable
                     remote
                     reserve-keyword
