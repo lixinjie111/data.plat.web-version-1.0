@@ -8,18 +8,11 @@ window.config = {
     // websocketUrl:'ws://172.17.1.16:49982/mon',
 
     //外网
-    // baseUrl: 'http://120.133.21.14',
-    // monUrl: 'http://120.133.21.14',
-    // url: 'http://120.133.21.14:9091/dataPlatApp/',//数据平台
-    // operateUrl: 'http://120.133.21.14:9090/operateApp/',//运营平台
-    // downloadUrl: 'http://120.133.21.14:9091/dataPlatApp/cam/download/', //导出&&下载地址
-    // websocketUrl:'ws://120.133.21.14:49982/mon',
-
-    baseUrl: 'http://218.76.44.22',
-    monUrl: 'http://218.76.44.22',
-    url: 'http://218.76.44.22:9091/dataPlatApp/',//数据平台
-    operateUrl: 'http://218.76.44.22:9090/operateApp/',//运营平台
-    downloadUrl: 'http://218.76.44.22:9091/dataPlatApp/cam/download/', //导出&&下载地址
+    baseUrl: 'http://120.133.21.14',
+    monUrl: 'http://120.133.21.14',
+    url: 'http://120.133.21.14:9091/dataPlatApp/',//数据平台
+    operateUrl: 'http://120.133.21.14:9090/operateApp/',//运营平台
+    downloadUrl: 'http://120.133.21.14:9091/dataPlatApp/cam/download/', //导出&&下载地址
     websocketUrl:'ws://120.133.21.14:49982/mon',
 
     version: 1.0,       // 版本号
