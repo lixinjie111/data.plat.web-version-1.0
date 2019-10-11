@@ -14,7 +14,7 @@
 import { Utils } from '@/common/utils/utils.js'
 
 export default {
-    name: 'video',
+    name: 'roadSide',
     data(){
         return {
             keepAliveArr: [],

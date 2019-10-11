@@ -432,32 +432,6 @@ h3.c-title {
 	}
 }
 
-.c-info-tag-desc {
-	margin-top: -20px;
-	border: 1px solid #e6e6e6;
-	border-top: none;
-	line-height: 24px;
-	.title {
-		position: relative;
-		text-align: center;
-		background-color: #fafafa;
-		padding: 10px 0;
-		&:before {
-			content: "";
-			position: absolute;
-			right: 0;
-			top: 0;
-			bottom: 0;
-			width: 1px;
-			background-color: #e6e6e6;
-		}
-	}
-	.desc {
-		padding: 10px 0;
-		text-indent: 10px;
-	}
-}
-
 // 表格里的单元格里的内容超出四行显示省略号
 .c-table-popover-text {
 	@include lineClamp(4);

@@ -60,7 +60,7 @@
         </el-form> 
             <!-- 地图视频模块 -->
             <div class="c-map-video-wrapper">
-                <div class="c-video-wrapper">
+                <div class="c-video-wrapper sl-real-momitor-video">
                     <video-player 
                         class="c-video" 
                         ref="videoPlayer"
@@ -93,8 +93,6 @@
 
 </template>
 <script>
-// 视频插件
-import LivePlayer from '@/common/livePlayer/template.vue';
 import MaxMap from './maxMap.vue';
 import {queryCamList,startStream,queryDeviceType,sendStreamHeart} from '@/api/video';
 import {requestqueryVehicleCamList} from '@/api/search';
@@ -103,7 +101,6 @@ export default {
     name: 'RealMonitor',
     components: {
         MaxMap,
-        LivePlayer
     },
     data(){
         return {
@@ -506,13 +503,7 @@ export default {
 }
 </script>
 <style>
-.sl-real-momitor-video .vjs-text-track-display,
-.sl-real-momitor-video .video-js .vjs-big-play-button,
-.sl-real-momitor-video .vjs-button,
-.sl-real-momitor-video .vjs-time-control {
-    display: none !important;
-}
-.video-js.vjs-paused .vjs-big-play-button{
+.sl-real-momitor-video .video-js.vjs-paused .vjs-big-play-button{
     display: none !important;
 }
 </style>

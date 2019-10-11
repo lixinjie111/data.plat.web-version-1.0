@@ -1,133 +1,44 @@
 
 @import '@/assets/scss/theme.scss';
+@import '@/assets/scss/video.scss';
 // 视频样式
 // .video-js .vjs-big-play-button{
-// 	display: none !important;
+//  display: none !important;
 // }
 // .vjs-error .vjs-error-display .vjs-modal-dialog-content{
-// 	padding:0 !important;
-// 	color: #ccc !important;
-// 	@include layoutMode(both);
+//  padding:0 !important;
+//  color: #ccc !important;
+//  @include layoutMode(both);
 // }
 // .vjs-error .vjs-error-display:before{
-// 	display: none !important;
+//  display: none !important;
 // }
 // .video-js {
-// 	width: 100% !important;
-// 	height: 100% !important;
-// 	padding-top: 0 !important;
+//  width: 100% !important;
+//  height: 100% !important;
+//  padding-top: 0 !important;
 // }
 .c-video-player {
-	&.vjs-custom-skin {
-		.video-js {
-			.vjs-loading-spinner {
-				display: none !important;
-			}
-			.vjs-big-play-button {
-				display: none !important;
-			}
-			.vjs-volume-panel {
-				display: none !important;
-			}
-			.vjs-modal-dialog {
-				display: none !important;
-			}
-			.vjs-picture-in-picture-control {
-				display: none !important;
-			}
-			.vjs-seek-to-live-control {
-				display: none !important;
-			}
-		}
-	}
-}
-
-// 视频盒子
-.c-video-16-9 {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%;
-  background: $black;
-}
-
-.c-video-4-3 {
-  position: relative;
-  width: 100%;
-  padding-bottom: 75%;
-  background: $black;
-}
-
-.c-video {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  background-color: transparent;
-
-  &:hover {
-    .el-icon-refresh {
-      opacity: 1;
+  &.vjs-custom-skin {
+    .video-js {
+      .vjs-loading-spinner {
+        display: none !important;
+      }
+      .vjs-big-play-button {
+        display: none !important;
+      }
+      .vjs-volume-panel {
+        display: none !important;
+      }
+      .vjs-modal-dialog {
+        display: none !important;
+      }
+      .vjs-picture-in-picture-control {
+        display: none !important;
+      }
+      .vjs-seek-to-live-control {
+        display: none !important;
+      }
     }
-  }
-}
-
-.c-video-title {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 3;
-  font-size: 14px;
-  height: 40px;
-  color: #fff;
-  @include layoutMode(all);
-  background: linear-gradient(to bottom, rgba(0, 0 ,0 , .6) 30%, rgba(0, 0 ,0 , 0)); /* 标准的语法 */
-  padding: 0 10px;
-  .title {
-    color: #fff;
-  }
-  .el-icon-refresh {
-    opacity: 0;
-    cursor: pointer;
-  }
-}
-
-.c-video-mask {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 2;
-  background-color: #000;
-  @include layoutMode(both);
-  font-size: 18px;
-  color: #fff;
-
-  [class^="el-icon"],
-  [class*=" el-icon"] {
-    font-size: 50px;
-    font-weight: normal;
-    cursor: pointer;
-  }
-
-  .el-icon-video-play {
-    font-size: 50px;
-  }
-  .el-icon-refresh {
-    font-size: 20px;
-    margin-left: 10px;
-  }
-
-  .c-video-tip {
-    font-size: 14px;
-  }
-
-  .c-empty-box {
-    font-size: 14px;
-    color: #fff;
   }
 }

@@ -1,5 +1,5 @@
 <template> 
-    <div class="c-video-16-9">
+    <div class="c-video-16-9" :class="isStretch ? 'c-video-fullscreen' : ''">
         <div class="c-video">
             <div class="c-video-title">
                 <!-- <span class="title">路侧点：16:9</span> -->
@@ -42,6 +42,10 @@ export default {
             default: false,
             type: Boolean
         },
+        isStretch: {     //是否拉伸，即父级盒子不是16：9或4：3
+            default: false,
+            type: Boolean
+        },
         refreshFlag: {     //是否显示标题栏的刷新按钮
             default: true,
             type: Boolean
@@ -62,7 +66,7 @@ export default {
             },
             videoLoadingDelay: {
                 timer: null,
-                countTime: 10,
+                countTime: 15,
                 count: 0
             },
             player: null,

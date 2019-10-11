@@ -1,5 +1,5 @@
 <template>
-<div class="c-wrapper-20" v-cloak>
+<div class="c-wrapper-20 m-perceptual-data" v-cloak>
     
         <!-- 信息&&地图视频模块 -->
         <div class="c-flex">
@@ -111,11 +111,7 @@
                     </p>
                 </div>
                 <div class="c-video-wrapper c-mt-10">
-                    <video-player 
-                        class="c-video" 
-                        ref="videoPlayer"
-                        :options="playerOptions"
-                    ></video-player>
+                    <div class="c-video" id="cmsplayer"></div>
                     <div class="c-video-mask" v-show='isMaskShow'></div>
                     <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                         <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
@@ -131,8 +127,6 @@
 </div>
 </template>
 <script>
-// 视频插件
-import LivePlayer from '@/common/livePlayer/template.vue';
 import ConvertCoord from'@/common/utils/coordConvert.js';
 import RoadSideInfo from "../roadSideInfo/roadSideInfo.vue";
 import { setInterval, clearInterval, setTimeout } from 'timers';
@@ -142,7 +136,6 @@ export default {
     name:'PerceptualData',
     components:{
         RoadSideInfo,
-        LivePlayer
     },
     data(){
         return{
@@ -165,6 +158,7 @@ export default {
             currentArr: ['N-NJ-0004'],
 
             playerData: null,
+
             roads:[],
             roadSideShow:false,
             provinceLoading:false,
@@ -260,11 +254,6 @@ export default {
             timer: null,
             protocal:'',
             cameraUrl: queryRoadCamListSearch,
-        }
-    },
-    computed: {
-        player() {
-            return this.$refs.videoPlayer.player
         }
     },
     watch: {
@@ -607,10 +596,8 @@ export default {
                         this.camDetail.roadPointId = camerData.rsPtId;
                         this.camDetail.lon = camerData.ptLon;
                         this.camDetail.lat = camerData.ptLat;
-
-                        this.playerOptions.sources[0].src = videoUrl;
                         this.isMaskShow = false;
-                        // this.embedFlash(videoUrl);
+                        this.embedFlash(videoUrl);
                         // console.log(camerData);
                         camerData.isOn = true;
                         camerData.icon = "sl-pause-icon";
@@ -760,83 +747,76 @@ export default {
     }
 }
 </script>
-<style lang="scss" scoped>
-.road-cam-box{
-    position: relative;
-    width:290px;
-    padding:10px;
-    box-sizing: border-box;
-    line-height: 20px;
-    border: 10px solid #fff;
-    .cam-title{
-        font-size:14px;
-        text-align: left;
-        font-weight: 700;
-        padding-top:4px;
-    }
-}
-.custom-tree-node {
-    &.sl-custom-tree-node {
-        margin-left: -16px;
-    }
-    .sl-video-icon {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        background:url(../../../../static/icon/btn-play.png) center center no-repeat;
-        background-size: 10px 10px;
-        vertical-align: middle;
-    }
-    .sl-play-text {
-        vertical-align: middle;
-    }
-}
-</style>
 <style lang="scss">
 @import '@/assets/scss/theme.scss';
-.carm-oragn-sels {
-    &.el-tree{
-        position: absolute;
-        top: 156px;
-        left: 10px;
-        right: 10px;
-        bottom: 0;
-        overflow-y: auto;
-        .el-tree__empty-block {
+.m-perceptual-data {
+    .road-cam-box{
+        position: relative;
+        width:290px;
+        padding:10px;
+        box-sizing: border-box;
+        line-height: 20px;
+        border: 10px solid #fff;
+        .cam-title{
+            font-size:14px;
+            text-align: left;
+            font-weight: 700;
+            padding-top:4px;
+        }
+    }
+    .custom-tree-node {
+        &.sl-custom-tree-node {
+            margin-left: -16px;
+        }
+        .sl-video-icon {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background:url(../../../../static/icon/btn-play.png) center center no-repeat;
+            background-size: 10px 10px;
+            vertical-align: middle;
+        }
+        .sl-play-text {
+            vertical-align: middle;
+        }
+    }
+    .carm-oragn-sels {
+        &.el-tree{
             position: absolute;
-            left: 0;
-            right: 0;
+            top: 156px;
+            left: 10px;
+            right: 10px;
             bottom: 0;
-            top: 0;
+            overflow-y: auto;
+            .el-tree__empty-block {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                top: 0;
+            }
+        }    
+        .is-current.is-expanded .sl-play-icon {
+            background-image:url(../../../../static/icon/btn-play.png);
         }
-    }    
-    .is-current.is-expanded .sl-play-icon {
-        background-image:url(../../../../static/icon/btn-play.png);
-    }
-    .is-current .sl-pause-icon {
-        background-image:url(../../../../static/icon/btn-pause.png);
-    }
-}
-.carm-oragn-info {
-    .el-form.el-form--inline .el-input__inner {
-        width: 130px !important;
-    }
-    .el-form-item {
-        margin: 0 !important;
-    }
-}
-.c-map-info{
-    &.c-icon-map-info{
-        .c-map-info-list{
-            width:55%;
+        .is-current .sl-pause-icon {
+            background-image:url(../../../../static/icon/btn-pause.png);
         }
     }
-}
-.video-js.vjs-ended .vjs-big-play-button, .video-js.vjs-paused .vjs-big-play-button, .vjs-paused.vjs-has-started.vjs-custom-skin>.video-js .vjs-big-play-button{
-    display:none;
-}
-.sl-custom-yellow{
-    color:#f49308;
+    .carm-oragn-info {
+        .el-form.el-form--inline .el-input__inner {
+            width: 130px !important;
+        }
+        .el-form-item {
+            margin: 0 !important;
+        }
+    }
+    .video-js.vjs-ended .vjs-big-play-button, .video-js.vjs-paused .vjs-big-play-button, .vjs-paused.vjs-has-started.vjs-custom-skin>.video-js .vjs-big-play-button{
+        display:none;
+    }
+    .sl-custom-yellow{
+        color:#f49308;
+    }
 }
 </style>
 

@@ -2,13 +2,13 @@
 <div v-cloak>
         <el-form :inline="true" :model="searchKey" ref="searchForm" size='small'>
             <el-form-item label="CAN数据编号" prop='sid'>
-                <el-input v-model.trim="searchKey.sid"></el-input>
+                <el-input v-model.trim="searchKey.sid" clearable></el-input>
             </el-form-item>
             <el-form-item label="英文名称" prop='enName'>
-                <el-input v-model.trim="searchKey.enName"></el-input>
+                <el-input v-model.trim="searchKey.enName" clearable></el-input>
             </el-form-item>
             <el-form-item label="中文名称" prop='chName'>
-                <el-input v-model.trim="searchKey.chName"></el-input>
+                <el-input v-model.trim="searchKey.chName" clearable></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick">查询</el-button>
