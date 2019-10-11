@@ -147,6 +147,19 @@
 .c-font-16 {
 	font-size: 16px !important;
 }
+//外壳 间距统
+.c-wrapper-10 {
+	margin: 10px;
+}
+.c-wrapper-20 {
+	margin: 20px;
+}
+.c-padding-10 {
+	padding: 10px;
+}
+.c-padding-20 {
+	padding: 20px;
+}
 //间距
 .c-ml-10 {
 	margin-left: 10px;
@@ -205,19 +218,6 @@
 }
 .c-border-bottom {
 	border-bottom: 1px solid $borderColor;
-}
-//外壳 间距统
-.c-wrapper-10 {
-	margin: 10px;
-}
-.c-wrapper-20 {
-	margin: 20px;
-}
-.c-padding-10 {
-	padding: 10px;
-}
-.c-padding-20 {
-	padding: 20px;
 }
 
 .c-width-precent-30 {
@@ -326,10 +326,6 @@ h3.c-title {
 	height: 62px;
 }
 
-.c-flex {
-	flex: 1;
-}
-
 .c-red {
 	color: $red !important;
 }
@@ -436,9 +432,41 @@ h3.c-title {
 	}
 }
 
+.c-info-tag-desc {
+	margin-top: -20px;
+	border: 1px solid #e6e6e6;
+	border-top: none;
+	line-height: 24px;
+	.title {
+		position: relative;
+		text-align: center;
+		background-color: #fafafa;
+		padding: 10px 0;
+		&:before {
+			content: "";
+			position: absolute;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			width: 1px;
+			background-color: #e6e6e6;
+		}
+	}
+	.desc {
+		padding: 10px 0;
+		text-indent: 10px;
+	}
+}
+
 // 表格里的单元格里的内容超出四行显示省略号
 .c-table-popover-text {
 	@include lineClamp(4);
+}
+.c-table-popover-text-2 {
+	@include lineClamp(2);
+}
+.c-table-popover-text-1 {
+	@include lineClamp(1);
 }
 // 单元格里的popover提示框
 .c-table-popover {
@@ -461,6 +489,21 @@ h3.c-title {
 }
 .c-flex-1 {
     flex: 1;
+}
+.c-flex-2 {
+    flex: 2;
+}
+.c-flex-3 {
+    flex: 3;
+}
+.c-flex-4 {
+    flex: 4;
+}
+.c-flex-5 {
+    flex: 5;
+}
+.c-flex-6 {
+    flex: 6;
 }
 
 // 为空

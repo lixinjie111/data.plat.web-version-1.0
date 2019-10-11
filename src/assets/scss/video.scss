@@ -1,0 +1,96 @@
+@charset "UTF-8";
+@import './theme.scss';
+// 视频盒子
+.c-video-16-9 {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  background: #000;
+}
+
+.c-video-4-3 {
+  position: relative;
+  width: 100%;
+  padding-bottom: 75%;
+  background: #000;
+}
+
+.c-video-fullscreen {
+  padding-bottom: 0;
+  height: 100%;
+}
+
+.c-video {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  overflow: hidden;
+  &:hover {
+    .el-icon-refresh {
+      opacity: 1;
+    }
+  }
+}
+
+.c-video-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  font-size: 14px;
+  height: 40px;
+  color: #fff;
+  @include layoutMode(all);
+  background: linear-gradient(to bottom, rgba(0, 0 ,0 , .6) 30%, rgba(0, 0 ,0 , 0)); /* 标准的语法 */
+  padding: 0 10px;
+  .title {
+    color: #fff;
+  }
+  .el-icon-refresh {
+    opacity: 0;
+    cursor: pointer;
+  }
+}
+
+.c-video-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  background-color: #000;
+  @include layoutMode(both);
+  font-size: 18px;
+  color: #fff;
+
+  [class^="el-icon"],
+  [class*=" el-icon"] {
+    font-size: 50px;
+    font-weight: normal;
+    cursor: pointer;
+  }
+
+  .el-icon-video-play {
+    font-size: 50px;
+  }
+  .el-icon-refresh {
+    font-size: 20px;
+    margin-left: 10px;
+  }
+
+  .c-video-tip {
+    font-size: 14px;
+  }
+
+  .c-empty-box {
+    font-size: 14px;
+    color: #fff;
+  }
+}

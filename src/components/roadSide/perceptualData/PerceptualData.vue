@@ -111,7 +111,11 @@
                     </p>
                 </div>
                 <div class="c-video-wrapper c-mt-10">
-                    <div class="c-video" id="cmsplayer"></div>
+                    <video-player 
+                        class="c-video" 
+                        ref="videoPlayer"
+                        :options="playerOptions"
+                    ></video-player>
                     <div class="c-video-mask" v-show='isMaskShow'></div>
                     <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                         <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
@@ -127,6 +131,8 @@
 </div>
 </template>
 <script>
+// 视频插件
+import LivePlayer from '@/common/livePlayer/template.vue';
 import ConvertCoord from'@/common/utils/coordConvert.js';
 import RoadSideInfo from "../roadSideInfo/roadSideInfo.vue";
 import { setInterval, clearInterval, setTimeout } from 'timers';
@@ -136,6 +142,7 @@ export default {
     name:'PerceptualData',
     components:{
         RoadSideInfo,
+        LivePlayer
     },
     data(){
         return{
@@ -158,7 +165,6 @@ export default {
             currentArr: ['N-NJ-0004'],
 
             playerData: null,
-
             roads:[],
             roadSideShow:false,
             provinceLoading:false,
@@ -213,12 +219,52 @@ export default {
                 offset: new AMap.Pixel(0, -33),
                 anchor: 'bottom-center'
             }),
+            playerOptions: {
+                overNative: true,
+                autoplay: true,
+                controls: true,
+                techOrder: ['flash', 'html5'],
+                sourceOrder: true,
+                flash: {
+                  // swf: '../../../../static/media/video-js.swf'
+                    // swf: '/static/media/video-js.swf'       
+                    swf: '/static/media/video-js.swf'
+                    // swf: isProduction ? '/dataManage/static/media/video-js.swf' : './static/media/video-js.swf'
+                },
+                muted: true, // 默认情况下将会消除任何音频。
+                loop: false, // 导致视频一结束就重新开始。
+                preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+                language: 'zh-CN',
+                aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+                fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+                sources: [
+                    {
+                        // type: 'rtmp/mp4',
+                        type: 'rtmp/flv',
+                        // type: 'rtmp',
+                        src: ''
+                    }
+                ],
+                // width: document.documentElement.clientWidth,
+                notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+                // controlBar: {
+                //     timeDivider: false,
+                //     durationDisplay: false,
+                //     remainingTimeDisplay: false,
+                //     fullscreenToggle: true  //全屏按钮
+                // }
+            },
             isSearch:false,
             // selectDeviceId:'',
             // selectSerialNum:'',
             timer: null,
             protocal:'',
             cameraUrl: queryRoadCamListSearch,
+        }
+    },
+    computed: {
+        player() {
+            return this.$refs.videoPlayer.player
         }
     },
     watch: {
@@ -561,8 +607,10 @@ export default {
                         this.camDetail.roadPointId = camerData.rsPtId;
                         this.camDetail.lon = camerData.ptLon;
                         this.camDetail.lat = camerData.ptLat;
+
+                        this.playerOptions.sources[0].src = videoUrl;
                         this.isMaskShow = false;
-                        this.embedFlash(videoUrl);
+                        // this.embedFlash(videoUrl);
                         // console.log(camerData);
                         camerData.isOn = true;
                         camerData.icon = "sl-pause-icon";

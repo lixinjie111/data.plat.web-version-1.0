@@ -52,14 +52,17 @@ class TDate {
         return d.getFullYear() + m + day + h + min + ss;
     }
     static timeStampChange(t){//时间戳转yyyyMMddHHmmss时间格式
-        var d = new Date(t);  
-        var m = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1);
-        var day = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
-        var h = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
-        var min = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
-        var ss = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
-        var millisecond = d.getMilliseconds() < 100 ? '0' + d.getMilliseconds() : d.getMilliseconds();
-        return d.getFullYear() + m + day + h + min + ss + millisecond;
+        var strDate = '';
+        var date = new Date(t);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        var Y = (date.getFullYear()).toString();
+        var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1);
+        var D = (date.getDate() < 10 ? '0'+date.getDate() : date.getDate());
+        var h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours());
+        var m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes());
+        var s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+        var ss = date.getMilliseconds() < 10 ? '0' + date.getMilliseconds() : date.getMilliseconds();  
+        strDate = Y+M+D+h+m+s+ss;
+        return strDate;
     }
     static timeToConversion(t){//国际标准时间转yyyy-MM-dd HH:mm:ss时间格式
         var d = new Date(t);  

@@ -33,9 +33,16 @@
             </div>
             <div class="c-map-video-wrapper c-mt-20">
                 <div class="c-video-wrapper">
-                    <video class="c-video" controls preload="auto">
+                    <div class="c-video">
+                        <video-player 
+                            :requestVideoUrl="camDetail.videoPath"
+                            type="mp4"
+                            :autoplay="false">
+                        </video-player>
+                    </div>
+                    <!-- <video class="c-video" controls preload="auto">
                         <source :src="camDetail.videoPath" type="video/mp4">
-                    </video>
+                    </video> -->
                 </div>
                 <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                     <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
@@ -52,11 +59,14 @@
     </div>
     </template>
     <script>
+    // 视频插件
+    import VideoPlayer from '@/common/videoPlayer/template'
     import {queryRoadCamCoordinate} from '@/api/roadSide'
     import ConvertCoord from'@/common/utils/coordConvert.js';
     export default {
         name:'RoadVideoReplay',
         components:{
+            VideoPlayer
         },
         data(){
             return{

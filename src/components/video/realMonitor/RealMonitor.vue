@@ -93,6 +93,8 @@
 
 </template>
 <script>
+// 视频插件
+import LivePlayer from '@/common/livePlayer/template.vue';
 import MaxMap from './maxMap.vue';
 import {queryCamList,startStream,queryDeviceType,sendStreamHeart} from '@/api/video';
 import {requestqueryVehicleCamList} from '@/api/search';
@@ -101,6 +103,7 @@ export default {
     name: 'RealMonitor',
     components: {
         MaxMap,
+        LivePlayer
     },
     data(){
         return {
