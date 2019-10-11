@@ -240,8 +240,8 @@ export default {
                 sources: [
                     {
                         // type: 'rtmp/mp4',
-                        type: 'rtmp/flv',
-                        // type: 'rtmp',
+                        // type: 'rtmp/flv',
+                        type: 'rtmp',
                         src: ''
                     }
                 ],
