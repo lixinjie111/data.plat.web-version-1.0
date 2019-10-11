@@ -690,6 +690,9 @@ export default {
 <style lang="scss">
 .sl-video-player {
     position: relative;
+    .vjs-modal-dialog {
+        display: none !important;
+    }
 }
 .sl-video-player:after {
     content: '';
