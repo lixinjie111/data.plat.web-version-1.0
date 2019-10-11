@@ -61,13 +61,13 @@
             <!-- 地图视频模块 -->
             <div class="c-map-video-wrapper">
                 <div class="c-video-wrapper">
-                    <video-player 
-                        class="c-video" 
-                        ref="videoPlayer"
-                        :options="playerOptions"
-                        @ended="onPlayerEnded"
-                    ></video-player>
-                    <div class='c-video-mask' v-show='isMaskShow'></div>
+                    <live-player 
+                        :requestVideoUrl="rtmpUrl"
+                        type="rtmp"
+                        :autoplay="true"
+                        >
+                    </live-player>
+                    <!-- <div class='c-video-mask' v-show='isMaskShow'></div> -->
                 </div>
                 <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                     <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
@@ -114,6 +114,7 @@ export default {
             playTimer:null,
             old_time:null,
             totalTime:0,
+            rtmpUrl:'',
             totalTimeformat:'',
             isStart:false,
             isDisabled: true,
@@ -143,47 +144,7 @@ export default {
                 timer: null,
                 filterOption: [],
                 defaultFilterOption:[]
-            },
-            playerOptions: {
-                overNative: true,
-                autoplay: true,
-                controls: true,
-                techOrder: ['flash', 'html5'],
-                sourceOrder: true,
-                flash: {
-                  // swf: '../../../../static/media/video-js.swf'
-                    // swf: '/static/media/video-js.swf'       
-                    // swf: '/static/media/video-js.swf'
-                    swf: isProduction ? '/dataManage/static/media/video-js.swf' : './static/media/video-js.swf'
-                },
-                muted: true, // 默认情况下将会消除任何音频。
-                loop: false, // 导致视频一结束就重新开始。
-                preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
-                language: 'zh-CN',
-                aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-                fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-                sources: [
-                    {
-                        // type: 'rtmp/mp4',
-                        type: 'rtmp/flv',
-                        // type: 'rtmp',
-                        src: ''
-                    }
-                ],
-                // width: document.documentElement.clientWidth,
-                notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
-                // controlBar: {
-                //     timeDivider: false,
-                //     durationDisplay: false,
-                //     remainingTimeDisplay: false,
-                //     fullscreenToggle: true  //全屏按钮
-                // }
             }
-        }
-    },
-    computed: {
-        player() {
-            return this.$refs.videoPlayer.player
         }
     },
     mounted() {
@@ -512,7 +473,7 @@ export default {
 .sl-real-momitor-video .vjs-time-control {
     display: none !important;
 }
-.video-js.vjs-paused .vjs-big-play-button{
-    display: none !important;
+.c-map-video-wrapper .c-video-wrapper{
+    padding-bottom:0;
 }
 </style>

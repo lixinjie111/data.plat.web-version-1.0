@@ -110,12 +110,13 @@
                         <span class="value c-blue c-hover-underline" v-else ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{camDetail.roadPointName}}</span>
                     </p>
                 </div>
-                <div class="c-video-wrapper c-mt-10">
-                    <video-player 
-                        class="c-video" 
-                        ref="videoPlayer"
-                        :options="playerOptions"
-                    ></video-player>
+                <div class="c-mt-10">
+                    <live-player 
+                        :requestVideoUrl="rtmpUrl"
+                        type="rtmp"
+                        :autoplay="false"
+                        >
+                    </live-player>
                     <div class="c-video-mask" v-show='isMaskShow'></div>
                     <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                         <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
@@ -154,6 +155,7 @@ export default {
                 code: '',
                 serialNum:''
             },
+            rtmpUrl:"",
             // defaultData: {
             //     code: 'N-NJ-0004',
             //     serialNum: '3402000000132000003001'
@@ -219,52 +221,12 @@ export default {
                 offset: new AMap.Pixel(0, -33),
                 anchor: 'bottom-center'
             }),
-            playerOptions: {
-                overNative: true,
-                autoplay: true,
-                controls: true,
-                techOrder: ['flash', 'html5'],
-                sourceOrder: true,
-                flash: {
-                  // swf: '../../../../static/media/video-js.swf'
-                    // swf: '/static/media/video-js.swf'       
-                    swf: '/static/media/video-js.swf'
-                    // swf: isProduction ? '/dataManage/static/media/video-js.swf' : './static/media/video-js.swf'
-                },
-                muted: true, // 默认情况下将会消除任何音频。
-                loop: false, // 导致视频一结束就重新开始。
-                preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
-                language: 'zh-CN',
-                aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-                fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-                sources: [
-                    {
-                        // type: 'rtmp/mp4',
-                        type: 'rtmp/flv',
-                        // type: 'rtmp',
-                        src: ''
-                    }
-                ],
-                // width: document.documentElement.clientWidth,
-                notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
-                // controlBar: {
-                //     timeDivider: false,
-                //     durationDisplay: false,
-                //     remainingTimeDisplay: false,
-                //     fullscreenToggle: true  //全屏按钮
-                // }
-            },
             isSearch:false,
             // selectDeviceId:'',
             // selectSerialNum:'',
             timer: null,
             protocal:'',
             cameraUrl: queryRoadCamListSearch,
-        }
-    },
-    computed: {
-        player() {
-            return this.$refs.videoPlayer.player
         }
     },
     watch: {
@@ -565,28 +527,6 @@ export default {
                 }
             }
         },
-        embedFlash(rtmpSource){//部署用此段
-            var flashVars = "&src=";
-            flashVars += rtmpSource; //视频文件
-            flashVars += "&autoHideControlBar=true";
-            flashVars += "&streamType=";
-            flashVars += "live";// vod点播 live直播直播
-            flashVars += "&autoPlay=true";
-            flashVars += "&verbose=true";
-
-            var embedCode =  '<object id="flashPlayer" name="flashPlayer" width="100%" height="100%" type="application/x-shockwave-flash"> ';
-            embedCode += '<param name="movie" value="static/swf/StrobeMediaPlayback.swf"></param>';
-            embedCode += '<param name="flashvars" value="' + flashVars + '"></param>';
-            embedCode += '<param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param>';
-            embedCode += '<param name="wmode" value="opaque"></param>';
-            embedCode += '<embed  id="flashPlayer" name="flashPlayer" src="static/swf/StrobeMediaPlayback.swf" type="application/x-shockwave-flash"';
-            embedCode += ' allowscriptaccess="always" allowfullscreen="true" ';
-            embedCode += ' wmode="opaque" ';
-            embedCode += ' width="100%" height="100%" ';
-            embedCode += 'flashvars="' + flashVars + '">';
-            embedCode += '</embed></object>';
-            document.getElementById("cmsplayer").innerHTML = embedCode;
-        },
         startPlay(camerData){
             if(this.playerData) {
                 this.endPlay();
@@ -607,10 +547,9 @@ export default {
                         this.camDetail.roadPointId = camerData.rsPtId;
                         this.camDetail.lon = camerData.ptLon;
                         this.camDetail.lat = camerData.ptLat;
-
-                        this.playerOptions.sources[0].src = videoUrl;
+                        this.rtmpUrl = videoUrl;
+                        console.log(this.rtmpUrl);
                         this.isMaskShow = false;
-                        // this.embedFlash(videoUrl);
                         // console.log(camerData);
                         camerData.isOn = true;
                         camerData.icon = "sl-pause-icon";
@@ -836,9 +775,6 @@ export default {
             width:55%;
         }
     }
-}
-.video-js.vjs-ended .vjs-big-play-button, .video-js.vjs-paused .vjs-big-play-button, .vjs-paused.vjs-has-started.vjs-custom-skin>.video-js .vjs-big-play-button{
-    display:none;
 }
 .sl-custom-yellow{
     color:#f49308;
