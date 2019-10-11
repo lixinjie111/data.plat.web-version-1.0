@@ -25,10 +25,10 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="事件名称" prop='eventName'>
-                    <el-input v-model.trim="searchKey.eventName"></el-input>
+                    <el-input v-model.trim="searchKey.eventName" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="事件编号" prop='eventNo'>
-                    <el-input v-model.trim="searchKey.eventNo"></el-input>
+                    <el-input v-model.trim="searchKey.eventNo" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="事件触发时间" prop='time'>
                     <el-date-picker

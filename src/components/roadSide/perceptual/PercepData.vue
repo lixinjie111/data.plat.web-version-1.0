@@ -5,6 +5,7 @@
             <el-form-item label="路侧点名称:" prop='rsPtName'>
                 <el-select
                     v-model.trim="searchKey.rsPtName"
+                    clearable
                     filterable
                     remote
                     reserve-keyword
@@ -25,6 +26,7 @@
             <el-form-item label="摄像头编号: " prop="deviceId">
                 <el-select
                     v-model.trim="searchKey.deviceId"
+                    clearable
                     filterable
                     remote
                     reserve-keyword
@@ -46,9 +48,9 @@
                 <el-form-item label="摄像头序列号: " prop="serialNum">
                     <el-select
                         v-model.trim="searchKey.serialNum"
+                        clearable
                         filterable
                         remote
-                        class='m-padright-15'
                         reserve-keyword
                         placeholder="请输入关键词"
                         value-key="serialNum"
@@ -602,8 +604,3 @@ export default {
     },
 }
 </script>
-<style>
-.m-padright-15 .el-input--suffix .el-input__inner{
-    padding-right:15px !important;
-}
-</style>
