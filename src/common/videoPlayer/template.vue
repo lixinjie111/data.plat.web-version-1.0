@@ -1,5 +1,5 @@
 <template> 
-    <div class="c-video-16-9">
+    <div class="c-video-16-9" :class="isStretch ? 'c-video-fullscreen' : ''">
         <div class="c-video">
             <div class="c-video-title">
                 <!-- <span class="title">路侧点：16:9</span> -->
@@ -39,6 +39,10 @@ export default {
         type: String,   //视频字段名
         videoType: String,   //视频类型
         liveFlag: {     //是否是直播
+            default: false,
+            type: Boolean
+        },
+        isStretch: {     //是否拉伸，即父级盒子不是16：9或4：3
             default: false,
             type: Boolean
         },
