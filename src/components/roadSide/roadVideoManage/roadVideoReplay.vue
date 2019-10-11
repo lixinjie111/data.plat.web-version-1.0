@@ -36,7 +36,6 @@
                     <div class="c-video">
                         <video-player 
                             :requestVideoUrl="camDetail.videoPath"
-                            type="mp4"
                             :autoplay="false">
                         </video-player>
                     </div>

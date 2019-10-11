@@ -33,7 +33,6 @@
                     <div class="c-video">
                         <video-player 
                             :requestVideoUrl="videoPath"
-                            type="mp4"
                             :autoplay="false"
                             @videoLoadCompleted="videoLoadCompleted"
                             @videoTimeupdate="videoProcess">
