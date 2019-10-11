@@ -113,8 +113,8 @@
                 <div class="c-mt-10">
                     <live-player 
                         :requestVideoUrl="rtmpUrl"
-                        type="rtmp"
-                        :autoplay="false"
+                        :autoplay="true"
+                        :refreshFlag="false"
                         >
                     </live-player>
                     <div class="c-video-mask" v-show='isMaskShow'></div>

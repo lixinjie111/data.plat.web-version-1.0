@@ -65,6 +65,7 @@
                         :requestVideoUrl="rtmpUrl"
                         type="rtmp"
                         :autoplay="true"
+                        :refreshFlag="false"
                         >
                     </live-player>
                     <!-- <div class='c-video-mask' v-show='isMaskShow'></div> -->
@@ -180,7 +181,7 @@ export default {
         },
         realMonit(){
             if(this.searchKey.vehicleId != ''){
-                if(this.playerOptions.sources[0].src){
+                if(this.rtmpUrl){
                     this.isStart = true;
                     this.isMaskShow = false;
                     // this.player.play();
@@ -206,7 +207,7 @@ export default {
                             if(res.status == '200'){
                                 //获取视频地址并赋值
                                 let videoUrl = res.data.rtmp;
-                                this.playerOptions.sources[0].src = videoUrl;
+                                this.rtmpUrl = videoUrl;
                                 // this.player.load(videoUrl);
                                 //直播报活调用
                                 this.repeatFn();
@@ -450,7 +451,8 @@ export default {
             this.resetVideoMap(val);
         },
         resetVideoMap(val){
-            this.playerOptions.sources[0].src = '';
+            this.rtmpUrl = '';
+            // this.playerOptions.sources[0].src = '';
             this.protocal = val.protocol;
             let protocal = JSON.stringify(this.protocal);
             localStorage.setItem('protocal',protocal);

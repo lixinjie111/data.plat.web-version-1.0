@@ -80,6 +80,9 @@ export default {
     },
     watch: {
         deep: true,
+        'requestVideoUrl'(newVal,oldVal){
+            console.log(newVal);
+        },
         'videoOption.loadingFlag'(newVal, oldVal) {
             this.initVideoTimer();
             if(newVal) {
