@@ -821,9 +821,9 @@ export default {
     // .video-js.vjs-ended .vjs-big-play-button, .video-js.vjs-paused .vjs-big-play-button, .vjs-paused.vjs-has-started.vjs-custom-skin>.video-js .vjs-big-play-button{
     //     display:none;
     // }
-    // .sl-custom-yellow{
-    //     color:#f49308;
-    // }
+    .sl-custom-yellow{
+        color:#f49308;
+    }
 }
 </style>
 
