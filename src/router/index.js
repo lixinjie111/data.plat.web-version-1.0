@@ -35,6 +35,7 @@ const WeatherData = resolve => require(['@/components/platform/weatherData/Weath
 
 // 系统管理
 const SysManage = resolve => require(['@/components/system/SysManage.vue'], resolve)
+const Logs = resolve => require(['@/components/system/logs/index.vue'], resolve)
 
 // 车辆管理
 const VehilcleManage = resolve => require(['@/components/vehicle/vehicle.vue'], resolve)
