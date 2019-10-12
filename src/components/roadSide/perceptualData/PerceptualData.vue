@@ -554,31 +554,44 @@ export default {
             }).then(res =>{
                 if(res.status == '200') {
                     let videoUrl = res.data.rtmp;
-                    if(videoUrl) {
-                        this.camDetail.camId = camerData.serialNum;
-                        this.camDetail.camCode = camerData.label;
-                        this.camDetail.roadName = camerData.roadName;
-                        this.camDetail.roadPointName = camerData.rsPtName;
-                        this.camDetail.roadPointId = camerData.rsPtId;
-                        this.camDetail.lon = camerData.ptLon;
-                        this.camDetail.lat = camerData.ptLat;
-                        this.isMaskShow = false;
-                        this.embedFlash(videoUrl);
-                        // console.log(camerData);
-                        camerData.isOn = true;
-                        camerData.icon = "sl-pause-icon";
-                        this.playerData = camerData;
-                    }else {
-                        let _message = res.data.message;
-                        camerData.isOn = false;
-                        camerData.icon = "sl-play-icon";
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: _message,
-                            showClose: true
-                        });
-                    }
+                    this.camDetail.camId = camerData.serialNum;
+                    this.camDetail.camCode = camerData.label;
+                    this.camDetail.roadName = camerData.roadName;
+                    this.camDetail.roadPointName = camerData.rsPtName;
+                    this.camDetail.roadPointId = camerData.rsPtId;
+                    this.camDetail.lon = camerData.ptLon;
+                    this.camDetail.lat = camerData.ptLat;
+                    this.isMaskShow = false;
+                    this.embedFlash(videoUrl);
+                    // console.log(camerData);
+                    camerData.isOn = true;
+                    camerData.icon = "sl-pause-icon";
+                    this.playerData = camerData;
+                    // if(videoUrl) {
+                    //     this.camDetail.camId = camerData.serialNum;
+                    //     this.camDetail.camCode = camerData.label;
+                    //     this.camDetail.roadName = camerData.roadName;
+                    //     this.camDetail.roadPointName = camerData.rsPtName;
+                    //     this.camDetail.roadPointId = camerData.rsPtId;
+                    //     this.camDetail.lon = camerData.ptLon;
+                    //     this.camDetail.lat = camerData.ptLat;
+                    //     this.isMaskShow = false;
+                    //     this.embedFlash(videoUrl);
+                    //     // console.log(camerData);
+                    //     camerData.isOn = true;
+                    //     camerData.icon = "sl-pause-icon";
+                    //     this.playerData = camerData;
+                    // }else {
+                    //     let _message = res.message;
+                    //     camerData.isOn = false;
+                    //     camerData.icon = "sl-play-icon";
+                    //     this.$message({
+                    //         type: 'error',
+                    //         duration: '1500',
+                    //         message: _message,
+                    //         showClose: true
+                    //     });
+                    // }
                 }else {
                     camerData.isOn = false;
                     camerData.icon = "sl-play-icon";
