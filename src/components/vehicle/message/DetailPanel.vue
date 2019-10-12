@@ -125,46 +125,4 @@
     margin-bottom: 10px;
 }
 
-.yk-sub-box{
-    margin: 10px 0px;
-    position: relative;
-    background: #F7F9FA;
-}
-
-.yk-s-block{
-    display: inline-block;
-    vertical-align: top;
-    background: #fff;
-    height: 160px;
-    width: 22%;
-}
-.yk-s-block:hover{
-    border: 2px solid #00c1de;
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    -ms-border-radius: 3px;
-    -o-border-radius: 3px;
-}
-
-.yk-t-color{
-    background: #F7F9FA!important;
-}
-
-.yk-s-block .title{
-    text-align: left;
-    height: 36px;
-    line-height: 36px;
-    font-size: 16px;
-    color: #5F6E82;
-    padding-left: 10px;
-}
-.yk-s-block .body{
-    font-size: 42px;
-    color: #475669;
-    padding: 10px;
-}
-.yk-top150{
-    margin-top: 150px!important;
-}
 </style>

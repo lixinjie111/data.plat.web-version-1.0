@@ -422,9 +422,10 @@ export default {
                                 obj.cameraRunStatus = item.cameraRunStatus;
                                 obj.type = 3;
                                 obj.leaf = true;
-                                if(obj.cameraRunStatus == '1'){
-                                    obj.isHaveVideo = true;
-                                }
+                                obj.isHaveVideo = true;
+                                // if(obj.cameraRunStatus == '1'){
+                                //     obj.isHaveVideo = true;
+                                // }
                                 // console.log("this.currentVideoNode.code:--"+this.currentVideoNode.code, "obj.code:--"+obj.code);
                                 if(this.currentVideoNode.code == obj.code){
                                     this.currentArr = [];
@@ -473,7 +474,7 @@ export default {
             }else{
                 // this.currentVideoNode.isOn = false;
                 // this.currentVideoNode.icon = "sl-play-icon";
-                if(camStatus == 1){//在线
+                if(camStatus == 1 || camStatus == 0 || camStatus == 2 || camStatus == 3 ){//在线
                     if(data.isOn) {
                         data.isOn = false;
                         data.icon = "sl-play-icon";
@@ -495,22 +496,22 @@ export default {
                     this.camDetail.camCode = '';
                     this.camDetail.camId = '';
                     this.camDetail.roadPointName = '';
-                    let _message = '';
-                    if(camStatus == '0'){//未知
-                        _message = '摄像头未注册!';
-                    }else if(camStatus == '2'){//离线
-                        _message = '摄像头为离线状态!';
-                    }else if(camStatus == '3'){//
-                        _message = '未知摄像头!';
-                    }
-                    if(_message) {
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: _message,
-                            showClose: true
-                        });
-                    }
+                    // let _message = '';
+                    // if(camStatus == '0'){//未注册
+                    //     _message = '摄像头未注册!';
+                    // }else if(camStatus == '2'){//离线
+                    //     _message = '摄像头为离线状态!';
+                    // }else if(camStatus == '3'){//未知
+                    //     _message = '未知摄像头!';
+                    // }
+                    // if(_message) {
+                    //     this.$message({
+                    //         type: 'error',
+                    //         duration: '1500',
+                    //         message: _message,
+                    //         showClose: true
+                    //     });
+                    // }
                     if(this.playerData) {      
                         data.isOn = false;
                         data.icon = "sl-play-icon";
@@ -568,12 +569,13 @@ export default {
                         camerData.icon = "sl-pause-icon";
                         this.playerData = camerData;
                     }else {
+                        let _message = res.data.message;
                         camerData.isOn = false;
                         camerData.icon = "sl-play-icon";
                         this.$message({
                             type: 'error',
                             duration: '1500',
-                            message: "视频地址为空，暂无法播放",
+                            message: _message,
                             showClose: true
                         });
                     }
@@ -781,9 +783,9 @@ export default {
             margin: 0 !important;
         }
     }
-    .video-js.vjs-ended .vjs-big-play-button, .video-js.vjs-paused .vjs-big-play-button, .vjs-paused.vjs-has-started.vjs-custom-skin>.video-js .vjs-big-play-button{
-        display:none;
-    }
+    // .video-js.vjs-ended .vjs-big-play-button, .video-js.vjs-paused .vjs-big-play-button, .vjs-paused.vjs-has-started.vjs-custom-skin>.video-js .vjs-big-play-button{
+    //     display:none;
+    // }
     .sl-custom-yellow{
         color:#f49308;
     }
