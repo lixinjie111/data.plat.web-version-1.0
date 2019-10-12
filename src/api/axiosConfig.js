@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import axios from 'axios';
+// import Vue from 'vue';
+// import axios from 'axios';
 import Qs from 'qs'
 
 // axios.defaults.withCredentials = true;
