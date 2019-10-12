@@ -1,8 +1,8 @@
 // import Vue from 'vue'
-// import Vuex from 'vuex'
+// import VueX from 'vuex'
 import { Utils } from '@/common/utils/utils.js'
 
-// Vue.use(Vuex)
+// Vue.use(VueX)
 
 const store = new Vuex.Store({
     state: {

@@ -93,6 +93,10 @@
 
 </template>
 <script>
+import videoPlayer  from 'vue-video-player'
+import 'video.js/dist/video-js.css'
+import 'vue-video-player/src/custom-theme.css'
+import 'videojs-flash'
 import MaxMap from './maxMap.vue';
 import {queryCamList,startStream,queryDeviceType,sendStreamHeart} from '@/api/video';
 import {requestqueryVehicleCamList} from '@/api/search';
@@ -101,6 +105,7 @@ export default {
     name: 'RealMonitor',
     components: {
         MaxMap,
+        videoPlayer
     },
     data(){
         return {
@@ -298,7 +303,9 @@ export default {
             clearTimeout(this.timer);
             this.isMaskShow = true;
             this.isStart = false;
-            this.player.pause();
+            if(this.player) {
+                this.player.pause();
+            }
             this.$refs.maxMap.removeMasks();
         },
         getCurTime(){

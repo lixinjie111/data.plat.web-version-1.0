@@ -142,6 +142,10 @@
     </div>
 </template>
 <script>
+import { videoPlayer }  from 'vue-video-player';
+import 'video.js/dist/video-js.css';
+import 'vue-video-player/src/custom-theme.css'
+
 import TList from '@/common/utils/list.js'
 import TMDate from '@/common/utils/date.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
@@ -153,7 +157,8 @@ export default {
     name: 'PercepDetail',
     components: {
         VueDatepickerLocal,
-        TusvnMap
+        TusvnMap,
+        videoPlayer
     },
     data(){
         let _this = this;

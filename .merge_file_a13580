@@ -1,5 +1,5 @@
 // import Vue from 'vue'
-// import VueRouter from 'vue-router'
+// import Router from 'vue-router'
 
 // 登录
 const Login = resolve => require(['@/components/Login.vue'], resolve)
@@ -52,7 +52,11 @@ const rsm = resolve => require(['@/components/v2x/rsm/RsmCom.vue'], resolve)
 const rsmDetail = resolve => require(['@/components/v2x/rsm/RsmDetail.vue'], resolve)
 const rsi = resolve => require(['@/components/v2x/rsi/RsiCom.vue'], resolve)
 
-// Vue.use(VueRouter)
+// 日志菜单
+const Logs = resolve => require(['@/components/system/logs/index'], resolve)
+
+// Vue.use(Router)
+
 
 export default new VueRouter({
   // mode: 'history',
