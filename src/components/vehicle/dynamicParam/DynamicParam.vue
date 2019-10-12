@@ -278,7 +278,6 @@ export default {
         },
     },
     mounted(){
-        let _this=this;
         this.init();
     },
     beforeDestroy(){

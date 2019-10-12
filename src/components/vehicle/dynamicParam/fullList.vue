@@ -56,7 +56,7 @@ export default {
             searchLoading:false,
             loading:false,
             selector: [],
-             current: {
+            current: {
                 top: 0,
                 height: 100,
             },
@@ -135,14 +135,14 @@ export default {
             this.selector = val;
         },
         changePageSize(value) {//每页显示条数变更
-                this.initPageOption();
-                this.pageOption.size = value;
-                this.initData();
-            },
-            changePageCurrent(value) {//页码变更
-                this.pageOption.page = value;
-                this.initData();
-            },
+            this.initPageOption();
+            this.pageOption.size = value;
+            this.initData();
+        },
+        changePageCurrent(value) {//页码变更
+            this.pageOption.page = value;
+            this.initData();
+        },
     },
 }
 </script>

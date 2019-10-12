@@ -150,8 +150,6 @@ export default {
         return {
             loading:false,
             searchLoad:false,
-            // startTime:'',
-            // endTime:'',
             detailInfo:{},
             detailLayShow:false,
             searchKey: {

@@ -186,7 +186,7 @@ export default {
     },
     mounted(){
         this.scrollData.dom = this.$refs.table.bodyWrapper;
-        this.historySearchKey.vehicleId = this.searchKey.vehicleId = 'B21E-00-022';
+        this.historySearchKey.vehicleId = 'B21E-00-022';
         this.searchKey.startTime = this.$dateUtil.GetDateStr(31);
         this.searchKey.endTime = this.$dateUtil.GetDateStr(0);
         this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
