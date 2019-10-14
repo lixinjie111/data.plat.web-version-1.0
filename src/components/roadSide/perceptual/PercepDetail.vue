@@ -616,9 +616,9 @@ export default {
     },
     destroyed(){
         this.$refs.tusvnMap&&this.$refs.tusvnMap.reset3DMap();
-        document.onkeydown = function (e) {
-            if (e.keyCode == 38 || e.keyCode == 40) {
-                e.preventDefault();
+        document.onkeydown = function (event) {
+            if (event.keyCode == 38 || event.keyCode == 40) {
+                event.preventDefault();
             }  
         } 
     }
