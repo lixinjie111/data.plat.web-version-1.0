@@ -368,8 +368,8 @@ export default {
     },
     destroyed(){
        document.onkeydown = function (event) {
-            if (e.keyCode == 38 || e.keyCode == 40) {
-                e.preventDefault();
+            if (event.keyCode == 38 || event.keyCode == 40) {
+                event.preventDefault();
             }
             
        } 
