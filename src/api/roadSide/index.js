@@ -71,10 +71,14 @@ export const roadDownloadTask = params => { return axios.post(`${HTTPURL}road/ro
  */
 export const queryProvinceCityTree = params => { return axios.post(`${HTTPURL}road/queryProvinceCityTree`, params).then(res => res.data); };
 
- /**
+/**
  * 左侧树形菜单 区路
  */
 export const queryCountyRoadTree = params => { return axios.post(`${HTTPURL}road/queryCountyRoadTree`, params).then(res => res.data); };
+/**
+ * 左侧树形菜单 摄像头状态
+ */
+export const getCameraStatus = params => { return axios.post(`${HTTPURL}cam/getCameraStatus`, params).then(res => res.data); };
 /**
  * 感知数据
  */

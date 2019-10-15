@@ -64,29 +64,31 @@
                         </el-form-item>
                     </el-form>
                     <div class="c-mt-10 c-flex">
-                        <span class="c-flex-1">总数:{{camStatusNums.count}}</span>
-                        <span class="c-flex-1">在线:{{camStatusNums.onlineCount}}</span>
+                        <span class="c-flex-1">联网总数:{{camStatusNums.count}}</span>
+                        <span class="c-flex-1" style='text-align:center;'>在线:<i class="el-icon-loading" v-show='isRefshShow'></i><font v-show='isOnlineShow'>{{realTotal.onlineCount}}</font></span>
                         <span class="c-flex-1">实时监控:{{camStatusNums.monitorCount}}</span>
                     </div>
-                    <el-tree
-                        class="c-padding-10 carm-oragn-sels"
-                        :data='treeData' 
-                        :props="defaultProps" 
-                        :load="loadNode"
-                        lazy
-                        node-key="code"
-                        ref="tree"
-                        default-expand-all
-                        highlight-current
-                        :default-expanded-keys="currentArr"
-                        @node-click="handleNodeClick" 
-                        >
-                        <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
-                            <i class="sl-video-icon" :class="data.icon" :id='data.label' v-if="data.icon"></i>
-                            <span class="sl-play-text" :class='data.isHaveVideo ? "sl-custom-yellow" : ""'>{{ node.label }}</span>              
-                        </span>
-                    </el-tree>
-
+                    <div class="m-tree-box c-mt-10">
+                        <el-tree
+                            class="c-padding-10"
+                            :data='treeData' 
+                            :props="defaultProps" 
+                            :load="loadNode"
+                            lazy
+                            node-key="code"
+                            ref="tree"
+                            default-expand-all
+                            highlight-current
+                            :default-expanded-keys="currentArr"
+                            @node-click="handleNodeClick" 
+                            >
+                            <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
+                                <i class="sl-video-icon" :class="data.icon" :id='data.label' v-if="data.icon"></i>
+                                <span class="sl-play-text" :class='data.isHaveVideo ? "sl-custom-yellow" : ""'>{{ node.label }}</span>              
+                            </span>
+                        </el-tree>
+                        <i class="el-icon-refresh" title="刷新摄像头状态" @click="getRegion(cityCode)"></i>
+                    </div>
                 </div>
             </div>
             <div class="c-map-video-wrapper c-flex-1">
@@ -131,7 +133,7 @@ import ConvertCoord from'@/common/utils/coordConvert.js';
 import RoadSideInfo from "../roadSideInfo/roadSideInfo.vue";
 import { setInterval, clearInterval, setTimeout } from 'timers';
 import { queryRoadCamListSearch } from '@/api/search';
-import {queryRoadRegionTree,queryCountyRoadTree,queryRoadCamList,startStreamRoad,getCityCameraStatics,stopStream} from '@/api/roadSide'
+import {queryRoadRegionTree,queryCountyRoadTree,queryRoadCamList,startStreamRoad,getCityCameraStatics,stopStream,getCameraStatus} from '@/api/roadSide'
 export default {
     name:'PerceptualData',
     components:{
@@ -164,6 +166,8 @@ export default {
             provinceLoading:false,
             changeSize:false,
             isMaskShow:false,
+            isRefshShow:true,
+            isOnlineShow:false,
             isFirst:true,//第一次展开
             treeData:[],
             treeList:[],
@@ -193,10 +197,13 @@ export default {
                 label: 'label',
                 isLeaf: 'leaf'
             },
+            realTotal:{
+                onlineCount:0,
+            },
             camStatusNums:{
                 count:0,
                 monitorCount:0,
-                onlineCount:0,
+                // onlineCount:0,
             },
             rsCamCodeOption: {
                 loading: false,
@@ -221,32 +228,32 @@ export default {
             cameraUrl: queryRoadCamListSearch,
         }
     },
-    watch: {
-        "searchKey.cityValue"(newVal, oldVal) {
-            if(newVal.code) {
-                clearInterval(this.timer);
-                this.computCamNum();
-                this.timer = setInterval(()=>{
-                    this.computCamNum();
-                },5000);
-            }else {
-                clearInterval(this.timer);
-                this.camStatusNums.count = 0;
-                this.camStatusNums.monitorCount = 0;
-                this.camStatusNums.onlineCount = 0;
-            }
-        }
-    },
+    // watch: {
+    //     "searchKey.cityValue"(newVal, oldVal) {
+    //         if(newVal.code) {
+    //             clearInterval(this.timer);
+    //             this.computCamNum();
+    //             this.timer = setInterval(()=>{
+    //                 this.computCamNum();
+    //             },5000);
+    //         }else {
+    //             clearInterval(this.timer);
+    //             // this.camStatusNums.count = 0;
+    //             this.camStatusNums.monitorCount = 0;
+    //             this.camStatusNums.onlineCount = 0;
+    //         }
+    //     }
+    // },
+
     mounted(){
         this.getSideTree();//获取树结构数据
         this.initMap();
-        // this.computCamNum();
     },
     methods:{
-        computCamNum(){
+        computCamNum(cityCode){
             //查询总数。在线数，实时监控数
             getCityCameraStatics({
-                cityCode: this.searchKey.cityValue.code
+                cityCode: cityCode
             }).then(res =>{
                 if(res.status == '200'){
                     this.camStatusNums = res.data;
@@ -294,6 +301,11 @@ export default {
             this.infoWindow.open(this.distanceMap, e.target.getPosition());
         },
         queryCountyRoadTrees(item){
+            this.isRefshShow = true;
+            this.isOnlineShow = false;
+            this.realTotal.onlineCount = 0;//重置摄像头在线数
+            this.cityCode = item.code;
+            this.computCamNum(this.cityCode);
             this.endPlay();
             this.roads = [];
             this.currentArr = [];
@@ -337,9 +349,10 @@ export default {
                     var provinceCode = this.provinceOptions[0].code;
                     this.searchKey.provinceValue = this.provinceOptions[0];
                     this.getCitys(provinceCode);
-                    var cityCode = this.cityOptions[0].code;
+                    this.cityCode = this.cityOptions[0].code;
                     this.searchKey.cityValue = this.cityOptions[0];
-                    this.getRegion(cityCode);
+                    this.getRegion(this.cityCode);
+                    this.computCamNum(this.cityCode);
                     this.isFirst = false;
                 }
             })
@@ -360,6 +373,10 @@ export default {
             })
         },
         getRegion(code){
+            this.isRefshShow = true;
+            this.isOnlineShow = false;
+            this.realTotal.onlineCount = 0;//重置摄像头在线数
+            this.computCamNum(this.cityCode);
             this.treeList.forEach( item => {
                 var cityList = item.dataList;
                 if(cityList[0].code == code){
@@ -369,6 +386,7 @@ export default {
                         obj.label = e.name;
                         obj.code = e.code;
                         obj.type = 1;
+                        this.treeData = [];
                         this.treeData.push(obj);
                     })
                 }
@@ -413,38 +431,34 @@ export default {
                                 obj.roadName = item.rspRoadName;
                                 obj.rsPtName = item.rsPtName;
                                 obj.rsPtId = item.rsPtId;
-                                obj.ptLon = item.ptLon;
+                                obj.ptLon = item.ptLon; 
                                 obj.ptLat = item.ptLat;
                                 obj.isOn = false;
                                 obj.isHaveVideo = false;
-                                obj.icon = "sl-play-icon";
+                                obj.icon = "el-icon-loading";
                                 obj.protocal = item.protocol;
-                                obj.cameraRunStatus = item.cameraRunStatus;
                                 obj.type = 3;
                                 obj.leaf = true;
-                                if(obj.cameraRunStatus == '1'){
-                                    obj.isHaveVideo = true;
-                                }
-                                // console.log("this.currentVideoNode.code:--"+this.currentVideoNode.code, "obj.code:--"+obj.code);
-                                if(this.currentVideoNode.code == obj.code){
-                                    this.currentArr = [];
-                                    this.currentArr.push(this.currentVideoNode.code);
-                                    setTimeout(() => {
-                                        this.$refs.tree.setCurrentKey(this.currentArr[0]);
-                                        this.handleNodeClick(obj);
-                                    }, 0);
-                                    // console.log(obj.code);
-                                    // obj.isOn = true;
-                                    // obj.icon = "sl-pause-icon";
-                                    // this.startPlay(obj);
-                                    // this.handleNodeClick(obj);
-                                }
-                                children.push(obj);
+                                setTimeout( () => {
+                                    new Promise((resolve,reject) => {
+                                        this.getCameraStatus(item.serialNum,item.protocol,obj,resolve,reject);
+                                    }).then((res) => {
+                                        if(this.currentVideoNode.code == obj.code){
+                                            this.currentArr = [];
+                                            this.currentArr.push(this.currentVideoNode.code);
+                                            setTimeout(() => {
+                                                this.$refs.tree.setCurrentKey(this.currentArr[0]);
+                                                this.handleNodeClick(obj);
+                                            }, 0);
+                                        }
+                                    }).catch(() => {
+                                        console.log('失败');
+                                    });
+                                },2000);
+                                children.push(obj);                                
                             })
                         }
                         if(node.data.code == this.roads[0]){
-                            // this.selectDeviceId = children[0].code;
-                            // this.selectSerialNum = children[0].serialNum;
                             this.protocal = children[0].protocal;
                         }
                         resolve(children);
@@ -453,27 +467,20 @@ export default {
             }
         },
         handleNodeClick(data){
-            // console.log(data);
-            this.protocal = data.protocal;
-            this.markerOption.point = null;
-            let camStatus = data.cameraRunStatus;
-            this.changeSize = false;
-            if(this.currentVideoNode.code == data.code){
-                if(data.isOn) {
-                    data.isOn = false;
-                    data.icon = "sl-play-icon";
-                    this.endPlay();
-                    this.currentVideoNode.code = this.defaultData.code;
-                    this.currentVideoNode.serialNum = this.defaultData.serialNum;
-                }else {
-                    // data.isOn = true;
-                    // data.icon = "sl-pause-icon";
-                    this.startPlay(data);
-                }
-            }else{
-                // this.currentVideoNode.isOn = false;
-                // this.currentVideoNode.icon = "sl-play-icon";
-                if(camStatus == 1){//在线
+            if(data.icon == 'el-icon-loading') {
+                this.$message({
+                    type: 'error',
+                    duration: '1500',
+                    message: '正在加载摄像头状态，请稍等...',
+                    showClose: true
+                });
+            }else {
+                // console.log(data);
+                this.protocal = data.protocal;
+                this.markerOption.point = null;
+                let camStatus = data.status;
+                this.changeSize = false;
+                if(this.currentVideoNode.code == data.code){
                     if(data.isOn) {
                         data.isOn = false;
                         data.icon = "sl-play-icon";
@@ -485,37 +492,53 @@ export default {
                         // data.icon = "sl-pause-icon";
                         this.startPlay(data);
                     }
-                    let roadCamInfo = Object.assign({},{roadName:this.roadName},data);
-                    this.camDetail.rsPtId = roadCamInfo.rsPtId;
-                    this.camDetail.roadName = data.roadName;
-                    this.markerOption.point = roadCamInfo;
-                    this.drawStartMarker();
-                }else {
-                    this.camDetail.roadName = '';
-                    this.camDetail.camCode = '';
-                    this.camDetail.camId = '';
-                    this.camDetail.roadPointName = '';
-                    let _message = '';
-                    if(camStatus == '0'){//未注册
-                        _message = '摄像头未注册!';
-                    }else if(camStatus == '2'){//离线
-                        _message = '摄像头为离线状态!';
-                    }else if(camStatus == '3'){//未知
-                        _message = '未知摄像头!';
+                }else{
+                    // this.currentVideoNode.isOn = false;
+                    // this.currentVideoNode.icon = "sl-play-icon";
+                    if(camStatus == 1){//在线
+                        if(data.isOn) {
+                            data.isOn = false;
+                            data.icon = "sl-play-icon";
+                            this.endPlay();
+                            this.currentVideoNode.code = this.defaultData.code;
+                            this.currentVideoNode.serialNum = this.defaultData.serialNum;
+                        }else {
+                            // data.isOn = true;
+                            // data.icon = "sl-pause-icon";
+                            this.startPlay(data);
+                        }
+                        let roadCamInfo = Object.assign({},{roadName:this.roadName},data);
+                        this.camDetail.rsPtId = roadCamInfo.rsPtId;
+                        this.camDetail.roadName = data.roadName;
+                        this.markerOption.point = roadCamInfo;
+                        this.drawStartMarker();
+                    }else {
+                        this.camDetail.roadName = '';
+                        this.camDetail.camCode = '';
+                        this.camDetail.camId = '';
+                        this.camDetail.roadPointName = '';
+                        let _message = '';
+                        if(camStatus == '0'){//未注册
+                            _message = '摄像头未注册!';
+                        }else if(camStatus == '2'){//离线
+                            _message = '摄像头为离线状态!';
+                        }else if(camStatus == '3'){//未知
+                            _message = '未知摄像头!';
+                        }
+                        if(_message) {
+                            this.$message({
+                                type: 'error',
+                                duration: '1500',
+                                message: _message,
+                                showClose: true
+                            });
+                        }
+                        if(this.playerData) {      
+                            data.isOn = false;
+                            data.icon = "sl-play-icon";
+                            this.endPlay();
+                        }           
                     }
-                    if(_message) {
-                        this.$message({
-                            type: 'error',
-                            duration: '1500',
-                            message: _message,
-                            showClose: true
-                        });
-                    }
-                    if(this.playerData) {      
-                        data.isOn = false;
-                        data.icon = "sl-play-icon";
-                        this.endPlay();
-                    }           
                 }
             }
         },
@@ -670,6 +693,9 @@ export default {
 
                 this.isSearch = true;
                 this.markerOption.point = null;
+                this.isRefshShow = true;
+                this.isOnlineShow = false;
+                this.computCamNum(this.cityCode);
                 this.provinceOptions.forEach(e => {
                     if(e.code == this.searchKey.device.rspDistcodeProvince){
                         let obj = {};
@@ -707,6 +733,32 @@ export default {
                     }
                 });
             }
+        },
+        getCameraStatus(serialNum,protocol,obj,resolve,reject){
+            getCameraStatus({
+                serialNum:serialNum,
+                protocol:protocol
+            }).then(res => {
+                if(res.status == 200){
+                    obj.status = res.data.status;
+                    obj.icon = "sl-play-icon";
+                    if(obj.status == 1){
+                        obj.isHaveVideo = true;
+                        this.realTotal.onlineCount++;
+                        this.isRefshShow = false;
+                        this.isOnlineShow = true;
+                    }else{
+                        this.isRefshShow = false;
+                        this.isOnlineShow = true;
+                    }
+                    resolve(obj);
+                }else{
+                    reject();
+                }
+            }).catch(err => {
+                reject();
+            })
+            
         },
         clearFn(){
             this.rsCamCodeOption.defaultOption = this.rsCamCodeOption.filterOption;
@@ -747,22 +799,39 @@ export default {
         }
         .sl-video-icon {
             display: inline-block;
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             background:url(../../../../static/icon/btn-play.png) center center no-repeat;
             background-size: 10px 10px;
             vertical-align: middle;
+            &.el-icon-loading {
+                font-size: 10px;
+                background-image: none !important;
+            }
         }
         .sl-play-text {
             vertical-align: middle;
         }
     }
-    .carm-oragn-sels {
-        &.el-tree{
+    .m-tree-box {
+        position: absolute;
+        top: 156px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        background-color: #fff;
+        .el-icon-refresh {
             position: absolute;
-            top: 156px;
-            left: 10px;
-            right: 10px;
+            right: 23px;
+            top: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .el-tree{
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
             bottom: 0;
             overflow-y: auto;
             .el-tree__empty-block {
@@ -772,7 +841,7 @@ export default {
                 bottom: 0;
                 top: 0;
             }
-        }    
+        }   
         .is-current.is-expanded .sl-play-icon {
             background-image:url(../../../../static/icon/btn-play.png);
         }
