@@ -1,5 +1,6 @@
 window.config = {
     //内网
+    // staticUrl: "http://172.17.1.16:9090/", //静态文件路径
     // baseUrl: 'http://172.17.1.16',
     // monUrl: 'http://172.17.1.16',
     // url: 'http://172.17.1.16:9091/dataPlatApp/',//数据平台
@@ -8,6 +9,7 @@ window.config = {
     // websocketUrl:'ws://172.17.1.16:49982/mon',
 
     //外网
+    staticUrl: "http://120.133.21.14:9090/", //静态文件路径
     baseUrl: 'http://120.133.21.14',
     monUrl: 'http://120.133.21.14',
     url: 'http://120.133.21.14:9091/dataPlatApp/',//数据平台
