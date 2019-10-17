@@ -123,7 +123,7 @@
             class="c-mb-70"
             max-height="724">
             <el-table-column type="index" label="序号" :index='indexMethod'></el-table-column>
-            <el-table-column prop="fileName" min-width="18%" label="文件名称"></el-table-column>
+            <el-table-column prop="fileName" min-width="17%" label="文件名称"></el-table-column>
             <el-table-column prop="camCode" min-width="6%" label="摄像头编号"></el-table-column>
             <el-table-column prop="roadName" min-width="8%" label="道路名称"></el-table-column>
             <el-table-column prop="roadPointName" min-width="9%" label="路侧点名称"></el-table-column>
@@ -136,7 +136,7 @@
             <el-table-column label="结束时间" min-width="10%">
                 <template slot-scope="scope">{{scope.row.endTime}}</template>
             </el-table-column>
-            <el-table-column prop="plateNo" min-width="6%" label="下载状态">
+            <el-table-column prop="plateNo" min-width="7%" label="下载状态">
                 <template slot-scope="{row}">
                     <span>{{row.taskStatus | taskStatusFilter}}</span>
                 </template>
