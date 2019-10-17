@@ -350,21 +350,32 @@ export default {
             }).then(res => {
                 if(res.status == '200') {
                     this.regionList = [];
-                    res.data.forEach(child => {
-                        var obj = {};
-                        obj.label = child.label;
-                        obj.code = child.code;
-                        obj.dataList = [];
-                        child.children.forEach(roadInfo => {
-                            var o ={};
-                            o.name = roadInfo.label;
-                            o.code = roadInfo.code;
-                            obj.dataList.push(o);
+                    if(res.data){
+                        res.data.forEach(child => {
+                            var obj = {};
+                            obj.label = child.label;
+                            obj.code = child.code;
+                            obj.dataList = [];
+                            child.children.forEach(roadInfo => {
+                                var o ={};
+                                o.name = roadInfo.label;
+                                o.code = roadInfo.code;
+                                obj.dataList.push(o);
+                            })
+                            this.regionList.push(obj);
+                            this.treeData = this.regionList;
                         })
-                        this.regionList.push(obj);
-                        this.treeData = this.regionList;
-                    })
+                    }else{
+                        this.isRefshShow = false;
+                        this.isOnlineShow = true;
+                    }
+                }else{
+                    this.isRefshShow = false;
+                    this.isOnlineShow = true;
                 }
+            }).catch(err => {
+                this.isRefshShow = false;
+                this.isOnlineShow = true;
             });
         },
         getSideTree(){
