@@ -366,6 +366,9 @@ export default {
                     this.computCamNum(this.cityCode);
                     this.isFirst = false;
                 }
+            }).catch(err => {
+                this.isRefshShow = false;
+                this.isOnlineShow = true;
             })
         },
         getCitys(code){
