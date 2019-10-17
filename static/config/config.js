@@ -1,5 +1,6 @@
 window.config = {
     //望京 内网
+    // staticUrl: "http://172.17.1.16:9090/", //静态文件路径
     // baseUrl: 'http://172.17.1.16',
     // monUrl: 'http://172.17.1.16',
     // url: 'http://172.17.1.16:9091/dataPlatApp/',//数据平台
@@ -8,6 +9,7 @@ window.config = {
     // websocketUrl:'ws://172.17.1.16:49982/mon',
 
     //望京 外网
+    staticUrl: "http://120.133.21.14:9090/", //静态文件路径
     baseUrl: 'http://120.133.21.14',
     monUrl: 'http://120.133.21.14',
     url: 'http://120.133.21.14:9091/dataPlatApp/',//数据平台
@@ -15,23 +17,8 @@ window.config = {
     downloadUrl: 'http://120.133.21.14:9091/dataPlatApp/cam/download/', //导出&&下载地址
     websocketUrl:'ws://120.133.21.14:49982/mon',
 
-    //上海正式环境  内网-IP
-    // baseUrl:'http://172.16.1.197',
-    // monUrl: 'http://172.16.1.199',
-    // url: 'http://172.16.1.197:9091/dataPlatApp/',//数据平台
-    // operateUrl: 'http://172.16.1.197:9090/operateApp/',//运营平台
-    // downloadUrl: 'http://172.16.1.197:9091/dataPlatApp/cam/download/', //导出&&下载地址
-    // websocketUrl:'ws://172.16.1.199:9982/mon',   //监控
-
-    //上海正式环境  内网-主机名
-    // baseUrl:'http://app01',
-    // monUrl: 'http://app03',
-    // url: 'http://app01:9091/dataPlatApp/',//数据平台
-    // operateUrl: 'http://app01:9090/operateApp/',//运营平台
-    // downloadUrl: 'http://app01:9091/dataPlatApp/cam/download/', //导出&&下载地址
-    // websocketUrl:'ws://app03:9982/mon',   //监控
-
     //上海正式环境  外网
+    // staticUrl: "http://116.236.72.204:49090/", //静态文件路径
     // baseUrl:'http://116.236.72.204',
     // monUrl: 'http://116.236.72.206',
     // url: 'http://116.236.72.204:49091/dataPlatApp/',//数据平台
