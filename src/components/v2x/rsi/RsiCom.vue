@@ -276,7 +276,8 @@ export default {
         }
     },
     mounted(){
-        this.searchKey.startTime = this.$dateUtil.GetDateStr(1);
+        let startTime = this.$dateUtil.timeToConversion(new Date(new Date().getTime() - 1 * 60 * 60 * 1000));
+        this.searchKey.startTime = startTime;//获取当前时间的前一个小时
         this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
         this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
         this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
