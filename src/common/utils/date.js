@@ -71,7 +71,7 @@ class TDate {
         var h = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
         var min = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
         var ss = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
-        return d.getFullYear() + '-' + m + '-' + day + ' ' + h + ":" + ":" + min + ":" + ss;
+        return d.getFullYear() + '-' + m + '-' + day + ' ' + h + ":" + min + ":" + ss;
     }
 
     static getNowFormatDate() {//获取当前时间

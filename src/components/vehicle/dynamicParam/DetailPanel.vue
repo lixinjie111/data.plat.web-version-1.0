@@ -9,9 +9,9 @@
                 </h3>
             </div>
             <div class="c-wrapper-20">
-                <el-form :inline="true" :model="searchKey" ref='searchForm' size='small'>
-                    <el-form-item label="数据编号" prop='dataId'>
-                        <el-input v-model.trim="searchKey.dataId"></el-input>
+                <el-form :inline="true" :model="searchKey" :rules="rules" ref='searchForm' size='small'>
+                    <el-form-item label="数据编号" prop='sId'>
+                        <el-input v-model.trim="searchKey.sId"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick">查询</el-button>
@@ -59,19 +59,22 @@ export default {
                 height: 100,
             },
             searchKey:{
-                queryId:'',
-                dataId:''
+                sId:''
             },
             historySearchKey: {},
             dataList: [],
             currentPage:1,
-            loading:false
+            loading:false,
+            rules:{
+                sId:[
+                    { required: true, message: '数据编号不能为空', trigger: 'blur' },
+                ],
+            },
         }
     },
     methods: {
         init(dataDetail){
             this.pageOption.page = 1;
-            this.getDetatil(dataDetail);
         },
         getDetatil(dataDetail){
             let _this = this;
@@ -81,7 +84,8 @@ export default {
                 page: {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
-                }
+                },
+                ...this.searchKey
             })
             getDetatilList(_params).then(res => {
                 if(res.status == '200'){
@@ -96,15 +100,19 @@ export default {
             });
         },
         searchClick(){
-            this.pageOption.page = 0;
-            this.historySearchKey = this.searchKey;
-            this.getDetatil();
+            this.$refs.searchForm.validate((valid) => {
+                if (valid) {
+                    this.pageOption.page = 1;
+                    this.historySearchKey = this.searchKey;
+                    this.getDetatil();
+                }
+            })
         },
         backClick(){
             this.$emit('detailPanelBack')
         },
         resetClick(){
-            this.searchKey.dataId ="";
+            this.searchKey.sId ="";
         },
         handleSizeChange(value) {//每页显示条数变更
             this.pageOption.size = value;
