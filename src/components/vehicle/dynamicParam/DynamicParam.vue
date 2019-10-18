@@ -130,7 +130,7 @@ export default {
                 title: '提示',
                 type: '',
                 msg: '',
-                data: this.initCarVo(),
+                data: {},
                 detailShow: false,
                 localDataShow: false,
             },
@@ -156,26 +156,26 @@ export default {
         }
     },
     methods: {
-        initCarVo(){
-            return {
-                "id":"",
-                "vehicleId":"",
-                "vin":"",
-                "plateNo":"",
-                "color":"",
-                "phoneNum":"",
-                "brandModelId":"",
-                "brand": 0,
-                "model": 0,
-                "type": 0,
-                "usage": 0,
-                "engineType": 0,
-                "emission": 0,
-                "size": 0,
-                "autoLevel": 0,
-                "accessPlatform": 0,
-            };
-        },
+        // initCarVo(){
+        //     return {
+        //         "id":"",
+        //         "vehicleId":"",
+        //         "vin":"",
+        //         "plateNo":"",
+        //         "color":"",
+        //         "phoneNum":"",
+        //         "brandModelId":"",
+        //         "brand": 0,
+        //         "model": 0,
+        //         "type": 0,
+        //         "usage": 0,
+        //         "engineType": 0,
+        //         "emission": 0,
+        //         "size": 0,
+        //         "autoLevel": 0,
+        //         "accessPlatform": 0,
+        //     };
+        // },
         initPageOption() {
             this.dataList = [];
             this.pageOption.total = 0;

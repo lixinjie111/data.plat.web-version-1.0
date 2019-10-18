@@ -85,7 +85,7 @@ export default {
     },
     data(){
         let _this = this,
-            _checkStartTime = (rule, value ,callback) => {
+            _checkStartTime = (rule  , value ,callback) => {
             let _startTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null,//标准时间转为时间戳
                 _endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.endTime)) : null;//标准时间转为时间戳
             if(_startTime){
