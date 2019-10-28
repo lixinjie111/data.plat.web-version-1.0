@@ -84,8 +84,7 @@ export default {
                 page: {
                     'pageSize': this.pageOption.size,
                     'pageIndex': this.pageOption.page-1
-                },
-                ...this.searchKey
+                }
             })
             getDetatilList(_params).then(res => {
                 if(res.status == '200'){

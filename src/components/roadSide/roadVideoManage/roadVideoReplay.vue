@@ -33,11 +33,9 @@
             </div>
             <div class="c-map-video-wrapper c-mt-20">
                 <div class="c-video-wrapper">
-                    <video class="c-video" controls preload="auto">
-                        <source :src="camDetail.videoPath" type="video/mp4">
-                    </video>
+                    <video-play :requestVideoUrl='camDetail.videoPath' :autoplay="false" @videoTimeupdate='monitorProcess'></video-play>
                 </div>
-                <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
+                <div id='my-video' class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                     <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
                     <div class='c-map-btn c-map-btn-right' @click='mapChangeMin' v-else></div>
                     <div class="c-map-container" id='map-container'>
@@ -52,11 +50,13 @@
     </div>
     </template>
     <script>
+    import VideoPlay from '@/common/view/video/video.vue';
     import {queryRoadCamCoordinate} from '@/api/roadSide'
     import ConvertCoord from'@/common/utils/coordConvert.js';
     export default {
         name:'RoadVideoReplay',
         components:{
+            VideoPlay
         },
         data(){
             return{
@@ -72,7 +72,7 @@
                     roadName:'--',
                     startTime:'--',
                     endTime:'--',
-                    videoPath:'',
+                    videoPath:'',//https://media.w3.org/2010/05/sintel/trailer.mp4
                 },
                 markerPoint:[],
                 infoWindow: new AMap.InfoWindow({
@@ -94,6 +94,7 @@
                 this.camDetail.endTime = videoInfo.endTime;
                 this.camDetail.roadPoint = videoInfo.roadPointName;
                 this.camDetail.videoPath = videoInfo.destPath + '.mp4';
+                // this.camDetail.videoPath = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
                 this.mapDetail(videoInfo.camCode);
             },
             initMap(){
@@ -157,10 +158,14 @@
                     }
                 })
             },
-            
+            monitorProcess(curTime){
+                // console.log(curTime);
+            },
+        },
+        created(){
+            this.init();
         },
         mounted(){
-            this.init();
             this.initMap();
         }
     }

@@ -149,8 +149,8 @@ import 'vue-video-player/src/custom-theme.css'
 import TList from '@/common/utils/list.js'
 import TMDate from '@/common/utils/date.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
-import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap3.vue";
-import { getMap } from '@/common/view/TusvnMap/tusvnMap3.js';
+import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap4.vue";
+// import { getMap } from '@/common/view/TusvnMap/tusvnMap3.js';
 import { findRoadMonitorCameraInfo, getVideoUrlInfo, findPerceptionRecordsInfo } from '@/api/roadSide';
 import { setTimeout } from 'timers';
 export default {
@@ -594,7 +594,8 @@ export default {
                     this.tusvnOption.loading = false;
                     row.loading = false;
                     this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
-                    this.$refs.tusvnMap.showBData2(row);
+                    // this.$refs.tusvnMap.showBData2(row);
+                    this.$refs.tusvnMap.addPerceptionData(row);     
                 }, 500);
                 this.currentIndex = row.index;
             }
@@ -608,7 +609,7 @@ export default {
         },
         mapcomplete(row) {
             this.initMapFlag = true;
-            getMap(this.$refs.tusvnMap);
+            // getMap(this.$refs.tusvnMap);
             if(this.cameraParam) {
                 this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
             }
