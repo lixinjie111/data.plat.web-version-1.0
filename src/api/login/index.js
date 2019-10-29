@@ -4,7 +4,7 @@ import {OPERATEURL} from '../requestUrl';
 /**
  * 登录
  */
-export const requestLogin = params => { return axios.post(`${OPERATEURL}openApi/v2/user/login`, params).then(res => res.data); };
+export const requestLogin = params => { return axios.post(`${OPERATEURL}openApi/user/login`, params).then(res => res.data); };
 /**
  * 退出登录
  */
