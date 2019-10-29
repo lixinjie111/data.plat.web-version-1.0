@@ -32,6 +32,7 @@
 </div>
 </template>
 <script>
+import md5 from 'js-md5'
 import {requestLogin} from '@/api/login'
 import SessionUtils from '@/store/session.js'
 
@@ -96,7 +97,10 @@ export default {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
                     this.loading = true;
-                    this.loginFunc(this.loginForm);
+                    let _param = Object.assign({}, this.loginForm, {
+                        password: md5(this.loginForm.password)
+                    });
+                    this.loginFunc(_param);
                 }else {
                     this.loading = false;
                 }
