@@ -96,6 +96,7 @@ export default {
         },
         'requestVideoUrl'(newVal,oldVal){
             if(newVal){
+                this.videoLoadingDelay.count = 0;
                 this.requestVideoUrl = newVal;
                 this.requestVideo();
             }
@@ -264,8 +265,8 @@ export default {
         // },
         refreshVideo(){
             this.videoUrl = '';
-            // this.initVideoTimer();
-            // // this.initVideo();
+            this.initVideoTimer();
+            this.initVideo();
             setTimeout(() => {
                 this.requestVideo();
                 this.$emit("refreshVideo");
