@@ -13,7 +13,7 @@ import {HTTPURL,OPERATEURL} from '../requestUrl';
 export const queryCamList = params => { return axios.post(`${HTTPURL}cam/queryCamList`, params).then(res => res.data); };
 
 /**
- * 报活
+ * 视频地址
  */
 export const startStream = params => { return axios.post(`${HTTPURL}cam/startStream`, params).then(res => res.data); };
 
