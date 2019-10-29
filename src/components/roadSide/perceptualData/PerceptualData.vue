@@ -112,8 +112,14 @@
                         <span class="value c-blue c-hover-underline" v-else ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{camDetail.roadPointName}}</span>
                     </p>
                 </div>
-                <div class="c-video-wrapper c-mt-10">
-                    <div class="c-video" id="cmsplayer"></div>
+                <div class="c-mt-10">
+                    <live-player 
+                        :requestVideoUrl="videoUrl"
+                        :autoplay="true"
+                        @videoLoadCompleted="videoLoadCompleted"
+                        >
+                        <span></span>
+                    </live-player>
                     <div class="c-video-mask" v-show='isMaskShow'></div>
                     <div class="c-map-wrapper" :class='{"c-map-change-max":changeSize}'>
                         <div class='c-map-btn c-map-btn-left' @click='mapChangeMax' v-if="!changeSize"></div>
@@ -129,15 +135,20 @@
 </div>
 </template>
 <script>
+// 视频插件
+import LivePlayer from '@/common/livePlayer/template.vue';
+
 import ConvertCoord from'@/common/utils/coordConvert.js';
 import RoadSideInfo from "../roadSideInfo/roadSideInfo.vue";
 import { setInterval, clearInterval, setTimeout } from 'timers';
 import { queryRoadCamListSearch } from '@/api/search';
 import {queryRoadRegionTree,queryCountyRoadTree,queryRoadCamList,startStreamRoad,getCityCameraStatics,stopStream,getCameraStatus} from '@/api/roadSide'
+
 export default {
     name:'PerceptualData',
     components:{
         RoadSideInfo,
+        LivePlayer
     },
     data(){
         return{
@@ -149,6 +160,7 @@ export default {
                 code: '',
                 serialNum:''
             },
+            videoUrl:"",
             // defaultData: {
             //     code: 'N-NJ-0004',
             //     serialNum: '3402000000132000003001'
@@ -285,6 +297,9 @@ export default {
         this.initMap();
     },
     methods:{
+        videoLoadCompleted() {
+            console.log("视频加载完成");
+        },
         computCamNum(cityCode){
             //查询总数。在线数，实时监控数
             getCityCameraStatics({
@@ -524,7 +539,6 @@ export default {
                     showClose: true
                 });
             }else {
-                // console.log(data);
                 this.protocal = data.protocal;
                 this.markerOption.point = null;
                 let camStatus = data.status;
@@ -591,43 +605,16 @@ export default {
                 }
             }
         },
-        embedFlash(rtmpSource){//部署用此段
-            var flashVars = "&src=";
-            flashVars += rtmpSource; //视频文件
-            flashVars += "&autoHideControlBar=true";
-            flashVars += "&streamType=";
-            flashVars += "live";// vod点播 live直播直播
-            flashVars += "&autoPlay=true";
-            flashVars += "&verbose=true";
-
-            var embedCode =  '<object id="flashPlayer" name="flashPlayer" width="100%" height="100%" type="application/x-shockwave-flash"> ';
-            embedCode += '<param name="movie" value="static/swf/StrobeMediaPlayback.swf"></param>';
-            embedCode += '<param name="flashvars" value="' + flashVars + '"></param>';
-            embedCode += '<param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param>';
-            embedCode += '<param name="wmode" value="opaque"></param>';
-            embedCode += '<embed  id="flashPlayer" name="flashPlayer" src="static/swf/StrobeMediaPlayback.swf" type="application/x-shockwave-flash"';
-            embedCode += ' allowscriptaccess="always" allowfullscreen="true" ';
-            embedCode += ' wmode="opaque" ';
-            embedCode += ' width="100%" height="100%" ';
-            embedCode += 'flashvars="' + flashVars + '">';
-            embedCode += '</embed></object>';
-            document.getElementById("cmsplayer").innerHTML = embedCode;
-        },
         startPlay(camerData){
             if(this.playerData) {
                 this.endPlay();
             }
-            // console.log("player----------");
-            // console.log(camerData.code);
-            // console.log(camerData.serialNum);
             startStreamRoad({
                 camId:camerData.serialNum,protocal:this.protocal
             }).then(res =>{
                 if(res.status == '200') {
-                    let videoUrl = res.data.rtmp;
+                    let videoUrl = res.data.wsUrl ? res.data.wsUrl : res.data.rtmp;
                     this.isMaskShow = false;
-                    this.embedFlash(videoUrl);
-                    // console.log(camerData);
                     camerData.isOn = true;
                     camerData.icon = "sl-pause-icon";
                     this.playerData = camerData;
@@ -640,8 +627,7 @@ export default {
                         this.camDetail.lon = camerData.ptLon;
                         this.camDetail.lat = camerData.ptLat;
                         this.isMaskShow = false;
-                        this.embedFlash(videoUrl);
-                        // console.log(camerData);
+                        this.videoUrl = videoUrl;
                         camerData.isOn = true;
                         camerData.icon = "sl-pause-icon";
                         this.playerData = camerData;
@@ -673,9 +659,6 @@ export default {
                 for(let i=0;i<nodeSelArray.length;i++){
                     nodeSelArray[i].classList.remove('pause');
                 }
-                // console.log("endPlay----------");
-                // console.log(this.playerData.code);
-                // console.log(this.playerData.serialNum);
                 stopStream({
                     "camId":this.playerData.code,"protocal":this.protocal
                 }).then(res => {
