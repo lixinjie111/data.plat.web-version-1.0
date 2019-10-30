@@ -7,10 +7,10 @@
                 <i class="el-icon-refresh" v-if="refreshFlag" @click="refreshVideo"></i>
             </div>
             <div class="c-video-mask" v-if="videoOption.videoMaskFlag">
-                <i class="el-icon-video-play" v-if="videoOption.playFlag" @click="requestVideo"></i>
+                <!-- <i class="el-icon-video-play" v-if="videoOption.playFlag" @click="requestVideo"></i> -->
                 <i class="el-icon-loading" v-if="videoOption.loadingFlag"></i>
                 <span class="c-video-tip" v-if="videoOption.playError">{{videoOption.videoText}}</span>
-                <i class="el-icon-refresh" v-if="videoOption.playError" @click="refreshVideo"></i>
+                <!-- <i class="el-icon-refresh" v-if="videoOption.playError" @click="refreshVideo"></i> -->
             </div>
             <live-player 
                 class="c-live-player" 
@@ -55,6 +55,10 @@ export default {
         autoplay: {     //是否自动加载视频，true-自动加载视频，false-手动加载视频
             default: false,
             type: Boolean
+        },
+        isPauseFlag:{
+            default:false,
+            type:Boolean
         }
     },
     components: {
@@ -85,6 +89,14 @@ export default {
     },
     watch: {
         deep: true,
+        'isPauseFlag'(newVal,oldVal){
+            if(newVal === true){
+                this.$refs.livePlayer.pause();
+                this.setVideoOptionPause();
+            }else{
+                this.$refs.livePlayer.play();
+            }
+        },
         'videoOption.loadingFlag'(newVal, oldVal) {
             this.initVideoTimer();
             if(newVal) {
