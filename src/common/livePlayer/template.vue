@@ -110,6 +110,7 @@ export default {
             if(newVal){
                 this.videoLoadingDelay.count = 0;
                 this.requestVideoUrl = newVal;
+                this.videoUrl = "";
                 this.requestVideo();
             }
         }
