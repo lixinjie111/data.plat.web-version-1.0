@@ -402,6 +402,7 @@ export default {
             })
         },
         getRegion(code){
+            this.treeData = [];
             this.isRefshShow = true;
             this.isOnlineShow = false;
             this.realTotal.onlineCount = 0;//重置摄像头在线数
@@ -415,7 +416,6 @@ export default {
                         obj.label = e.name;
                         obj.code = e.code;
                         obj.type = 1;
-                        this.treeData = [];
                         this.treeData.push(obj);
                     })
                 }
