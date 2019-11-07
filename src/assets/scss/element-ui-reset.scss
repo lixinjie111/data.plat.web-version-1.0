@@ -182,6 +182,13 @@
 	}
 }
 
+//下拉框箭头
+.el-popper {
+	.popper__arrow {
+		filter: none !important;
+	}
+}
+
 // 上传图片
 .c-upload-wrapper {
 	.el-upload {
