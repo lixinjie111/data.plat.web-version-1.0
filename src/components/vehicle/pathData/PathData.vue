@@ -368,6 +368,9 @@
           }
           this.loading = false;
           this.searchLoading = false;
+        }).catch(err => {
+          this.loading = false;
+          this.searchLoading = false;
         })
       },
       searchClick() {
