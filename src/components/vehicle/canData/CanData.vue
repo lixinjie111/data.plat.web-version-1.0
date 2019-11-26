@@ -51,28 +51,28 @@
             stripe
             border
             max-height="724">
-            <el-table-column prop="vehicleId" label="车辆编号"></el-table-column>
-            <el-table-column prop="dataId" label="数据编号"></el-table-column>
-            <el-table-column prop="enName" label="英文名称"></el-table-column>
-            <el-table-column prop="chName" label="中文名称"></el-table-column>
-            <el-table-column prop="dataValue" label="数据值"></el-table-column>
-            <el-table-column label="时间">
-                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.time,type='yy-mm-dd hh:mm:ss:ms')}}</template>
+            <el-table-column prop="vehicleId" label="车辆编号" min-width="16%"></el-table-column>
+            <el-table-column label="时间" min-width="17%">
+                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp,type='yy-mm-dd hh:mm:ss:ms')}}</template>
             </el-table-column>
+            <el-table-column prop="gnss_long" label="GNSS经度" min-width="17%"></el-table-column>
+            <el-table-column prop="gnss_lat" label="GNSS纬度" min-width="17%"></el-table-column>
+            <el-table-column prop="gnss_head" label="GNSS航向角" min-width="17%"></el-table-column>
+            <el-table-column prop="gnss_spd" label="当前车速" min-width="16%"></el-table-column>
+            
         </el-table>
-
-        <!-- <div class="c-page clearfix">
+        <div class="c-page clearfix">
             <el-pagination
                 background
                 @current-change="changePageCurrent" 
                 :current-page="pageOption.page" 
                 :total="pageOption.total"
                 @size-change="changePageSize"
-                :page-sizes="[100]" 
+                :page-sizes="[10,20,50,100,200]" 
                 :page-size="pageOption.size"
                 layout="total, sizes, prev, pager, next">
             </el-pagination>
-        </div> -->
+        </div>
 
     </div>
 </template>
