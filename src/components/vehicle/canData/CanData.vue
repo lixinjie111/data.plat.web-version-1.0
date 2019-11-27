@@ -210,7 +210,6 @@ export default {
         //     this.pageOption.size = 10;
         // },
         getQueryList(){
-            console.log(this.pageOption.page-1);
             this.loading = true;
             let _params = Object.assign({},this.historySearchKey, {
                 page: {
