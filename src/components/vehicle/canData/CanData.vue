@@ -51,15 +51,15 @@
             stripe
             border
             max-height="724">
-            <el-table-column prop="vehicleId" label="车辆编号" min-width="16%"></el-table-column>
-            <el-table-column label="时间" min-width="16%">
+            <el-table-column prop="vehicleId" label="车辆编号" min-width="8%"></el-table-column>
+            <el-table-column label="时间" min-width="13%">
                 <template slot-scope="scope">{{scope.row.timestamp ? $dateUtil.formatTime(scope.row.timestamp,type='yy-mm-dd hh:mm:ss:ms') : ''}}</template>
             </el-table-column>
-            <el-table-column prop="gnss_long" label="GNSS经度" min-width="14%"></el-table-column>
-            <el-table-column prop="gnss_lat" label="GNSS纬度" min-width="14%"></el-table-column>
-            <el-table-column prop="gnss_head" label="GNSS航向角" min-width="14%"></el-table-column>
+            <el-table-column prop="gnss_long" label="GNSS经度" min-width="8%"></el-table-column>
+            <el-table-column prop="gnss_lat" label="GNSS纬度" min-width="8%"></el-table-column>
+            <el-table-column prop="gnss_head" label="GNSS航向角" min-width="8%"></el-table-column>
             <el-table-column prop="gnss_spd" label="当前车速" min-width="10%"></el-table-column>
-            <el-table-column min-width="14%" label="数据报文">
+            <el-table-column min-width="45%" label="数据报文">
                 <template slot-scope="scope">
                     <p>{{scope.row.data}}</p>
                 </template>
