@@ -52,14 +52,18 @@
             border
             max-height="724">
             <el-table-column prop="vehicleId" label="车辆编号" min-width="16%"></el-table-column>
-            <el-table-column label="时间" min-width="17%">
-                <template slot-scope="scope">{{$dateUtil.formatTime(scope.row.timestamp,type='yy-mm-dd hh:mm:ss:ms')}}</template>
+            <el-table-column label="时间" min-width="16%">
+                <template slot-scope="scope">{{scope.row.timestamp ? $dateUtil.formatTime(scope.row.timestamp,type='yy-mm-dd hh:mm:ss:ms') : ''}}</template>
             </el-table-column>
-            <el-table-column prop="gnss_long" label="GNSS经度" min-width="17%"></el-table-column>
-            <el-table-column prop="gnss_lat" label="GNSS纬度" min-width="17%"></el-table-column>
-            <el-table-column prop="gnss_head" label="GNSS航向角" min-width="17%"></el-table-column>
-            <el-table-column prop="gnss_spd" label="当前车速" min-width="16%"></el-table-column>
-            
+            <el-table-column prop="gnss_long" label="GNSS经度" min-width="14%"></el-table-column>
+            <el-table-column prop="gnss_lat" label="GNSS纬度" min-width="14%"></el-table-column>
+            <el-table-column prop="gnss_head" label="GNSS航向角" min-width="14%"></el-table-column>
+            <el-table-column prop="gnss_spd" label="当前车速" min-width="10%"></el-table-column>
+            <el-table-column min-width="14%" label="数据报文">
+                <template slot-scope="scope">
+                    <p>{{scope.row.data}}</p>
+                </template>
+            </el-table-column>
         </el-table>
         <div class="c-page clearfix">
             <el-pagination
@@ -185,27 +189,29 @@ export default {
         }
     },
     mounted(){
-        this.scrollData.dom = this.$refs.table.bodyWrapper;
+        // this.scrollData.dom = this.$refs.table.bodyWrapper;
         this.historySearchKey.vehicleId = 'B21E-00-022';
         this.searchKey.startTime = this.$dateUtil.GetDateStr(31);
         this.searchKey.endTime = this.$dateUtil.GetDateStr(0);
         this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
         this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
-        this.getQueryList();
-        this.scrollData.dom.addEventListener('scroll',this.scrollMore);
+        // this.getQueryList();
+        // this.scrollData.dom.addEventListener('scroll',this.scrollMore);
     },
     methods: {
-        initPageOption() {
-            this.dataList = [];
-            this.pageOption.total = 0;
-            this.pageOption.page = 1;
-        },
-        initPaging(){
-            this.pageOption.page = 1;
-            this.pageOption.total = 0;
-            this.pageOption.size = 10;
-        },
+        // initPageOption() {
+        //     this.dataList = [];
+        //     this.pageOption.total = 0;
+        //     this.pageOption.page = 1;
+        // },
+        // initPaging(){
+        //     this.pageOption.page = 1;
+        //     this.pageOption.total = 0;
+        //     this.pageOption.size = 10;
+        // },
         getQueryList(){
+            console.log(this.pageOption.page-1);
+            this.loading = true;
             let _params = Object.assign({},this.historySearchKey, {
                 page: {
                     'pageSize': this.pageOption.size,
@@ -214,9 +220,9 @@ export default {
             })
             queryList(_params).then(res => {
                 if(res.status == '200'){
-                    this.$refs.table.bodyWrapper.scrollTop = 0;
-                    this.pageOption.total = res.data.list.length;
-                    this.dataList = this.dataList.concat(res.data.list);
+                    // this.$refs.table.bodyWrapper.scrollTop = 0;
+                    this.pageOption.total = res.data.totalCount;
+                    this.dataList = res.data.list;
                 }
                 this.loading = false;
                 this.searchLoading = false;
@@ -233,7 +239,7 @@ export default {
                     this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
                     this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
                     this.dataList = [];
-                    this.initPaging();
+                    // this.initPaging();
                     this.getQueryList();
                 } else {
                     return false;
@@ -245,7 +251,7 @@ export default {
             this.rsVehicleOption.filterOption = this.rsVehicleOption.defaultOption;
         },
         changePageSize(value) {//每页显示条数变更
-            this.initPageOption();
+            // this.initPageOption();
             this.pageOption.size = value;
             this.getQueryList();
         },
@@ -262,15 +268,15 @@ export default {
                 request: this.searchUrl
             });
         },
-        scrollMore(){
-            const scrollTopHeight = this.scrollData.dom.scrollTop;//滚动高度
-            const clientHeight = this.scrollData.dom.clientHeight;//可用区域高度
-            const scrollHeight = this.scrollData.dom.scrollHeight;//滚动条的总高度
-            if(scrollTopHeight + clientHeight == scrollHeight){
-                this.pageOption.page = this.pageOption.page + 1;
-                this.getQueryList();
-            }
-        }
+        // scrollMore(){
+        //     const scrollTopHeight = this.scrollData.dom.scrollTop;//滚动高度
+        //     const clientHeight = this.scrollData.dom.clientHeight;//可用区域高度
+        //     const scrollHeight = this.scrollData.dom.scrollHeight;//滚动条的总高度
+        //     if(scrollTopHeight + clientHeight == scrollHeight){
+        //         this.pageOption.page = this.pageOption.page + 1;
+        //         this.getQueryList();
+        //     }
+        // }
     }
 }
 </script>
