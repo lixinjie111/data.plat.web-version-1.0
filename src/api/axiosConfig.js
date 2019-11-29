@@ -12,6 +12,7 @@ let isOutLogin = true;
 /**
  * axios过滤器
  */
+
 function axiosFilter(vm) {
     // request
     axios.create({
@@ -29,8 +30,18 @@ function axiosFilter(vm) {
       }],
       transformRequest: [function(data) {
         return data;
-      }]
+      }],
     });
+     // request 添加请求拦截器 
+     axios.interceptors.request.use(
+        config => {
+            config.cancelToken = window.cancleSource.token;
+            return config
+        },
+        function(error) {
+            return Promise.reject(error)
+        }
+    )
 
     // response
     axios.interceptors.response.use(response => {
@@ -71,12 +82,16 @@ function axiosFilter(vm) {
             }
         }
     }, function(error) {
-        vm.$message({
-            type: 'error',
-            duration: '1500',
-            message: '网络异常,请稍候重试!',
-            showClose: true
-        });
+            if (axios.isCancel(error)) {
+                console.log("请求被取消"+error); //请求如果被取消，这里是返回取消的message
+            } else {
+                vm.$message({
+                    type: 'error',
+                    duration: '1500',
+                    message: '网络异常,请稍候重试!',
+                    showClose: true
+                });
+            }
         // return Promise.reject(error);
     });
 }
@@ -86,4 +101,4 @@ function axiosFilter(vm) {
 //     window.location.href = '/';
 // }
 
-export default axiosFilter
+export default axiosFilter;
