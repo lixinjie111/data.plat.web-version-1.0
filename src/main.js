@@ -35,8 +35,16 @@ import '@/assets/icon-font/iconfont.css';
 // import 'videojs-flash'
 // Vue.use(VideoPlayer);
 
+// axios 过滤器
+import  axiosFilter from './api/axiosConfig.js';
+
+//取消请求的对象
+window.cancleSource={};
+window.cancelToken = axios.CancelToken;
 // 路由拦截器
 router.beforeEach((to, from, next) => {
+    window.cancleSource.cancel && window.cancleSource.cancel()
+    window.cancleSource = window.cancelToken.source()
     if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
         if (sessionStorage.getItem('login')) {  // 通过vuex state获取当前的token是否存在
             next();
@@ -64,6 +72,5 @@ const vm = new Vue({
 })
 
 
-// axios 过滤器
-import axiosFilter from './api/axiosConfig.js';
+
 axiosFilter(vm);
