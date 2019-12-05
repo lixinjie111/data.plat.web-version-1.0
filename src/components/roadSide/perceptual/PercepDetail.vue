@@ -112,7 +112,17 @@
                         <div class='percep-con c-padding-20 c-detail-box clearfix'>
                             <div class='percep-video'>
                                 <p class="c-title percep-title">路侧摄像头视频数据</p>
-                                <video-player class="video-player vjs-custom-skin sl-video-player"
+                                <live-player 
+                                    ref="livePlayer"
+                                    :requestVideoUrl="videoUrl"
+                                    :autoplay="true"
+                                    @loadeddata="onPlayerLoadedData"
+                                    @timeupdate="onPlayerTimeupdate"
+                                    @error="playerError"
+                                    @play="playFunc"
+                                    >
+                                </live-player>
+                                <!-- <video-player class="video-player vjs-custom-skin sl-video-player"
                                     ref="videoPlayer"
                                     :playsinline="true"
                                     :options="playerOptions" 
@@ -120,7 +130,7 @@
                                     @timeupdate="onPlayerTimeupdate"
                                     @error="playerError"
                                     @play="playFunc"
-                                ></video-player>                
+                                ></video-player>                 -->
                             </div>
                             <div class="percep-data">
                                 <p class="c-title percep-title">融合感知数据</p>
@@ -142,14 +152,16 @@
     </div>
 </template>
 <script>
-import { videoPlayer }  from 'vue-video-player';
-import 'video.js/dist/video-js.css';
-import 'vue-video-player/src/custom-theme.css'
+// import { videoPlayer }  from 'vue-video-player';
+// import 'video.js/dist/video-js.css';
+// import 'vue-video-player/src/custom-theme.css'
 
 import TList from '@/common/utils/list.js'
 import TMDate from '@/common/utils/date.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap4.vue";
+// 视频插件
+import LivePlayer from './livePlayer/template.vue';
 // import { getMap } from '@/common/view/TusvnMap/tusvnMap3.js';
 import { findRoadMonitorCameraInfo, getVideoUrlInfo, findPerceptionRecordsInfo } from '@/api/roadSide';
 import { setTimeout } from 'timers';
@@ -158,7 +170,8 @@ export default {
     components: {
         VueDatepickerLocal,
         TusvnMap,
-        videoPlayer
+        // videoPlayer,
+        LivePlayer
     },
     data(){
         let _this = this;
@@ -228,6 +241,7 @@ export default {
                 timer: null,
                 bthTimer: null
             },
+            videoUrl:'',
             initMapFlag: false,
             dataList: [],
 
@@ -240,7 +254,8 @@ export default {
     },
     computed: {
         player() {
-            return this.$refs.videoPlayer.player
+            console.log(this.$refs.livePlayer);
+            return this.$refs.livePlayer.player
         }
     },
     watch: {
@@ -383,7 +398,8 @@ export default {
             getVideoUrlInfo(this.$route.params).then(res => {
                 if(res.status == '200'){
                     let _videoUrl = res.data.url;
-                    this.playerOptions.sources[0].src = _videoUrl;
+                    this.videoUrl = _videoUrl;
+                    // this.playerOptions.sources[0].src = _videoUrl;
                 }
             }).catch(err => {
                 // this.boxLoading = false;
@@ -527,18 +543,18 @@ export default {
         },
         onPlayerLoadedData(e) {
             // console.log("onPlayerLoadedData");
-            if(this.playerOptions.sources[0].src != '') {
+            if(this.videoUrl != '') {
                 // console.log("准备就绪----------");
                 this.player.currentTime('0.001');
             }
         },
         playerError(e) {
             // console.log("playerError");
-            if(this.playerOptions.sources[0].src != '') {
-                let _videoUrl = this.playerOptions.sources[0].src;
-                this.playerOptions.sources[0].src = '';
+            if(this.videoUrl != '') {
+                let _videoUrl = this.videoUrl;
+                this.videoUrl = '';
                 setTimeout(() => {
-                    this.playerOptions.sources[0].src = _videoUrl;
+                    this.videoUrl = _videoUrl;
                     this.player.currentTime('0.001');
                 }, 2000);
             }
