@@ -86,7 +86,7 @@ export const getCameraStatus = params => { return axios.post(`${HTTPURL}cam/getC
 /**
  * 数据列表
  */
-export const findVideoRecords = params => { return axios.post(`${HTTPURL}perception/findVideoRecords`, params).then(res => res.data); };
+export const findVideoRecords = params => { return axios.post(`${HTTPURL}perception/findCameraVideoList`, params).then(res => res.data); };
 
 /**
  * 摄像头列表

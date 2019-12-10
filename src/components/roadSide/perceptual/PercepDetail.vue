@@ -9,7 +9,6 @@
                         <el-page-header @back="$router.go(-1);" class="c-return-btn"></el-page-header>
                     </h3>
                 </div>
-                <!-- <div class="sl-percepDetail-container c-wrapper-20" v-loading="boxLoading"> -->
                 <div class="sl-percepDetail-container c-wrapper-20">
                     <div class='sl-btn-box clearfix'>
                         <el-button class="sl-btn" type="warning" icon="el-icon-arrow-left" @click="reduceTime"></el-button>
@@ -32,6 +31,11 @@
                             </div>
                         </div>
                         <el-button class="sl-btn" type="warning" icon="el-icon-arrow-right" @click="addTime"></el-button>
+                        <ul class="road-side-info">
+                            <li>路侧点名称:{{initRoadInfo.rsPtName}}</li>
+                            <li>设备编号:{{initRoadInfo.deviceId}}</li>
+                            <li>设备序列号:{{initRoadInfo.serialNum}}</li>
+                        </ul>
                     </div>
                     <div class="sl-percepDetail-content c-mt-20">
                         <div class="sl-table c-padding-20 c-detail-box">
@@ -111,18 +115,22 @@
                         </div>
                         <div class='percep-con c-padding-20 c-detail-box clearfix'>
                             <div class='percep-video'>
-                                <p class="c-title percep-title">路侧摄像头视频数据</p>
-                                <live-player 
-                                    ref="livePlayer"
-                                    :requestVideoUrl="videoUrl"
-                                    :autoplay="true"
-                                    @loadeddata="onPlayerLoadedData"
-                                    @timeupdate="onPlayerTimeupdate"
-                                    @error="playerError"
-                                    @play="playFunc"
-                                    >
-                                </live-player>
-                                <!-- <video-player class="video-player vjs-custom-skin sl-video-player"
+                                <div class="c-title percep-title">
+                                    <p>路侧感知数据</p>
+                                    <div class='select-camear c-font-16' v-if='initRoadInfo.fileName === "-"'>
+                                        <span>选择摄像头:</span>
+                                        <el-select size='mini' v-model="serialNum" placeholder="请选择" style="float:left;" @change='selectCamera'>
+                                            <el-option
+                                            v-for="item in cameraList"
+                                            :key="item.serialNum"
+                                            :label="item.serialNum"
+                                            :value="item.serialNum">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                </div>
+                                
+                                <video-player class="video-player vjs-custom-skin sl-video-player"
                                     ref="videoPlayer"
                                     :playsinline="true"
                                     :options="playerOptions" 
@@ -130,7 +138,7 @@
                                     @timeupdate="onPlayerTimeupdate"
                                     @error="playerError"
                                     @play="playFunc"
-                                ></video-player>                 -->
+                                ></video-player>                
                             </div>
                             <div class="percep-data">
                                 <p class="c-title percep-title">融合感知数据</p>
@@ -152,16 +160,14 @@
     </div>
 </template>
 <script>
-// import { videoPlayer }  from 'vue-video-player';
-// import 'video.js/dist/video-js.css';
-// import 'vue-video-player/src/custom-theme.css'
+import { videoPlayer }  from 'vue-video-player';
+import 'video.js/dist/video-js.css';
+import 'vue-video-player/src/custom-theme.css'
 
 import TList from '@/common/utils/list.js'
 import TMDate from '@/common/utils/date.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap4.vue";
-// 视频插件
-import LivePlayer from './livePlayer/template.vue';
 // import { getMap } from '@/common/view/TusvnMap/tusvnMap3.js';
 import { findRoadMonitorCameraInfo, getVideoUrlInfo, findPerceptionRecordsInfo } from '@/api/roadSide';
 import { setTimeout } from 'timers';
@@ -170,8 +176,7 @@ export default {
     components: {
         VueDatepickerLocal,
         TusvnMap,
-        // videoPlayer,
-        LivePlayer
+        videoPlayer
     },
     data(){
         let _this = this;
@@ -187,7 +192,12 @@ export default {
                 "serialNum": this.$route.params.serialNum, //设备序列号
                 "framesTime": '',
             },
-
+            initRoadInfo:{
+                rsPtName:'',
+                deviceId:'',
+                serialNum:'',
+                fileName:''
+            },
             startTimeTimestamp: new Date(this.$dateUtil.formatTimeReal(this.$route.params.startTime)).getTime(),
             endTimeTimestamp: new Date(this.$dateUtil.formatTimeReal(this.$route.params.endTime)).getTime(),
             // currentTimeTimestamp: new Date(this.$dateUtil.formatTimeReal(this.$route.params.startTime)).getTime(),
@@ -231,6 +241,8 @@ export default {
                     fullscreenToggle: true  //全屏按钮
                 }
             },
+            serialNum:'',
+            cameraList:[],
             tusvnOption: {
                 show: false,
                 loading: false
@@ -241,21 +253,17 @@ export default {
                 timer: null,
                 bthTimer: null
             },
-            videoUrl:'',
             initMapFlag: false,
             dataList: [],
-
             rowHeight: 0,
             currentIndex: -1,
             tableHeight: 0,
-
             cameraParam: null
         }
     },
     computed: {
         player() {
-            console.log(this.$refs.livePlayer);
-            return this.$refs.livePlayer.player
+            return this.$refs.videoPlayer.player
         }
     },
     watch: {
@@ -288,7 +296,7 @@ export default {
             }
         },
         "perceptionData.framesTime"(newVal, oldVal) {
-            console.log('获取时间');
+            console.log(newVal);
             this.setTime(newVal);
             clearTimeout(this.stopFrequentLoad.timer);
             if(this.stopFrequentLoad.timer) {
@@ -309,14 +317,20 @@ export default {
     },
     mounted(){
         let _this = this;
+        let roadCamerInfo = JSON.parse(localStorage.getItem('roadCamerInfo'));
         this.durationTime = (this.endTimeTimestamp - this.startTimeTimestamp)/1000;
         this.durationSecond = this.durationTime.toFixed(3).split(".")[0];
         this.durationMilliSecond = this.durationTime.toFixed(3).split(".")[1];
         this.perceptionData.framesTime = this.startTimeTimestamp;
+        this.initRoadInfo = roadCamerInfo;
+        this.cameraList = roadCamerInfo.cameraList;
+        this.serialNum = this.$route.params.serialNum;
+        console.log(this.initRoadInfo);
         this.getVideoUrl();
         this.findRoadMonitorCamera();
         // this.findPerceptionRecords();
         this.curTime = this.params.startTime;
+        console.log(this.curTime);
         //注册键盘事件
         document.onkeydown = function (event) {
             let e = event || window.event || arguments.callee.caller.arguments[0];
@@ -343,12 +357,17 @@ export default {
                 }
             }
         }
-
     },
     methods: {
-        findRoadMonitorCamera() {
+        findRoadMonitorCamera(serialNum) {
+            let serialNumber = '';
+            if(serialNum){
+                serialNumber = serialNum;
+            }else{
+                serialNumber = this.$route.params.serialNum;
+            }
             findRoadMonitorCameraInfo({
-                'serialNum':this.$route.params.serialNum
+                'serialNum':serialNumber
             }).then(res => {
                 if(res.status == '200'){
                     this.cameraParam = JSON.parse(res.data[0].cameraParam);
@@ -394,12 +413,17 @@ export default {
             this.tableHeight = parseInt(this.$refs.percepDetailTable.bodyHeight['max-height']);
             this.$refs.percepDetailTable.bodyWrapper.scrollTop = this.rowHeight*this.currentIndex;
         },
-        getVideoUrl() {
-            getVideoUrlInfo(this.$route.params).then(res => {
+        getVideoUrl(serialNum) {
+            let params = {};
+            if(serialNum){
+                params = Object.assign(this.$route.params,{serialNum:serialNum});
+            }else{
+                params = this.$route.params;
+            }
+            getVideoUrlInfo(params).then(res => {
                 if(res.status == '200'){
                     let _videoUrl = res.data.url;
-                    this.videoUrl = _videoUrl;
-                    // this.playerOptions.sources[0].src = _videoUrl;
+                    this.playerOptions.sources[0].src = _videoUrl;
                 }
             }).catch(err => {
                 // this.boxLoading = false;
@@ -484,6 +508,7 @@ export default {
             this.currentMillisecond = _timestamp.substr(_timestamp.length-3);
         },
         changeDate(time) {
+            console.log(time);
             let _curDate = Number(time.getTime());
             if(this.currentMilliSecond != '000') {
                 _curDate = Number(time.getTime())+Number(this.currentMillisecond);
@@ -494,13 +519,14 @@ export default {
             }else if(_curDate > Number(this.endTimeTimestamp)) {
                 // console.log('大于最大时间');
                 this.perceptionData.framesTime = this.endTimeTimestamp;
-
             }else {
                 // console.log('正常时间范围内');
                 this.perceptionData.framesTime = _curDate;
             }
         },
         reduceTime() {
+            console.log(this.perceptionData.framesTime);
+            console.log(this.startTimeTimestamp);
             if(this.perceptionData.framesTime - this.limit >= this.startTimeTimestamp) {
                 this.perceptionData.framesTime -= this.limit;
             }else {
@@ -543,18 +569,18 @@ export default {
         },
         onPlayerLoadedData(e) {
             // console.log("onPlayerLoadedData");
-            if(this.videoUrl != '') {
+            if(this.playerOptions.sources[0].src != '') {
                 // console.log("准备就绪----------");
                 this.player.currentTime('0.001');
             }
         },
         playerError(e) {
             // console.log("playerError");
-            if(this.videoUrl != '') {
-                let _videoUrl = this.videoUrl;
-                this.videoUrl = '';
+            if(this.playerOptions.sources[0].src != '') {
+                let _videoUrl = this.playerOptions.sources[0].src;
+                this.playerOptions.sources[0].src = '';
                 setTimeout(() => {
-                    this.videoUrl = _videoUrl;
+                    this.playerOptions.sources[0].src = _videoUrl;
                     this.player.currentTime('0.001');
                 }, 2000);
             }
@@ -629,6 +655,13 @@ export default {
             if(this.cameraParam) {
                 this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
             }
+        },
+        selectCamera(val){
+            let data = this.cameraList.filter(item => item.serialNum === val);
+            this.initRoadInfo.deviceId = data[0].deviceId;
+            this.initRoadInfo.serialNum = data[0].serialNum;
+            this.getVideoUrl(val);
+            this.findRoadMonitorCamera(val);
         }
     },
     destroyed(){
@@ -659,6 +692,16 @@ export default {
         padding-left: 20px;
         &:after {
             left: 0;
+        }
+        .select-camear{
+            width:332px;
+            position: absolute;
+            top:10px;
+            right:0;
+            span{
+                float:left;
+                margin-right:2px;
+            }
         }
     }
     .video-player {
@@ -776,6 +819,14 @@ export default {
         padding: 0 !important;
         border: none !important;
         height: 38px !important;
+    }
+}
+.road-side-info{
+    margin-left:10px;
+    li{
+        display:inline;
+        line-height:40px;
+        padding-left:10px;
     }
 }
 </style>
