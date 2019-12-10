@@ -1,15 +1,15 @@
 <template>
 <div id="login-warpper" v-if="visibleFlag">
-    <img class="login-logo" src="../../static/images/login-logo.png">
+    <img class="login-logo" src="../../../static/images/login-logo.png">
     <div class="login-container">
-        <img class="login-bg" src="../../static/images/login-bg.jpg">
+        <img class="login-bg" src="../../../static/images/login-bg.jpg">
         <div class="login-content">
             <div class="login-left">
                 <p class="login-left-title">云控，启迪未来</p>
             </div>
             <div class="login-card">
                 <div class="login-title">数据分析中心</div>
-                <div class="login-item-box">
+                <div class="login-item-box" v-show="!dragFlag">
                     <el-form :model="loginForm" :rules="loginRules" ref="loginForm" label-position="right" label-width="105px" class="login-form">
                         <el-form-item prop="userNo" label="用户名" class="login-item">
                             <el-input type="text" v-model.trim="loginForm.userNo" :maxlength="40" placeholder="请输入用户名"></el-input>
@@ -19,6 +19,16 @@
                         </el-form-item>
                     </el-form>
                     <el-button class="login-button" type="primary" :loading="loading" @click.native.prevent="loginClick">登 录</el-button>
+                </div>
+                <div class="login-item-box" v-if="dragFlag">
+                    <slide-verify 
+                        :l="42"
+                        :r="10"
+                        :w="310"
+                        :h="155"
+                        :loginForm="loginForm"
+                        @success="onSuccess">
+                    </slide-verify>
                 </div>
             </div>
         </div>
@@ -35,9 +45,13 @@
 import md5 from 'js-md5'
 import {requestLogin} from '@/api/login'
 import SessionUtils from '@/store/session.js'
+import SlideVerify from './components/slideVerify.vue';
 
 export default {
     name: 'Login',
+    components: {
+        SlideVerify
+    },
     data(){
         let checkAdminName = (rule, value, callback) => {
             if (!value) {
@@ -54,11 +68,13 @@ export default {
             }
         };
         return {
+            dragFlag:false,
             visibleFlag: false,
             loginForm: {
                 userNo: '',
                 password: '',
-                platform: this.$store.state.platform
+                platform: this.$store.state.platform,
+                authToken:''
             },
             loginRules: {
                 userNo: [
@@ -117,6 +133,13 @@ export default {
                     localStorage.setItem("yk-token",JSON.stringify({data:JSON.parse(temp).token,"time":new Date().getTime()}));
                     this.$router.push('/home');
                 }else {
+                    if(res.status == -200){
+                        if(res.data.errorCount) {
+                            if(res.data.errorCount>=5){
+                                this.dragFlag=true;
+                            }
+                        }
+                    }
                     this.removeStorage();
                 }
             }).catch(err => {
@@ -128,6 +151,10 @@ export default {
             SessionUtils.clearItems();
             localStorage.removeItem("yk-token");
             this.visibleFlag = true;
+        },
+        onSuccess(authToken){
+            this.dragFlag=false;
+            this.loginForm.authToken=authToken;
         }
     }
 }
