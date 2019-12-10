@@ -13,5 +13,13 @@ export const requestLogout = params => { return axios.post(`${OPERATEURL}openApi
  * 修改密码
  */
 export const requestPasswd = params => { return axios.post(`${OPERATEURL}openApi/user/passwd`, params).then(res => res.data); };
+/**
+ * 获取滑块位置
+ */
+export const requestCreateCode = params => { return axios.post(`${OPERATEURL}openApi/user/createCode`, params).then(res => res.data); };
+/**
+ * 滑动校验
+ */
+export const requestAuthCode = params => { return axios.post(`${OPERATEURL}openApi/user/authCode`, params).then(res => res.data); };
 
 
