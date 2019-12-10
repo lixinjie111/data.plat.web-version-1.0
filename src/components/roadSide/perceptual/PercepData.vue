@@ -113,7 +113,11 @@
                 stripe>
                 <el-table-column label="编号" type="index" :index="indexMethod"></el-table-column>
                 <el-table-column min-width="13%" label="路侧点名称" prop="rsPtName"></el-table-column>
-                <el-table-column min-width="13%" label="设备类型" prop="type"></el-table-column>
+                <el-table-column min-width="13%" label="设备类型">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.type | typeFileter}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column min-width="13%" label="设备编号" prop="deviceId"></el-table-column>
                 <el-table-column min-width="13%" label="设备序列号" prop="serialNum"></el-table-column>
                 <el-table-column min-width="14%" label="文件名称" prop="fileName"></el-table-column>
@@ -155,6 +159,15 @@ export default {
     name: 'PercepData',
     components: {
         VueDatepickerLocal
+    },
+    filters:{
+        typeFileter(type){
+            const typeMap = {
+                '1':'摄像头',
+                '2':'雷达'
+            }
+            return typeMap[type];
+        }
     },
     data(){
         let _this = this,
@@ -390,9 +403,7 @@ export default {
         searchClick(){
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
-                    console.log(this.searchKey.rsPtName);
                     this.searchLoad = true;
-                    console.log(this.searchKey.rsPtId);
                     if(this.searchKey.rsPtName && this.searchKey.rsPtId){
                         this.historySearchKey.rsPtId = this.searchKey.rsPtId;
                         this.historySearchKey.rsPtName = this.searchKey.rsPtName;
@@ -439,7 +450,6 @@ export default {
                                     .indexOf(query.toLowerCase()) > -1;
                                 });
                             }
-                            console.log(this.fuzzySearchOption1.filterOption);
                             this.fuzzySearchOption1.loading = false;
                         }).catch(err => {
                             this.fuzzySearchOption1.loading = false;
@@ -510,7 +520,6 @@ export default {
             }else if(this.searchKey.deviceId === 'N-NJ-0004'){
                 this.fuzzySearchOption2.loading = true;
                 clearTimeout(this.fuzzySearchOption2.timer);
-                console.log('无默认值');
                 this.fuzzySearchOption2.timer = setTimeout(() => {
                     queryRoadCamListSearch({ 
                         'field':'deviceId',
@@ -528,7 +537,6 @@ export default {
                 }, 500);
             }
             if(this.fuzzySearchOption2.filterOption.length > 0){
-                console.log('有默认值');
                 if(this.searchKey.deviceId === this.fuzzySearchOption2.filterOption[0].deviceId){
                     this.fuzzySearchOption2.filterOption = this.fuzzySearchOption2.filterOption;
                 };
@@ -623,18 +631,17 @@ export default {
         },
         deviceIdSelect(val){
             let data = this.fuzzySearchOption2.filterOption.filter(item => item.deviceId === val);
+            this.searchKey.rcuId = data[0].rcu[0].deviceId;
             this.searchKey.rsPtName = data[0].rsPtName;
             this.searchKey.rsPtId = data[0].rsPtId;
             this.searchKey.serialNum = data[0].serialNum;
-            console.log(this.rcuIds);
-            console.log(data);
         },
         serialSelect(val){
             let data = this.fuzzySearchOption2.filterOption.filter(item => item.serialNum === val);
+            this.searchKey.rcuId = data[0].rcu[0].deviceId;
             this.searchKey.rsPtName = data[0].rsPtName;
             this.searchKey.rsPtId = data[0].rsPtId;
             this.searchKey.deviceId = data[0].deviceId;
-            console.log(data);
         }
     },
 }

@@ -296,7 +296,6 @@ export default {
             }
         },
         "perceptionData.framesTime"(newVal, oldVal) {
-            console.log(newVal);
             this.setTime(newVal);
             clearTimeout(this.stopFrequentLoad.timer);
             if(this.stopFrequentLoad.timer) {
@@ -325,12 +324,10 @@ export default {
         this.initRoadInfo = roadCamerInfo;
         this.cameraList = roadCamerInfo.cameraList;
         this.serialNum = this.$route.params.serialNum;
-        console.log(this.initRoadInfo);
         this.getVideoUrl();
         this.findRoadMonitorCamera();
         // this.findPerceptionRecords();
         this.curTime = this.params.startTime;
-        console.log(this.curTime);
         //注册键盘事件
         document.onkeydown = function (event) {
             let e = event || window.event || arguments.callee.caller.arguments[0];
@@ -508,7 +505,6 @@ export default {
             this.currentMillisecond = _timestamp.substr(_timestamp.length-3);
         },
         changeDate(time) {
-            console.log(time);
             let _curDate = Number(time.getTime());
             if(this.currentMilliSecond != '000') {
                 _curDate = Number(time.getTime())+Number(this.currentMillisecond);
@@ -525,8 +521,6 @@ export default {
             }
         },
         reduceTime() {
-            console.log(this.perceptionData.framesTime);
-            console.log(this.startTimeTimestamp);
             if(this.perceptionData.framesTime - this.limit >= this.startTimeTimestamp) {
                 this.perceptionData.framesTime -= this.limit;
             }else {
