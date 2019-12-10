@@ -2,7 +2,7 @@
 // import VueRouter from 'vue-router'
 
 // 登录
-const Login = resolve => require(['@/components/Login.vue'], resolve)
+const Login = resolve => require(['@/components/login/index.vue'], resolve)
 const Home = resolve => require(['@/components/Home.vue'], resolve)
 const Main = resolve => require(['@/components/Main.vue'], resolve)
 //重新加载当前路由
