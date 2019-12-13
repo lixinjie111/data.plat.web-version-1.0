@@ -517,7 +517,7 @@ export default {
         selectDeviceIdList(){
             if(this.searchKey.deviceId === '无数据'){
                 return false;
-            }else if(this.searchKey.deviceId === 'N-NJ-0004'){
+            }else if(this.searchKey.deviceId === 'N-CI0007'){
                 this.fuzzySearchOption2.loading = true;
                 clearTimeout(this.fuzzySearchOption2.timer);
                 this.fuzzySearchOption2.timer = setTimeout(() => {
@@ -600,7 +600,7 @@ export default {
         selectSerialNumList(){
             if(this.searchKey.serialNum === '无数据'){
                 return false;
-            }else if(this.searchKey.serialNum === '3402000000132000003001'){
+            }else if(this.searchKey.serialNum === '3402000000132000000101'){
                 this.fuzzySearchOption3.loading = true;
                 clearTimeout(this.fuzzySearchOption3.timer);
                 this.fuzzySearchOption3.timer = setTimeout(() => {
