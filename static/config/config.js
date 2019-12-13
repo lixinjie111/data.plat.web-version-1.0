@@ -1,21 +1,21 @@
 window.config = {
     //望京 内网
-    staticUrl: "http://172.17.1.16:9090/", //静态文件路径
-    baseUrl: 'http://172.17.1.16',
-    monUrl: 'http://172.17.1.16',
-    url: 'http://172.17.1.16:9091/dataPlatApp/',//数据平台
-    operateUrl: 'http://172.17.1.16:9090/operateApp/',//运营平台
-    downloadUrl: 'http://172.17.1.16:9091/dataPlatApp/cam/download/', //导出&&下载地址
-    websocketUrl:'ws://172.17.1.16:49982/mon',
+    // staticUrl: "http://172.17.1.16:9090/", //静态文件路径
+    // baseUrl: 'http://172.17.1.16',
+    // monUrl: 'http://172.17.1.16',
+    // url: 'http://172.17.1.16:9091/dataPlatApp/',//数据平台
+    // operateUrl: 'http://172.17.1.16:9090/operateApp/',//运营平台
+    // downloadUrl: 'http://172.17.1.16:9091/dataPlatApp/cam/download/', //导出&&下载地址
+    // websocketUrl:'ws://172.17.1.16:49982/mon',
 
     //望京 外网
-    // staticUrl: "http://120.133.21.14:9090/", //静态文件路径
-    // baseUrl: 'http://120.133.21.14',
-    // monUrl: 'http://120.133.21.14',
-    // url: 'http://120.133.21.14:9091/dataPlatApp/',//数据平台
-    // operateUrl: 'http://120.133.21.14:9090/operateApp/',//运营平台
-    // downloadUrl: 'http://120.133.21.14:9091/dataPlatApp/cam/download/', //导出&&下载地址
-    // websocketUrl:'ws://120.133.21.14:49982/mon',
+    staticUrl: "http://120.133.21.14:9090/", //静态文件路径
+    baseUrl: 'http://120.133.21.14',
+    monUrl: 'http://120.133.21.14',
+    url: 'http://120.133.21.14:9091/dataPlatApp/',//数据平台
+    operateUrl: 'http://120.133.21.14:9090/operateApp/',//运营平台
+    downloadUrl: 'http://120.133.21.14:9091/dataPlatApp/cam/download/', //导出&&下载地址
+    websocketUrl:'ws://120.133.21.14:49982/mon',
 
     //测试环境 内网
     // staticUrl: "http://10.0.1.181:9090/", //静态文件路径
