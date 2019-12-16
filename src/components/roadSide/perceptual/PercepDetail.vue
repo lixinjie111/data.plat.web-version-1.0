@@ -143,13 +143,17 @@
                             <div class="percep-data">
                                 <p class="c-title percep-title">融合感知数据</p>
                                 <div class="percep-wrap" v-loading="tusvnOption.loading" >
-                                    <tusvn-map 
-                                        class="sl-tusvn-map"
-                                        target-id="tusvnMap" 
-                                        ref="tusvnMap" 
+                                    <iframe 
+                                        @load ="onLoadMap" 
                                         v-show="tusvnOption.show"
-                                        @mapcomplete="mapcomplete">
-                                    </tusvn-map>
+                                        id="cesiumContainer" 
+                                        name ="cesiumContainer" 
+                                        ref="iframe" 
+                                        class="c-iframe sl-tusvn-map" 
+                                        :src="iframeSrc"
+                                    >
+                                    </iframe>
+                                  
                                 </div>
                             </div>
                         </div>
@@ -167,15 +171,12 @@ import 'vue-video-player/src/custom-theme.css'
 import TList from '@/common/utils/list.js'
 import TMDate from '@/common/utils/date.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
-import TusvnMap from "@/common/view/TusvnMap/Tusvn3DMap4.vue";
-// import { getMap } from '@/common/view/TusvnMap/tusvnMap3.js';
 import { findRoadMonitorCameraInfo, getVideoUrlInfo, findPerceptionRecordsInfo } from '@/api/roadSide';
 import { setTimeout } from 'timers';
 export default {
     name: 'PercepDetail',
     components: {
         VueDatepickerLocal,
-        TusvnMap,
         videoPlayer
     },
     data(){
@@ -308,6 +309,9 @@ export default {
             }, this.stopFrequentLoad.timeLimit);
         }
     },
+    beforeCreate(){
+        this.iframeSrc = window.config.staticUrl+'cesium-map/modules/dataManage/percepDetail.html';           
+    },
     beforeRouteLeave(to, from, next) {
         if (to.name != "PercepData") {
             this.$parent.keepAliveArr = [];
@@ -371,7 +375,24 @@ export default {
                     // console.log("拿到摄像头角度");
                     if(this.initMapFlag) {
                         // console.log("更新视图角度");
-                        this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
+                        let msgData = {
+                            type:"updateCam",
+                            data:{
+                                x:this.cameraParam.x,
+                                y:this.cameraParam.y,
+                                z:this.cameraParam.z,
+                                radius:this.cameraParam.radius,
+                                pitch:this.cameraParam.pitch,
+                                yaw:this.cameraParam.yaw
+                            }
+                        }
+                        for (const i in msgData.data) {
+                            if(!msgData.data[i] && msgData.data[i] != 0){
+                                return;
+                            }
+                        }
+                        document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');  
+                       
                     }
                 }
             }).catch(err => {
@@ -629,9 +650,33 @@ export default {
                 setTimeout(() => {
                     this.tusvnOption.loading = false;
                     row.loading = false;
-                    this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
-                    // this.$refs.tusvnMap.showBData2(row);
-                    this.$refs.tusvnMap.addPerceptionData(row);     
+                    let msgData = {
+                        type:"updateCam",
+                        data:{
+                            x:this.cameraParam.x,
+                            y:this.cameraParam.y,
+                            z:this.cameraParam.z,
+                            radius:this.cameraParam.radius,
+                            pitch:this.cameraParam.pitch,
+                            yaw:this.cameraParam.yaw
+                        }
+                    }
+                    for (const i in msgData.data) {
+                        if(!msgData.data[i] && msgData.data[i] != 0){
+                            return;
+                        }
+                    }
+                    document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');  
+                   
+                    let perData = {
+                        type:"setPerData",
+                        data:{
+                            row:row
+                        }
+                    }
+                    document.getElementById("cesiumContainer").contentWindow.postMessage(perData,'*');
+               
+                    // this.$refs.tusvnMap.addPerceptionData(row);     
                 }, 500);
                 this.currentIndex = row.index;
             }
@@ -643,23 +688,34 @@ export default {
                 return "is-active"
             }
         },
-        mapcomplete(row) {
+
+        onLoadMap(){
             this.initMapFlag = true;
-            // getMap(this.$refs.tusvnMap);
-            if(this.cameraParam) {
-                this.$refs.tusvnMap.updateCameraPosition(this.cameraParam.x,this.cameraParam.y,this.cameraParam.z,this.cameraParam.radius,this.cameraParam.pitch,this.cameraParam.yaw);
+            if(this.cameraParam){
+                let msgData = {
+                    type:"updateCam",
+                    data:{
+                        x:this.cameraParam.x,
+                        y:this.cameraParam.y,
+                        z:this.cameraParam.z,
+                        radius:this.cameraParam.radius,
+                        pitch:this.cameraParam.pitch,
+                        yaw:this.cameraParam.yaw
+                    }
+                }
+                for (const i in msgData.data) {
+                    if(!msgData.data[i] && msgData.data[i] != 0){
+                        return;
+                    }
+                }
+                document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');    
             }
+           
         },
-        selectCamera(val){
-            let data = this.cameraList.filter(item => item.serialNum === val);
-            this.initRoadInfo.deviceId = data[0].deviceId;
-            this.initRoadInfo.serialNum = data[0].serialNum;
-            this.getVideoUrl(val);
-            this.findRoadMonitorCamera(val);
-        }
+
+
     },
     destroyed(){
-        this.$refs.tusvnMap&&this.$refs.tusvnMap.reset3DMap();
         document.onkeydown = function (event) {
             if (event.keyCode == 38 || event.keyCode == 40) {
                 event.preventDefault();
