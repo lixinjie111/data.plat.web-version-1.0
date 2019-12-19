@@ -434,6 +434,7 @@ export default {
             // this.fuzzySearchOption3.defaultOption = this.fuzzySearchOption3.filterOption;
         },
         remoteMethod1(query) { 
+            console.log('读取数据')
             if (query !== '') {
                 this.fuzzySearchOption1.loading = true;
                 clearTimeout(this.fuzzySearchOption1.timer);
@@ -515,9 +516,10 @@ export default {
             })
         },
         selectDeviceIdList(){
+            console.log('获取焦点')
             if(this.searchKey.deviceId === '无数据'){
                 return false;
-            }else if(this.searchKey.deviceId === 'N-CI0007'){
+            }else if(this.searchKey.deviceId === 'N-CI0007' || this.searchKey.deviceId === 'S-CI0001'){
                 this.fuzzySearchOption2.loading = true;
                 clearTimeout(this.fuzzySearchOption2.timer);
                 this.fuzzySearchOption2.timer = setTimeout(() => {
@@ -600,7 +602,7 @@ export default {
         selectSerialNumList(){
             if(this.searchKey.serialNum === '无数据'){
                 return false;
-            }else if(this.searchKey.serialNum === '3402000000132000000101'){
+            }else if(this.searchKey.serialNum === '3402000000132000000101' || this.searchKey.serialNum === 'Test08191'){
                 this.fuzzySearchOption3.loading = true;
                 clearTimeout(this.fuzzySearchOption3.timer);
                 this.fuzzySearchOption3.timer = setTimeout(() => {
@@ -628,6 +630,19 @@ export default {
         },
         deviceTypeSelect(typeVal){
             this.searchKey.type = typeVal;
+            if(typeVal === 1){
+                this.searchKey.rsPtName = '博园路k1+530';
+                this.searchKey.rcuId = 'U-DH-0001';
+                this.searchKey.deviceId = 'N-CI0007';
+                this.searchKey.serialNum = '3402000000132000000101';
+                console.log(1)
+            }else if(typeVal === 2){
+                this.searchKey.rsPtName = '博园路k1+550';
+                this.searchKey.rcuId = '电风扇';
+                this.searchKey.deviceId = 'S-CI0001';
+                this.searchKey.serialNum = 'Test08191';
+                console.log(2);
+            }
         },
         deviceIdSelect(val){
             let data = this.fuzzySearchOption2.filterOption.filter(item => item.deviceId === val);
