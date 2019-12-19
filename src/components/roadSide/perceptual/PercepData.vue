@@ -434,7 +434,6 @@ export default {
             // this.fuzzySearchOption3.defaultOption = this.fuzzySearchOption3.filterOption;
         },
         remoteMethod1(query) { 
-            console.log('读取数据')
             if (query !== '') {
                 this.fuzzySearchOption1.loading = true;
                 clearTimeout(this.fuzzySearchOption1.timer);
@@ -516,7 +515,6 @@ export default {
             })
         },
         selectDeviceIdList(){
-            console.log('获取焦点')
             if(this.searchKey.deviceId === '无数据'){
                 return false;
             }else if(this.searchKey.deviceId === 'N-CI0007' || this.searchKey.deviceId === 'S-CI0001'){
@@ -635,13 +633,11 @@ export default {
                 this.searchKey.rcuId = 'U-DH-0001';
                 this.searchKey.deviceId = 'N-CI0007';
                 this.searchKey.serialNum = '3402000000132000000101';
-                console.log(1)
             }else if(typeVal === 2){
                 this.searchKey.rsPtName = '博园路k1+550';
                 this.searchKey.rcuId = '电风扇';
                 this.searchKey.deviceId = 'S-CI0001';
                 this.searchKey.serialNum = 'Test08191';
-                console.log(2);
             }
         },
         deviceIdSelect(val){
