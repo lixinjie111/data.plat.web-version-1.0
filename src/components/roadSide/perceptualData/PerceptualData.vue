@@ -613,7 +613,7 @@ export default {
                 camId:camerData.serialNum,protocal:this.protocal
             }).then(res =>{
                 if(res.status == '200') {
-                    let videoUrl = res.data.wsUrl ? res.data.wsUrl : res.data.rtmp;
+                    let videoUrl = res.data.flv;
                     this.isMaskShow = false;
                     camerData.isOn = true;
                     camerData.icon = "sl-pause-icon";

@@ -7,10 +7,10 @@
                 <i class="el-icon-refresh" v-if="refreshFlag" @click="refreshVideo"></i>
             </div>
             <div class="c-video-mask" v-if="videoOption.videoMaskFlag">
-                <!-- <i class="el-icon-video-play" v-if="videoOption.playFlag" @click="requestVideo"></i> -->
+                <i class="el-icon-video-play" v-if="videoOption.playFlag" @click="requestVideo"></i>
                 <i class="el-icon-loading" v-if="videoOption.loadingFlag"></i>
                 <span class="c-video-tip" v-if="videoOption.playError">{{videoOption.videoText}}</span>
-                <!-- <i class="el-icon-refresh" v-if="videoOption.playError" @click="refreshVideo"></i> -->
+                <i class="el-icon-refresh" v-if="videoOption.playError" @click="refreshVideo"></i>
             </div>
             <live-player 
                 class="c-live-player" 
@@ -55,10 +55,6 @@ export default {
         autoplay: {     //是否自动加载视频，true-自动加载视频，false-手动加载视频
             default: false,
             type: Boolean
-        },
-        isPauseFlag:{
-            default:false,
-            type:Boolean
         }
     },
     components: {
@@ -76,27 +72,15 @@ export default {
             },
             videoLoadingDelay: {
                 timer: null,
-                countTime: 15,
+                countTime: 60,
                 reloadTime: 2,
                 count: 0
-            }
-        }
-    },
-    computed: {
-        player() {
-            return this.$refs.livePlayer.player
+            },
+            player: null
         }
     },
     watch: {
         deep: true,
-        'isPauseFlag'(newVal,oldVal){
-            if(newVal === true){
-                this.$refs.livePlayer.pause();
-                this.setVideoOptionPause();
-            }else{
-                this.$refs.livePlayer.play();
-            }
-        },
         'videoOption.loadingFlag'(newVal, oldVal) {
             this.initVideoTimer();
             if(newVal) {
@@ -116,6 +100,7 @@ export default {
         }
     },
     mounted() {
+        this.player = this.$refs.livePlayer.player ? this.$refs.livePlayer.player : this.$refs.livePlayer;
         if(this.autoplay) {
             this.requestVideo();
         }
@@ -177,10 +162,10 @@ export default {
             this.videoOption.playError = false;
         },
         onPlayerMessage(player) {
-            // console.log("playerMessage", player);
+            console.log("playerMessage", player);
         },
         onPlayerError(player) {
-            // console.log("playerError", player);
+            console.log("playerError", player);
             this.setVideoOptionError("此视频暂无法播放，请稍后再试");
         },
         onPlayerEnded(player) {
@@ -188,7 +173,7 @@ export default {
             this.setVideoOptionPause();
         },
         onPlayerTimeupdate(player) {
-            // console.log("timeupdate", player);
+            console.log("timeupdate", player);
             this.setVideoOptionClose();
             this.videoTimerReload();
             this.$emit("videoTimeupdate",player);
@@ -294,6 +279,9 @@ export default {
     destoryed() {
         if(this.player) {
             this.player.pause();
+        }else {
+            this.initVideoTimer();
+            this.videoUrl = '';
         }
     }
 }
