@@ -72,8 +72,11 @@ export default {
             },
             videoLoadingDelay: {
                 timer: null,
-                countTime: 60,
-                reloadTime: 2,
+                countTime: 30,
+                reloadTime: 3,
+                reloadCountLimit: 3,
+                reloadCount: 0,
+                lastTimeupdate: -1,
                 count: 0
             },
             player: null
@@ -87,15 +90,20 @@ export default {
                 this.videoTimer();
             }
         },
-        'videoLoadingDelay.count'(newVal, oldVal) {
-            console.log(newVal);
-        },
+        // 'videoLoadingDelay.count'(newVal, oldVal) {
+        //     console.log(newVal);
+        // },
         'requestVideoUrl'(newVal,oldVal){
             if(newVal){
                 this.videoLoadingDelay.count = 0;
                 this.requestVideoUrl = newVal;
                 this.videoUrl = "";
                 this.requestVideo();
+            }
+        },
+        'videoUrl'(newVal,oldVal){
+            if(!newVal){
+                this.videoLoadingDelay.lastTimeupdate = -1;
             }
         }
     },
@@ -112,6 +120,7 @@ export default {
                 clearInterval(this.videoLoadingDelay.timer._id);
             }
             this.videoLoadingDelay.count = 0;
+            this.videoLoadingDelay.reloadCount = 0;
         },
         videoTimer() {
             this.videoLoadingDelay.timer = setInterval(() => {
@@ -120,17 +129,26 @@ export default {
                     this.videoUrl = "";
                 }else {
                     this.videoLoadingDelay.count ++;
+                    console.log("视频超时"+this.videoLoadingDelay.countTime,this.videoLoadingDelay.count);
                 }
             }, 1000);
         },
         videoTimerReload() {
+            clearInterval(this.videoLoadingDelay.timer);
             this.videoLoadingDelay.timer = setInterval(() => {
+                this.videoLoadingDelay.count ++;
+                this.videoLoadingDelay.reloadCount ++;
+                console.log("视频卡顿"+this.videoLoadingDelay.reloadTime,this.videoLoadingDelay.count,"连续加载次数", this.videoLoadingDelay.reloadCount);
                 if(this.videoLoadingDelay.count >= this.videoLoadingDelay.reloadTime) {
-                    this.requestVideo();
-                }else {
-                    this.videoLoadingDelay.count ++;
+                    if(this.videoLoadingDelay.reloadCount >= this.videoLoadingDelay.reloadCountLimit) {
+                        console.log("连续加载已达上限，关闭加载");
+                        this.setVideoOptionError("此视频暂无法播放，请稍后再试");
+                    }else {
+                        console.log("视频卡顿重新加载");
+                        this.requestVideo();
+                    }
                 }
-            }, 1000);
+            }, 2000);
         },
         setVideoOptionPause() {
             this.initVideoTimer();
@@ -173,9 +191,15 @@ export default {
             this.setVideoOptionPause();
         },
         onPlayerTimeupdate(player) {
-            console.log("timeupdate", player);
-            this.setVideoOptionClose();
-            this.videoTimerReload();
+            console.log("timeupdate", player, this.videoLoadingDelay.lastTimeupdate);
+            if(this.videoLoadingDelay.lastTimeupdate != player) {
+                console.log("---------更新");
+                this.videoLoadingDelay.lastTimeupdate = player;
+                this.setVideoOptionClose();
+            }
+            setTimeout(() => {
+                this.videoTimerReload();
+            }, 0);
             this.$emit("videoTimeupdate",player);
         },
         onPlayerPause() {
@@ -243,24 +267,6 @@ export default {
                 }
             }
         },
-        // refreshVideo(){
-        //     if(this.videoUrl == ''){
-        //         this.requestVideo();
-        //     }else {
-        //         if(this.liveFlag) {
-        //             this.setVideoOptionLoading();
-        //         }
-        //         this.videoLoadingDelay.count = 0;
-        //         this.$emit("refreshVideo");
-        //         // this.$refs.livePlayer && this.player.pause();
-        //         // setTimeout(() => {
-        //         //     this.setVideoOptionLoading();
-        //         //     setTimeout(() => {
-        //         //         this.player.play();
-        //         //     }, 500);
-        //         // }, 0);
-        //     }
-        // },
         refreshVideo(){
             this.videoUrl = '';
             this.initVideoTimer();
@@ -277,6 +283,10 @@ export default {
         }
     },
     destoryed() {
+        if(this.videoLoadingDelay.timer) {
+            clearInterval(this.videoLoadingDelay.timer);
+            clearInterval(this.videoLoadingDelay.timer._id);
+        }
         if(this.player) {
             this.player.pause();
         }else {
