@@ -353,7 +353,6 @@ export default {
         },
         initData(){
             this.loading = true;
-            console.log(this.historySearchKey);
             let _params = {
                 ... this.historySearchKey
             }
@@ -406,16 +405,14 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
-                    if(this.searchKey.rsPtName && this.searchKey.rsPtId){
-                        this.historySearchKey.rsPtId = this.searchKey.rsPtId;
-                        this.historySearchKey.rsPtName = this.searchKey.rsPtName.rsPtName;
-                    }else{
+                    if(this.searchKey.rsPtName){
                         this.historySearchKey.rsPtId = this.searchKey.rsPtName.rsPtId;
                         this.historySearchKey.rsPtName = this.searchKey.rsPtName.rsPtName;
                     }
                     this.historySearchKey.deviceId = this.searchKey.deviceId;
                     this.historySearchKey.serialNum = this.searchKey.serialNum;
                     this.historySearchKey.type = this.searchKey.type;
+                    this.historySearchKey.rcuId = this.searchKey.rcuId;
                     this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
                     this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
                     this.initPaging();
