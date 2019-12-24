@@ -204,11 +204,11 @@ export default {
         //     this.pageOption.total = 0;
         //     this.pageOption.page = 1;
         // },
-        // initPaging(){
-        //     this.pageOption.page = 1;
-        //     this.pageOption.total = 0;
-        //     this.pageOption.size = 10;
-        // },
+        initPaging(){
+            this.pageOption.page = 1;
+            this.pageOption.total = 0;
+            this.pageOption.size = 10;
+        },
         getQueryList(){
             this.loading = true;
             let _params = Object.assign({},this.historySearchKey, {
@@ -238,7 +238,7 @@ export default {
                     this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
                     this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
                     this.dataList = [];
-                    // this.initPaging();
+                    this.initPaging();
                     this.getQueryList();
                 } else {
                     return false;
