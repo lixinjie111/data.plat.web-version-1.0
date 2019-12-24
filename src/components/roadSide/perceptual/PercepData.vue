@@ -222,7 +222,7 @@ export default {
             requestData: {},
             searchKey: {
                 rsPtId:'',
-                // rcuId:'U-DH-0001',
+                rcuId:'',
                 rsPtName:'',
                 // cameraId:'',
                 type:1,
@@ -318,6 +318,7 @@ export default {
     mounted(){
         //望京 默认参数
         this.searchKey.rsPtName = defaultRoadInfo.rsPtName;
+        this.searchKey.rcuId = defaultRoadInfo.rcuId;
         this.searchKey.rsPtId = defaultRoadInfo.rsPtId;
         this.searchKey.deviceId = defaultRoadInfo.deviceId;
         this.searchKey.serialNum = defaultRoadInfo.serialNum;
@@ -352,6 +353,7 @@ export default {
         },
         initData(){
             this.loading = true;
+            console.log(this.historySearchKey);
             let _params = {
                 ... this.historySearchKey
             }
@@ -406,7 +408,7 @@ export default {
                     this.searchLoad = true;
                     if(this.searchKey.rsPtName && this.searchKey.rsPtId){
                         this.historySearchKey.rsPtId = this.searchKey.rsPtId;
-                        this.historySearchKey.rsPtName = this.searchKey.rsPtName;
+                        this.historySearchKey.rsPtName = this.searchKey.rsPtName.rsPtName;
                     }else{
                         this.historySearchKey.rsPtId = this.searchKey.rsPtName.rsPtId;
                         this.historySearchKey.rsPtName = this.searchKey.rsPtName.rsPtName;
@@ -487,7 +489,6 @@ export default {
                     this.rcuIds = data.rcu;
                     this.searchKey.rcuId = this.rcuIds[0].deviceId;
                     if(this.searchKey.type === 1){
-                        
                         if(data.camera.length > 0){
                             this.fuzzySearchOption3.filterOption = this.fuzzySearchOption2.filterOption = data.camera;
                             this.searchKey.deviceId = this.fuzzySearchOption2.filterOption[0].deviceId;
@@ -517,7 +518,11 @@ export default {
         selectDeviceIdList(){
             if(this.searchKey.deviceId === '无数据'){
                 return false;
-            }else if(this.searchKey.deviceId === 'N-CI0007' || this.searchKey.deviceId === 'S-CI0001'){
+            }else if(this.searchKey.deviceId === 'N-NJ1130' || this.searchKey.deviceId === 'S-SM0002'){
+                //望京
+                // this.searchKey.deviceId === 'N-CI0007' || this.searchKey.deviceId === 'S-CI0001'
+                //上海
+                // this.searchKey.deviceId === 'N-NJ1130' || this.searchKey.deviceId === 'S-SM0002'
                 this.fuzzySearchOption2.loading = true;
                 clearTimeout(this.fuzzySearchOption2.timer);
                 this.fuzzySearchOption2.timer = setTimeout(() => {
@@ -600,7 +605,11 @@ export default {
         selectSerialNumList(){
             if(this.searchKey.serialNum === '无数据'){
                 return false;
-            }else if(this.searchKey.serialNum === '3402000000132000000101' || this.searchKey.serialNum === 'Test08191'){
+            }else if(this.searchKey.serialNum === '3100000000132000006001' || this.searchKey.serialNum === '310000000613200000000201'){
+                //望京
+                // this.searchKey.serialNum === '3402000000132000000101' || this.searchKey.serialNum === 'Test08191'
+                //上海
+                // this.searchKey.serialNum === '3100000000132000006001' || this.searchKey.serialNum === '310000000613200000000201'
                 this.fuzzySearchOption3.loading = true;
                 clearTimeout(this.fuzzySearchOption3.timer);
                 this.fuzzySearchOption3.timer = setTimeout(() => {
@@ -629,29 +638,35 @@ export default {
         deviceTypeSelect(typeVal){
             this.searchKey.type = typeVal;
             if(typeVal === 1){
-                this.searchKey.rsPtName = '博园路k1+530';
-                this.searchKey.rcuId = 'U-DH-0001';
-                this.searchKey.deviceId = 'N-CI0007';
-                this.searchKey.serialNum = '3402000000132000000101';
+                //望京默认参数
+                // this.searchKey.rsPtName = '博园路k1+530';
+                // this.searchKey.rcuId = 'U-DH-0001';
+                // this.searchKey.deviceId = 'N-CI0007';
+                // this.searchKey.serialNum = '3402000000132000000101';
+                //上海默认参数
+                this.searchKey.rsPtName = '博园路TX08';
+                this.searchKey.rcuId = 'U-DH0007';
+                this.searchKey.deviceId = 'N-NJ1130';
+                this.searchKey.serialNum = '3100000000132000006001';
             }else if(typeVal === 2){
-                this.searchKey.rsPtName = '博园路k1+550';
-                this.searchKey.rcuId = '电风扇';
-                this.searchKey.deviceId = 'S-CI0001';
-                this.searchKey.serialNum = 'Test08191';
+                //望京默认参数
+                // this.searchKey.rsPtName = '博园路k1+550';
+                // this.searchKey.rcuId = '电风扇';
+                // this.searchKey.deviceId = 'S-CI0001';
+                // this.searchKey.serialNum = 'Test08191';
+                //上海默认参数
+                this.searchKey.rsPtName = '博园路TX03';
+                this.searchKey.rcuId = 'U-DH000T';
+                this.searchKey.deviceId = 'N-NJ1130';
+                this.searchKey.serialNum = '3100000000132000006001';
             }
         },
         deviceIdSelect(val){
             let data = this.fuzzySearchOption2.filterOption.filter(item => item.deviceId === val);
-            this.searchKey.rcuId = data[0].rcu[0].deviceId;
-            this.searchKey.rsPtName = data[0].rsPtName;
-            this.searchKey.rsPtId = data[0].rsPtId;
             this.searchKey.serialNum = data[0].serialNum;
         },
         serialSelect(val){
             let data = this.fuzzySearchOption2.filterOption.filter(item => item.serialNum === val);
-            this.searchKey.rcuId = data[0].rcu[0].deviceId;
-            this.searchKey.rsPtName = data[0].rsPtName;
-            this.searchKey.rsPtId = data[0].rsPtId;
             this.searchKey.deviceId = data[0].deviceId;
         }
     },
