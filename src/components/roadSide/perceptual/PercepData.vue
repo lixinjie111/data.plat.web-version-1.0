@@ -2,7 +2,7 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <el-form ref="searchForm" :inline="true" :rules="rules" :model="searchKey" size="small">
-            <el-form-item label="路侧点名称:" prop='rsPtName'>
+            <!-- <el-form-item label="路侧点名称:" prop='rsPtName'>
                 <el-select
                     v-model.trim="searchKey.rsPtName"
                     clearable
@@ -25,7 +25,7 @@
             </el-form-item>
             <el-form-item label="RCU编号: " prop="rcuId">
                 <el-input v-model="searchKey.rcuId"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="设备类型" prop='type'>
                 <el-select 
                 v-model="searchKey.type"
@@ -221,9 +221,9 @@ export default {
             inputFlag: true,
             requestData: {},
             searchKey: {
-                rsPtId:'',
-                rcuId:'',
-                rsPtName:'',
+                // rsPtId:'',
+                // rcuId:'',
+                // rsPtName:'',
                 // cameraId:'',
                 type:1,
                 serialNum:'',
@@ -269,9 +269,9 @@ export default {
                 cfgShow: false,
             },
             rules:{
-                rsPtName:[
-                    { required: true, message: '路侧点名称不能为空', trigger: 'blur' },
-                ],
+                // rsPtName:[
+                //     { required: true, message: '路侧点名称不能为空', trigger: 'blur' },
+                // ],
                 deviceId:[
                     { required: true, message: '摄像头编号不能为空', trigger: 'blur' },
                 ],
@@ -405,14 +405,14 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
-                    if(this.searchKey.rsPtName){
-                        this.historySearchKey.rsPtId = this.searchKey.rsPtName.rsPtId;
-                        this.historySearchKey.rsPtName = this.searchKey.rsPtName.rsPtName;
-                    }
+                    // if(this.searchKey.rsPtName){
+                    //     this.historySearchKey.rsPtId = this.searchKey.rsPtName.rsPtId;
+                    //     this.historySearchKey.rsPtName = this.searchKey.rsPtName.rsPtName;
+                    // }
                     this.historySearchKey.deviceId = this.searchKey.deviceId;
                     this.historySearchKey.serialNum = this.searchKey.serialNum;
                     this.historySearchKey.type = this.searchKey.type;
-                    this.historySearchKey.rcuId = this.searchKey.rcuId;
+                    // this.historySearchKey.rcuId = this.searchKey.rcuId;
                     this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
                     this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
                     this.initPaging();
@@ -641,8 +641,8 @@ export default {
                 // this.searchKey.deviceId = 'N-CI0007';
                 // this.searchKey.serialNum = '3402000000132000000101';
                 //上海默认参数
-                this.searchKey.rsPtName = '博园路TX08';
-                this.searchKey.rcuId = 'U-DH0007';
+                // this.searchKey.rsPtName = '博园路TX08';
+                // this.searchKey.rcuId = 'U-DH0007';
                 this.searchKey.deviceId = 'N-NJ1130';
                 this.searchKey.serialNum = '3100000000132000006001';
             }else if(typeVal === 2){
@@ -652,10 +652,10 @@ export default {
                 // this.searchKey.deviceId = 'S-CI0001';
                 // this.searchKey.serialNum = 'Test08191';
                 //上海默认参数
-                this.searchKey.rsPtName = '博园路TX03';
-                this.searchKey.rcuId = 'U-DH000T';
-                this.searchKey.deviceId = 'N-NJ1130';
-                this.searchKey.serialNum = '3100000000132000006001';
+                // this.searchKey.rsPtName = '博园路TX03';
+                // this.searchKey.rcuId = 'U-DH0007';
+                this.searchKey.deviceId = 'S-SM0002';
+                this.searchKey.serialNum = '310000000613200000000201';
             }
         },
         deviceIdSelect(val){

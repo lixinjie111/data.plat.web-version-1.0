@@ -32,7 +32,7 @@
                         </div>
                         <el-button class="sl-btn" type="warning" icon="el-icon-arrow-right" @click="addTime"></el-button>
                         <ul class="road-side-info">
-                            <li>路侧点名称:{{initRoadInfo.rsPtName}}</li>
+                            <!-- <li>路侧点名称:{{initRoadInfo.rsPtName}}</li> -->
                             <li>设备编号:{{initRoadInfo.deviceId}}</li>
                             <li>设备序列号:{{initRoadInfo.serialNum}}</li>
                         </ul>
@@ -194,7 +194,7 @@ export default {
                 "framesTime": '',
             },
             initRoadInfo:{
-                rsPtName:'',
+                // rsPtName:'',
                 deviceId:'',
                 serialNum:'',
                 fileName:''
@@ -330,6 +330,7 @@ export default {
         this.serialNum = this.$route.params.serialNum;
         this.getVideoUrl();
         this.findRoadMonitorCamera();
+        console.log(roadCamerInfo);
         // this.findPerceptionRecords();
         this.curTime = this.params.startTime;
         //注册键盘事件
@@ -712,8 +713,13 @@ export default {
             }
            
         },
-
-
+        selectCamera(val){
+            this.initRoadInfo.serialNum = val;
+            let filterResult = this.cameraList.filter(item => {
+                return item.serialNum === val;
+            })
+            this.initRoadInfo.deviceId = filterResult[0].deviceId;
+        }
     },
     destroyed(){
         document.onkeydown = function (event) {

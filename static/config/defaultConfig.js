@@ -6,8 +6,8 @@ let defaultRoadInfo = {
     // serialNum:'3402000000132000000101'
     
     //上海 默认参数
-    rsPtName:'博园路TX08',
-    rcuId:'U-DH0007',
+    // rsPtName:'博园路TX08',
+    // rcuId:'U-DH0007',
     deviceId:'N-NJ1130',
     serialNum:'3100000000132000006001'
 }
