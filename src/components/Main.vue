@@ -20,7 +20,7 @@
     </div>
 </template>
 <script>
-import HeaderBar from './Header.vue'
+import HeaderBar from '@/components/layout/Header.vue'
 import LeftBar from '@/components/layout/LeftBar.vue'
 
 export default {
