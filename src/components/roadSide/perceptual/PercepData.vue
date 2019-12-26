@@ -406,13 +406,8 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
-                    if(this.searchKey.rsPtName && this.searchKey.rsPtId){
-                        this.historySearchKey.rsPtName = this.searchKey.rsPtName;
-                        this.historySearchKey.rsPtId = this.searchKey.rsPtId;
-                    }else{
-                        this.historySearchKey.rsPtName = '';
-                        this.historySearchKey.rsPtId = '';
-                    }
+                    this.historySearchKey.rsPtName = this.searchKey.rsPtName;
+                    this.historySearchKey.rsPtId = this.searchKey.rsPtId;
                     this.historySearchKey.deviceId = this.searchKey.deviceId;
                     this.historySearchKey.serialNum = this.searchKey.serialNum;
                     this.historySearchKey.type = this.searchKey.type;
@@ -639,29 +634,25 @@ export default {
         deviceTypeSelect(typeVal){
             this.searchKey.type = typeVal;
             if(typeVal === 1){
-                this.searchKey.rsPtName = '';
-                this.searchKey.rsPtId = '';
                 //望京默认参数
                 // this.searchKey.rsPtName = '博园路k1+530';
                 // this.searchKey.rcuId = 'U-DH-0001';
                 // this.searchKey.deviceId = 'N-CI0007';
                 // this.searchKey.serialNum = '3402000000132000000101';
                 //上海默认参数
-                // this.searchKey.rsPtName = '博园路TX08';
-                // this.searchKey.rcuId = 'U-DH0007';
+                this.searchKey.rsPtName = '博园路TX08';
+                this.searchKey.rcuId = 'U-DH0007';
                 this.searchKey.deviceId = 'N-NJ1130';
                 this.searchKey.serialNum = '3100000000132000006001';
             }else if(typeVal === 2){
-                this.searchKey.rsPtName = '';
-                this.searchKey.rsPtId = '';
                 //望京默认参数
                 // this.searchKey.rsPtName = '博园路k1+550';
                 // this.searchKey.rcuId = '电风扇';
                 // this.searchKey.deviceId = 'S-CI0001';
                 // this.searchKey.serialNum = 'Test08191';
                 //上海默认参数
-                // this.searchKey.rsPtName = '博园路TX03';
-                // this.searchKey.rcuId = 'U-DH0007';
+                this.searchKey.rsPtName = '博园路TX03';
+                this.searchKey.rcuId = 'U-DH0007';
                 this.searchKey.deviceId = 'S-SM0002';
                 this.searchKey.serialNum = '310000000613200000000201';
             }
