@@ -229,6 +229,18 @@
 .c-width-precent-50 {
 	width: 50%;
 }
+// 头部下拉
+.c-header-dropdown {
+	text-align: center;
+    margin-top: 5px !important;
+    padding: 0 !important;
+    .el-dropdown-menu__item {
+        margin: 0 !important;
+    }
+    .el-dropdown-menu__item--divided:before {
+      height: 0;
+    }
+}
 //面包屑&&通用标题
 .c-title {
 	position: relative;

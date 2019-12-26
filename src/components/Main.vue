@@ -1,6 +1,6 @@
 <template>
     <div class="yk-main-box">
-        <header-bar3></header-bar3>
+        <header-bar></header-bar>
 
         <div class="main-container">
             <div class="yk-left" :class="dyCss.tree">
@@ -20,13 +20,13 @@
     </div>
 </template>
 <script>
-import HeaderBar3 from '@/components/layout/Header3.vue'
+import HeaderBar from '@/components/layout/Header.vue'
 import LeftBar from '@/components/layout/LeftBar.vue'
 
 export default {
     name: 'Main',
     components: {
-        HeaderBar3,
+        HeaderBar,
         LeftBar
     },
     data(){
