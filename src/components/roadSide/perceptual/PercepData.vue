@@ -73,7 +73,8 @@
                         :remote-method="remoteMethod3"
                         @focus="selectSerialNumList"
                         @change="serialSelect"
-                        :loading="fuzzySearchOption3.loading">
+                        :loading="fuzzySearchOption3.loading"
+                        class='serial'>
                         <el-option
                             v-for="(item,index) in fuzzySearchOption3.filterOption"
                             :key="item.serialNum+index"
@@ -221,9 +222,9 @@ export default {
             inputFlag: true,
             requestData: {},
             searchKey: {
-                // rsPtId:'',
+                rsPtId:'',
                 // rcuId:'',
-                // rsPtName:'',
+                rsPtName:'',
                 // cameraId:'',
                 type:1,
                 serialNum:'',
@@ -405,10 +406,13 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
-                    // if(this.searchKey.rsPtName){
-                    //     this.historySearchKey.rsPtId = this.searchKey.rsPtName.rsPtId;
-                    //     this.historySearchKey.rsPtName = this.searchKey.rsPtName.rsPtName;
-                    // }
+                    if(this.searchKey.rsPtName && this.searchKey.rsPtId){
+                        this.historySearchKey.rsPtName = this.searchKey.rsPtName;
+                        this.historySearchKey.rsPtId = this.searchKey.rsPtId;
+                    }else{
+                        this.historySearchKey.rsPtName = '';
+                        this.historySearchKey.rsPtId = '';
+                    }
                     this.historySearchKey.deviceId = this.searchKey.deviceId;
                     this.historySearchKey.serialNum = this.searchKey.serialNum;
                     this.historySearchKey.type = this.searchKey.type;
@@ -635,6 +639,8 @@ export default {
         deviceTypeSelect(typeVal){
             this.searchKey.type = typeVal;
             if(typeVal === 1){
+                this.searchKey.rsPtName = '';
+                this.searchKey.rsPtId = '';
                 //望京默认参数
                 // this.searchKey.rsPtName = '博园路k1+530';
                 // this.searchKey.rcuId = 'U-DH-0001';
@@ -646,6 +652,8 @@ export default {
                 this.searchKey.deviceId = 'N-NJ1130';
                 this.searchKey.serialNum = '3100000000132000006001';
             }else if(typeVal === 2){
+                this.searchKey.rsPtName = '';
+                this.searchKey.rsPtId = '';
                 //望京默认参数
                 // this.searchKey.rsPtName = '博园路k1+550';
                 // this.searchKey.rcuId = '电风扇';
@@ -659,13 +667,28 @@ export default {
             }
         },
         deviceIdSelect(val){
-            let data = this.fuzzySearchOption2.filterOption.filter(item => item.deviceId === val);
-            this.searchKey.serialNum = data[0].serialNum;
+            if(this.fuzzySearchOption2.filterOption.length > 0){
+                let data = this.fuzzySearchOption2.filterOption.filter(item => item.deviceId == val);
+                this.searchKey.serialNum = data[0].serialNum;
+                this.searchKey.rsPtName = data[0].rsPtName;
+                this.searchKey.rsPtId = data[0].rsPtId;
+            }
         },
         serialSelect(val){
-            let data = this.fuzzySearchOption2.filterOption.filter(item => item.serialNum === val);
-            this.searchKey.deviceId = data[0].deviceId;
+            if(this.fuzzySearchOption3.filterOption.length > 0){
+                let data = this.fuzzySearchOption3.filterOption.filter(item => item.serialNum == val);
+                this.searchKey.deviceId = data[0].deviceId;
+                this.searchKey.rsPtName = data[0].rsPtName;
+                this.searchKey.rsPtId = data[0].rsPtId;
+                
+            }
         }
     },
 }
 </script>
+<style>
+.serial .el-input__inner{
+    width:220px !important;
+}
+</style>
+

@@ -27,7 +27,7 @@ window.config = {
     // downloadUrl: 'http://116.236.72.204:49091/dataPlatApp/cam/download/', //导出&&下载地址
     // websocketUrl:'ws://116.236.72.206:49982/mon',   //监控
 
-    version: 1.0,       // 版本号
+    version: 1.2,       // 版本号
 }
 //地图默认配置
 window.defaultMapOption = {

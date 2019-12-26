@@ -326,11 +326,13 @@ export default {
         this.durationMilliSecond = this.durationTime.toFixed(3).split(".")[1];
         this.perceptionData.framesTime = this.startTimeTimestamp;
         this.initRoadInfo = roadCamerInfo;
+        this.initRoadInfo.serialNum = this.$route.params.serialNum;
         this.cameraList = roadCamerInfo.cameraList;
-        this.serialNum = this.$route.params.serialNum;
-        this.getVideoUrl();
+        if(this.cameraList.length > 0){
+            this.serialNum = this.cameraList[0].serialNum;
+        }
+        this.getVideoUrl(this.serialNum);
         this.findRoadMonitorCamera();
-        console.log(roadCamerInfo);
         // this.findPerceptionRecords();
         this.curTime = this.params.startTime;
         //注册键盘事件
@@ -552,6 +554,7 @@ export default {
         addTime(){
             if(this.perceptionData.framesTime + this.limit <= this.endTimeTimestamp) {
                 this.perceptionData.framesTime += this.limit;
+                console.log(this.perceptionData.framesTime);
             }else {
                 this.perceptionData.framesTime = this.endTimeTimestamp;
             }
@@ -714,11 +717,7 @@ export default {
            
         },
         selectCamera(val){
-            this.initRoadInfo.serialNum = val;
-            let filterResult = this.cameraList.filter(item => {
-                return item.serialNum === val;
-            })
-            this.initRoadInfo.deviceId = filterResult[0].deviceId;
+            this.getVideoUrl(val);
         }
     },
     destroyed(){

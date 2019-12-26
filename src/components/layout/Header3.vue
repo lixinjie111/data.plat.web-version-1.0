@@ -11,7 +11,7 @@
                     <em class="name c-vertical-middle">{{loginInfo.userNo}}</em>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item divided>版本v1.0</el-dropdown-item>
+                    <el-dropdown-item divided>版本v1.2</el-dropdown-item>
                     <el-dropdown-item divided @click.native="logoutClick">退出</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>

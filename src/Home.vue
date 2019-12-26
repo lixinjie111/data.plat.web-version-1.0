@@ -12,7 +12,7 @@
                     <a class="index-footer-list" href="javascript:;" @click="clickFn(item)" v-for="item in linkData">{{item.title}}</a>
                 </div>
                 <div class="index-footer-right">
-                    <span>版本信息：V1.1-build20190718</span>
+                    <span>版本信息：V1.2-build20191216</span>
                     <a href="javascript:;" class="index-blue-color" @click="$router.push('/logs')">更新日志</a>
                 </div>
             </div>

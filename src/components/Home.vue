@@ -9,7 +9,7 @@
                     <span class="c-ml-20">建议分辨率：1920x1080</span>
                 </div>
                 <div class="index-footer-right">
-                    <span>版本信息：V1.1-build20190718</span>
+                    <span>版本信息：V1.2-build20191216</span>
                     <a href="javascript:;" class="index-blue-color" @click="$router.push('/logs')">更新日志</a>
                 </div>
             </div>

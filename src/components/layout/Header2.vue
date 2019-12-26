@@ -18,7 +18,7 @@
             <ul class="yk-nav yk-sub-menu-box yk-sub-menu">                
                 <li>
                     <img class="yk-user-ico" src="static/icon/version.png">
-                    <div class="yk-user-title">版本v1.0</div>
+                    <div class="yk-user-title">版本v1.2</div>
                 </li>
                <li>                    
                     <img class="yk-user-ico" src="static/icon/logout.png">
