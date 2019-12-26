@@ -10,8 +10,8 @@
                     <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
                     <em class="name c-vertical-middle">{{loginInfo.userNo}}</em>
                 </span>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item divided>版本v1.0</el-dropdown-item>
+                <el-dropdown-menu slot="dropdown" class="c-header-dropdown">
+                    <el-dropdown-item divided>版本V{{version}}</el-dropdown-item>
                     <el-dropdown-item divided @click.native="logoutClick">退出</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
@@ -25,7 +25,8 @@ import { requestLogout } from '@/api/login/index'
 export default {
     data(){
         return {
-            loginInfo: JSON.parse(SessionUtils.getItem('login'))
+            loginInfo: JSON.parse(SessionUtils.getItem('login')),
+            version: window.config.version
         }
     },
     methods: {
