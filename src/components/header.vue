@@ -1,54 +1,51 @@
 <template>
-<div id="header">
-    <div class="logo">
-        <img src="@/assets/images/logo.png" class="logo-img c-vertical-middle"/>
-        <em class="name c-vertical-middle"></em>
+    <div id="header">
+        <div class="logo">
+            <img src="static/images/logo.png" class="logo-img"/>
+            <em class="name">数据分析中心</em>
+        </div>
+        <div class="userinfo">
+            <el-dropdown trigger="hover">
+                <span class="el-dropdown-link userinfo-inner">
+                    <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
+                    <em class="name c-vertical-middle">{{loginInfo.userNo}}</em>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item divided>版本V{{version}}</el-dropdown-item>
+                    <el-dropdown-item divided @click.native="logoutClick">退出</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
     </div>
-    <div class="userinfo">
-        <el-dropdown trigger="hover">
-            <span class="el-dropdown-link userinfo-inner">
-                <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
-                <em class="name c-vertical-middle">{{sysAdminName}}</em>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item divided @click.native="logout">登出</el-dropdown-item>
-            </el-dropdown-menu>
-        </el-dropdown>
-    </div>
-</div>
 </template>
 <script>
-import { mapActions } from 'vuex';
+
 import SessionUtils from '@/store/session.js'
+import { requestLogout } from '@/api/login/index'
 export default {
-    name: "HeaderBar",
-    data() {
+    data(){
         return {
-            sysAdminName: this.$store.state.user.name
+            loginInfo: JSON.parse(SessionUtils.getItem('login')),
+            version: window.config.version
         }
     },
     methods: {
-        ...mapActions(['goLogOut']),
-        //退出登录
-        logout: function() {
-            this.$confirm('确认退出吗?', '提示', {
-            }).then(() => {
-                this.goLogOut(this).then(res => {
-                    console.log('退出');
-                    if(res.status == '200'){
-                        localStorage.removeItem("yk-token");
-                        sessionStorage.clearItems();
-                        // this.$router.push({ path: '/login' });
-                    }
-                    
-                });
-            }).catch(err => {
-                console.log("取消退出！");
+        logoutClick(){
+            requestLogout({
+                token: this.loginInfo.token
+            }).then(res => {
+                if(res.status == '200'){
+                    this.$store.dispatch('logout');
+                    SessionUtils.deleteItem('login');
+                    localStorage.removeItem("yk-token");
+                    this.$router.push('/login');
+                }
             });
         }
     }
 }
 </script>
+
 <style lang="scss" scoped>
 @import "@/assets/scss/theme.scss";
 #header {
@@ -69,15 +66,19 @@ export default {
         }
     }
     .logo {
-        overflow: hidden;
+        @include layoutMode(align);
         .logo-img {
-            height: 25px;
+            height: 26px;
             margin-right: 10px;
         }
         .name {
-            font-size: 20px;
+            font-size: 24px;
+            line-height: 28px;
             color: #fff;
+            letter-spacing: 3px;
         }
     }
 }
 </style>
+
+
