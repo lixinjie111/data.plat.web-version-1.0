@@ -26,7 +26,7 @@ import LeftBar from '@/components/layout/LeftBar.vue'
 export default {
     name: 'Main',
     components: {
-        HeaderBar3,
+        HeaderBar,
         LeftBar
     },
     data(){

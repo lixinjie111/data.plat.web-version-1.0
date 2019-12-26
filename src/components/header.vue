@@ -10,7 +10,7 @@
                     <i class="icon iconfont el-icon-mc-yonghuzhongxin_f c-vertical-middle"></i>
                     <em class="name c-vertical-middle">{{loginInfo.userNo}}</em>
                 </span>
-                <el-dropdown-menu slot="dropdown">
+                <el-dropdown-menu slot="dropdown" class="c-header-dropdown">
                     <el-dropdown-item divided>版本V{{version}}</el-dropdown-item>
                     <el-dropdown-item divided @click.native="logoutClick">退出</el-dropdown-item>
                 </el-dropdown-menu>
