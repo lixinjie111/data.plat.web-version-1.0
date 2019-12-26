@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="yk-box">
     <router-view></router-view>
   </div>
 </template>
@@ -53,5 +53,8 @@ export default {
   color: #2c3e50;
   width: 100%;
   height: 100%;
+}
+.yk-box{
+  text-align:left;
 }
 </style>

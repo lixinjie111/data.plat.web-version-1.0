@@ -1,6 +1,6 @@
 let _Logs = [
                 {
-                    versionNum: "V1.2",
+                    versionNum: "V" + window.config.version,
                     powerChange: [
                         {
                             title: "2019-12-16",
