@@ -36,6 +36,7 @@ class SearchFilter {
         }
     }
     static requestRoadSideTypeahead(option) {
+        console.log(option);
         let _params = Object.assign({}, 
             {
                 field: option.key,

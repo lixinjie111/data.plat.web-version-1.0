@@ -2,7 +2,7 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <el-form ref="searchForm" :inline="true" :rules="rules" :model="searchKey" size="small">
-            <!-- <el-form-item label="路侧点名称:" prop='rsPtName'>
+             <!--<el-form-item label="路侧点名称:" prop='rsPtName'>
                 <el-select
                     v-model.trim="searchKey.rsPtName"
                     clearable
@@ -39,7 +39,7 @@
                     ></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="设备编号: " prop="deviceId">
+            <el-form-item label="设备编号 " prop="deviceId">
                 <el-select
                     v-model.trim="searchKey.deviceId"
                     clearable
@@ -61,7 +61,7 @@
                 </el-select>
             </el-form-item>
 
-                <el-form-item label="设备序列号: " prop="serialNum">
+                <el-form-item label="设备序列号" prop="serialNum">
                     <el-select
                         v-model.trim="searchKey.serialNum"
                         clearable
@@ -151,7 +151,7 @@
     </div>
 </template>
 <script>
-import {defaultRoadInfo} from '../../../../static/config/defaultConfig.js';
+// import {defaultRoadInfo} from '../../../../static/config/defaultConfig.js';
 import {findVideoRecords} from '@/api/roadSide';
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
@@ -317,22 +317,8 @@ export default {
         next();
     },
     mounted(){
-        //望京 默认参数
-        this.searchKey.rsPtName = defaultRoadInfo.rsPtName;
-        this.searchKey.rcuId = defaultRoadInfo.rcuId;
-        this.searchKey.rsPtId = defaultRoadInfo.rsPtId;
-        this.searchKey.deviceId = defaultRoadInfo.deviceId;
-        this.searchKey.serialNum = defaultRoadInfo.serialNum;
-
         this.searchKey.startTime = this.$dateUtil.GetDateStr(7);
         this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
-
-        this.historySearchKey = Object.assign({}, this.searchKey, {
-            startTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
-            endTime: this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
-        });
-        this.initData();
-        this.selectRsPtNameList();
         this.selectDeviceIdList();
         this.selectSerialNumList();
     },
@@ -354,9 +340,10 @@ export default {
         },
         initData(){
             this.loading = true;
-            let _params = {
-                ... this.historySearchKey
-            }
+            let _params = Object.assign({},this.historySearchKey,this.searchKey,{
+                startTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
+                endTime: this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
+            });
             findVideoRecords(_params).then(res => {
                 if(res.status == '200'){
                     res.data.forEach((item) => {
@@ -406,12 +393,7 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
-                    this.historySearchKey.rsPtName = this.searchKey.rsPtName;
-                    this.historySearchKey.rsPtId = this.searchKey.rsPtId;
-                    this.historySearchKey.deviceId = this.searchKey.deviceId;
-                    this.historySearchKey.serialNum = this.searchKey.serialNum;
                     this.historySearchKey.type = this.searchKey.type;
-                    // this.historySearchKey.rcuId = this.searchKey.rcuId;
                     this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
                     this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
                     this.initPaging();
@@ -428,8 +410,6 @@ export default {
         resetClick(){
             this.$refs.searchForm.resetFields();
             this.fuzzySearchOption1.defaultOption = this.fuzzySearchOption1.filterOption;
-            // this.fuzzySearchOption2.defaultOption = this.fuzzySearchOption2.filterOption;
-            // this.fuzzySearchOption3.defaultOption = this.fuzzySearchOption3.filterOption;
         },
         remoteMethod1(query) { 
             if (query !== '') {
@@ -512,31 +492,24 @@ export default {
             })
         },
         selectDeviceIdList(){
-            if(this.searchKey.deviceId === '无数据'){
-                return false;
-            }else if(this.searchKey.deviceId === 'N-NJ1130' || this.searchKey.deviceId === 'S-SM0002'){
-                //望京
-                // this.searchKey.deviceId === 'N-CI0007' || this.searchKey.deviceId === 'S-CI0001'
-                //上海
-                // this.searchKey.deviceId === 'N-NJ1130' || this.searchKey.deviceId === 'S-SM0002'
-                this.fuzzySearchOption2.loading = true;
-                clearTimeout(this.fuzzySearchOption2.timer);
-                this.fuzzySearchOption2.timer = setTimeout(() => {
-                    queryRoadCamListSearch({ 
-                        'field':'deviceId',
-                        'value':'',
-                        'type':this.searchKey.type
-                    }).then(res => {
-                            if(res.status == '200'){
-                                //接口请求后执行的操作 
-                                this.fuzzySearchOption2.filterOption = res.data;
-                            }
-                            this.fuzzySearchOption2.loading = false;
-                        }).catch(err => {
-                            this.fuzzySearchOption2.loading = false;
-                        });
-                }, 500);
-            }
+            this.fuzzySearchOption2.loading = true;
+            clearTimeout(this.fuzzySearchOption2.timer);
+            this.fuzzySearchOption2.timer = setTimeout(() => {
+                queryRoadCamListSearch({ 
+                    'field':'deviceId',
+                    'value':'',
+                    'type':this.searchKey.type
+                }).then(res => {
+                    if(res.status == '200'){
+                        //接口请求后执行的操作 
+                        this.fuzzySearchOption2.filterOption = res.data;
+                    }
+                    this.fuzzySearchOption2.loading = false;
+                }).catch(err => {
+                    this.fuzzySearchOption2.loading = false;
+                });
+            }, 500);
+
             if(this.fuzzySearchOption2.filterOption.length > 0){
                 if(this.searchKey.deviceId === this.fuzzySearchOption2.filterOption[0].deviceId){
                     this.fuzzySearchOption2.filterOption = this.fuzzySearchOption2.filterOption;
@@ -556,7 +529,7 @@ export default {
                             if(res.status == '200'){
                                 //接口请求后执行的操作 
                                 this.fuzzySearchOption2.loading = false;
-                                this.fuzzySearchOption2.filterOption = res.data.filter(item => {
+                                this.fuzzySearchOption2.defaultFilterOption = this.fuzzySearchOption2.filterOption = res.data.filter(item => {
                                 return item.deviceId.toLowerCase()
                                     .indexOf(query.toLowerCase()) > -1;
                                 });
@@ -599,78 +572,48 @@ export default {
             }
         },
         selectSerialNumList(){
-            if(this.searchKey.serialNum === '无数据'){
-                return false;
-            }else if(this.searchKey.serialNum === '3100000000132000006001' || this.searchKey.serialNum === '310000000613200000000201'){
-                //望京
-                // this.searchKey.serialNum === '3402000000132000000101' || this.searchKey.serialNum === 'Test08191'
-                //上海
-                // this.searchKey.serialNum === '3100000000132000006001' || this.searchKey.serialNum === '310000000613200000000201'
-                this.fuzzySearchOption3.loading = true;
-                clearTimeout(this.fuzzySearchOption3.timer);
-                this.fuzzySearchOption3.timer = setTimeout(() => {
-                    queryRoadCamListSearch({
-                        'field':'serialNum',
-                        'value':'',
-                        'type':this.searchKey.type
-                    }).then(res => {
-                        if(res.status == '200'){
-                            //接口请求后执行的操作 
-                            this.fuzzySearchOption3.loading = false;
-                            this.fuzzySearchOption3.defaultFilterOption = this.fuzzySearchOption3.filterOption = res.data;
-                        }
+            this.fuzzySearchOption3.loading = true;
+            clearTimeout(this.fuzzySearchOption3.timer);
+            this.fuzzySearchOption3.timer = setTimeout(() => {
+                queryRoadCamListSearch({
+                    'field':'serialNum',
+                    'value':'',
+                    'type':this.searchKey.type
+                }).then(res => {
+                    if(res.status == '200'){
+                        //接口请求后执行的操作 
                         this.fuzzySearchOption3.loading = false;
-                    }).catch(err => {
-                        this.fuzzySearchOption3.loading = false;
-                    });
-                }, 500); 
-            };
+                        this.fuzzySearchOption3.defaultFilterOption = this.fuzzySearchOption3.filterOption = res.data;
+                    }
+                    this.fuzzySearchOption3.loading = false;
+                }).catch(err => {
+                    this.fuzzySearchOption3.loading = false;
+                });
+            }, 500); 
             if(this.fuzzySearchOption3.filterOption.length > 0){
                 if(this.searchKey.serialNum === this.fuzzySearchOption3.filterOption[0].serialNum){
-                    this.fuzzySearchOption3.filterOption = this.fuzzySearchOption3.filterOption;
+                    this.fuzzySearchOption3.filterOption = this.fuzzySearchOption3.defaultFilterOption;
                 }
             }
         },
         deviceTypeSelect(typeVal){
             this.searchKey.type = typeVal;
-            if(typeVal === 1){
-                //望京默认参数
-                // this.searchKey.rsPtName = '博园路k1+530';
-                // this.searchKey.rcuId = 'U-DH-0001';
-                // this.searchKey.deviceId = 'N-CI0007';
-                // this.searchKey.serialNum = '3402000000132000000101';
-                //上海默认参数
-                this.searchKey.rsPtName = '博园路TX08';
-                this.searchKey.rcuId = 'U-DH0007';
-                this.searchKey.deviceId = 'N-NJ1130';
-                this.searchKey.serialNum = '3100000000132000006001';
-            }else if(typeVal === 2){
-                //望京默认参数
-                // this.searchKey.rsPtName = '博园路k1+550';
-                // this.searchKey.rcuId = '电风扇';
-                // this.searchKey.deviceId = 'S-CI0001';
-                // this.searchKey.serialNum = 'Test08191';
-                //上海默认参数
-                this.searchKey.rsPtName = '博园路TX03';
-                this.searchKey.rcuId = 'U-DH0007';
-                this.searchKey.deviceId = 'S-SM0002';
-                this.searchKey.serialNum = '310000000613200000000201';
-            }
+            this.searchKey.rsPtName = '';
+            this.searchKey.rsPtId = '';
+            this.searchKey.deviceId = '';
+            this.searchKey.serialNum = '';
+            this.showDataList = [];
         },
         deviceIdSelect(val){
             if(this.fuzzySearchOption2.filterOption.length > 0){
                 let data = this.fuzzySearchOption2.filterOption.filter(item => item.deviceId == val);
-                this.searchKey.serialNum = data[0].serialNum;
-                this.searchKey.rsPtName = data[0].rsPtName;
-                this.searchKey.rsPtId = data[0].rsPtId;
+                this.historySearchKey.serialNum = this.searchKey.serialNum = data[0].serialNum;
             }
         },
         serialSelect(val){
             if(this.fuzzySearchOption3.filterOption.length > 0){
                 let data = this.fuzzySearchOption3.filterOption.filter(item => item.serialNum == val);
-                this.searchKey.deviceId = data[0].deviceId;
-                this.searchKey.rsPtName = data[0].rsPtName;
-                this.searchKey.rsPtId = data[0].rsPtId;
+                this.historySearchKey.deviceId = this.searchKey.deviceId = data[0].deviceId;
                 
             }
         }

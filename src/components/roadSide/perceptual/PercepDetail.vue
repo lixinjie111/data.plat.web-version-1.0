@@ -333,7 +333,7 @@ export default {
         }
         this.getVideoUrl(this.serialNum);
         this.findRoadMonitorCamera();
-        // this.findPerceptionRecords();
+        this.findPerceptionRecords();
         this.curTime = this.params.startTime;
         //注册键盘事件
         document.onkeydown = function (event) {
@@ -395,7 +395,6 @@ export default {
                             }
                         }
                         document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');  
-                       
                     }
                 }
             }).catch(err => {
@@ -465,10 +464,12 @@ export default {
                         item.loading = false;
                     });
                     this.dataList = res.data;
+                    console.log(this.dataList);
                     this.timeDiffer(this.dataList);//计算时间差
                     this.carNum(this.dataList);//计算车的数量
                     this.personNum(this.dataList);//计算行人数量
                     this.carInfo(this.dataList);//车辆出现、消失情况
+                    console.log(this.dataList);
                     this.$refs.percepDetailTable.bodyWrapper.scrollTop = 0;
                 }
                 setTimeout(() => {
@@ -493,6 +494,7 @@ export default {
         },
         carNum(arr){
             arr.map((val,index) => {
+                console.log(val.data.targets);
                 let typeCar = val.data.targets.filter((item,i) => {
                     return item.type == 1 || item.type == 2 || item.type == 3 || item.type == 4 || item.type == 5 || item.type == 6 || item.type == 7 || item.type == 8;
                 })
@@ -515,8 +517,12 @@ export default {
                 let newCarArry = [];
                 lastCars.map(item => lastCarArry.push(item.uuid));
                 newCars.map(item => newCarArry.push(item.uuid));
+                console.log('newCarArry',newCarArry)
+                console.log('val',val);
                 let disappearCars = lastCarArry.filter(val => newCarArry.indexOf(val) == -1);//查找消失车辆
                 let addCars = newCarArry.filter(val => lastCarArry.indexOf(val) == -1);//查找出现车辆
+                console.log(disappearCars);
+                console.log(addCars);
                 this.$set(val,'disappearCar',disappearCars);
                 this.$set(val,'addCar',addCars);
             })

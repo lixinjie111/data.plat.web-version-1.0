@@ -361,6 +361,7 @@ export default {
             });
         },
         rsPointNameRemoteMethod(query) {
+            console.log(query);
             this.$searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsPointNameOption,
