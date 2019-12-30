@@ -340,7 +340,7 @@ export default {
         },
         initData(){
             this.loading = true;
-            let _params = Object.assign({},this.historySearchKey,this.searchKey,{
+            let _params = Object.assign({},this.historySearchKey,{
                 startTime: this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '',
                 endTime: this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : ''
             });
@@ -608,13 +608,16 @@ export default {
             if(this.fuzzySearchOption2.filterOption.length > 0){
                 let data = this.fuzzySearchOption2.filterOption.filter(item => item.deviceId == val);
                 this.historySearchKey.serialNum = this.searchKey.serialNum = data[0].serialNum;
+                this.historySearchKey.rsPtName = this.searchKey.serialNum = data[0].rsPtName;
+                this.historySearchKey.rsPtId = this.searchKey.serialNum = data[0].rsPtId;
             }
         },
         serialSelect(val){
             if(this.fuzzySearchOption3.filterOption.length > 0){
                 let data = this.fuzzySearchOption3.filterOption.filter(item => item.serialNum == val);
                 this.historySearchKey.deviceId = this.searchKey.deviceId = data[0].deviceId;
-                
+                this.historySearchKey.rsPtName = this.searchKey.serialNum = data[0].rsPtName;
+                this.historySearchKey.rsPtId = this.searchKey.serialNum = data[0].rsPtId;
             }
         }
     },
