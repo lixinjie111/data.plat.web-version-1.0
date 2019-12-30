@@ -29,7 +29,7 @@ export const requestFindCamList = params => { return axios.post(`${HTTPURL}vehic
 /**
  * 路侧视频模糊查询地址
  */
-export const queryRoadCamListSearch = params => { return axios.post(`${HTTPURL}road/queryRSDeviceList`, params).then(res => res.data); };
+export const queryRoadCamListSearch = params => { return axios.post(`${HTTPURL}road/queryRSCamList`, params).then(res => res.data); };
 
 /**
  * 感知数据路侧点名称模糊查询
