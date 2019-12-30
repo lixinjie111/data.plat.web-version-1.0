@@ -607,17 +607,19 @@ export default {
         deviceIdSelect(val){
             if(this.fuzzySearchOption2.filterOption.length > 0){
                 let data = this.fuzzySearchOption2.filterOption.filter(item => item.deviceId == val);
+                this.historySearchKey.deviceId = this.searchKey.deviceId = val;
                 this.historySearchKey.serialNum = this.searchKey.serialNum = data[0].serialNum;
-                this.historySearchKey.rsPtName = this.searchKey.serialNum = data[0].rsPtName;
-                this.historySearchKey.rsPtId = this.searchKey.serialNum = data[0].rsPtId;
+                this.historySearchKey.rsPtName = this.searchKey.rsPtName = data[0].rsPtName;
+                this.historySearchKey.rsPtId = this.searchKey.rsPtId = data[0].rsPtId;
             }
         },
         serialSelect(val){
             if(this.fuzzySearchOption3.filterOption.length > 0){
                 let data = this.fuzzySearchOption3.filterOption.filter(item => item.serialNum == val);
+                this.historySearchKey.serialNum = this.searchKey.serialNum = val;
                 this.historySearchKey.deviceId = this.searchKey.deviceId = data[0].deviceId;
-                this.historySearchKey.rsPtName = this.searchKey.serialNum = data[0].rsPtName;
-                this.historySearchKey.rsPtId = this.searchKey.serialNum = data[0].rsPtId;
+                this.historySearchKey.rsPtName = this.searchKey.rsPtName = data[0].rsPtName;
+                this.historySearchKey.rsPtId = this.searchKey.rsPtId = data[0].rsPtId;
             }
         }
     },
