@@ -40,6 +40,7 @@
                 <div class="c-detail-box c-wrapper-20 c-padding-20">
                     <div class="c-map-big-wrapper" id='map-container' :class="isScaleMap ? 'c-map-on' : 'c-map-off'">
                         <span class="c-map-scale-btn" :class="isScaleMap ? 'c-map-scale-off' : 'c-map-scale-on'" @click="isScaleMap = !isScaleMap"></span>
+                        <a href="javascript:;" class="c-map-reset-position" @click="resetMapPosition"></a>
                     </div>
                 </div>
                 <div class="c-wrapper-20 c-detail-box c-padding-20">
@@ -364,7 +365,10 @@ export default {
           this.$refs.pathDataTable.bodyWrapper.scrollTop = this.rowHeight*this.currentIndex;
           let _position = ConvertCoord.wgs84togcj02(row.gnss_LONG, row.gnss_LAT);
           this.addRemoveMaker(_position);
-      }
+      },
+      resetMapPosition() {
+        this.distanceMap.setFitView();
+      },
     },
     destroyed(){
        document.onkeydown = function (event) {
