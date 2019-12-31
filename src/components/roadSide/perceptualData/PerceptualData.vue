@@ -19,8 +19,8 @@
                                 placeholder="请输入关键词"
                                 :remote-method="rsCamCodeRemoteMethod"
                                 @clear='clearFn'
-                                @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey,'deviceId', cameraUrl)"
-                                @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
+                                @focus="rsCamCodeOption.searchFilter.remoteMethodClick(rsCamCodeOption, searchKey,'deviceId')"
+                                @blur="rsCamCodeOption.searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
                                 :loading="rsCamCodeOption.loading">
                                 <el-option
                                     v-for="item in rsCamCodeOption.filterOption"
@@ -135,6 +135,8 @@
 </div>
 </template>
 <script>
+// 模糊查询封装
+import SearchFilter from '@/assets/js/module/searchFilter.js'
 // 视频插件
 import LivePlayer from '@/common/livePlayer/template.vue';
 
@@ -220,9 +222,11 @@ export default {
             rsCamCodeOption: {
                 loading: false,
                 timer: null,
+                searchFilter:new SearchFilter(),
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
+                defaultFlag: false,
+                request:queryRoadCamListSearch
             },
             markerOption: {
                 markers: null,
@@ -272,7 +276,7 @@ export default {
             // selectSerialNum:'',
             timer: null,
             protocal:'',
-            cameraUrl: queryRoadCamListSearch,
+            // cameraUrl: queryRoadCamListSearch,
         }
     },
     // watch: {
@@ -316,7 +320,6 @@ export default {
                 searchOption: this.rsCamCodeOption,
                 searchObj: this.searchKey,
                 key: 'deviceId',
-                request: this.cameraUrl
             });
         },
         initMap(){
@@ -776,7 +779,7 @@ export default {
                     obj.icon = "sl-play-icon";
                     if(obj.status == 1){
                         obj.isHaveVideo = true;
-                        this.realTotal.onlineCount++;
+                        ++this.realTotal.onlineCount;
                         this.isRefshShow = false;
                         this.isOnlineShow = true;
                     }else{

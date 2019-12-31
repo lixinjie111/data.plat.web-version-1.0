@@ -155,7 +155,7 @@
 import {findVideoRecords} from '@/api/roadSide';
 import TList from '@/common/utils/list.js'
 import VueDatepickerLocal from 'vue-datepicker-local'
-import {queryRoadCamListSearch,queryRoadPointList,requestqueryRoadList,requestRSCamList,queryRoadSideDevList} from '@/api/search';
+import {queryRoadPointList,requestqueryRoadList,requestRSCamList,queryRoadSideDevList,queryRSDeviceList} from '@/api/search';
 export default {
     name: 'PercepData',
     components: {
@@ -495,7 +495,7 @@ export default {
             this.fuzzySearchOption2.loading = true;
             clearTimeout(this.fuzzySearchOption2.timer);
             this.fuzzySearchOption2.timer = setTimeout(() => {
-                queryRoadCamListSearch({ 
+                queryRSDeviceList({ 
                     'field':'deviceId',
                     'value':'',
                     'type':this.searchKey.type
@@ -521,7 +521,7 @@ export default {
                 this.fuzzySearchOption2.loading = true;
                 clearTimeout(this.fuzzySearchOption2.timer);
                 this.fuzzySearchOption2.timer = setTimeout(() => {
-                    queryRoadCamListSearch({
+                    queryRSDeviceList({
                         'field':'deviceId',
                         'value':query,
                         'type':this.searchKey.type
@@ -548,7 +548,7 @@ export default {
                 this.fuzzySearchOption3.loading = true;
                 clearTimeout(this.fuzzySearchOption3.timer);
                 this.fuzzySearchOption3.timer = setTimeout(() => {
-                    queryRoadCamListSearch({
+                    queryRSDeviceList({
                         'field':'serialNum',
                         'value':query,
                         'type':this.searchKey.type
@@ -575,7 +575,7 @@ export default {
             this.fuzzySearchOption3.loading = true;
             clearTimeout(this.fuzzySearchOption3.timer);
             this.fuzzySearchOption3.timer = setTimeout(() => {
-                queryRoadCamListSearch({
+                queryRSDeviceList({
                     'field':'serialNum',
                     'value':'',
                     'type':this.searchKey.type

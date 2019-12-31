@@ -5,19 +5,16 @@ class SearchFilter {
     constructor(){
         this.queryName = '';
     }
-    static publicRemoteMethod(option) {
+    publicRemoteMethod(option) {
         if (option.query !== '') {
             this.queryName=option.query;
             option.searchOption.loading = true;
-            // clearTimeout(option.searchOption.timer);
-            // option.searchOption.timer = setTimeout(() => {
-                this.requestRoadSideTypeahead(option);
-            // }, 500);
+            this.requestRoadSideTypeahead(option);
         } else {
             option.searchOption.filterOption = option.searchOption.defaultOption;
         }
     }
-    static remoteMethodClick(searchOption, searchObj, key, searchUrl) {
+    remoteMethodClick(searchOption, searchObj, key, searchUrl) {
         this.queryName = searchObj[key];
         if(!searchOption.defaultFlag) {
             searchOption.loading = true;
@@ -25,8 +22,7 @@ class SearchFilter {
                 query: '',
                 searchOption: searchOption,
                 searchObj: searchObj,
-                key: key,
-                request: searchUrl
+                key: key
             });
             if(searchObj[key]) {
                 this.queryName = searchObj[key];
@@ -35,8 +31,7 @@ class SearchFilter {
             }
         }
     }
-    static requestRoadSideTypeahead(option) {
-        console.log(option);
+    requestRoadSideTypeahead(option) {
         let _params = Object.assign({}, 
             {
                 field: option.key,
@@ -44,7 +39,7 @@ class SearchFilter {
             }, 
             option.searchOption.otherParams ? option.searchOption.otherParams : {}
         );
-        option.request(_params).then(res => {
+        option.searchOption.request(_params).then(res => {
             option.searchOption.loading = false;
             if(!option.searchOption.defaultFlag) {
                 option.searchOption.defaultOption = res.data || [];
@@ -55,11 +50,10 @@ class SearchFilter {
             option.searchOption.loading = false;
         });
     }
-    static clearFunc(searchOption) {
-        console.log(searchOption);
+    clearFunc(searchOption) {
         searchOption.filterOption = searchOption.defaultOption;
     }
-    static remoteMethodBlur(searchObj, key) {
+    remoteMethodBlur(searchObj, key) {
         searchObj[key] = this.queryName;
         this.queryName = "";
     }

@@ -11,9 +11,9 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsVehicleRemoteMethod"
-                    @clear="$searchFilter.clearFunc(rsVehicleOption)"
-                    @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
-                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                    @clear="rsVehicleOption.searchFilter.clearFunc(rsVehicleOption)"
+                    @focus="rsVehicleOption.searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId')"
+                    @blur="rsVehicleOption.searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                     :loading="rsVehicleOption.loading">
                     <el-option
                         v-for="item in rsVehicleOption.filterOption"
@@ -32,9 +32,9 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsPlateNoRemoteMethod"
-                    @clear="$searchFilter.clearFunc(rsPlateNoOption)"
-                    @focus="$searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo', searchUrl)"
-                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
+                    @clear="rsPlateNoOption.searchFilter.clearFunc(rsPlateNoOption)"
+                    @focus="rsPlateNoOption.searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo')"
+                    @blur="rsPlateNoOption.searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
                     :loading="rsPlateNoOption.loading">
                     <el-option
                         v-for="item in rsPlateNoOption.filterOption"
@@ -53,9 +53,9 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsCamRemoteMethod"
-                    @clear="$searchFilter.clearFunc(rsCamOption)"
-                    @focus="$searchFilter.remoteMethodClick(rsCamOption, searchKey, 'deviceId', cameraUrl)"
-                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
+                    @clear="rsCamOption.searchFilter.clearFunc(rsCamOption)"
+                    @focus="rsCamOption.searchFilter.remoteMethodClick(rsCamOption, searchKey, 'deviceId')"
+                    @blur="rsCamOption.searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
                     :loading="rsCamOption.loading">
                     <el-option
                         v-for="item in rsCamOption.filterOption"
@@ -152,6 +152,8 @@
     </div>
 </template>
 <script>
+// 模糊查询封装
+import SearchFilter from '@/assets/js/module/searchFilter.js'
 import TList from '@/common/utils/list.js';
 import {requestqueryVehicleList,requestFindCamList} from '@/api/search';
 import PlayBack from '@/components/video/playVideo/playback.vue';
@@ -221,26 +223,30 @@ export default {
             rsVehicleOption: {
                 loading: false,
                 timer: null,
+                searchFilter:new SearchFilter(),
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
+                defaultFlag: false,
+                request:requestqueryVehicleList
             },
             rsPlateNoOption: {
                 loading: false,
                 timer: null,
+                searchFilter:new SearchFilter(),
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
+                defaultFlag: false,
+                request:requestqueryVehicleList
             },
             rsCamOption: {
                 loading: false,
                 timer: null,
+                searchFilter:new SearchFilter(),
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
+                defaultFlag: false,
+                request:requestFindCamList
             },
-            searchUrl: requestqueryVehicleList,
-            cameraUrl:requestFindCamList,
         }
     },
     methods: {
@@ -331,30 +337,27 @@ export default {
             this.rsCamOption.filterOption = this.rsCamOption.defaultOption;
         },
         rsVehicleRemoteMethod(query) {
-            this.$searchFilter.publicRemoteMethod({
+            this.rsVehicleOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsVehicleOption,
                 searchObj: this.searchKey,
                 key: 'vehicleId',
-                request: this.searchUrl
             });
         },
         rsPlateNoRemoteMethod(query) {
-            this.$searchFilter.publicRemoteMethod({
+            this.rsVehicleOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsPlateNoOption,
                 searchObj: this.searchKey,
-                key: 'plateNo',
-                request: this.searchUrl
+                key: 'plateNo'
             });
         },
         rsCamRemoteMethod(query) {
-            this.$searchFilter.publicRemoteMethod({
+            this.rsVehicleOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsCamOption,
                 searchObj: this.searchKey,
-                key: 'deviceId',
-                request: this.cameraUrl
+                key: 'deviceId'
             });
         },
         vehiclePanelFn(e){

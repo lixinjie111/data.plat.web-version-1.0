@@ -12,9 +12,9 @@
                         reserve-keyword
                         placeholder="请输入关键词"
                         :remote-method="rsVehicleRemoteMethod"
-                        @clear="$searchFilter.clearFunc(rsVehicleOption)"
-                        @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
-                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                        @clear="rsVehicleOption.searchFilter.clearFunc(rsVehicleOption)"
+                        @focus="rsVehicleOption.searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId')"
+                        @blur="rsVehicleOption.searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                         :loading="rsVehicleOption.loading">
                         <el-option
                             v-for="item in rsVehicleOption.filterOption"
@@ -96,6 +96,8 @@
     </div>
 </template>
 <script>
+// 模糊查询封装
+import SearchFilter from '@/assets/js/module/searchFilter.js'
 import LocalDataPanel from '@/components/vehicle/dynamicParam/LocalDataPanel.vue'
 import DetailPanel from './DetailPanel.vue'
 import {requestqueryVehicleList} from '@/api/search';
@@ -148,11 +150,12 @@ export default {
             rsVehicleOption: {
                 loading: false,
                 timer: null,
+                searchFilter:new SearchFilter(),
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
+                defaultFlag: false,
+                request:requestqueryVehicleList
             },
-            searchUrl: requestqueryVehicleList  
         }
     },
     methods: {
@@ -268,7 +271,7 @@ export default {
             this.dynamicParamList();
         },
         rsVehicleRemoteMethod(query) {
-            this.$searchFilter.publicRemoteMethod({
+            this.rsVehicleOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsVehicleOption,
                 searchObj: this.searchKey,

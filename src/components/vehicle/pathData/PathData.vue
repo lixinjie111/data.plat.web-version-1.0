@@ -12,9 +12,9 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsVehicleRemoteMethod"
-                    @clear="$searchFilter.clearFunc(rsVehicleOption)"
-                    @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
-                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                    @clear="rsVehicleOption.searchFilter.clearFunc(rsVehicleOption)"
+                    @focus="rsVehicleOption.searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId')"
+                    @blur="rsVehicleOption.searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                     :loading="rsVehicleOption.loading">
                     <el-option
                         v-for="item in rsVehicleOption.filterOption"
@@ -33,9 +33,9 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsPlateNoRemoteMethod"
-                    @clear="$searchFilter.clearFunc(rsPlateNoOption)"
-                    @focus="$searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo', searchUrl)"
-                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
+                    @clear="rsPlateNoOption.searchFilter.clearFunc(rsPlateNoOption)"
+                    @focus="rsPlateNoOption.searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo')"
+                    @blur="rsPlateNoOption.searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
                     :loading="rsPlateNoOption.loading">
                     <el-option
                         v-for="item in rsPlateNoOption.filterOption"
@@ -107,6 +107,8 @@
   </div>
 </template>
 <script>
+  // 模糊查询封装
+  import SearchFilter from '@/assets/js/module/searchFilter.js'
   import {queryPathList,exportExcel} from '@/api/vehicle';
   import {requestqueryVehicleList} from '@/api/search';
   import PathDataInfo from '@/components/vehicle/pathData/PathDataInfo.vue'
@@ -143,16 +145,20 @@
         rsVehicleOption: {
             loading: false,
             timer: null,
+            searchFilter:new SearchFilter(),
             filterOption: [],
             defaultOption: [],
-            defaultFlag: false
+            defaultFlag: false,
+            request:requestqueryVehicleList
         },
         rsPlateNoOption: {
             loading: false,
             timer: null,
+            searchFilter:new SearchFilter(),
             filterOption: [],
             defaultOption: [],
-            defaultFlag: false
+            defaultFlag: false,
+            request:requestqueryVehicleList
         },
         panel: {
           title: '提示',
@@ -168,7 +174,6 @@
                 return _time > _newTime;
             }
         },  
-        searchUrl: requestqueryVehicleList 
       }
     },
     methods: {
@@ -393,16 +398,15 @@
         this.rsPlateNoOption.filterOption = this.rsPlateNoOption.defaultOption;
       },
       rsVehicleRemoteMethod(query) {
-          this.$searchFilter.publicRemoteMethod({
+          this.rsVehicleOption.searchFilter.publicRemoteMethod({
               query: query,
               searchOption: this.rsVehicleOption,
               searchObj: this.searchKey,
               key: 'vehicleId',
-              request: this.searchUrl
           });
       },
       rsPlateNoRemoteMethod(query) {
-          this.$searchFilter.publicRemoteMethod({
+          this.rsVehicleOption.searchFilter.publicRemoteMethod({
               query: query,
               searchOption: this.rsPlateNoOption,
               searchObj: this.searchKey,

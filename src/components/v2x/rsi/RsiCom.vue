@@ -11,9 +11,9 @@
                         reserve-keyword
                         placeholder="请输入关键词"
                         :remote-method="rsRsuIdRemoteMethod"
-                        @clear="$searchFilter.clearFunc(rsRsuIdOption)"
-                        @focus="$searchFilter.remoteMethodClick(rsRsuIdOption, searchKey, 'rsuId', searchUrl)"
-                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsuId')"
+                        @clear="rsRsuIdOption.searchFilter.clearFunc(rsRsuIdOption)"
+                        @focus="rsRsuIdOption.searchFilter.remoteMethodClick(rsRsuIdOption, searchKey, 'rsuId', searchUrl)"
+                        @blur="rsRsuIdOption.searchFilter.remoteMethodBlur(searchKey, 'rsuId')"
                         :loading="rsRsuIdOption.loading">
                         <el-option
                             v-for="item in rsRsuIdOption.filterOption"
@@ -92,6 +92,8 @@
     </div>
 </template>
 <script>
+// 模糊查询封装
+import SearchFilter from '@/assets/js/module/searchFilter.js'
 import {findRsiPage} from '@/api/v2x';
 import {requestqueryRSUList} from '@/api/search';
 export default {
@@ -188,12 +190,13 @@ export default {
             },  
             rsRsuIdOption: {
                 loading: false,
+                searchFilter:new SearchFilter(),
                 timer: null,
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
+                defaultFlag: false,
+                request:requestqueryRSUList
             },
-            searchUrl: requestqueryRSUList,
             historySearchKey: {} 
         }
     },
@@ -251,12 +254,11 @@ export default {
             this.rsRsuIdOption.filterOption = this.rsRsuIdOption.defaultOption;
         },
         rsRsuIdRemoteMethod(query) {
-            this.$searchFilter.publicRemoteMethod({
+            this.rsRsuIdOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsRsuIdOption,
                 searchObj: this.searchKey,
-                key: 'rsuId',
-                request: this.searchUrl
+                key: 'rsuId'
             });
         },
         getIsNan(val){

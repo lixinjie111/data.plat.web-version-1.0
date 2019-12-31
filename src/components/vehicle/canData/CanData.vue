@@ -11,9 +11,9 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsVehicleRemoteMethod"
-                    @clear="$searchFilter.clearFunc(rsVehicleOption)"
-                    @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
-                    @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                    @clear="rsVehicleOption.searchFilter.clearFunc(rsVehicleOption)"
+                    @focus="rsVehicleOption.searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId')"
+                    @blur="rsVehicleOption.searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                     :loading="rsVehicleOption.loading">
                     <el-option
                         v-for="item in rsVehicleOption.filterOption"
@@ -81,6 +81,8 @@
     </div>
 </template>
 <script>
+// 模糊查询封装
+import SearchFilter from '@/assets/js/module/searchFilter.js'
 import {queryList} from '@/api/vehicle';
 import {requestqueryVehicleList} from '@/api/search';
 export default {
@@ -175,17 +177,18 @@ export default {
             },
             rsVehicleOption: {
                 loading: false,
+                searchFilter:new SearchFilter(),
                 timer: null,
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
+                defaultFlag: false,
+                request:requestqueryVehicleList
             },
             scrollData:{
                 dom:'',
                 loading:false,
                 isScroll:false
             },
-            searchUrl: requestqueryVehicleList
         }
     },
     mounted(){
@@ -259,12 +262,11 @@ export default {
             this.getQueryList();
         },
         rsVehicleRemoteMethod(query) {
-            this.$searchFilter.publicRemoteMethod({
+            this.rsVehicleOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsVehicleOption,
                 searchObj: this.searchKey,
-                key: 'vehicleId',
-                request: this.searchUrl
+                key: 'vehicleId'
             });
         },
         // scrollMore(){

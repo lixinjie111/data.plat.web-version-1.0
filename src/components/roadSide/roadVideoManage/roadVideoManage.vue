@@ -11,9 +11,9 @@
                 reserve-keyword
                 placeholder="请输入关键词"
                 :remote-method="rsCamCodeRemoteMethod"
-                @clear="$searchFilter.clearFunc(rsCamCodeOption)"
-                @focus="$searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'deviceId', cameraUrl)"
-                @blur="$searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
+                @clear="rsCamCodeOption.searchFilter.clearFunc(rsCamCodeOption)"
+                @focus="rsCamCodeOption.searchFilter.remoteMethodClick(rsCamCodeOption, searchKey, 'deviceId')"
+                @blur="rsCamCodeOption.searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
                 :loading="rsCamCodeOption.loading">
                 <el-option
                     v-for="item in rsCamCodeOption.filterOption"
@@ -32,9 +32,9 @@
                 reserve-keyword
                 placeholder="请输入关键词"
                 :remote-method="rsRoadNameRemoteMethod"
-                @clear="$searchFilter.clearFunc(rsRoadNameOption)"
-                @focus="$searchFilter.remoteMethodClick(rsRoadNameOption, searchKey, 'rspRoadName', roadUrl)"
-                @blur="$searchFilter.remoteMethodBlur(searchKey, 'rspRoadName')"
+                @clear="rsRoadNameOption.searchFilter.clearFunc(rsRoadNameOption)"
+                @focus="rsRoadNameOption.searchFilter.remoteMethodClick(rsRoadNameOption, searchKey, 'rspRoadName')"
+                @blur="rsRoadNameOption.searchFilter.remoteMethodBlur(searchKey, 'rspRoadName')"
                 :loading="rsRoadNameOption.loading">
                 <el-option
                     v-for="item in rsRoadNameOption.filterOption"
@@ -53,9 +53,9 @@
                 reserve-keyword
                 placeholder="请输入关键词"
                 :remote-method="rsPointNameRemoteMethod"
-                @clear="$searchFilter.clearFunc(rsPointNameOption)"
-                @focus="$searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName', roadUrl)"
-                @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsPtName')"
+                @clear="rsPointNameOption.searchFilter.clearFunc(rsPointNameOption)"
+                @focus="rsPointNameOption.searchFilter.remoteMethodClick(rsPointNameOption, searchKey, 'rsPtName')"
+                @blur="rsPointNameOption.searchFilter.remoteMethodBlur(searchKey, 'rsPtName')"
                 :loading="rsPointNameOption.loading">
                 <el-option
                     v-for="item in rsPointNameOption.filterOption"
@@ -152,6 +152,8 @@
 </div>
 </template>
 <script>
+// 模糊查询封装
+import SearchFilter from '@/assets/js/module/searchFilter.js'
 import TList from '@/common/utils/list.js';
 import VueDatepickerLocal from 'vue-datepicker-local';
 import RoadVideoReplay from './roadVideoReplay.vue';
@@ -243,26 +245,31 @@ export default {
             rsCamCodeOption: {
                 loading: false,
                 timer: null,
+                searchFilter:new SearchFilter(),
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
+                defaultFlag: false,
+                request:requestRSCamList
             },
             rsRoadNameOption: {
                 loading: false,
                 timer: null,
+                searchFilter:new SearchFilter(),
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
+                defaultFlag: false,
+                request:requestqueryRoadList
             },
             rsPointNameOption: {
                 loading: false,
                 timer: null,
+                searchFilter:new SearchFilter(),
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
+                defaultFlag: false,
+                request:requestqueryRoadList
             },
-            cameraUrl: requestRSCamList,
-            roadUrl:requestqueryRoadList
+
         }
     },
     methods: {
@@ -288,7 +295,7 @@ export default {
         },
         initData(){
             this.dataList = [];
-            this.loading = false;
+            this.loading = true;
             let protocal = JSON.parse(localStorage.getItem('protocal')) || '';
             this.historySearchKey.protocal = protocal;
             let _params = {
@@ -343,31 +350,27 @@ export default {
             this.rsPointNameOption.filterOption = this.rsPointNameOption.defaultOption;
         },
         rsRoadNameRemoteMethod(query) {
-            this.$searchFilter.publicRemoteMethod({
+            this.rsRoadNameOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsRoadNameOption,
                 searchObj: this.searchKey,
-                key: 'rspRoadName',
-                request: this.roadUrl
+                key: 'rspRoadName'
             });
         },
         rsCamCodeRemoteMethod(query) {
-            this.$searchFilter.publicRemoteMethod({
+            this.rsCamCodeOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsCamCodeOption,
                 searchObj: this.searchKey,
-                key: 'deviceId',
-                request: this.cameraUrl
+                key: 'deviceId'
             });
         },
         rsPointNameRemoteMethod(query) {
-            console.log(query);
-            this.$searchFilter.publicRemoteMethod({
+            this.rsPointNameOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsPointNameOption,
                 searchObj: this.searchKey,
-                key: 'rsPtName',
-                request: this.roadUrl
+                key: 'rsPtName'
             });
         },
         cfgPanelFn(data){

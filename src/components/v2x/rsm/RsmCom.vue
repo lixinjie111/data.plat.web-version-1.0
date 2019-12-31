@@ -12,9 +12,9 @@
                         reserve-keyword
                         placeholder="请输入关键词"
                         :remote-method="rsRsuIdRemoteMethod"
-                        @clear="$searchFilter.clearFunc(rsRsuIdOption)"
-                        @focus="$searchFilter.remoteMethodClick(rsRsuIdOption, searchKey, 'rsuId', searchUrl)"
-                        @blur="$searchFilter.remoteMethodBlur(searchKey, 'rsuId')"
+                        @clear="rsRsuIdOption.searchFilter.clearFunc(rsRsuIdOption)"
+                        @focus="rsRsuIdOption.searchFilter.remoteMethodClick(rsRsuIdOption, searchKey, 'rsuId', searchUrl)"
+                        @blur="rsRsuIdOption.searchFilter.remoteMethodBlur(searchKey, 'rsuId')"
                         :loading="rsRsuIdOption.loading">
                         <el-option
                             v-for="item in rsRsuIdOption.filterOption"
@@ -93,6 +93,8 @@
 </template>
 <script>
 import {findRsmPage} from '@/api/v2x';
+// 模糊查询封装
+import SearchFilter from '@/assets/js/module/searchFilter.js'
 import {requestqueryRSUList} from '@/api/search';
 import RsmDetail from '@/components/v2x/rsm/RsmDetail.vue'
 export default {
@@ -201,11 +203,12 @@ export default {
             rsRsuIdOption: {
                 loading: false,
                 timer: null,
+                searchFilter:new SearchFilter(),
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
+                defaultFlag: false,
+                request:requestqueryRSUList
             },
-            searchUrl: requestqueryRSUList,
             historySearchKey: {}
         }
     },
@@ -271,7 +274,7 @@ export default {
             this.rsRsuIdOption.filterOption = this.rsRsuIdOption.defaultOption;
         },
         rsRsuIdRemoteMethod(query) {
-            this.$searchFilter.publicRemoteMethod({
+            this.rsRsuIdOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsRsuIdOption,
                 searchObj: this.searchKey,

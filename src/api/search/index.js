@@ -40,3 +40,8 @@ export const queryRoadPointList = params => { return axios.post(`${HTTPURL}road/
  * 感知数据根据路侧点名称模糊查询RCU编号、设备编号、摄像头序列号
  */
 export const queryRoadSideDevList = params => { return axios.post(`${HTTPURL}road/queryRoadSideDevList`, params).then(res => res.data); };
+
+/**
+ * 感知数据模糊查询摄像头、雷达数据
+ */
+export const queryRSDeviceList = params => { return axios.post(`${HTTPURL}road/queryRSDeviceList`, params).then(res => res.data); };
