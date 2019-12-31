@@ -2,9 +2,9 @@
     <!-- 基本信息 -->
     <div class="c-wrapper-20" v-cloak>
         <el-form :inline="true" :model="searchKey" :rules="rules" ref="searchForm" size='small'>
-            <el-form-item label="自车编号" prop='hvid'>
+            <el-form-item label="自车编号" prop='vehicleId'>
                 <el-select
-                    v-model.trim="searchKey.hvid"
+                    v-model.trim="searchKey.vehicleId"
                     clearable
                     filterable
                     remote
@@ -147,7 +147,7 @@ export default {
             loading:false,
             searchLoad:false,
             searchKey: {
-                hvid: '',
+                vehicleId: '',
                 startTime: '',
                 endTime: ''
             },
@@ -244,7 +244,8 @@ export default {
             this.$refs.searchForm.validate((valid) => {
                 if (valid) {
                     this.searchLoad = true;
-                    this.historySearchKey = this.searchKey;
+                    // this.historySearchKey = this.searchKey;
+                    this.historySearchKey.hvid = this.searchKey.vehicleId;
                     this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
                     this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
                     this.initPaging();
