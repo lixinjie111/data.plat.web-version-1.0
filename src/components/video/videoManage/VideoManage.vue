@@ -345,7 +345,7 @@ export default {
             });
         },
         rsPlateNoRemoteMethod(query) {
-            this.rsVehicleOption.searchFilter.publicRemoteMethod({
+            this.rsPlateNoOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsPlateNoOption,
                 searchObj: this.searchKey,
@@ -353,7 +353,7 @@ export default {
             });
         },
         rsCamRemoteMethod(query) {
-            this.rsVehicleOption.searchFilter.publicRemoteMethod({
+            this.rsCamOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsCamOption,
                 searchObj: this.searchKey,

@@ -406,12 +406,11 @@
           });
       },
       rsPlateNoRemoteMethod(query) {
-          this.rsVehicleOption.searchFilter.publicRemoteMethod({
+          this.rsPlateNoOption.searchFilter.publicRemoteMethod({
               query: query,
               searchOption: this.rsPlateNoOption,
               searchObj: this.searchKey,
-              key: 'plateNo',
-              request: this.searchUrl
+              key: 'plateNo'
           });
       },
       changePageSize(value) {//每页显示条数变更

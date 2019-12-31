@@ -315,7 +315,7 @@ export default {
             });
         },
         rsCamCodeRemoteMethod(query) {
-            this.$searchFilter.publicRemoteMethod({
+            this.rsCamCodeOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsCamCodeOption,
                 searchObj: this.searchKey,

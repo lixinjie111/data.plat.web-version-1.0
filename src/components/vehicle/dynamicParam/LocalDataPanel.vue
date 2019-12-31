@@ -19,9 +19,9 @@
                                 reserve-keyword
                                 placeholder="请输入关键词"
                                 :remote-method="rsVehicleRemoteMethod"
-                                @clear="$searchFilter.clearFunc(rsVehicleOption)"
-                                @focus="$searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId', searchUrl)"
-                                @blur="$searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
+                                @clear="rsVehicleOption.searchFilter.clearFunc(rsVehicleOption)"
+                                @focus="rsVehicleOption.searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId')"
+                                @blur="rsVehicleOption.searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                                 :loading="rsVehicleOption.loading">
                                 <el-option
                                     v-for="item in rsVehicleOption.filterOption"
@@ -76,6 +76,8 @@
     
 </template>
 <script>
+// 模糊查询封装
+import SearchFilter from '@/assets/js/module/searchFilter.js'
 import {submitForm} from '@/api/vehicle';
 import AddDataPanel from './AddDataPanel.vue'
 import TList from '@/common/utils/list.js'
@@ -154,11 +156,12 @@ export default {
             rsVehicleOption: {
                 loading: false,
                 timer: null,
+                searchFilter:new SearchFilter(),
                 filterOption: [],
                 defaultOption: [],
-                defaultFlag: false
-            }, 
-            searchUrl: requestqueryVehicleList  
+                defaultFlag: false,
+                request:requestqueryVehicleList
+            }
         }
     },
     methods: {
@@ -231,12 +234,11 @@ export default {
             this.current.height = boxHeight - this.current.top - 55 - 100 - 40;
         },
         rsVehicleRemoteMethod(query) {
-            this.$searchFilter.publicRemoteMethod({
+            this.rsVehicleOption.searchFilter.publicRemoteMethod({
                 query: query,
                 searchOption: this.rsVehicleOption,
                 searchObj: this.searchKey,
-                key: 'vehicleId',
-                request: this.searchUrl
+                key: 'vehicleId'
             });
         },
         okClick(){

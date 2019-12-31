@@ -13,7 +13,7 @@
                         placeholder="请输入关键词"
                         :remote-method="rsRsuIdRemoteMethod"
                         @clear="rsRsuIdOption.searchFilter.clearFunc(rsRsuIdOption)"
-                        @focus="rsRsuIdOption.searchFilter.remoteMethodClick(rsRsuIdOption, searchKey, 'rsuId', searchUrl)"
+                        @focus="rsRsuIdOption.searchFilter.remoteMethodClick(rsRsuIdOption, searchKey, 'rsuId')"
                         @blur="rsRsuIdOption.searchFilter.remoteMethodBlur(searchKey, 'rsuId')"
                         :loading="rsRsuIdOption.loading">
                         <el-option
@@ -278,8 +278,7 @@ export default {
                 query: query,
                 searchOption: this.rsRsuIdOption,
                 searchObj: this.searchKey,
-                key: 'rsuId',
-                request: this.searchUrl
+                key: 'rsuId'
             });
         },
         getIsNan(val){

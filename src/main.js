@@ -16,10 +16,6 @@ Vue.config.productionTip = false
 import TDate from './common/utils/date.js'
 Vue.prototype.$dateUtil = TDate;
 
-// 模糊查询封装
-import SearchFilter from '@/assets/js/module/searchFilter.js'
-Vue.prototype.$searchFilter = SearchFilter;
-
 //全局静态文件引入
 import '@/assets/scss/reset.scss';
 import '@/assets/scss/public.scss';
