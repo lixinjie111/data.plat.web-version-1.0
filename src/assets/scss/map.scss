@@ -11,9 +11,59 @@
   }
 }
 
-// 弹窗的关闭按钮
+// 高德地图默认样式---弹窗的关闭按钮
 .amap-info-close {
   right: 5px !important;
+}
+// 高德地图默认样式---控制条
+.amap-scalecontrol {
+  left: 10px !important;
+  bottom: 10px !important;
+}
+.amap-touch-toolbar {
+  left: 0px !important;
+  top: 10px !important;
+  .amap-zoomcontrol {
+    top:  0px;
+    bottom: auto;
+  }
+}
+
+// 地图重新初始化点位置
+.c-map-reset-position {
+  position: absolute;
+  left: 11px;
+  top: 115px;
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  background: url(../images/map/position.png) no-repeat center center #f4f4f4;
+  background-size: 80% 80%;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 1px 1px 10px 0 #ccc;
+  &.ol-map-reset-position {
+    top: 70px;
+    width: 22px;
+    height: 22px;
+    background: none;
+    box-shadow: none;
+    background-color: hsla(0,0%,100%,.4);
+    padding: 2px;
+    &:after {
+      content: '';
+      position: absolute;
+      left: 2px;
+      top: 2px;
+      right: 2px;
+      bottom: 2px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: url(../images/map/position-ol.png) no-repeat center center #56778f;
+      background-size: 80% 80%;
+    }
+  }
 }
 
 //大地图
@@ -246,18 +296,4 @@
     left: 0;
     background-image: url('../images/map/right-bar.png')
   }
-}
-
-// 3d地图
-.c-tusvn-map-box {
-  position: relative;
-  background-color: $black;
-}
-
-.c-tusvn-map {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
 }
