@@ -334,7 +334,6 @@ export default {
         }
         this.getVideoUrl(this.serialNum);
         this.findRoadMonitorCamera();
-        this.findPerceptionRecords();
         this.curTime = this.params.startTime;
         //注册键盘事件
         document.onkeydown = function (event) {
