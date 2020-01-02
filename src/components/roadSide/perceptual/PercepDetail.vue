@@ -310,7 +310,7 @@ export default {
         }
     },
     beforeCreate(){
-        this.iframeSrc = window.config.staticUrl+'cesium-map/modules/dataManage/index.html?v='+new Date().getTime(); 
+        this.iframeSrc = window.config.staticUrl+'cesium-map/modules/dataManage/index.html'; 
         // this.iframeSrc = 'http://127.0.0.1:8080/modules/dataManage/index.html?v='+new Date().getTime();               
     },
     beforeRouteLeave(to, from, next) {
