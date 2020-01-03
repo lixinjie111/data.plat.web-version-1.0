@@ -242,7 +242,6 @@ export default {
                     fullscreenToggle: true  //全屏按钮
                 }
             },
-            serialNum:'',
             cameraList:[],
             tusvnOption: {
                 show: false,
@@ -259,7 +258,8 @@ export default {
             rowHeight: 0,
             currentIndex: -1,
             tableHeight: 0,
-            cameraParam: null
+            cameraParam: null,
+            cameraObj: null
         }
     },
     computed: {
@@ -321,19 +321,28 @@ export default {
     },
     mounted(){
         let _this = this;
-        let roadCamerInfo = JSON.parse(localStorage.getItem('roadCamerInfo'));
+        this.initRoadInfo = JSON.parse(localStorage.getItem('roadCamerInfo'));
         this.durationTime = (this.endTimeTimestamp - this.startTimeTimestamp)/1000;
         this.durationSecond = this.durationTime.toFixed(3).split(".")[0];
         this.durationMilliSecond = this.durationTime.toFixed(3).split(".")[1];
         this.perceptionData.framesTime = this.startTimeTimestamp;
-        this.initRoadInfo = roadCamerInfo;
-        this.initRoadInfo.serialNum = this.$route.params.serialNum;
-        this.cameraList = roadCamerInfo.cameraList;
-        if(this.cameraList.length > 0){
-            this.serialNum = this.cameraList[0].serialNum;
+        if(this.initRoadInfo.type==1) { //摄像头
+            this.cameraList.push({
+                deviceId: this.initRoadInfo.deviceId,
+                serialNum: this.initRoadInfo.serialNum
+            });
+        }else { //雷达
+            this.cameraList = this.initRoadInfo.cameraList;
         }
-        this.getVideoUrl(this.serialNum);
-        this.findRoadMonitorCamera();
+        this.cameraList.forEach(item => {
+            this.cameraObj[item.serialNum] = {
+                videoUrl: '',
+                videoFlag: false,
+                cameraParam: null,
+                cameraFlag: false,
+            };
+        });
+        this.selectCamera(this.cameraList[0].serialNum);
         this.curTime = this.params.startTime;
         //注册键盘事件
         document.onkeydown = function (event) {
@@ -364,35 +373,37 @@ export default {
     },
     methods: {
         findRoadMonitorCamera(serialNum) {
-            let serialNumber = '';
-            if(serialNum){
-                serialNumber = serialNum;
-            }else{
-                serialNumber = this.$route.params.serialNum;
+            if(!this.cameraObj[serialNum].cameraFlag) {
+                findRoadMonitorCameraInfo({
+                    'serialNum':serialNum
+                }).then(res => {
+                    if(res.status == '200'){
+                        this.cameraObj[serialNum].cameraParam = JSON.parse(res.data[0].cameraParam);
+                        this.cameraObj[serialNum].cameraFlag = true;
+                        // console.log("拿到摄像头角度");
+                        this.postMessage(serialNum);
+                    }
+                }).catch(err => {
+                    this.tusvnOption.loading = false;
+                });
+            }else {
+                this.postMessage(serialNum);
             }
-            findRoadMonitorCameraInfo({
-                'serialNum':serialNumber
-            }).then(res => {
-                if(res.status == '200'){
-                    this.cameraParam = JSON.parse(res.data[0].cameraParam);
-                    // console.log("拿到摄像头角度");
-                    if(this.initMapFlag) {
-                        // console.log("更新视图角度");
-                        let msgData = {
-                            type:"updateCam",
-                            data:this.cameraParam
-                        }
-                        for (const i in msgData.data) {
-                            if(!msgData.data[i] && msgData.data[i] != 0){
-                                return;
-                            }
-                        }
-                        document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');  
+        },
+        postMessage(serialNum) {
+            // console.log("更新视图角度");
+            if(this.initMapFlag) {
+                let msgData = {
+                    type:"updateCam",
+                    data: this.cameraObj[serialNum].cameraParam
+                }
+                for (const i in msgData.data) {
+                    if(!msgData.data[i] || msgData.data[i] != 0){
+                        return;
                     }
                 }
-            }).catch(err => {
-                this.tusvnOption.loading = false;
-            });
+                document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*'); 
+            }
         },
         setCurrentRow() {
             let _curTimestamp = Number(this.$dateUtil.dateToMs(this.curTime))+Number(this.currentMillisecond);
@@ -427,21 +438,22 @@ export default {
             this.$refs.percepDetailTable.bodyWrapper.scrollTop = this.rowHeight*this.currentIndex;
         },
         getVideoUrl(serialNum) {
-            let params = {};
-            if(serialNum){
-                params = Object.assign(this.$route.params,{serialNum:serialNum});
-            }else{
-                params = this.$route.params;
+            if(!this.cameraObj[serialNum].videoFlag) {
+                let params = Object.assign(this.$route.params,{serialNum:serialNum});
+                getVideoUrlInfo(params).then(res => {
+                    if(res.status == '200'){
+                        let _videoUrl = res.data.url;
+                        this.playerOptions.sources[0].src = _videoUrl;
+                        this.cameraObj[serialNum].videoUrl = _videoUrl;
+                        this.cameraObj[serialNum].videoFlag = true;
+                    }
+                }).catch(err => {
+                    // this.boxLoading = false;
+                    this.tusvnOption.loading = false;
+                });
+            }else {
+                this.playerOptions.sources[0].src = this.cameraObj[serialNum].videoUrl;
             }
-            getVideoUrlInfo(params).then(res => {
-                if(res.status == '200'){
-                    let _videoUrl = res.data.url;
-                    this.playerOptions.sources[0].src = _videoUrl;
-                }
-            }).catch(err => {
-                // this.boxLoading = false;
-                this.tusvnOption.loading = false;
-            });
         },
         findPerceptionRecords() {
             this.loading = true;
@@ -694,6 +706,7 @@ export default {
         },
         selectCamera(val){
             this.getVideoUrl(val);
+            this.findRoadMonitorCamera(val);
         }
     },
     destroyed(){
