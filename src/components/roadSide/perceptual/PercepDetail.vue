@@ -258,8 +258,8 @@ export default {
             rowHeight: 0,
             currentIndex: -1,
             tableHeight: 0,
-            cameraParam: null,
-            cameraObj: null
+            cameraObj: {},
+            serialNum:''
         }
     },
     computed: {
@@ -342,6 +342,7 @@ export default {
                 cameraFlag: false,
             };
         });
+        this.serialNum = this.cameraList[0].serialNum;
         this.selectCamera(this.cameraList[0].serialNum);
         this.curTime = this.params.startTime;
         //注册键盘事件
@@ -398,7 +399,7 @@ export default {
                     data: this.cameraObj[serialNum].cameraParam
                 }
                 for (const i in msgData.data) {
-                    if(!msgData.data[i] || msgData.data[i] != 0){
+                    if(!msgData.data[i] && msgData.data[i] != 0){
                         return;
                     }
                 }
@@ -657,16 +658,6 @@ export default {
                 setTimeout(() => {
                     this.tusvnOption.loading = false;
                     row.loading = false;
-                    // let msgData = {
-                    //     type:"updateCam",
-                    //     data::this.cameraParam
-                    // }
-                    // for (const i in msgData.data) {
-                    //     if(!msgData.data[i] && msgData.data[i] != 0){
-                    //         return;
-                    //     }
-                    // }
-                    // document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');  
                     let perData = {
                         type:"setPerData",
                         data:{
@@ -675,7 +666,6 @@ export default {
                     }
                     document.getElementById("cesiumContainer").contentWindow.postMessage(perData,'*');
                
-                    // this.$refs.tusvnMap.addPerceptionData(row);     
                 }, 500);
                 this.currentIndex = row.index;
             }
@@ -690,18 +680,16 @@ export default {
 
         onLoadMap(){
             this.initMapFlag = true;
-            if(this.cameraParam){
-                let msgData = {
-                    type:"updateCam",
-                    data:this.cameraParam
-                }
-                for (const i in msgData.data) {
-                    if(!msgData.data[i] && msgData.data[i] != 0){
-                        return;
-                    }
-                }
-                document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');    
+            let msgData = {
+                type:"updateCam",
+                data: this.cameraObj[this.serialNum].cameraParam
             }
+            for (const i in msgData.data) {
+                if(!msgData.data[i] && msgData.data[i] != 0){
+                    return;
+                }
+            }
+            document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*'); 
            
         },
         selectCamera(val){
@@ -710,6 +698,8 @@ export default {
         }
     },
     destroyed(){
+        this.player = null;
+        this.playerOptions.sources[0].src = '';
         document.onkeydown = function (event) {
             if (event.keyCode == 38 || event.keyCode == 40) {
                 event.preventDefault();
