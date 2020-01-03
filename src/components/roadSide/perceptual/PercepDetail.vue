@@ -311,7 +311,7 @@ export default {
     },
     beforeCreate(){
         this.iframeSrc = window.config.staticUrl+'cesium-map/modules/dataManage/index.html'; 
-        // this.iframeSrc = 'http://127.0.0.1:8080/modules/dataManage/index.html?v='+new Date().getTime();               
+        // this.iframeSrc = 'http://127.0.0.1:8082/modules/dataManage/index.html';               
     },
     beforeRouteLeave(to, from, next) {
         if (to.name != "PercepData") {
@@ -380,14 +380,7 @@ export default {
                         // console.log("更新视图角度");
                         let msgData = {
                             type:"updateCam",
-                            data:{
-                                x:this.cameraParam.x,
-                                y:this.cameraParam.y,
-                                z:this.cameraParam.z,
-                                radius:this.cameraParam.radius,
-                                pitch:this.cameraParam.pitch,
-                                yaw:this.cameraParam.yaw
-                            }
+                            data:this.cameraParam
                         }
                         for (const i in msgData.data) {
                             if(!msgData.data[i] && msgData.data[i] != 0){
@@ -652,28 +645,20 @@ export default {
                 setTimeout(() => {
                     this.tusvnOption.loading = false;
                     row.loading = false;
-                    let msgData = {
-                        type:"updateCam",
-                        data:{
-                            x:this.cameraParam.x,
-                            y:this.cameraParam.y,
-                            z:this.cameraParam.z,
-                            radius:this.cameraParam.radius,
-                            pitch:this.cameraParam.pitch,
-                            yaw:this.cameraParam.yaw
-                        }
-                    }
-                    for (const i in msgData.data) {
-                        if(!msgData.data[i] && msgData.data[i] != 0){
-                            return;
-                        }
-                    }
-                    document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');  
-                   
+                    // let msgData = {
+                    //     type:"updateCam",
+                    //     data::this.cameraParam
+                    // }
+                    // for (const i in msgData.data) {
+                    //     if(!msgData.data[i] && msgData.data[i] != 0){
+                    //         return;
+                    //     }
+                    // }
+                    // document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*');  
                     let perData = {
                         type:"setPerData",
                         data:{
-                            row:row
+                            row:row.data.targets
                         }
                     }
                     document.getElementById("cesiumContainer").contentWindow.postMessage(perData,'*');
@@ -696,14 +681,7 @@ export default {
             if(this.cameraParam){
                 let msgData = {
                     type:"updateCam",
-                    data:{
-                        x:this.cameraParam.x,
-                        y:this.cameraParam.y,
-                        z:this.cameraParam.z,
-                        radius:this.cameraParam.radius,
-                        pitch:this.cameraParam.pitch,
-                        yaw:this.cameraParam.yaw
-                    }
+                    data:this.cameraParam
                 }
                 for (const i in msgData.data) {
                     if(!msgData.data[i] && msgData.data[i] != 0){
