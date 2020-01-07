@@ -85,26 +85,32 @@
                                 </el-table-column>
                                 <el-table-column min-width="10%" label="出现车辆">
                                     <template slot-scope="scope">
-                                        <el-popover placement="top" width="350" trigger="click" popper-class="c-table-popover">
-                                            <div class="c-table-popover-content" v-html="scope.row.addCar"></div>
-                                            <p class="c-table-popover-text" slot="reference" v-html='scope.row.addCar'></p>
-                                        </el-popover>
+                                        <div @click.stop="stopPrevent">
+                                            <el-popover placement="top" width="350" trigger="click" popper-class="c-table-popover">
+                                                <div class="c-table-popover-content" v-html="scope.row.addCar"></div>
+                                                <p class="c-table-popover-text" slot="reference" v-html='scope.row.addCar'></p>
+                                            </el-popover>
+                                        </div>
                                     </template>
                                 </el-table-column>
                                 <el-table-column min-width="10%" label="消失车辆">
                                     <template slot-scope="scope">
-                                        <el-popover placement="top" width="350" trigger="click" popper-class="c-table-popover">
-                                            <div class="c-table-popover-content" v-html="scope.row.disappearCar"></div>
-                                            <p class="c-table-popover-text" slot="reference" v-html='scope.row.disappearCar'></p>
-                                        </el-popover>
+                                        <div @click.stop="stopPrevent">
+                                            <el-popover placement="top" width="350" trigger="click" popper-class="c-table-popover">
+                                                <div class="c-table-popover-content" v-html="scope.row.disappearCar"></div>
+                                                <p class="c-table-popover-text" slot="reference" v-html='scope.row.disappearCar'></p>
+                                            </el-popover>
+                                        </div>
                                     </template>
                                 </el-table-column>
                                 <el-table-column min-width="50%" label="原始感知数据">
                                     <template slot-scope="scope">
-                                        <el-popover placement="top" width="600" trigger="click" popper-class="c-table-popover">
-                                            <div class="c-table-popover-content" v-html="scope.row.data"></div>
-                                            <p class="c-table-popover-text" slot="reference" v-html='scope.row.data'></p>
-                                        </el-popover>
+                                        <div @click.stop="stopPrevent">
+                                            <el-popover placement="top" width="600" trigger="click" popper-class="c-table-popover">
+                                                <div class="c-table-popover-content" v-html="scope.row.data"></div>
+                                                <p class="c-table-popover-text" slot="reference" v-html='scope.row.data'></p>
+                                            </el-popover>
+                                        </div>
                                     </template>
                                 </el-table-column>
                                 <!-- <el-table-column min-width="7%" label="操作">
@@ -258,7 +264,7 @@ export default {
             currentIndex: -1,
             tableHeight: 0,
             cameraObj: {},
-            serialNum:''
+            serialNum:'',
         }
     },
     computed: {
@@ -342,6 +348,7 @@ export default {
                 cameraFlag: false,
             };
         });
+        
         this.serialNum = this.cameraList[0].serialNum;
         // this.selectCamera(this.serialNum);
         this.curTime = this.params.startTime;
@@ -691,6 +698,9 @@ export default {
         selectCamera(val){
             this.getVideoUrl(val);
             this.findRoadMonitorCamera(val);
+        },
+        stopPrevent(){
+            // console.log('阻止默认事件');
         }
     },
     destroyed(){
