@@ -153,7 +153,6 @@
                                         :src="iframeSrc"
                                     >
                                     </iframe>
-                                  
                                 </div>
                             </div>
                         </div>

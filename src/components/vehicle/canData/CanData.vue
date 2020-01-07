@@ -11,19 +11,21 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsVehicleRemoteMethod"
+                    @change="getVehicleId"
                     @clear="rsVehicleOption.searchFilter.clearFunc(rsVehicleOption)"
                     @focus="rsVehicleOption.searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId')"
                     @blur="rsVehicleOption.searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                     :loading="rsVehicleOption.loading">
                     <el-option
                         v-for="item in rsVehicleOption.filterOption"
-                        :key="item"
-                        :label="item"
-                        :value="item">
+                        :key="item.vehicleId"
+                        :label="item.vehicleId"
+                        :value="item.vehicleId"
+                        >
                     </el-option>
                 </el-select>
             </el-form-item>
-            <!-- <el-form-item label="车牌号" prop="plateNo">
+            <el-form-item label="车牌号" prop="plateNo">
                 <el-select
                     v-model.trim="searchKey.plateNo"
                     clearable
@@ -32,18 +34,19 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsPlateNoRemoteMethod"
+                    @change="getPlateNo"
                     @clear="rsPlateNoOption.searchFilter.clearFunc(rsPlateNoOption)"
                     @focus="rsPlateNoOption.searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo')"
                     @blur="rsPlateNoOption.searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
                     :loading="rsPlateNoOption.loading">
                     <el-option
                         v-for="item in rsPlateNoOption.filterOption"
-                        :key="item"
-                        :label="item"
-                        :value="item">
+                        :key="item.plateNo"
+                        :label="item.plateNo"
+                        :value="item.plateNo">
                     </el-option>
                 </el-select>
-            </el-form-item> -->
+            </el-form-item>
             <el-form-item label="开始时间" prop='startTime'>
                 <el-date-picker
                     v-model.trim="searchKey.startTime"
@@ -308,6 +311,18 @@ export default {
                 key: 'plateNo'
             });
         },
+        getVehicleId(val){
+            if(this.rsVehicleOption.filterOption.length > 0){
+                let plateNos = this.rsVehicleOption.filterOption.filter(item => item.vehicleId === val);
+                this.historySearchKey.plateNo = this.searchKey.plateNo = plateNos[0].plateNo;
+            }
+        },
+        getPlateNo(val){
+            if(this.rsPlateNoOption.filterOption.length > 0){
+                let vehicleIds = this.rsPlateNoOption.filterOption.filter(item => item.plateNo === val);
+                this.historySearchKey.vehicleId = this.searchKey.vehicleId = vehicleIds[0].vehicleId;
+            }
+        }
         // scrollMore(){
         //     const scrollTopHeight = this.scrollData.dom.scrollTop;//滚动高度
         //     const clientHeight = this.scrollData.dom.clientHeight;//可用区域高度
