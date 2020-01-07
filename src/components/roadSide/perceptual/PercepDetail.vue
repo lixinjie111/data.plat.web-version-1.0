@@ -278,6 +278,7 @@ export default {
                         // console.log("列表加载在初始化地图之前");
                         this.setCurrentRow();
                     }
+                    this.selectCamera(this.serialNum);
                 }
             }
         },
@@ -343,7 +344,7 @@ export default {
             };
         });
         this.serialNum = this.cameraList[0].serialNum;
-        this.selectCamera(this.cameraList[0].serialNum);
+        // this.selectCamera(this.serialNum);
         this.curTime = this.params.startTime;
         //注册键盘事件
         document.onkeydown = function (event) {
@@ -665,8 +666,8 @@ export default {
                         }
                     }
                     document.getElementById("cesiumContainer").contentWindow.postMessage(perData,'*');
-               
-                }, 500);
+   
+                }, 0);
                 this.currentIndex = row.index;
             }
         },
@@ -679,18 +680,7 @@ export default {
         },
 
         onLoadMap(){
-            this.initMapFlag = true;
-            let msgData = {
-                type:"updateCam",
-                data: this.cameraObj[this.serialNum].cameraParam
-            }
-            for (const i in msgData.data) {
-                if(!msgData.data[i] && msgData.data[i] != 0){
-                    return;
-                }
-            }
-            document.getElementById("cesiumContainer").contentWindow.postMessage(msgData,'*'); 
-           
+            this.initMapFlag = true;   
         },
         selectCamera(val){
             this.getVideoUrl(val);
