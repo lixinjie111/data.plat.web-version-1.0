@@ -513,9 +513,16 @@ export default {
             })
         },
         carInfo(arr){//查找消失、出现车辆
-            arr.map((val,index) => {
-                let lastCars = arr[index].data.targets.filter(x => x.uuid);
-                let newCars = arr[index+1].data.targets.filter(item => item.uuid);
+            let lastCars = [];
+            let newCars = [];
+            arr.map((val,index,arr) => {
+                if(index > 0){
+                    lastCars = arr[index-1].data.targets.filter(x => x.uuid);
+                    newCars = arr[index].data.targets.filter(item => item.uuid);
+                }else{
+                    lastCars = arr[index].data.targets.filter(x => x.uuid);
+                    newCars = arr[index+1].data.targets.filter(item => item.uuid);
+                }
                 let lastCarArry = [];
                 let newCarArry = [];
                 lastCars.map(item => lastCarArry.push(item.uuid));

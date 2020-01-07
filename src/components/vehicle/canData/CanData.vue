@@ -23,6 +23,27 @@
                     </el-option>
                 </el-select>
             </el-form-item>
+            <!-- <el-form-item label="车牌号" prop="plateNo">
+                <el-select
+                    v-model.trim="searchKey.plateNo"
+                    clearable
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsPlateNoRemoteMethod"
+                    @clear="rsPlateNoOption.searchFilter.clearFunc(rsPlateNoOption)"
+                    @focus="rsPlateNoOption.searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo')"
+                    @blur="rsPlateNoOption.searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
+                    :loading="rsPlateNoOption.loading">
+                    <el-option
+                        v-for="item in rsPlateNoOption.filterOption"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item> -->
             <el-form-item label="开始时间" prop='startTime'>
                 <el-date-picker
                     v-model.trim="searchKey.startTime"
@@ -130,6 +151,7 @@ export default {
             searchLoading:false,
             searchKey: {
                 vehicleId: '',
+                plateNo:'',
                 startTime: '',
                 endTime: ''
             },
@@ -168,6 +190,9 @@ export default {
                 vehicleId:[
                     { required: true, message: '车辆编号不能为空', trigger: 'blur' },
                 ],
+                plateNo:[
+                    { required: true, message: '车牌号不能为空', trigger: 'blur' }
+                ],
                 startTime:[
                     { required: true, message: "开始时间不能为空!", trigger: 'change' }
                 ],
@@ -184,11 +209,21 @@ export default {
                 defaultFlag: false,
                 request:requestqueryVehicleList
             },
+            //车牌号
+            rsPlateNoOption: {
+                loading: false,
+                timer: null,
+                searchFilter:new SearchFilter(),
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false,
+                request:requestqueryVehicleList
+            },
             scrollData:{
                 dom:'',
                 loading:false,
                 isScroll:false
-            },
+            }
         }
     },
     mounted(){
@@ -202,11 +237,6 @@ export default {
         // this.scrollData.dom.addEventListener('scroll',this.scrollMore);
     },
     methods: {
-        // initPageOption() {
-        //     this.dataList = [];
-        //     this.pageOption.total = 0;
-        //     this.pageOption.page = 1;
-        // },
         initPaging(){
             this.pageOption.page = 1;
             this.pageOption.total = 0;
@@ -267,6 +297,15 @@ export default {
                 searchOption: this.rsVehicleOption,
                 searchObj: this.searchKey,
                 key: 'vehicleId'
+            });
+        },
+        //车牌号模糊查询
+        rsPlateNoRemoteMethod(query) {
+            this.rsPlateNoOption.searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsPlateNoOption,
+                searchObj: this.searchKey,
+                key: 'plateNo'
             });
         },
         // scrollMore(){
