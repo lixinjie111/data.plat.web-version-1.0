@@ -95,16 +95,6 @@
                     end-placeholder="结束日期">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="结束时间" prop='endTime'>
-                <el-date-picker
-                    v-model.trim="searchKey.endTime"
-                    type="datetimerange"
-                    :picker-options="timeOption"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
-                </el-date-picker>
-            </el-form-item>
-
             <el-form-item>
                 <el-button type="warning" icon="el-icon-search" :loading='searchLoading' @click="searchClick">查询</el-button>
                 <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
@@ -132,9 +122,6 @@
             </el-table-column>
             <el-table-column label="开始时间" min-width="10%">
                 <template slot-scope="scope">{{scope.row.startTime}}</template>
-            </el-table-column>
-            <el-table-column label="结束时间" min-width="10%">
-                <template slot-scope="scope">{{scope.row.endTime}}</template>
             </el-table-column>
             <el-table-column prop="plateNo" min-width="7%" label="下载状态">
                 <template slot-scope="{row}">
@@ -234,7 +221,6 @@ export default {
                 source: '',
                 taskStatus: '',
                 startTime:[],
-                endTime:[]
             },
             historySearchKey: {},
             pageOption: {
@@ -325,8 +311,6 @@ export default {
             this.loading = true;
             this.historySearchKey.startBeginTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '';
             this.historySearchKey.startEndTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '';
-            this.historySearchKey.stopBeginTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '';
-            this.historySearchKey.stopEndTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : '';
             this.historySearchKey.protocal = JSON.parse(localStorage.getItem('protocal')) || '';
             let _params = {
                 page: {
@@ -355,8 +339,6 @@ export default {
                     this.historySearchKey = this.searchKey;
                     this.historySearchKey.startBeginTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '';
                     this.historySearchKey.startEndTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '';
-                    this.historySearchKey.stopBeginTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '';
-                    this.historySearchKey.stopEndTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : '';
                     this.initPaging();
                     this.initData();
                 } else {
@@ -432,7 +414,6 @@ export default {
         backFn(type){
             if(type == 'add'){
                 this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
-                this.searchKey.endTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
                 this.initData();
             }
             this.dialogOption.show = false;
@@ -440,7 +421,6 @@ export default {
     },
     mounted(){
         this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
-        this.searchKey.endTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
         this.init();
     },
     beforeDestroy(){

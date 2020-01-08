@@ -4,7 +4,13 @@ import {HTTPURL} from '../requestUrl';
 /**
  * 车辆轨迹数据模糊查询
  */
-export const requestqueryVehicleList = params => { return axios.post(`${HTTPURL}vehicle/queryVehicleList`, params).then(res => res.data); };
+export const requestqueryVehicleList = params => { return axios.post(`${HTTPURL}vehicle/queryVehicleListForSearchView`, params).then(res => res.data); };
+
+/**
+ * Can数据模糊查询
+ */
+export const queryVehicleList = params => { return axios.post(`${HTTPURL}vehicle/queryVehicleList`, params).then(res => res.data); };
+
 /**
  * RSU编号模糊查询
  */

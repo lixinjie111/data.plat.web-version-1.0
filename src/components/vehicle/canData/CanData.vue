@@ -11,39 +11,15 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsVehicleRemoteMethod"
-                    @change="getVehicleId"
                     @clear="rsVehicleOption.searchFilter.clearFunc(rsVehicleOption)"
                     @focus="rsVehicleOption.searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId')"
                     @blur="rsVehicleOption.searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                     :loading="rsVehicleOption.loading">
                     <el-option
                         v-for="item in rsVehicleOption.filterOption"
-                        :key="item.vehicleId"
-                        :label="item.vehicleId"
-                        :value="item.vehicleId"
-                        >
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="车牌号" prop="plateNo">
-                <el-select
-                    v-model.trim="searchKey.plateNo"
-                    clearable
-                    filterable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词"
-                    :remote-method="rsPlateNoRemoteMethod"
-                    @change="getPlateNo"
-                    @clear="rsPlateNoOption.searchFilter.clearFunc(rsPlateNoOption)"
-                    @focus="rsPlateNoOption.searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo')"
-                    @blur="rsPlateNoOption.searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
-                    :loading="rsPlateNoOption.loading">
-                    <el-option
-                        v-for="item in rsPlateNoOption.filterOption"
-                        :key="item.plateNo"
-                        :label="item.plateNo"
-                        :value="item.plateNo">
+                        :key="item"
+                        :label="item"
+                        :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -74,7 +50,8 @@
             v-loading='loading'
             stripe
             border
-            max-height="724">
+            max-height="724"
+            class='c-mb-70'>
             <el-table-column prop="vehicleId" label="车辆编号" min-width="8%"></el-table-column>
             <el-table-column label="时间" min-width="13%">
                 <template slot-scope="scope">{{scope.row.timestamp ? $dateUtil.formatTime(scope.row.timestamp,type='yy-mm-dd hh:mm:ss:ms') : ''}}</template>
@@ -154,7 +131,6 @@ export default {
             searchLoading:false,
             searchKey: {
                 vehicleId: '',
-                plateNo:'',
                 startTime: '',
                 endTime: ''
             },
@@ -193,9 +169,6 @@ export default {
                 vehicleId:[
                     { required: true, message: '车辆编号不能为空', trigger: 'blur' },
                 ],
-                plateNo:[
-                    { required: true, message: '车牌号不能为空', trigger: 'blur' }
-                ],
                 startTime:[
                     { required: true, message: "开始时间不能为空!", trigger: 'change' }
                 ],
@@ -212,21 +185,11 @@ export default {
                 defaultFlag: false,
                 request:requestqueryVehicleList
             },
-            //车牌号
-            rsPlateNoOption: {
-                loading: false,
-                timer: null,
-                searchFilter:new SearchFilter(),
-                filterOption: [],
-                defaultOption: [],
-                defaultFlag: false,
-                request:requestqueryVehicleList
-            },
             scrollData:{
                 dom:'',
                 loading:false,
                 isScroll:false
-            }
+            },
         }
     },
     mounted(){
@@ -302,36 +265,7 @@ export default {
                 key: 'vehicleId'
             });
         },
-        //车牌号模糊查询
-        rsPlateNoRemoteMethod(query) {
-            this.rsPlateNoOption.searchFilter.publicRemoteMethod({
-                query: query,
-                searchOption: this.rsPlateNoOption,
-                searchObj: this.searchKey,
-                key: 'plateNo'
-            });
-        },
-        getVehicleId(val){
-            if(this.rsVehicleOption.filterOption.length > 0){
-                let plateNos = this.rsVehicleOption.filterOption.filter(item => item.vehicleId === val);
-                this.historySearchKey.plateNo = this.searchKey.plateNo = plateNos[0].plateNo;
-            }
-        },
-        getPlateNo(val){
-            if(this.rsPlateNoOption.filterOption.length > 0){
-                let vehicleIds = this.rsPlateNoOption.filterOption.filter(item => item.plateNo === val);
-                this.historySearchKey.vehicleId = this.searchKey.vehicleId = vehicleIds[0].vehicleId;
-            }
-        }
-        // scrollMore(){
-        //     const scrollTopHeight = this.scrollData.dom.scrollTop;//滚动高度
-        //     const clientHeight = this.scrollData.dom.clientHeight;//可用区域高度
-        //     const scrollHeight = this.scrollData.dom.scrollHeight;//滚动条的总高度
-        //     if(scrollTopHeight + clientHeight == scrollHeight){
-        //         this.pageOption.page = this.pageOption.page + 1;
-        //         this.getQueryList();
-        //     }
-        // }
+
     }
 }
 </script>

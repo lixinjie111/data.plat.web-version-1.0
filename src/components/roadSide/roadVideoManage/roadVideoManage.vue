@@ -84,15 +84,6 @@
                 end-placeholder="结束日期">
             </el-date-picker>
         </el-form-item>
-        <el-form-item label="结束时间" prop='endTime'>
-            <el-date-picker
-                v-model.trim="searchKey.endTime"
-                type="datetimerange"
-                :picker-options="timeOption"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期">
-            </el-date-picker>
-        </el-form-item>
         <el-form-item>
             <el-button type="warning" icon="el-icon-search" @click="searchClick" :loading="searchLoading">查询</el-button>
             <el-button type="warning" plain icon="el-icon-setting" @click="resetClick">重置</el-button>
@@ -117,7 +108,6 @@
         <el-table-column min-width="16%" prop="roadPointName" label="路侧点名称"></el-table-column>
         <el-table-column min-width="10%" prop="roadName" label="道路名称"></el-table-column>
         <el-table-column min-width="10%" prop="startTime" label="开始时间"></el-table-column>
-        <el-table-column min-width="10%" prop="endTime" label="结束时间"></el-table-column>
         <el-table-column min-width="8%" prop="duration" label="视频时长(Min)">
             <template slot-scope="scope">{{s_to_hs(scope.row.duration)}}</template>
         </el-table-column>
@@ -198,8 +188,7 @@ export default {
                 rspRoadName: '',
                 rsPtName: '',
                 source: '',
-                startTime: [],
-                endTime: []
+                startTime: []
             },
             historySearchKey: {},
             selector: [],
@@ -283,8 +272,6 @@ export default {
             this.playbackShow = false;
             this.historySearchKey.startBeginTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '';
             this.historySearchKey.startEndTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '';
-            this.historySearchKey.stopBeginTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '';
-            this.historySearchKey.stopEndTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : '';
             this.initPaging();
             this.initData();
         },
@@ -334,8 +321,6 @@ export default {
                     this.historySearchKey = this.searchKey;
                     this.historySearchKey.startBeginTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '';
                     this.historySearchKey.startEndTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '';
-                    this.historySearchKey.stopBeginTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[0]) : '';
-                    this.historySearchKey.stopEndTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime[1]) : '';
                     this.initPaging();
                     this.initData();
                 } else {
@@ -514,7 +499,6 @@ export default {
     },
     mounted(){
         this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
-        this.searchKey.endTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
         this.init();
     },
     beforeDestroy(){
@@ -522,10 +506,4 @@ export default {
     },
 }
 </script>
-<style>
-/* .export a{
-    text-decoration: none;
-    color:#fff;
-} */
-</style>
 

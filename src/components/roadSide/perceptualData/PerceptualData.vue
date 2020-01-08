@@ -188,6 +188,12 @@ export default {
             provinceOptions:[],
             cityOptions:[],
             regionList:[],
+            binationObj:{
+                label:'',
+                code:'',
+                type:'',
+                children:[]
+            },
             camInfo:'',
             roadPointName:'--',
             camDetail:{
@@ -400,6 +406,7 @@ export default {
             queryRoadRegionTree().then(res => {
                 this.treeList = res.data;
                 this.provinceOptions = [];
+                //获取省市列表
                 if(this.treeList.length > 0){
                     this.treeList.forEach(item => {
                         var obj = {};
@@ -410,6 +417,7 @@ export default {
                 }
                 //首次加载
                 if(this.isFirst){
+                    //设置默认省、市辖区
                     var provinceCode = this.provinceOptions[0].code;
                     this.searchKey.provinceValue = this.provinceOptions[0];
                     this.getCitys(provinceCode);
@@ -460,33 +468,53 @@ export default {
             })
         },
         loadNode(node,resolve){
+            // console.log(node);
+            if(node.data.type == 1){
+                this.binationObj.label = node.data.label;
+                this.binationObj.code = node.data.code;
+                this.binationObj.type = node.data.type;
+            }
+            // data: [{
+            //     label: '区',
+            //     code:'',
+            //         children: [{
+            //             label: '路',
+            //                 children: [{
+            //                     label: '摄像头'
+            //                 }]
+            //         }]
+            // }]
             //懒加载路
             if(node.level == 1){
                 var children = [];
                 this.regionList.forEach(item => {
                     if(item.code == node.data.code){
                         var list = item.dataList;
+                        // console.log('list',list);
                         list.forEach( e => {
                             var obj = {};
                             obj.label = e.name;
                             obj.code = e.code;
                             obj.type = 2;
+                            this.binationObj.children.push(obj);
                             children.push(obj);
                         })
                     }
                 })
+                // console.log('路',this.binationObj.children);
                 resolve(children);
                 return;
             }
             if (node.level > 2) return resolve([]);
             if(node.level == 2){
-                this.roads.push(node.data.code);
+                this.roads.push(node.data);
                 queryRoadCamList({
                     roadCode:node.data.code
                 }).then(res => {
                     if(res.status == '200') {
                         var camDetail = res.data;
                         var children = [];
+                        // console.log(camDetail);
                         if(camDetail.length > 0){
                             //默认选中样式
                             camDetail.forEach(item => {
@@ -522,12 +550,18 @@ export default {
                                         console.log('失败');
                                     });
                                 },2000);
+                                // console.log(obj);
+                                this.binationObj.children.map(item => {
+                                    item.children = [];
+                                    item.children.push(obj);
+                                })
                                 children.push(obj);                                
                             })
                         }
                         if(node.data.code == this.roads[0]){
                             this.protocal = children[0].protocal;
                         }
+                        // console.log(this.binationObj.children);
                         resolve(children);
                     }
                 })
@@ -579,10 +613,6 @@ export default {
                         this.markerOption.point = roadCamInfo;
                         this.drawStartMarker();
                     }else {
-                        this.camDetail.roadName = '';
-                        this.camDetail.camCode = '';
-                        this.camDetail.camId = '';
-                        this.camDetail.roadPointName = '';
                         let _message = '';
                         if(camStatus == '0'){//未注册
                             _message = '摄像头未注册!';
@@ -599,11 +629,16 @@ export default {
                                 showClose: true
                             });
                         }
-                        if(this.playerData) {      
-                            data.isOn = false;
-                            data.icon = "sl-play-icon";
-                            this.endPlay();
-                        }           
+                        this.camDetail.roadName = data.roadName;
+                        this.camDetail.camCode = data.code;
+                        this.camDetail.camId = data.serialNum;
+                        this.camDetail.roadPointName = data.rsPtName;
+                        // if(this.playerData) {   
+                        //     console.log('不能播放')   
+                        //     data.isOn = false;
+                        //     data.icon = "sl-play-icon";
+                        //     this.endPlay();
+                        // }           
                     }
                 }
             }
@@ -669,10 +704,10 @@ export default {
                     this.camCode = '--';
                     this.roadPointName = '--';
                     this.roadPointId = '--';
-                    this.camDetail.roadName = '';
-                    this.camDetail.camCode = '';
-                    this.camDetail.camId = '';
-                    this.camDetail.roadPointName = '';
+                    // this.camDetail.roadName = '';
+                    // this.camDetail.camCode = '';
+                    // this.camDetail.camId = '';
+                    // this.camDetail.roadPointName = '';
                 });
                 this.playerData.isOn = false;
                 this.playerData.icon = "sl-play-icon";
@@ -720,6 +755,7 @@ export default {
             this.changeSize = false;
         },
         searchClick(){
+            // console.log(this.binationObj);
             if(this.searchKey.device) {
                 this.treeData = [];
 
@@ -730,6 +766,8 @@ export default {
                 this.markerOption.point = null;
                 this.isRefshShow = true;
                 this.isOnlineShow = false;
+
+                //查询联网、在线、实时监控数量
                 this.computCamNum(this.cityCode);
                 this.provinceOptions.forEach(e => {
                     if(e.code == this.searchKey.device.rspDistcodeProvince){
@@ -738,6 +776,7 @@ export default {
                         obj.code = this.searchKey.device.rspDistcodeProvince;
                         this.provinceOptions = [];
                         this.provinceOptions.push(obj);
+                        
                     }
                     
                     this.treeList.forEach((provinceInfo,index) => {
