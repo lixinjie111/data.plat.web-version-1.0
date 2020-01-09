@@ -91,7 +91,7 @@
             </el-pagination>
         </div>
 
-        <local-data-panel title="获取本地数据" ref="localDataPanel" @localDataPanelBack="init" v-show="!panel.detailShow && panel.localDataShow" :type="panel.type" :data="panel.data"></local-data-panel>
+        <local-data-panel title="获取本地数据" ref="localDataPanel" @localDataPanelBack="goBack"  v-show="!panel.detailShow && panel.localDataShow" :type="panel.type" :data="panel.data"></local-data-panel>
         <detail-panel ref="detailPanel" @detailPanelBack="panelBack" v-show="panel.detailShow && !panel.localDataShow" :title="panel.title" :type="panel.type" :data="panel.data"></detail-panel>
     </div>
 </template>
@@ -159,26 +159,6 @@ export default {
         }
     },
     methods: {
-        // initCarVo(){
-        //     return {
-        //         "id":"",
-        //         "vehicleId":"",
-        //         "vin":"",
-        //         "plateNo":"",
-        //         "color":"",
-        //         "phoneNum":"",
-        //         "brandModelId":"",
-        //         "brand": 0,
-        //         "model": 0,
-        //         "type": 0,
-        //         "usage": 0,
-        //         "engineType": 0,
-        //         "emission": 0,
-        //         "size": 0,
-        //         "autoLevel": 0,
-        //         "accessPlatform": 0,
-        //     };
-        // },
         initPageOption() {
             this.dataList = [];
             this.pageOption.total = 0;
@@ -279,6 +259,9 @@ export default {
                 request: this.searchUrl
             });
         },
+        goBack(){
+            this.panel.localDataShow = false;
+        }
     },
     mounted(){
         this.init();

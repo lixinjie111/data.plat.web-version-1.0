@@ -11,15 +11,39 @@
                     reserve-keyword
                     placeholder="请输入关键词"
                     :remote-method="rsVehicleRemoteMethod"
+                    @change="getVehicleId"
                     @clear="rsVehicleOption.searchFilter.clearFunc(rsVehicleOption)"
                     @focus="rsVehicleOption.searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId')"
                     @blur="rsVehicleOption.searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                     :loading="rsVehicleOption.loading">
                     <el-option
                         v-for="item in rsVehicleOption.filterOption"
-                        :key="item"
-                        :label="item"
-                        :value="item">
+                        :key="item.vehicleId"
+                        :label="item.vehicleId"
+                        :value="item.vehicleId"
+                        >
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="车牌号" prop="plateNo">
+                <el-select
+                    v-model.trim="searchKey.plateNo"
+                    clearable
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="rsPlateNoRemoteMethod"
+                    @change="getPlateNo"
+                    @clear="rsPlateNoOption.searchFilter.clearFunc(rsPlateNoOption)"
+                    @focus="rsPlateNoOption.searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo')"
+                    @blur="rsPlateNoOption.searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
+                    :loading="rsPlateNoOption.loading">
+                    <el-option
+                        v-for="item in rsPlateNoOption.filterOption"
+                        :key="item.plateNo"
+                        :label="item.plateNo"
+                        :value="item.plateNo">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -51,7 +75,7 @@
             stripe
             border
             max-height="724"
-            class='c-mb-70'>
+            class="c-mb-70">
             <el-table-column prop="vehicleId" label="车辆编号" min-width="8%"></el-table-column>
             <el-table-column label="时间" min-width="13%">
                 <template slot-scope="scope">{{scope.row.timestamp ? $dateUtil.formatTime(scope.row.timestamp,type='yy-mm-dd hh:mm:ss:ms') : ''}}</template>
@@ -85,7 +109,7 @@
 // 模糊查询封装
 import SearchFilter from '@/assets/js/module/searchFilter.js'
 import {queryList} from '@/api/vehicle';
-import {requestqueryVehicleList} from '@/api/search';
+import {queryVehicleList} from '@/api/search';
 export default {
     name: 'BaseMessage',
     components: {
@@ -131,6 +155,7 @@ export default {
             searchLoading:false,
             searchKey: {
                 vehicleId: '',
+                plateNo:'',
                 startTime: '',
                 endTime: ''
             },
@@ -169,6 +194,9 @@ export default {
                 vehicleId:[
                     { required: true, message: '车辆编号不能为空', trigger: 'blur' },
                 ],
+                plateNo:[
+                    { required: true, message: '车牌号不能为空', trigger: 'blur' }
+                ],
                 startTime:[
                     { required: true, message: "开始时间不能为空!", trigger: 'change' }
                 ],
@@ -183,24 +211,26 @@ export default {
                 filterOption: [],
                 defaultOption: [],
                 defaultFlag: false,
-                request:requestqueryVehicleList
+                request:queryVehicleList
             },
-            scrollData:{
-                dom:'',
-                loading:false,
-                isScroll:false
-            },
+            //车牌号
+            rsPlateNoOption: {
+                loading: false,
+                timer: null,
+                searchFilter:new SearchFilter(),
+                filterOption: [],
+                defaultOption: [],
+                defaultFlag: false,
+                request:queryVehicleList
+            }
         }
     },
     mounted(){
-        // this.scrollData.dom = this.$refs.table.bodyWrapper;
         this.historySearchKey.vehicleId = 'B21E-00-022';
         this.searchKey.startTime = this.$dateUtil.GetDateStr(31);
         this.searchKey.endTime = this.$dateUtil.GetDateStr(0);
         this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
         this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
-        // this.getQueryList();
-        // this.scrollData.dom.addEventListener('scroll',this.scrollMore);
     },
     methods: {
         initPaging(){
@@ -218,7 +248,6 @@ export default {
             })
             queryList(_params).then(res => {
                 if(res.status == '200'){
-                    // this.$refs.table.bodyWrapper.scrollTop = 0;
                     this.pageOption.total = res.data.totalCount;
                     this.dataList = res.data.list;
                 }
@@ -249,7 +278,6 @@ export default {
             this.rsVehicleOption.filterOption = this.rsVehicleOption.defaultOption;
         },
         changePageSize(value) {//每页显示条数变更
-            // this.initPageOption();
             this.pageOption.size = value;
             this.getQueryList();
         },
@@ -265,7 +293,37 @@ export default {
                 key: 'vehicleId'
             });
         },
-
+        //车牌号模糊查询
+        rsPlateNoRemoteMethod(query) {
+            this.rsPlateNoOption.searchFilter.publicRemoteMethod({
+                query: query,
+                searchOption: this.rsPlateNoOption,
+                searchObj: this.searchKey,
+                key: 'plateNo'
+            });
+        },
+        getVehicleId(val){
+            if(val == ''){
+                return false;
+            }
+            if(this.rsVehicleOption.filterOption.length > 0){
+                let plateNos = this.rsVehicleOption.filterOption.filter(item => item.vehicleId === val);
+                this.historySearchKey.plateNo = this.searchKey.plateNo = plateNos[0].plateNo;
+            }else{
+                this.historySearchKey.plateNo = this.searchKey.plateNo = '';
+            }
+        },
+        getPlateNo(val){
+            if(val == ''){
+                return false;
+            }
+            if(this.rsPlateNoOption.filterOption.length > 0){
+                let vehicleIds = this.rsPlateNoOption.filterOption.filter(item => item.plateNo === val);
+                this.historySearchKey.vehicleId = this.searchKey.vehicleId = vehicleIds[0].vehicleId;
+            }else{
+                this.historySearchKey.vehicleId = this.searchKey.vehicleId = '';
+            }
+        }
     }
 }
 </script>

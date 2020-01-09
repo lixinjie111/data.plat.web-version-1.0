@@ -18,6 +18,7 @@
                                 value-key="deviceId"
                                 placeholder="请输入关键词"
                                 :remote-method="rsCamCodeRemoteMethod"
+                                @change="getDevice"
                                 @clear='clearFn'
                                 @focus="rsCamCodeOption.searchFilter.remoteMethodClick(rsCamCodeOption, searchKey,'deviceId')"
                                 @blur="rsCamCodeOption.searchFilter.remoteMethodBlur(searchKey, 'deviceId')"
@@ -77,7 +78,6 @@
                             lazy
                             node-key="code"
                             ref="tree"
-                            default-expand-all
                             highlight-current
                             :default-expanded-keys="currentArr"
                             @node-click="handleNodeClick" 
@@ -163,6 +163,7 @@ export default {
                 serialNum:''
             },
             videoUrl:"",
+            cameRoadName:'',
             // defaultData: {
             //     code: 'N-NJ-0004',
             //     serialNum: '3402000000132000003001'
@@ -285,7 +286,10 @@ export default {
             // cameraUrl: queryRoadCamListSearch,
         }
     },
-    // watch: {
+    watch: {
+            'searchKey.device'(val){
+                this.endPlay();
+            }
     //     "searchKey.cityValue"(newVal, oldVal) {
     //         if(newVal.code) {
     //             clearInterval(this.timer);
@@ -300,7 +304,7 @@ export default {
     //             this.camStatusNums.onlineCount = 0;
     //         }
     //     }
-    // },
+    },
 
     mounted(){
         this.getSideTree();//获取树结构数据
@@ -463,6 +467,7 @@ export default {
                         obj.code = e.code;
                         obj.type = 1;
                         this.treeData.push(obj);
+                        console.log('this.treeData',this.treeData)
                     })
                 }
             })
@@ -541,9 +546,13 @@ export default {
                                         if(this.currentVideoNode.code == obj.code){
                                             this.currentArr = [];
                                             this.currentArr.push(this.currentVideoNode.code);
+                                            console.log(this.currentArr);
                                             setTimeout(() => {
+                                                console.log(this.$refs.tree);
+                                                console.log(this.$refs.tree.$el);
                                                 this.$refs.tree.setCurrentKey(this.currentArr[0]);
-                                                this.handleNodeClick(obj);
+                                                console.log(this.$refs.tree.getCurrentNode());
+                                                // this.handleNodeClick(obj);
                                             }, 0);
                                         }
                                     }).catch(() => {
@@ -568,6 +577,7 @@ export default {
             }
         },
         handleNodeClick(data){
+            console.log('data',data);
             if(data.icon == 'el-icon-loading') {
                 this.$message({
                     type: 'error',
@@ -579,6 +589,7 @@ export default {
                 this.protocal = data.protocal;
                 this.markerOption.point = null;
                 let camStatus = data.status;
+                console.log(camStatus);
                 this.changeSize = false;
                 if(this.currentVideoNode.code == data.code){
                     if(data.isOn) {
@@ -615,7 +626,14 @@ export default {
                     }else {
                         let _message = '';
                         if(camStatus == '0'){//未注册
+                            this.camDetail.roadName = data.roadName;
+                            this.camDetail.camCode = data.code;
+                            this.camDetail.camId = data.serialNum;
+                            this.camDetail.roadPointName = data.rsPtName;
                             _message = '摄像头未注册!';
+                            console.log('未注册',data)
+                            console.log(data.code);
+                            
                         }else if(camStatus == '2'){//离线
                             _message = '摄像头为离线状态!';
                         }else if(camStatus == '3'){//未知
@@ -629,10 +647,9 @@ export default {
                                 showClose: true
                             });
                         }
-                        this.camDetail.roadName = data.roadName;
-                        this.camDetail.camCode = data.code;
-                        this.camDetail.camId = data.serialNum;
-                        this.camDetail.roadPointName = data.rsPtName;
+                        console.log('走这里')
+                        console.log(data);
+                        
                         // if(this.playerData) {   
                         //     console.log('不能播放')   
                         //     data.isOn = false;
@@ -644,26 +661,22 @@ export default {
             }
         },
         startPlay(camerData){
+            console.log(this.playerData);
             if(this.playerData) {
+                console.log('endPlay');
                 this.endPlay();
             }
             startStreamRoad({
                 camId:camerData.serialNum,protocal:this.protocal
             }).then(res =>{
                 if(res.status == '200') {
+                    console.log(camerData);
                     let videoUrl = res.data.flv;
                     this.isMaskShow = false;
                     camerData.isOn = true;
                     camerData.icon = "sl-pause-icon";
                     this.playerData = camerData;
                     if(videoUrl) {
-                        this.camDetail.camId = camerData.serialNum;
-                        this.camDetail.camCode = camerData.label;
-                        this.camDetail.roadName = camerData.roadName;
-                        this.camDetail.roadPointName = camerData.rsPtName;
-                        this.camDetail.roadPointId = camerData.rsPtId;
-                        this.camDetail.lon = camerData.ptLon;
-                        this.camDetail.lat = camerData.ptLat;
                         this.isMaskShow = false;
                         this.videoUrl = videoUrl;
                         camerData.isOn = true;
@@ -684,6 +697,13 @@ export default {
                     camerData.isOn = false;
                     camerData.icon = "sl-play-icon";
                 }
+                this.camDetail.camId = camerData.serialNum;
+                this.camDetail.camCode = camerData.label;
+                this.camDetail.roadName = camerData.roadName;
+                this.camDetail.roadPointName = camerData.rsPtName;
+                this.camDetail.roadPointId = camerData.rsPtId;
+                this.camDetail.lon = camerData.ptLon;
+                this.camDetail.lat = camerData.ptLat;
             }).catch(err => {
                 camerData.isOn = false;
                 camerData.icon = "sl-play-icon";
@@ -758,7 +778,7 @@ export default {
             // console.log(this.binationObj);
             if(this.searchKey.device) {
                 this.treeData = [];
-
+                
                 this.currentVideoNode.code = this.searchKey.device.deviceId;
                 this.currentVideoNode.serialNum = this.searchKey.device.serialNum;
 
@@ -766,7 +786,6 @@ export default {
                 this.markerOption.point = null;
                 this.isRefshShow = true;
                 this.isOnlineShow = false;
-
                 //查询联网、在线、实时监控数量
                 this.computCamNum(this.cityCode);
                 this.provinceOptions.forEach(e => {
@@ -776,9 +795,7 @@ export default {
                         obj.code = this.searchKey.device.rspDistcodeProvince;
                         this.provinceOptions = [];
                         this.provinceOptions.push(obj);
-                        
                     }
-                    
                     this.treeList.forEach((provinceInfo,index) => {
                         if(provinceInfo.code == this.provinceOptions[0].code){
                             this.searchKey.provinceValue = this.provinceOptions[0];
@@ -790,7 +807,7 @@ export default {
                                 this.cityOptions.push(obj);
                             })
                             this.searchKey.cityValue = this.cityOptions[0];
-                            this.getSideTree();
+                            // this.getSideTree();
                         }
                     })
                 });
@@ -801,11 +818,31 @@ export default {
                         obj.code = this.searchKey.device.rspDistcodeCity;
                         this.cityOptions = [];
                         this.cityOptions.push(obj);
+                        this.treeData = this.treeList;
                         this.getRegion(this.searchKey.device.rspDistcodeCity);
                         this.currentArr = [];
                         this.currentArr.push(this.searchKey.device.deviceId);
                     }
                 });
+                let regionName = '';
+                this.treeList[0].dataList.map(item => {
+                    item.dataList.map(road => {
+                        console.log(road);
+                        regionName = road.name;
+                        road.dataList.map(roadName => {
+                            console.log(roadName);
+                            if(this.cameRoadName == roadName.name){
+                                this.$message({
+                                    type: 'success',
+                                    duration: '15000',
+                                    message: `请到 ${regionName}的${roadName.name} 下查找此设备！`,
+                                    showClose: true
+                                });
+                            }
+                        })
+                    })
+                })
+
             }
         },
         getCameraStatus(serialNum,protocol,obj,resolve,reject){
@@ -832,12 +869,14 @@ export default {
             }).catch(err => {
                 reject();
             })
-            
         },
         clearFn(){
             this.rsCamCodeOption.defaultOption = this.rsCamCodeOption.filterOption;
             this.currentVideoNode.code = this.defaultData.code;
             this.currentVideoNode.serialNum = this.defaultData.serialNum;
+        },
+        getDevice(val){
+            this.cameRoadName = val.rspRoadName;
         }
     },
     destroyed() {
@@ -932,6 +971,10 @@ export default {
     .sl-custom-yellow{
         color:#f49308;
     }
+}
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content{
+    color:#f49308;
+    background:#f1f1f1;
 }
 </style>
 
