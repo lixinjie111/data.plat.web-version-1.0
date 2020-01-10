@@ -81,6 +81,7 @@
                             highlight-current
                             default-expand-all
                             :default-expanded-keys="currentArr"
+                            :filter-node-method="filterNode"
                             @node-click="handleNodeClick" 
                             >
                             <span class="custom-tree-node" :class="data.icon ? 'sl-custom-tree-node' : ''" slot-scope="{ node, data }">
@@ -282,8 +283,9 @@ export default {
         }
     },
     watch: {
-            'searchKey.device'(val){
+            'searchKey.device'(val) {
                 this.endPlay();
+                this.$refs.tree.filter(val);
             }
     //     "searchKey.cityValue"(newVal, oldVal) {
     //         if(newVal.code) {
@@ -306,6 +308,10 @@ export default {
         this.initMap();
     },
     methods:{
+        filterNode(value, data) {
+            if (!value) return true;
+                return data.label.indexOf(value.deviceId) !== -1;
+        },
         videoLoadCompleted() {
             console.log("视频加载完成");
         },
@@ -523,12 +529,8 @@ export default {
                                         if(this.currentVideoNode.code == obj.code){
                                             this.currentArr = [];
                                             this.currentArr.push(this.currentVideoNode.code);
-                                            console.log(this.currentArr);
                                             setTimeout(() => {
-                                                console.log(this.$refs.tree);
-                                                console.log(this.$refs.tree.$el);
                                                 this.$refs.tree.setCurrentKey(this.currentArr[0]);
-                                                console.log(this.$refs.tree.getCurrentNode());
                                                 // this.handleNodeClick(obj);
                                             }, 0);
                                         }
@@ -559,7 +561,6 @@ export default {
                 this.protocal = data.protocal;
                 this.markerOption.point = null;
                 let camStatus = data.status;
-                console.log(camStatus);
                 this.changeSize = false;
                 if(this.currentVideoNode.code == data.code){
                     if(data.isOn) {
@@ -601,9 +602,6 @@ export default {
                             this.camDetail.camId = data.serialNum;
                             this.camDetail.roadPointName = data.rsPtName;
                             _message = '摄像头未注册!';
-                            console.log('未注册',data)
-                            console.log(data.code);
-                            
                         }else if(camStatus == '2'){//离线
                             _message = '摄像头为离线状态!';
                         }else if(camStatus == '3'){//未知
@@ -617,8 +615,6 @@ export default {
                                 showClose: true
                             });
                         }
-                        console.log('走这里')
-                        console.log(data);
                         
                         // if(this.playerData) {   
                         //     console.log('不能播放')   
@@ -631,16 +627,13 @@ export default {
             }
         },
         startPlay(camerData){
-            console.log(this.playerData);
             if(this.playerData) {
-                console.log('endPlay');
                 this.endPlay();
             }
             startStreamRoad({
                 camId:camerData.serialNum,protocal:this.protocal
             }).then(res =>{
                 if(res.status == '200') {
-                    console.log(camerData);
                     let videoUrl = res.data.flv;
                     this.isMaskShow = false;
                     camerData.isOn = true;
@@ -793,22 +786,22 @@ export default {
                         this.currentArr.push(this.searchKey.device.deviceId);
                     }
                 });
-                let regionName = '';
-                this.treeList[0].dataList.map(item => {
-                    item.dataList.map(road => {
-                        regionName = road.name;
-                        road.dataList.map(roadName => {
-                            if(this.cameRoadName == roadName.name){ 
-                                this.$message({
-                                    type: 'success',
-                                    duration: '15000',
-                                    message: `请到 ${regionName}的${roadName.name} 下查找此设备！`,
-                                    showClose: true
-                                });
-                            }
-                        })
-                    })
-                })
+                // let regionName = '';
+                // this.treeList[0].dataList.map(item => {
+                //     item.dataList.map(road => {
+                //         regionName = road.name;
+                //         road.dataList.map(roadName => {
+                //             if(this.cameRoadName == roadName.name){ 
+                //                 this.$message({
+                //                     type: 'success',
+                //                     duration: '15000',
+                //                     message: `请到 ${regionName}的${roadName.name} 下查找此设备！`,
+                //                     showClose: true
+                //                 });
+                //             }
+                //         })
+                //     })
+                // })
 
             }
         },
