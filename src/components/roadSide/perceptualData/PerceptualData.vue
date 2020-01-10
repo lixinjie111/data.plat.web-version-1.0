@@ -79,6 +79,7 @@
                             node-key="code"
                             ref="tree"
                             highlight-current
+                            default-expand-all
                             :default-expanded-keys="currentArr"
                             @node-click="handleNodeClick" 
                             >
@@ -189,12 +190,6 @@ export default {
             provinceOptions:[],
             cityOptions:[],
             regionList:[],
-            binationObj:{
-                label:'',
-                code:'',
-                type:'',
-                children:[]
-            },
             camInfo:'',
             roadPointName:'--',
             camDetail:{
@@ -467,28 +462,11 @@ export default {
                         obj.code = e.code;
                         obj.type = 1;
                         this.treeData.push(obj);
-                        console.log('this.treeData',this.treeData)
                     })
                 }
             })
         },
         loadNode(node,resolve){
-            // console.log(node);
-            if(node.data.type == 1){
-                this.binationObj.label = node.data.label;
-                this.binationObj.code = node.data.code;
-                this.binationObj.type = node.data.type;
-            }
-            // data: [{
-            //     label: '区',
-            //     code:'',
-            //         children: [{
-            //             label: '路',
-            //                 children: [{
-            //                     label: '摄像头'
-            //                 }]
-            //         }]
-            // }]
             //懒加载路
             if(node.level == 1){
                 var children = [];
@@ -501,15 +479,14 @@ export default {
                             obj.label = e.name;
                             obj.code = e.code;
                             obj.type = 2;
-                            this.binationObj.children.push(obj);
                             children.push(obj);
                         })
                     }
                 })
-                // console.log('路',this.binationObj.children);
                 resolve(children);
                 return;
             }
+            
             if (node.level > 2) return resolve([]);
             if(node.level == 2){
                 this.roads.push(node.data);
@@ -559,25 +536,18 @@ export default {
                                         console.log('失败');
                                     });
                                 },2000);
-                                // console.log(obj);
-                                this.binationObj.children.map(item => {
-                                    item.children = [];
-                                    item.children.push(obj);
-                                })
                                 children.push(obj);                                
                             })
                         }
                         if(node.data.code == this.roads[0]){
                             this.protocal = children[0].protocal;
                         }
-                        // console.log(this.binationObj.children);
                         resolve(children);
                     }
                 })
             }
         },
         handleNodeClick(data){
-            console.log('data',data);
             if(data.icon == 'el-icon-loading') {
                 this.$message({
                     type: 'error',
@@ -775,7 +745,6 @@ export default {
             this.changeSize = false;
         },
         searchClick(){
-            // console.log(this.binationObj);
             if(this.searchKey.device) {
                 this.treeData = [];
                 
@@ -827,11 +796,9 @@ export default {
                 let regionName = '';
                 this.treeList[0].dataList.map(item => {
                     item.dataList.map(road => {
-                        console.log(road);
                         regionName = road.name;
                         road.dataList.map(roadName => {
-                            console.log(roadName);
-                            if(this.cameRoadName == roadName.name){
+                            if(this.cameRoadName == roadName.name){ 
                                 this.$message({
                                     type: 'success',
                                     duration: '15000',

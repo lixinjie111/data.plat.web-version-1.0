@@ -13,7 +13,7 @@
                     :remote-method="rsVehicleRemoteMethod"
                     @change="getVehicleId"
                     @clear="rsVehicleOption.searchFilter.clearFunc(rsVehicleOption)"
-                    @focus="rsVehicleOption.searchFilter.remoteMethodClick(rsVehicleOption, searchKey, 'vehicleId')"
+                    @focus="rsVehicleOption.searchFilter.remoteMethodClick(rsVehicleOption,searchKey, 'vehicleId')"
                     @blur="rsVehicleOption.searchFilter.remoteMethodBlur(searchKey, 'vehicleId')"
                     :loading="rsVehicleOption.loading">
                     <el-option
@@ -36,7 +36,7 @@
                     :remote-method="rsPlateNoRemoteMethod"
                     @change="getPlateNo"
                     @clear="rsPlateNoOption.searchFilter.clearFunc(rsPlateNoOption)"
-                    @focus="rsPlateNoOption.searchFilter.remoteMethodClick(rsPlateNoOption, searchKey, 'plateNo')"
+                    @focus="rsPlateNoOption.searchFilter.remoteMethodClick(rsPlateNoOption, searchKey,'plateNo')"
                     @blur="rsPlateNoOption.searchFilter.remoteMethodBlur(searchKey, 'plateNo')"
                     :loading="rsPlateNoOption.loading">
                     <el-option
@@ -304,6 +304,8 @@ export default {
         },
         getVehicleId(val){
             if(val == ''){
+                this.historySearchKey.plateNo = this.searchKey.plateNo = '';
+                this.rsPlateNoOption.defaultFlag = false;
                 return false;
             }
             if(this.rsVehicleOption.filterOption.length > 0){
@@ -315,6 +317,8 @@ export default {
         },
         getPlateNo(val){
             if(val == ''){
+                this.historySearchKey.vehicleId = this.searchKey.vehicleId = '';
+                this.rsVehicleOption.defaultFlag = false;
                 return false;
             }
             if(this.rsPlateNoOption.filterOption.length > 0){

@@ -224,8 +224,8 @@ export default {
                 if (valid) {
                     this.searchLoading = true;
                     this.historySearchKey = this.searchKey;
-                    this.historySearchKey.startTime = this.searchKey.time[0] ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
-                    this.historySearchKey.endTime = this.searchKey.time[1] ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
+                    this.historySearchKey.startTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+                    this.historySearchKey.endTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
                     this.initPaging();
                     this.dynamicParamList();
                 } else {
