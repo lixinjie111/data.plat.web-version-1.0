@@ -274,10 +274,10 @@ export default {
                 //     { required: true, message: '路侧点名称不能为空', trigger: 'blur' },
                 // ],
                 deviceId:[
-                    { required: true, message: '摄像头编号不能为空', trigger: 'blur' },
+                    { required: true, message: '摄像头编号不能为空', trigger: 'change' },
                 ],
                 serialNum:[
-                    { required: true, message: '摄像头序列号不能为空', trigger: 'blur' },
+                    { required: true, message: '摄像头序列号不能为空', trigger: 'change' },
                 ],
                 startTime:[
                     { required: true, message: "开始时间不能为空!", trigger: 'change' }
@@ -605,6 +605,10 @@ export default {
             this.showDataList = [];
         },
         deviceIdSelect(val){
+            if(val == ''){
+                this.historySearchKey.serialNum = this.searchKey.serialNum = '';
+                return false;
+            }
             if(this.fuzzySearchOption2.filterOption.length > 0){
                 let data = this.fuzzySearchOption2.filterOption.filter(item => item.deviceId == val);
                 this.historySearchKey.deviceId = this.searchKey.deviceId = val;
@@ -614,6 +618,10 @@ export default {
             }
         },
         serialSelect(val){
+            if(val == ''){
+                this.historySearchKey.deviceId = this.searchKey.deviceId = '';
+                return false;
+            }
             if(this.fuzzySearchOption3.filterOption.length > 0){
                 let data = this.fuzzySearchOption3.filterOption.filter(item => item.serialNum == val);
                 this.historySearchKey.serialNum = this.searchKey.serialNum = val;

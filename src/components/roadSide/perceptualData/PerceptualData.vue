@@ -283,10 +283,22 @@ export default {
         }
     },
     watch: {
-            'searchKey.device'(val) {
-                this.endPlay();
-                this.$refs.tree.filter(val);
-            }
+            'searchKey.device': {
+                handler(val) {
+                    console.log(val);
+                    this.camDetail.roadName = '--';
+                    this.camDetail.camCode = '--';
+                    this.camDetail.camId = '--';
+                    this.camDetail.roadPointName = '--';
+                    if(val === ''){
+                        this.endPlay();
+                        this.$refs.tree.filter(val);
+                    }else{
+                        this.endPlay();
+                    }
+                },
+                deep:true
+            },
     //     "searchKey.cityValue"(newVal, oldVal) {
     //         if(newVal.code) {
     //             clearInterval(this.timer);
@@ -308,7 +320,7 @@ export default {
         this.initMap();
     },
     methods:{
-        filterNode(value, data) {
+        filterNode(value,data) {
             if (!value) return true;
                 return data.label.indexOf(value.deviceId) !== -1;
         },
@@ -550,6 +562,11 @@ export default {
             }
         },
         handleNodeClick(data){
+            console.log(data);
+            this.camDetail.roadName = data.roadName;
+            this.camDetail.camCode = data.code;
+            this.camDetail.camId = data.serialNum;
+            this.camDetail.roadPointName = data.rsPtName;
             if(data.icon == 'el-icon-loading') {
                 this.$message({
                     type: 'error',
@@ -597,15 +614,16 @@ export default {
                     }else {
                         let _message = '';
                         if(camStatus == '0'){//未注册
-                            this.camDetail.roadName = data.roadName;
-                            this.camDetail.camCode = data.code;
-                            this.camDetail.camId = data.serialNum;
-                            this.camDetail.roadPointName = data.rsPtName;
                             _message = '摄像头未注册!';
+                            if(this.playerData){
+                                this.endPlay();
+                            }
                         }else if(camStatus == '2'){//离线
                             _message = '摄像头为离线状态!';
+                            this.endPlay();
                         }else if(camStatus == '3'){//未知
                             _message = '未知摄像头!';
+                            this.endPlay();
                         }
                         if(_message) {
                             this.$message({
@@ -673,6 +691,14 @@ export default {
             });
         },
         endPlay(){
+            console.log(this.camDetail);
+            console.log('停止播放')
+            
+            this.camDetail.roadName = '--';
+            this.camDetail.camCode = '--';
+            this.camDetail.camId = '--';
+            this.camDetail.roadPointName = '--';
+console.log(this.playerData)
             if(this.playerData) {
                 this.isMaskShow = true;
                 let nodeSel = document.querySelectorAll('.el-tree-node .el-tree-node__content .el-tree-node__expand-icon');
@@ -687,10 +713,10 @@ export default {
                     this.camCode = '--';
                     this.roadPointName = '--';
                     this.roadPointId = '--';
-                    // this.camDetail.roadName = '';
-                    // this.camDetail.camCode = '';
-                    // this.camDetail.camId = '';
-                    // this.camDetail.roadPointName = '';
+                    this.camDetail.roadName = '';
+                    this.camDetail.camCode = '';
+                    this.camDetail.camId = '';
+                    this.camDetail.roadPointName = '';
                 });
                 this.playerData.isOn = false;
                 this.playerData.icon = "sl-play-icon";
@@ -738,71 +764,12 @@ export default {
             this.changeSize = false;
         },
         searchClick(){
+            this.camDetail.roadName = '--';
+            this.camDetail.camCode = '--';
+            this.camDetail.camId = '--';
+            this.camDetail.roadPointName = '--';
             if(this.searchKey.device) {
-                this.treeData = [];
-                
-                this.currentVideoNode.code = this.searchKey.device.deviceId;
-                this.currentVideoNode.serialNum = this.searchKey.device.serialNum;
-
-                this.isSearch = true;
-                this.markerOption.point = null;
-                this.isRefshShow = true;
-                this.isOnlineShow = false;
-                //查询联网、在线、实时监控数量
-                this.computCamNum(this.cityCode);
-                this.provinceOptions.forEach(e => {
-                    if(e.code == this.searchKey.device.rspDistcodeProvince){
-                        let obj = {};
-                        obj.label = e.label;
-                        obj.code = this.searchKey.device.rspDistcodeProvince;
-                        this.provinceOptions = [];
-                        this.provinceOptions.push(obj);
-                    }
-                    this.treeList.forEach((provinceInfo,index) => {
-                        if(provinceInfo.code == this.provinceOptions[0].code){
-                            this.searchKey.provinceValue = this.provinceOptions[0];
-                            this.cityOptions = [];
-                            this.treeList[index].dataList.forEach(cityInfo => {
-                                var obj = {};
-                                obj.label = cityInfo.name;
-                                obj.code = cityInfo.code;
-                                this.cityOptions.push(obj);
-                            })
-                            this.searchKey.cityValue = this.cityOptions[0];
-                            // this.getSideTree();
-                        }
-                    })
-                });
-                this.cityOptions.forEach(a => {
-                    if(a.code == this.searchKey.device.rspDistcodeCity){
-                        let obj = {};
-                        obj.label = a.label;
-                        obj.code = this.searchKey.device.rspDistcodeCity;
-                        this.cityOptions = [];
-                        this.cityOptions.push(obj);
-                        this.treeData = this.treeList;
-                        this.getRegion(this.searchKey.device.rspDistcodeCity);
-                        this.currentArr = [];
-                        this.currentArr.push(this.searchKey.device.deviceId);
-                    }
-                });
-                // let regionName = '';
-                // this.treeList[0].dataList.map(item => {
-                //     item.dataList.map(road => {
-                //         regionName = road.name;
-                //         road.dataList.map(roadName => {
-                //             if(this.cameRoadName == roadName.name){ 
-                //                 this.$message({
-                //                     type: 'success',
-                //                     duration: '15000',
-                //                     message: `请到 ${regionName}的${roadName.name} 下查找此设备！`,
-                //                     showClose: true
-                //                 });
-                //             }
-                //         })
-                //     })
-                // })
-
+                this.$refs.tree.filter(this.searchKey.device);
             }
         },
         getCameraStatus(serialNum,protocol,obj,resolve,reject){
@@ -836,7 +803,12 @@ export default {
             this.currentVideoNode.serialNum = this.defaultData.serialNum;
         },
         getDevice(val){
-            this.cameRoadName = val.rspRoadName;
+            console.log('切换')
+            this.camDetail.roadName = '--';
+            this.camDetail.camCode = '--';
+            this.camDetail.camId = '--';
+            this.camDetail.roadPointName = '--';
+            // this.cameRoadName = val.rspRoadName;
         }
     },
     destroyed() {
@@ -931,10 +903,6 @@ export default {
     .sl-custom-yellow{
         color:#f49308;
     }
-}
-.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content{
-    color:#f49308;
-    background:#f1f1f1;
 }
 </style>
 
