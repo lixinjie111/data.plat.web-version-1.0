@@ -114,10 +114,12 @@
                         <span class="value c-blue c-hover-underline" v-else ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{camDetail.roadPointName}}</span>
                     </p>
                 </div>
-                <div class="c-mt-10">
+                <div class="c-mt-10 m-player-warp">
                     <live-player 
                         :requestVideoUrl="videoUrl"
                         :autoplay="true"
+                        :liveFlag="true"
+                        :isShowMask='isShowMask'
                         @videoLoadCompleted="videoLoadCompleted"
                         >
                         <span></span>
@@ -154,6 +156,11 @@ export default {
         RoadSideInfo,
         LivePlayer
     },
+    provide(){
+        return{
+            getPause:this.getPause
+        }
+    },
     data(){
         return{
             defaultData: {
@@ -164,6 +171,7 @@ export default {
                 code: '',
                 serialNum:''
             },
+            isShowMask:true,
             videoUrl:"",
             cameRoadName:'',
             // defaultData: {
@@ -182,7 +190,6 @@ export default {
             roadSideShow:false,
             provinceLoading:false,
             changeSize:false,
-            isMaskShow:false,
             isRefshShow:true,
             isOnlineShow:false,
             isFirst:true,//第一次展开
@@ -615,15 +622,15 @@ export default {
                         let _message = '';
                         if(camStatus == '0'){//未注册
                             _message = '摄像头未注册!';
-                            if(this.playerData){
-                                this.endPlay();
-                            }
+                            this.isShowMask = true;
                         }else if(camStatus == '2'){//离线
                             _message = '摄像头为离线状态!';
-                            this.endPlay();
+                            this.isShowMask = true;
+                            // this.endPlay();
                         }else if(camStatus == '3'){//未知
                             _message = '未知摄像头!';
-                            this.endPlay();
+                            this.isShowMask = true;
+                            // this.endPlay();
                         }
                         if(_message) {
                             this.$message({
@@ -634,12 +641,12 @@ export default {
                             });
                         }
                         
-                        // if(this.playerData) {   
-                        //     console.log('不能播放')   
-                        //     data.isOn = false;
-                        //     data.icon = "sl-play-icon";
-                        //     this.endPlay();
-                        // }           
+                        if(this.playerData) {   
+                            console.log('不能播放')   
+                            data.isOn = false;
+                            data.icon = "sl-play-icon";
+                            this.endPlay();
+                        }           
                     }
                 }
             }
@@ -653,16 +660,15 @@ export default {
             }).then(res =>{
                 if(res.status == '200') {
                     let videoUrl = res.data.flv;
-                    this.isMaskShow = false;
                     camerData.isOn = true;
                     camerData.icon = "sl-pause-icon";
                     this.playerData = camerData;
                     if(videoUrl) {
-                        this.isMaskShow = false;
                         this.videoUrl = videoUrl;
                         camerData.isOn = true;
                         camerData.icon = "sl-pause-icon";
                         this.playerData = camerData;
+                        this.isShowMask = false;
                     }else {
                         let _message = res.message;
                         camerData.isOn = false;
@@ -673,8 +679,10 @@ export default {
                             message: _message,
                             showClose: true
                         });
+                        this.isShowMask = true;
                     }
                 }else {
+                    this.isShowMask = true;
                     camerData.isOn = false;
                     camerData.icon = "sl-play-icon";
                 }
@@ -686,21 +694,13 @@ export default {
                 this.camDetail.lon = camerData.ptLon;
                 this.camDetail.lat = camerData.ptLat;
             }).catch(err => {
+                this.isShowMask = true;
                 camerData.isOn = false;
                 camerData.icon = "sl-play-icon";
             });
         },
         endPlay(){
-            console.log(this.camDetail);
-            console.log('停止播放')
-            
-            this.camDetail.roadName = '--';
-            this.camDetail.camCode = '--';
-            this.camDetail.camId = '--';
-            this.camDetail.roadPointName = '--';
-console.log(this.playerData)
             if(this.playerData) {
-                this.isMaskShow = true;
                 let nodeSel = document.querySelectorAll('.el-tree-node .el-tree-node__content .el-tree-node__expand-icon');
                 let nodeSelArray = Array.from(nodeSel);
                 for(let i=0;i<nodeSelArray.length;i++){
@@ -713,19 +713,15 @@ console.log(this.playerData)
                     this.camCode = '--';
                     this.roadPointName = '--';
                     this.roadPointId = '--';
-                    this.camDetail.roadName = '';
-                    this.camDetail.camCode = '';
-                    this.camDetail.camId = '';
-                    this.camDetail.roadPointName = '';
                 });
                 this.playerData.isOn = false;
                 this.playerData.icon = "sl-play-icon";
                 this.playerData = null;
+                this.isShowMask = true;
             }
         },
         goRoadSide(){
             clearInterval(this.timer);
-            this.isMaskShow = false;
             this.roadSideShow = true;
             this.changeSize = false;
         },
@@ -809,7 +805,10 @@ console.log(this.playerData)
             this.camDetail.camId = '--';
             this.camDetail.roadPointName = '--';
             // this.cameRoadName = val.rspRoadName;
-        }
+        },
+        // getPause(){
+        //     console.log('pause');
+        // }
     },
     destroyed() {
         clearInterval(this.timer);
@@ -904,5 +903,9 @@ console.log(this.playerData)
         color:#f49308;
     }
 }
+.m-player-warp .el-icon-video-play{
+    display:none;
+}
 </style>
+
 

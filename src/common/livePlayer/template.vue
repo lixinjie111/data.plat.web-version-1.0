@@ -37,6 +37,7 @@ import LivePlayer from '@liveqing/liveplayer'
 export default {
     name: 'LivePlayerTemplate',
     props: {
+        isShowMask:Boolean,
         requestVideoUrl: [Function, String],  //请求视频axios封装方法/视频地址
         params: Object, //请求视频参数
         type: String,   //视频字段名
@@ -105,6 +106,18 @@ export default {
             if(!newVal){
                 this.videoLoadingDelay.lastTimeupdate = -1;
             }
+        },
+        'isShowMask'(newVal){
+            this.videoOption.videoMaskFlag = newVal;
+            if(newVal === true){
+                this.refreshFlag = false;
+                this.videoOption.playError = false;
+                this.setVideoOptionError();
+            } else {
+                this.setVideoOptionLoading();
+                this.requestVideo();
+            }
+            console.log(newVal);
         }
     },
     mounted() {
@@ -133,23 +146,6 @@ export default {
                 }
             }, 1000);
         },
-        // videoTimerReload() {
-        //     clearInterval(this.videoLoadingDelay.timer);
-        //     this.videoLoadingDelay.timer = setInterval(() => {
-        //         this.videoLoadingDelay.count ++;
-        //         this.videoLoadingDelay.reloadCount ++;
-        //         console.log("视频卡顿"+this.videoLoadingDelay.reloadTime,this.videoLoadingDelay.count,"连续加载次数", this.videoLoadingDelay.reloadCount);
-        //         if(this.videoLoadingDelay.count >= this.videoLoadingDelay.reloadTime) {
-        //             if(this.videoLoadingDelay.reloadCount >= this.videoLoadingDelay.reloadCountLimit) {
-        //                 console.log("连续加载已达上限，关闭加载");
-        //                 this.setVideoOptionError("受网络环境影响暂无法播放，请稍后再试");
-        //             }else {
-        //                 console.log("视频卡顿重新加载");
-        //                 this.requestVideo();
-        //             }
-        //         }
-        //     }, 2000);
-        // },
         setVideoOptionPause() {
             this.initVideoTimer();
             this.videoOption.videoMaskFlag = true;
@@ -168,7 +164,7 @@ export default {
             this.videoOption.videoMaskFlag = true;
             this.videoOption.playFlag = false;
             this.videoOption.loadingFlag = false;
-            this.videoOption.playError = true;
+            // this.videoOption.playError = true;
             this.videoOption.videoText = errorMsg;
             this.videoUrl = '';
         },
@@ -244,6 +240,7 @@ export default {
                     });
                 }else {
                     if(this.requestVideoUrl) {
+                        console.log('1111')
                         this.videoUrl = this.requestVideoUrl;
                         if(!this.liveFlag) {
                             this.setVideoOptionClose();
@@ -276,7 +273,7 @@ export default {
             setTimeout(() => {
                 this.requestVideo();
                 this.$emit("refreshVideo");
-            }, 0);
+            }, 0); 
         },
         initVideo() {
             // this.initVideoTimer();
