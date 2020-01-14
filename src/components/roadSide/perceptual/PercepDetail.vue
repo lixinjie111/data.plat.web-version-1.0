@@ -18,7 +18,7 @@
                                 type="datetime"
                                 format='yyyy-MM-dd HH:mm:ss'
                                 @change='changeDate'
-                                :picker-options="pickerOptions">
+                                :picker-options="pickerOptions"
                                 placeholder="选择日期时间">
                             </el-date-picker>
                             <span class='time-point'>.</span>
@@ -617,6 +617,7 @@ export default {
                 let _videoUrl = this.playerOptions.sources[0].src;
                 this.playerOptions.sources[0].src = '';
                 setTimeout(() => {
+                    console.log(_videoUrl);
                     this.playerOptions.sources[0].src = _videoUrl;
                     this.player.currentTime('0.001');
                 }, 2000);

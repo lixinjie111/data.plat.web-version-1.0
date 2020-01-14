@@ -299,10 +299,10 @@ export default {
                         item.delLoading = false;
                     })
                     this.pageOption.total = res.data.totalCount;
-                    this.searchLoading = false;
-                    this.loading = false;
                     this.$refs.multipleTable.bodyWrapper.scrollTop = 0;
                 }
+                this.searchLoading = false;
+                this.loading = false;
             }).catch(err => {
                 this.searchLoading = false;
                 this.loading = false;
@@ -372,6 +372,7 @@ export default {
                         'fileIds': this.selector
                     }
                 }).then(res => {
+                    console.log(res);
                     this.downloadFile(res);
                 }).catch(err => {
                     console.log('err', err);
