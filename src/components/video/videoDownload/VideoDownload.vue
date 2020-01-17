@@ -131,7 +131,7 @@
                 </el-table-column>
                 <el-table-column min-width="5%" label="操作">
                     <template slot-scope="scope">
-                        <el-button size="small" icon="el-icon-download" circle type="warning" v-if="scope.row.taskStatus == 3" plain :loading="scope.row.downLoading" @click="reloadClick(scope.row)"></el-button>
+                        <el-button size="small" icon="el-icon-download" circle type="warning" v-if='scope.row.taskStatus == "3" && scope.row.errCode == "" || scope.row.taskStatus == "3" && scope.row.errCode == "9999"' plain :loading="scope.row.downLoading" @click="reloadClick(scope.row)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -182,7 +182,6 @@ export default {
         }
     },
     data(){
-        let _this = this;
         return {
             searchLoading:false,
             loading:false,

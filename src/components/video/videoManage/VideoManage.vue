@@ -165,7 +165,6 @@ export default {
         }
     },
     data(){
-        let _this = this;
         return {
             isPlaybackShow:false,
             searchLoading:false,

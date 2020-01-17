@@ -45,7 +45,7 @@
                     </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="创建时间" prop='time'>
+              <el-form-item label="行程开始时间" prop='time'>
                   <el-date-picker
                       v-model.trim="searchKey.time"
                       type="datetimerange"
@@ -119,7 +119,6 @@
       PathDataInfo
     },
     data() {
-      let _this = this;
       return {
         searchLoading:false,
         loading:false,

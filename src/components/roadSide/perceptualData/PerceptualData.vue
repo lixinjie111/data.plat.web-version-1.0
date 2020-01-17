@@ -569,7 +569,6 @@ export default {
             }
         },
         handleNodeClick(data){
-            console.log(data);
             this.camDetail.roadName = data.roadName;
             this.camDetail.camCode = data.code;
             this.camDetail.camId = data.serialNum;
@@ -642,7 +641,6 @@ export default {
                         }
                         
                         if(this.playerData) {   
-                            console.log('不能播放')   
                             data.isOn = false;
                             data.icon = "sl-play-icon";
                             this.endPlay();
@@ -799,7 +797,6 @@ export default {
             this.currentVideoNode.serialNum = this.defaultData.serialNum;
         },
         getDevice(val){
-            console.log('切换')
             this.camDetail.roadName = '--';
             this.camDetail.camCode = '--';
             this.camDetail.camId = '--';

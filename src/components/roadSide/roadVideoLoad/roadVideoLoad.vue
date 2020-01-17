@@ -86,9 +86,9 @@
                     ></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="开始时间" prop='startTime'>
+            <el-form-item label="开始时间" prop='time'>
                 <el-date-picker
-                    v-model.trim="searchKey.startTime"
+                    v-model.trim="searchKey.time"
                     type="datetimerange"
                     :picker-options="timeOption"
                     start-placeholder="开始日期"
@@ -140,7 +140,7 @@
                     icon="el-icon-download" 
                     circle type="warning" 
                     plain 
-                    v-if='scope.row.taskStatus == "3"'
+                    v-if='scope.row.taskStatus == "3" && scope.row.errCode == "" || scope.row.taskStatus == "3" && scope.row.errCode == "9999"' 
                     :loading="scope.row.downLoading" 
                     @click="reloadClick(scope.row)"></el-button>
                 </template>
@@ -194,25 +194,16 @@ export default {
         }
     },
     data(){
-        let _this = this;
         return {
             searchLoading:false,
             loading:false,
             manageShow:true,
             playbackShow:false,
-            // startTime:'',
-            endTime:'',
             dialogOption: {
                 loading: false,
                 show: false,
                 data: {}
             },
-            // currentDatas: [
-            //     {vId:'1222',plateNo:'京N-9932',vin:'2342',serialNumber:'3242',workStatusName:'2',directionName:'前',isBindName:'未绑定',camTypeName:'sdfs',manuName:'2423',bindDate:'2019-03-05'},
-            //     {vId:'1222',plateNo:'京N-9932',vin:'2342',serialNumber:'3242',workStatusName:'2',directionName:'前',isBindName:'未绑定',camTypeName:'sdfs',manuName:'2423',bindDate:'2019-03-05'},
-            //     {vId:'1222',plateNo:'京N-9932',vin:'2342',serialNumber:'3242',workStatusName:'2',directionName:'前',isBindName:'未绑定',camTypeName:'sdfs',manuName:'2423',bindDate:'2019-03-05'},
-            //     {vId:'1222',plateNo:'京N-9932',vin:'2342',serialNumber:'3242',workStatusName:'2',directionName:'前',isBindName:'未绑定',camTypeName:'sdfs',manuName:'2423',bindDate:'2019-03-05'},
-            // ],
             searchKey: {
                 fileName: '',
                 deviceId: '',
@@ -220,7 +211,7 @@ export default {
                 rsPtName: '',
                 source: '',
                 taskStatus: '',
-                startTime:[],
+                time:[],
             },
             historySearchKey: {},
             pageOption: {
@@ -309,8 +300,8 @@ export default {
         initData(){
             this.dataList = [];
             this.loading = true;
-            this.historySearchKey.startBeginTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '';
-            this.historySearchKey.startEndTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '';
+            this.historySearchKey.startBeginTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+            this.historySearchKey.startEndTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
             this.historySearchKey.protocal = JSON.parse(localStorage.getItem('protocal')) || '';
             let _params = {
                 page: {
@@ -337,8 +328,8 @@ export default {
                 if (valid) {
                     this.searchLoading = true;
                     this.historySearchKey = this.searchKey;
-                    this.historySearchKey.startBeginTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '';
-                    this.historySearchKey.startEndTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '';
+                    this.historySearchKey.startBeginTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+                    this.historySearchKey.startEndTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
                     this.initPaging();
                     this.initData();
                 } else {
@@ -413,14 +404,14 @@ export default {
         },
         backFn(type){
             if(type == 'add'){
-                this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
+                this.searchKey.time = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
                 this.initData();
             }
             this.dialogOption.show = false;
         }
     },
     mounted(){
-        this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
+        this.searchKey.time = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
         this.init();
     },
     beforeDestroy(){

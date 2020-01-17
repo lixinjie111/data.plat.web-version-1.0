@@ -108,7 +108,6 @@ export default {
         LocalDataPanel,DetailPanel
     },
     data(){
-        let _this = this;
         return {
             isTimeShow:false,
             isVehicleShow:false,

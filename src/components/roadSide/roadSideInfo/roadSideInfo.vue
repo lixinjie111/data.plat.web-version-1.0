@@ -175,19 +175,3 @@ export default {
     }
 }
 </script>
-<style lang="scss" scoped>
-// @import "@/assets/scss/theme.scss";
-// .base-info-top {
-//     font-size:16px;
-//     color:#666;
-//     padding: 0 30px;
-//     height: 54px;
-//     @include layoutMode(align);
-//     span {
-//         color: $black;
-//     }
-// }
-// .roadMapInfo{
-//     height:300px;
-// }
-</style>

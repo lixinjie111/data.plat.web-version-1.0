@@ -75,9 +75,9 @@
                 ></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="开始时间" prop='startTime'>
+        <el-form-item label="开始时间" prop='time'>
             <el-date-picker
-                v-model.trim="searchKey.startTime"
+                v-model.trim="searchKey.time"
                 type="datetimerange"
                 :picker-options="timeOption"
                 start-placeholder="开始日期"
@@ -167,7 +167,6 @@ export default {
         }
     },
     data(){
-        let _this = this;
         return {
             isReplayShow:false,
             manageShow:true,
@@ -176,19 +175,13 @@ export default {
             searchLoading:false,
             loading:false,
             fileName:'',
-            // currentDatas: [
-            //     {vId:'1222',plateNo:'京N-9932',vin:'2342',serialNumber:'3242',workStatusName:'2',directionName:'前',isBindName:'未绑定',camTypeName:'sdfs',manuName:'2423',bindDate:'2019-03-05'},
-            //     {vId:'1222',plateNo:'京N-9932',vin:'2342',serialNumber:'3242',workStatusName:'2',directionName:'前',isBindName:'未绑定',camTypeName:'sdfs',manuName:'2423',bindDate:'2019-03-05'},
-            //     {vId:'1222',plateNo:'京N-9932',vin:'2342',serialNumber:'3242',workStatusName:'2',directionName:'前',isBindName:'未绑定',camTypeName:'sdfs',manuName:'2423',bindDate:'2019-03-05'},
-            //     {vId:'1222',plateNo:'京N-9932',vin:'2342',serialNumber:'3242',workStatusName:'2',directionName:'前',isBindName:'未绑定',camTypeName:'sdfs',manuName:'2423',bindDate:'2019-03-05'},
-            // ],
             searchKey: {
                 fileName: '',
                 deviceId: '',
                 rspRoadName: '',
                 rsPtName: '',
                 source: '',
-                startTime: []
+                time: []
             },
             historySearchKey: {},
             selector: [],
@@ -257,8 +250,7 @@ export default {
                 defaultOption: [],
                 defaultFlag: false,
                 request:requestqueryRoadList
-            },
-
+            }
         }
     },
     methods: {
@@ -270,8 +262,8 @@ export default {
         init(){
             this.manageShow = true;
             this.playbackShow = false;
-            this.historySearchKey.startBeginTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '';
-            this.historySearchKey.startEndTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '';
+            this.historySearchKey.startBeginTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+            this.historySearchKey.startEndTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
             this.initPaging();
             this.initData();
         },
@@ -319,8 +311,8 @@ export default {
                 if (valid) {
                     this.searchLoading = true;
                     this.historySearchKey = this.searchKey;
-                    this.historySearchKey.startBeginTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[0]) : '';
-                    this.historySearchKey.startEndTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime[1]) : '';
+                    this.historySearchKey.startBeginTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+                    this.historySearchKey.startEndTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
                     this.initPaging();
                     this.initData();
                 } else {
@@ -372,7 +364,6 @@ export default {
                         'fileIds': this.selector
                     }
                 }).then(res => {
-                    console.log(res);
                     this.downloadFile(res);
                 }).catch(err => {
                     console.log('err', err);
@@ -499,7 +490,7 @@ export default {
         }
     },
     mounted(){
-        this.searchKey.startTime = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
+        this.searchKey.time = [this.$dateUtil.GetDateStr(7), this.$dateUtil.getNowFormatDate()];
         this.init();
     },
     beforeDestroy(){

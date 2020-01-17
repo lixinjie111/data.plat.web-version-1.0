@@ -24,20 +24,13 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="开始时间" prop='startTime'>
+                <el-form-item label="时间" prop='time'>
                     <el-date-picker
-                        v-model.trim="searchKey.startTime"
-                        type="datetime"
-                        placeholder="开始时间"
-                        :picker-options="startTimeOption">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="结束时间" prop='endTime'>
-                    <el-date-picker
-                        v-model.trim="searchKey.endTime"
-                        type="datetime"
-                        placeholder="结束时间"
-                        :picker-options="endTimeOption">
+                        v-model.trim="searchKey.time"
+                        type="datetimerange"
+                        :picker-options="timeOption"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
@@ -114,41 +107,6 @@ export default {
         BsmDetail
     },
     data(){
-        let _this = this,
-            _checkStartTime = (rule, value ,callback) => {
-                let _startTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null,//标准时间转为时间戳
-                    _endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.endTime)) : null;//标准时间转为时间戳
-                if(_startTime){
-                    if(_endTime) {
-                        if(_startTime > _endTime){
-                            callback(new Error('开始时间必须小于结束时间'));
-                        }else {
-                            callback();
-                        }
-                    }else {
-                        callback();
-                    }
-                }else {
-                    callback();
-                }
-            },
-            _checkEndTime = (rule, value ,callback) => {
-                let _startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(this.searchKey.startTime)) : null,//标准时间转为时间戳
-                    _endTime = value ? this.$dateUtil.dateToMs(this.$dateUtil.formatTime(value)) : null;//标准时间转为时间戳
-                if(_endTime){
-                    if(_startTime) {
-                        if(_startTime > _endTime){
-                            callback(new Error('开始时间必须小于结束时间'));
-                        }else {
-                            callback();
-                        }
-                    }else {
-                        callback();
-                    }
-                }else {
-                    callback();
-                }
-            };
         return {
             loading:false,
             searchLoad:false,
@@ -157,7 +115,8 @@ export default {
             searchKey: {
                 vehicleId: '',
                 startTime: '',
-                endTime: ''
+                endTime: '',
+                time:[]
             },
             pageOption: {
                 page: 1,
@@ -175,39 +134,6 @@ export default {
             current: {
                 top: 0,
                 accessPlatform: null,
-            },
-            rules:{
-                startTime:[
-                    { validator: _checkStartTime, trigger: 'blur' }
-                ],
-                endTime:[
-                    { validator: _checkEndTime, trigger: 'blur' }
-                ]
-            },
-            startTimeOption: {
-                disabledDate: time => {
-                    let _time = time.getTime(),
-                        _newTime = new Date().getTime(), 
-                        _endDateVal = _this.searchKey.endTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.endTime, "yy-mm-dd")+' 00:00:00') : null;
-                    if (_endDateVal) {
-                        return _time > _endDateVal || _time > _newTime;
-                    }else {
-                        return _time > _newTime;
-                    }
-                }
-            },
-            endTimeOption: {
-                disabledDate: time => {
-                    let _time = time.getTime(),
-                        _newTime = new Date().getTime(), 
-                        _startDateVal = _this.searchKey.startTime ? _this.$dateUtil.dateToMs(_this.$dateUtil.formatTime(_this.searchKey.startTime, "yy-mm-dd")+' 00:00:00') : null;
-                    if (_startDateVal) {
-                        return  _time < _startDateVal || _time > _newTime;
-                    }else {
-                        return _time > _newTime;
-                    }
-                }
-
             },
             rsVehicleOption: {
                 loading: false,
@@ -278,8 +204,8 @@ export default {
                 if (valid) {
                     this.searchLoad = true;
                     this.historySearchKey = this.searchKey;
-                    this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
-                    this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
+                    this.historySearchKey.startTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+                    this.historySearchKey.endTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
                     this.initPaging();
                     this.findBSMLists();
                 } else {
@@ -320,11 +246,11 @@ export default {
         },
     },
     mounted(){
+        //获取当前时间的前一个小时
         let startTime = this.$dateUtil.timeToConversion(new Date(new Date().getTime() - 1 * 60 * 60 * 1000));
-        this.searchKey.startTime = startTime;//获取当前时间的前一个小时
-        this.searchKey.endTime = this.$dateUtil.getNowFormatDate();
-        this.historySearchKey.startTime = this.$dateUtil.dateToMs(this.searchKey.startTime) || '';
-        this.historySearchKey.endTime = this.$dateUtil.dateToMs(this.searchKey.endTime) || '';
+        this.searchKey.time = [startTime,this.$dateUtil.getNowFormatDate()];
+        this.historySearchKey.startTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+        this.historySearchKey.endTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
         this.findBSMLists();
     },
     beforeDestroy(){
