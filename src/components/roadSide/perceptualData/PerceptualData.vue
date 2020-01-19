@@ -298,8 +298,6 @@ export default {
                     if(val === ''){
                         this.endPlay();
                         this.$refs.tree.filter(val);
-                    }else{
-                        this.endPlay();
                     }
                 },
                 deep:true
