@@ -62,11 +62,11 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="摄像头编号">
+            <el-form-item label="摄像头序列号">
                 <el-select
                     v-model.trim="camSelected"
                     value-key="serialNum"
-                    placeholder="请选择摄像头编号"
+                    placeholder="请选择摄像头序列号"
                     @change='getRoadPoint'>
                     <el-option
                         v-for="item in roadCamList"

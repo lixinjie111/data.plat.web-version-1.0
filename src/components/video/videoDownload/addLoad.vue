@@ -43,7 +43,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="摄像头编号" prop='camSerialNum'>
+            <el-form-item label="摄像头序列号" prop='camSerialNum'>
                 <el-select
                     v-model="formParams.camDeviceId"
                     value-key="camDeviceId"
@@ -136,7 +136,7 @@ export default {
                 plateNo: '',
                 vehicleId: '',
                 camSerialNum:'',//摄像头序列号
-                camDeviceId:'',//摄像头编号
+                camDeviceId:'',//摄像头序列号
                 camDirection: '--',
                 startTime: '',
                 endTime: '',
@@ -159,7 +159,7 @@ export default {
                     { required: true, message: '车辆编号不能为空', trigger: 'change' }
                 ],
                 camDeviceId:[
-                    { required: true, message: '摄像头编号不能为空', trigger: 'change' }
+                    { required: true, message: '摄像头序列号不能为空', trigger: 'change' }
                 ],
                 startTime:[
                     { validator: _checkStartTime, trigger: 'blur' }
