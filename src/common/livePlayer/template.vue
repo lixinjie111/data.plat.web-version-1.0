@@ -37,7 +37,6 @@ import LivePlayer from '@liveqing/liveplayer'
 export default {
     name: 'LivePlayerTemplate',
     props: {
-        isShowMask:Boolean,
         requestVideoUrl: [Function, String],  //请求视频axios封装方法/视频地址
         params: Object, //请求视频参数
         type: String,   //视频字段名
@@ -107,18 +106,6 @@ export default {
                 this.videoLoadingDelay.lastTimeupdate = -1;
             }
         },
-        'isShowMask'(newVal){
-            this.videoOption.videoMaskFlag = newVal;
-            if(newVal === true){
-                this.refreshFlag = false;
-                this.videoOption.playError = false;
-                this.setVideoOptionError();
-            } else {
-                this.setVideoOptionLoading();
-                this.requestVideo();
-            }
-            console.log(newVal);
-        }
     },
     mounted() {
         this.player = this.$refs.livePlayer.player ? this.$refs.livePlayer.player : this.$refs.livePlayer;
@@ -142,7 +129,7 @@ export default {
                     this.videoUrl = "";
                 }else {
                     this.videoLoadingDelay.count ++;
-                    console.log("视频超时"+this.videoLoadingDelay.countTime,this.videoLoadingDelay.count);
+                    // console.log("视频超时"+this.videoLoadingDelay.countTime,this.videoLoadingDelay.count);
                 }
             }, 1000);
         },
@@ -164,7 +151,7 @@ export default {
             this.videoOption.videoMaskFlag = true;
             this.videoOption.playFlag = false;
             this.videoOption.loadingFlag = false;
-            // this.videoOption.playError = true;
+            this.videoOption.playError = true;
             this.videoOption.videoText = errorMsg;
             this.videoUrl = '';
         },
@@ -178,10 +165,10 @@ export default {
             }
         },
         onPlayerMessage(player) {
-            console.log("playerMessage", player);
+            // console.log("playerMessage", player);
         },
         onPlayerError(player) {
-            console.log("playerError", player);
+            // console.log("playerError", player);
             this.setVideoOptionError("此视频暂无法播放，请稍后再试");
         },
         onPlayerEnded(player) {
@@ -240,7 +227,6 @@ export default {
                     });
                 }else {
                     if(this.requestVideoUrl) {
-                        console.log('1111')
                         this.videoUrl = this.requestVideoUrl;
                         if(!this.liveFlag) {
                             this.setVideoOptionClose();

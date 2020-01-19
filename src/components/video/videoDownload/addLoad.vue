@@ -47,6 +47,7 @@
                 <el-select
                     v-model="formParams.camDeviceId"
                     value-key="camDeviceId"
+                    placeholder="请选择摄像头序列号"
                     @change="handleSelectCamCode">
                     <el-option
                         v-for="(item,index) in camCodeList"

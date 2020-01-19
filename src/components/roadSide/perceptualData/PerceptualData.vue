@@ -116,10 +116,10 @@
                 </div>
                 <div class="c-mt-10 m-player-warp">
                     <live-player 
+                        ref='liveChild'
                         :requestVideoUrl="videoUrl"
                         :autoplay="true"
                         :liveFlag="true"
-                        :isShowMask='isShowMask'
                         @videoLoadCompleted="videoLoadCompleted"
                         >
                         <span></span>
@@ -171,7 +171,6 @@ export default {
                 code: '',
                 serialNum:''
             },
-            isShowMask:true,
             videoUrl:"",
             cameRoadName:'',
             // defaultData: {
@@ -292,7 +291,6 @@ export default {
     watch: {
             'searchKey.device': {
                 handler(val) {
-                    console.log(val);
                     this.camDetail.roadName = '--';
                     this.camDetail.camCode = '--';
                     this.camDetail.camId = '--';
@@ -621,15 +619,13 @@ export default {
                         let _message = '';
                         if(camStatus == '0'){//未注册
                             _message = '摄像头未注册!';
-                            this.isShowMask = true;
+                            this.$refs.liveChild.initVideo();
                         }else if(camStatus == '2'){//离线
                             _message = '摄像头为离线状态!';
-                            this.isShowMask = true;
-                            // this.endPlay();
+                            this.$refs.liveChild.initVideo();
                         }else if(camStatus == '3'){//未知
                             _message = '未知摄像头!';
-                            this.isShowMask = true;
-                            // this.endPlay();
+                            this.$refs.liveChild.initVideo();
                         }
                         if(_message) {
                             this.$message({
@@ -666,7 +662,6 @@ export default {
                         camerData.isOn = true;
                         camerData.icon = "sl-pause-icon";
                         this.playerData = camerData;
-                        this.isShowMask = false;
                     }else {
                         let _message = res.message;
                         camerData.isOn = false;
@@ -677,10 +672,10 @@ export default {
                             message: _message,
                             showClose: true
                         });
-                        this.isShowMask = true;
+                        this.endPlay();
                     }
                 }else {
-                    this.isShowMask = true;
+                    this.endPlay();
                     camerData.isOn = false;
                     camerData.icon = "sl-play-icon";
                 }
@@ -692,7 +687,7 @@ export default {
                 this.camDetail.lon = camerData.ptLon;
                 this.camDetail.lat = camerData.ptLat;
             }).catch(err => {
-                this.isShowMask = true;
+                this.endPlay();
                 camerData.isOn = false;
                 camerData.icon = "sl-play-icon";
             });
@@ -715,7 +710,6 @@ export default {
                 this.playerData.isOn = false;
                 this.playerData.icon = "sl-play-icon";
                 this.playerData = null;
-                this.isShowMask = true;
             }
         },
         goRoadSide(){
@@ -792,6 +786,7 @@ export default {
             })
         },
         clearFn(){
+            this.$refs.liveChild.initVideo();
             this.rsCamCodeOption.defaultOption = this.rsCamCodeOption.filterOption;
             this.currentVideoNode.code = this.defaultData.code;
             this.currentVideoNode.serialNum = this.defaultData.serialNum;
