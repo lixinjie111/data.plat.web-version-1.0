@@ -78,7 +78,6 @@
                             lazy
                             node-key="code"
                             ref="tree"
-                            highlight-current
                             default-expand-all
                             :default-expanded-keys="currentArr"
                             :filter-node-method="filterNode"
@@ -291,12 +290,12 @@ export default {
     watch: {
             'searchKey.device': {
                 handler(val) {
-                    this.camDetail.roadName = '--';
-                    this.camDetail.camCode = '--';
-                    this.camDetail.camId = '--';
-                    this.camDetail.roadPointName = '--';
+                    // this.camDetail.roadName = '--';
+                    // this.camDetail.camCode = '--';
+                    // this.camDetail.camId = '--';
+                    // this.camDetail.roadPointName = '--';
                     if(val === ''){
-                        this.endPlay();
+                        // this.endPlay();
                         this.$refs.tree.filter(val);
                     }
                 },
@@ -754,6 +753,8 @@ export default {
             this.camDetail.camCode = '--';
             this.camDetail.camId = '--';
             this.camDetail.roadPointName = '--';
+            this.$refs.liveChild.initVideo();
+            this.playerData.icon = "sl-play-icon";
             if(this.searchKey.device) {
                 this.$refs.tree.filter(this.searchKey.device);
             }
@@ -784,16 +785,16 @@ export default {
             })
         },
         clearFn(){
-            this.$refs.liveChild.initVideo();
+            // this.$refs.liveChild.initVideo();
             this.rsCamCodeOption.defaultOption = this.rsCamCodeOption.filterOption;
             this.currentVideoNode.code = this.defaultData.code;
             this.currentVideoNode.serialNum = this.defaultData.serialNum;
         },
         getDevice(val){
-            this.camDetail.roadName = '--';
-            this.camDetail.camCode = '--';
-            this.camDetail.camId = '--';
-            this.camDetail.roadPointName = '--';
+            // this.camDetail.roadName = '--';
+            // this.camDetail.camCode = '--';
+            // this.camDetail.camId = '--';
+            // this.camDetail.roadPointName = '--';
             // this.cameRoadName = val.rspRoadName;
         },
         // getPause(){

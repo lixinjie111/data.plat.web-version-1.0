@@ -104,6 +104,16 @@
   }
 }
 
+.c-map-wrapper {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 34%;
+    z-index: 100;
+    background-color: $mapBgColor;
+    transition: width .3s ease-out;
+  }
 //地图视频
 .c-map-video-wrapper {
   position: relative;
@@ -115,18 +125,6 @@
     padding-bottom: 37.125%;
     background-color: $black;
   }
-
-  .c-map-wrapper {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 34%;
-    z-index: 100;
-    background-color: $mapBgColor;
-    transition: width .3s ease-out;
-  }
-
 }
 
 .c-map-container {
@@ -142,7 +140,6 @@
 
   .c-map-wrapper {
     width: 0;
-    transition: width .3s ease-out;
   }
 
   .c-map-change-max {
