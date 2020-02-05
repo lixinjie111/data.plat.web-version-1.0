@@ -113,7 +113,7 @@
                         <span class="value c-blue c-hover-underline" v-else ref='roadPId' style='cursor:pointer;' @click="goRoadSide">{{camDetail.roadPointName}}</span>
                     </p>
                 </div>
-                <div class="c-mt-10 m-player-warp">
+                <div class="c-mt-10 m-player-warp c-pos-relative">
                     <live-player 
                         ref='liveChild'
                         :requestVideoUrl="videoUrl"
