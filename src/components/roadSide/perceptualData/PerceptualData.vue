@@ -616,14 +616,12 @@ export default {
                         let _message = '';
                         if(camStatus == '0'){//未注册
                             _message = '摄像头未注册!';
-                            this.$refs.liveChild.initVideo();
                         }else if(camStatus == '2'){//离线
                             _message = '摄像头为离线状态!';
-                            this.$refs.liveChild.initVideo();
                         }else if(camStatus == '3'){//未知
                             _message = '未知摄像头!';
-                            this.$refs.liveChild.initVideo();
                         }
+                        this.$refs.liveChild.initVideo();
                         if(_message) {
                             this.$message({
                                 type: 'error',
@@ -651,9 +649,6 @@ export default {
             }).then(res =>{
                 if(res.status == '200') {
                     let videoUrl = res.data.flv;
-                    camerData.isOn = true;
-                    camerData.icon = "sl-pause-icon";
-                    this.playerData = camerData;
                     if(videoUrl) {
                         this.videoUrl = videoUrl;
                         camerData.isOn = true;
@@ -696,6 +691,7 @@ export default {
                 for(let i=0;i<nodeSelArray.length;i++){
                     nodeSelArray[i].classList.remove('pause');
                 }
+                this.videoUrl = "";
                 stopStream({
                     "camId":this.playerData.code,"protocal":this.protocal
                 }).then(res => {
