@@ -28,6 +28,11 @@
     bottom: auto;
   }
 }
+.amap-logo {
+  img {
+    display: none !important;
+  }
+}
 
 // 地图重新初始化点位置
 .c-map-reset-position {
@@ -105,15 +110,15 @@
 }
 
 .c-map-wrapper {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 34%;
-    z-index: 100;
-    background-color: $mapBgColor;
-    transition: width .3s ease-out;
-  }
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 34%;
+  z-index: 100;
+  background-color: $mapBgColor;
+  transition: width .3s ease-out;
+}
 //地图视频
 .c-map-video-wrapper {
   position: relative;

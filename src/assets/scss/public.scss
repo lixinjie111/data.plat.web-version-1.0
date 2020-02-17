@@ -70,6 +70,13 @@
     background: rgba(0, 0, 0, 0.1);
     // background: rgba(0, 0, 0, 0);
 }
+// 强制折行 
+.c-text-break {
+    text-align: justify;
+    white-space:normal; 
+    word-wrap: break-word;
+    word-break:break-all;
+}
 // global
 .c-text-left {
 	text-align: left;
@@ -160,6 +167,9 @@
 .c-padding-20 {
 	padding: 20px;
 }
+.c-padding-30 {
+	padding: 30px;
+}
 //间距
 .c-ml-10 {
 	margin-left: 10px;
@@ -218,6 +228,9 @@
 }
 .c-border-bottom {
 	border-bottom: 1px solid $borderColor;
+}
+.c-border-top {
+	border-top: 1px solid $borderColor;
 }
 
 .c-width-precent-30 {
@@ -330,9 +343,6 @@ h3.c-title {
 .c-gray-box {
 	background-color: $mapBgColor;
 }
-.c-add-box {
-	padding: 30px;
-}
 .c-table-img {
 	display: inline-block;
 	height: 62px;
@@ -366,6 +376,10 @@ h3.c-title {
 	position: absolute;
 }
 
+.c-box {
+	width: 100%;
+	height: 100%;
+}
 .c-position-trbl {
 	position: absolute;
 	left: 0;
@@ -444,6 +458,32 @@ h3.c-title {
 	}
 }
 
+.c-info-tag-desc {
+	margin-top: -20px;
+	border: 1px solid #e6e6e6;
+	border-top: none;
+	line-height: 24px;
+	.title {
+		position: relative;
+		text-align: center;
+		background-color: #fafafa;
+		padding: 10px 0;
+		&:before {
+			content: "";
+			position: absolute;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			width: 1px;
+			background-color: #e6e6e6;
+		}
+	}
+	.desc {
+		padding: 10px 0;
+		text-indent: 10px;
+	}
+}
+
 // 表格里的单元格里的内容超出四行显示省略号
 .c-table-popover-text {
 	@include lineClamp(4);
@@ -457,6 +497,9 @@ h3.c-title {
 // 单元格里的popover提示框
 .c-table-popover {
 	box-shadow: 0 2px 12px 0 rgba(0,0,0,.5);
+	max-width: 350px !important;
+	min-width: auto !important;
+	width: auto !important;
     .el-popover__title {
         font-size: 14px;
         line-height: 18px;
@@ -514,8 +557,8 @@ h3.c-title {
 }
 
 .c-iframe {
-	border: none;
-	background: #000;
-	width: 100%;
-	height: 100%;
+  border: none;
+  background: #000;
+  width: 100%;
+  height: 100%;
 }

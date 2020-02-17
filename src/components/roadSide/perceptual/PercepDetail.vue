@@ -62,7 +62,7 @@
                                 </el-table-column>
                                 <!-- <el-table-column min-width="30%" label="感知目标数据">
                                     <template slot-scope="scope">
-                                        <el-popover placement="top" width="350" trigger="hover" popper-class="c-table-popover" :open-delay="2000">
+                                        <el-popover placement="top" trigger="hover" popper-class="c-table-popover" :open-delay="2000">
                                             <div class="c-table-popover-content" v-html="scope.row.field"></div>
                                             <p class="c-table-popover-text" slot="reference" v-html='scope.row.field'></p>
                                         </el-popover>
@@ -86,7 +86,7 @@
                                 <el-table-column min-width="10%" label="出现车辆">
                                     <template slot-scope="scope">
                                         <div @click.stop="stopPrevent">
-                                            <el-popover placement="top" width="350" trigger="click" popper-class="c-table-popover">
+                                            <el-popover placement="top" trigger="click" popper-class="c-table-popover">
                                                 <div class="c-table-popover-content" v-html="scope.row.addCar"></div>
                                                 <p class="c-table-popover-text" slot="reference" v-html='scope.row.addCar'></p>
                                             </el-popover>
@@ -96,7 +96,7 @@
                                 <el-table-column min-width="10%" label="消失车辆">
                                     <template slot-scope="scope">
                                         <div @click.stop="stopPrevent">
-                                            <el-popover placement="top" width="350" trigger="click" popper-class="c-table-popover">
+                                            <el-popover placement="top" trigger="click" popper-class="c-table-popover">
                                                 <div class="c-table-popover-content" v-html="scope.row.disappearCar"></div>
                                                 <p class="c-table-popover-text" slot="reference" v-html='scope.row.disappearCar'></p>
                                             </el-popover>
@@ -106,7 +106,7 @@
                                 <el-table-column min-width="50%" label="原始感知数据">
                                     <template slot-scope="scope">
                                         <div @click.stop="stopPrevent">
-                                            <el-popover placement="top" width="600" trigger="click" popper-class="c-table-popover">
+                                            <el-popover placement="top" style="max-width='600px !important;'" trigger="click" popper-class="c-table-popover">
                                                 <div class="c-table-popover-content" v-html="scope.row.data"></div>
                                                 <p class="c-table-popover-text" slot="reference" v-html='scope.row.data'></p>
                                             </el-popover>
