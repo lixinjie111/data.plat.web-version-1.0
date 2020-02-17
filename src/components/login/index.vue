@@ -46,6 +46,7 @@ import md5 from 'js-md5'
 import {requestLogin} from '@/api/login'
 import SessionUtils from '@/store/session.js'
 import SlideVerify from './components/slideVerify.vue';
+import AddScriptJs from '@/assets/js/utils/addScriptJs';
 
 export default {
     name: 'Login',
@@ -128,6 +129,10 @@ export default {
             requestLogin(params).then(res => {
                 this.loading = false;
                 if(res.status == 200) {
+                
+                    AddScriptJs.add("livePlayer", window.config.livePlayerUrl);
+                    AddScriptJs.add("gaodeMap", window.config.gaodeMapUrl);
+
                     let temp = res.data;        
                     SessionUtils.setItem('login',JSON.parse(temp));
                     localStorage.setItem("yk-token",JSON.stringify({data:JSON.parse(temp).token,"time":new Date().getTime()}));
