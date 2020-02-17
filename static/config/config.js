@@ -28,10 +28,6 @@ window.config = {
     websocketUrl:'ws://116.236.72.206:49982/mon',   //监控
 
     version: "1.2",       // 版本号
-
-    // livePlayerUrl: "https://cloud.liveqing.com:1443/js/liveplayer-lib.min.js", // 外链
-    livePlayerUrl: this.staticUrl + "frontStatic/liveplayer/liveplayer-lib.min.js",
-    gaodeMapUrl: "https://webapi.amap.com/maps?v=1.4.14&key=8bf04484a44d846096c9ab84730e88b8&plugin=ElasticMarker,AMap.Geocoder,AMap.ToolBar,AMap.Scale",
 }
 //地图默认配置
 window.defaultMapOption = {

@@ -5,7 +5,6 @@ import App from './App'
 import router from './router'
 // import '@/assets/css/video-js.css';
 import store from './store/index'
-
 //element-ui
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
