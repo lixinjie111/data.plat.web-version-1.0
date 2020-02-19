@@ -59,7 +59,8 @@ export default {
                 height: 100,
             },
             searchKey:{
-                sId:''
+                sId:'',
+                queryId:''
             },
             historySearchKey: {},
             dataList: [],
@@ -74,6 +75,7 @@ export default {
     },
     methods: {
         init(dataDetail){
+            this.searchKey.queryId = dataDetail.queryId;
             this.pageOption.page = 1;
         },
         getDetatil(dataDetail){
@@ -108,6 +110,7 @@ export default {
             })
         },
         backClick(){
+            this.searchKey.sId = '';
             this.$emit('detailPanelBack')
         },
         resetClick(){

@@ -126,11 +126,11 @@ export default {
             },
             dataList: [],
             timeOption: {
-            disabledDate: time => {
-                let _time = time.getTime(),
-                    _newTime = new Date().getTime();
-                    return _time > _newTime;
-                }
+                disabledDate: time => {
+                    let _time = time.getTime(),
+                        _newTime = new Date().getTime();
+                        return _time > _newTime;
+                    }
             },  
             rules:{
                 vehicleId:[
@@ -139,12 +139,15 @@ export default {
                 plateNo:[
                     { required: true, message: '车牌号不能为空', trigger: 'blur' }
                 ],
-                startTime:[
-                    { required: true, message: "开始时间不能为空!", trigger: 'change' }
-                ],
-                endTime:[
-                    { required: true, message: "结束时间不能为空!", trigger: 'change' }
-                ],
+                time: [
+                    { required: true, message: '请选择时间', trigger: 'blur' }
+                ]
+                // startTime:[
+                //     { required: true, message: "开始时间不能为空!", trigger: 'change' }
+                // ],
+                // endTime:[
+                //     { required: true, message: "结束时间不能为空!", trigger: 'change' }
+                // ],
             },
             rsVehicleOption: {
                 loading: false,
@@ -169,10 +172,9 @@ export default {
     },
     mounted(){
         this.historySearchKey.vehicleId = 'B21E-00-022';
-        this.searchKey.startTime = this.$dateUtil.GetDateStr(31);
-        this.searchKey.endTime = this.$dateUtil.GetDateStr(0);
-        this.historySearchKey.startTime = this.searchKey.startTime ? this.$dateUtil.dateToMs(this.searchKey.startTime) : '';
-        this.historySearchKey.endTime = this.searchKey.endTime ? this.$dateUtil.dateToMs(this.searchKey.endTime) : '';
+        this.searchKey.time = [this.$dateUtil.GetDateStr(31), this.$dateUtil.getNowFormatDate(0)];
+        this.historySearchKey.startTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[0]) : '';
+        this.historySearchKey.endTime = this.searchKey.time ? this.$dateUtil.dateToMs(this.searchKey.time[1]) : '';
     },
     methods: {
         initPaging(){
