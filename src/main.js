@@ -16,8 +16,6 @@ Vue.config.productionTip = false
 import TDate from './common/utils/date.js'
 Vue.prototype.$dateUtil = TDate;
 
-import AddScriptJs from '@/assets/js/utils/addScriptJs';
-
 //全局静态文件引入
 import '@/assets/scss/reset.scss';
 import '@/assets/scss/public.scss';
@@ -45,15 +43,7 @@ router.beforeEach((to, from, next) => {
     window.cancleSource = window.cancelToken.source()
     if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
         if (sessionStorage.getItem('login')) {  // 通过vuex state获取当前的token是否存在
-            if(to.path == '/login') {
-                next();
-            }else {
-                AddScriptJs.add("gaodeMap", window.config.gaodeMapUrl, function() {
-                    AddScriptJs.add("livePlayer", window.config.livePlayerUrl, function() {
-                        next();
-                    });
-                });
-            }
+            next();
         }
         else {
             next({
