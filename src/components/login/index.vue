@@ -126,13 +126,13 @@ export default {
         },
         loginFunc(params) {
             requestLogin(params).then(res => {
-                this.loading = false;
                 if(res.status == 200) {
                     let temp = res.data;        
                     SessionUtils.setItem('login',JSON.parse(temp));
                     localStorage.setItem("yk-token",JSON.stringify({data:JSON.parse(temp).token,"time":new Date().getTime()}));
                     this.$router.push('/home');
                 }else {
+                    this.loading = false;
                     if(res.status == -200){
                         if(res.data.errorCount) {
                             if(res.data.errorCount>=5){
