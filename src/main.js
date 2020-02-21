@@ -5,10 +5,6 @@ import App from './App'
 import router from './router'
 // import '@/assets/css/video-js.css';
 import store from './store/index'
-//element-ui
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
@@ -24,12 +20,7 @@ import '@/assets/scss/video.scss';
 import '@/assets/scss/element-ui-reset.scss';    
 import '@/assets/icon-font/iconfont.css';
 
-//导入video.js
-// import VideoPlayer  from 'vue-video-player'
-// import 'video.js/dist/video-js.css'
-// import 'vue-video-player/src/custom-theme.css'
-// import 'videojs-flash'
-// Vue.use(VideoPlayer);
+import AddScriptJs from '@/assets/js/utils/addScriptJs';
 
 // axios 过滤器
 import  axiosFilter from './api/axiosConfig.js';
@@ -43,7 +34,15 @@ router.beforeEach((to, from, next) => {
     window.cancleSource = window.cancelToken.source()
     if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
         if (sessionStorage.getItem('login')) {  // 通过vuex state获取当前的token是否存在
-            next();
+            if(to.path == '/login') {
+                next();
+            }else {
+                AddScriptJs.add("gaodeMap", window.scriptJs.gaodeMapUrl, function() {
+                    AddScriptJs.add("livePlayer", window.scriptJs.livePlayerUrl, function() {
+                        next();
+                    });
+                });
+            }
         }
         else {
             next({
