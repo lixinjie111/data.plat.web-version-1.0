@@ -91,7 +91,8 @@ export const findVideoRecords = params => { return axios.post(`${HTTPURL}percept
 /**
  * 摄像头列表
  */
-export const findRoadMonitorCameraInfo = params => { return axios.post(`${HTTPURL}perception/findRoadMonitorCamera`, params).then(res => res.data); };
+export const findRoadMonitorCameraInfo = params => { return axios.post(`${HTTPURL}perception/getRoadCamBySerialNum`, params).then(res => res.data); };
+// export const findRoadMonitorCameraInfo = params => { return axios.post(`${HTTPURL}perception/findRoadMonitorCamera`, params).then(res => res.data); };
 
 /**
  * 获取视频地址
