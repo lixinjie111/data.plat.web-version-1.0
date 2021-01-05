@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@liveqing/liveplayer": "^1.5.8",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "element-ui": "^2.6.1",
     "jquery": "^3.3.1",
     "js-md5": "^0.7.3",
